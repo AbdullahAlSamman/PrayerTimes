@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="dateColor">#757272</color>
+    <color name="dateTextColor">#FFFFFF</color>
+    <color name="fajerViewColor">#42BEE3</color>
+    <color name="sunreiseViewColor">#FDBA13</color>
+    <color name="doherViewColor">#E6DF18</color>
+    <color name="asserViewColor">#FDD700</color>
+    <color name="magrebViewColor">#F47421</color>
+    <color name="ishaViewColor">#4E7D87</color>
+    <color name="textColor">#000000</color>
+    <color name="actionColor">#333366</color>
+    <color name="black_overlay">#66000000</color>
+
+</resources>

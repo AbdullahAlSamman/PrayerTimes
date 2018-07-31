@@ -1,0 +1,57 @@
+apply plugin: 'com.android.application'
+
+android {
+
+    lintOptions {
+        checkReleaseBuilds false // Add this
+        abortOnError false
+    }
+    signingConfigs {
+        Gebetszeiten {
+            keyAlias 'Gebetszeiten'
+            keyPassword '@Gals18'
+            storeFile file('D:/Projects/Gebetszeiten/SignKeys/key.jks')
+            storePassword '@Gebetszeiten18'
+        }
+        Debug {
+            storeFile file('C:/Users/Genius/.android/debug.keystore')
+        }
+    }
+    compileSdkVersion 26
+    buildToolsVersion '27.0.3'
+    defaultConfig {
+        applicationId 'com.gals.prayertimes'
+        minSdkVersion 17
+        targetSdkVersion 26
+        versionName '0.9.07'
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        signingConfig signingConfigs.Gebetszeiten
+        versionCode 8
+    }
+    buildTypes {
+        release {
+            debuggable false
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.Gebetszeiten
+        }
+    }
+    productFlavors {
+    }
+}
+
+dependencies {
+    implementation 'com.android.support:support-v4:26.1.0'
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    testImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    implementation 'com.android.support:appcompat-v7:26.+'
+    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+    implementation 'com.parse:parse-android:1.16.5'
+    implementation 'com.parse.bolts:bolts-android:1.4.0'
+    implementation 'com.squareup.okhttp3:okhttp:3.2.0'
+    implementation 'com.facebook.android:audience-network-sdk:4.99.0'
+    testImplementation 'junit:junit:4.12'
+}
