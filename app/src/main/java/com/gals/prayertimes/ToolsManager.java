@@ -13,6 +13,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.media.AudioAttributes;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -38,6 +39,7 @@ public class ToolsManager {
 
     private Context toolscontext;
     private NotificationManager notifManager;
+    private long[] viberationPattern = new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400};
 
     public ToolsManager(Context context) {
         toolscontext = context;
@@ -79,11 +81,10 @@ public class ToolsManager {
     }
 
     public void createNotification(String aMessage, Uri sound, int notificaitonDefaults, int notificationID) {
-
         // There are hardcoding only for show it's just strings
-        String name = "my_package_channel";
-        String id = "my_package_channel_1"; // The user-visible name of the channel.
-        String description = "my_package_first_channel"; // The user-visible description of the channel.
+        String name = toolscontext.getString(R.string.notificationChannelSettings);
+        String id = toolscontext.getString(R.string.notificationChannelId); // The user-visible name of the channel.
+        String description = toolscontext.getString(R.string.notificationsChannelDescription); // The user-visible description of the channel.
 
         Intent intent;
         PendingIntent pendingIntent;
@@ -95,13 +96,21 @@ public class ToolsManager {
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            int importance = NotificationManager.IMPORTANCE_HIGH;
+            int importance = NotificationManager.IMPORTANCE_HIGH; //Makes Sound and Headup Notification
             NotificationChannel mChannel = notifManager.getNotificationChannel(id);
+
+            // Notification Attributes for Oreo+
+            AudioAttributes attributes = new AudioAttributes.Builder()
+                    .setUsage(AudioAttributes.USAGE_NOTIFICATION)
+                    .build();
+
             if (mChannel == null) {
                 mChannel = new NotificationChannel(id, name, importance);
                 mChannel.setDescription(description);
                 mChannel.enableVibration(true);
-                mChannel.setVibrationPattern(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
+                mChannel.enableLights(true);
+                mChannel.setSound(sound, attributes); // Sound set must be on the Notification Channel not the Builder
+                mChannel.setVibrationPattern(viberationPattern);
                 notifManager.createNotificationChannel(mChannel);
             }
             builder = new NotificationCompat.Builder(toolscontext, id);
@@ -114,17 +123,14 @@ public class ToolsManager {
                     .setSmallIcon(R.drawable.ic_haya_notification) // required
                     .setColor(toolscontext.getColor(R.color.fajerViewColor))
                     .setContentText("")  // required
-                    .setDefaults(notificaitonDefaults)
+//                    .setDefaults(notificaitonDefaults) //Don't use Defaults that will block the channel settings
                     .setAutoCancel(true)
-                    .setContentIntent(pendingIntent)
                     .setTicker(aMessage)
-                    .setVibrate(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400})
-                    .setSound(sound);
+                    .setContentIntent(pendingIntent);
 
         } else {
 
             builder = new NotificationCompat.Builder(toolscontext);
-
             intent = new Intent(toolscontext, MainActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             pendingIntent = PendingIntent.getActivity(toolscontext, 0, intent, 0);
@@ -138,11 +144,11 @@ public class ToolsManager {
                     .setContentText(toolscontext.getString(R.string.app_name))  // required
                     .setDefaults(notificaitonDefaults)
                     .setAutoCancel(true)
-                    .setContentIntent(pendingIntent)
                     .setTicker(aMessage)
-                    .setVibrate(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400})
+                    .setVibrate(viberationPattern)
                     .setPriority(Notification.PRIORITY_HIGH)
-                    .setSound(sound);
+                    .setSound(sound)
+                    .setContentIntent(pendingIntent);
         } // else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 
         Notification notification = builder.build();
@@ -151,11 +157,10 @@ public class ToolsManager {
 
     public void createNotification(String aMessage, int notificationID) {
 
-
         // There are hardcoding only for show it's just strings
-        String name = "my_package_channel";
-        String id = "my_package_channel_1"; // The user-visible name of the channel.
-        String description = "my_package_first_channel"; // The user-visible description of the channel.
+        String name = toolscontext.getString(R.string.sunriseNotificationChannelSettings);
+        String id = toolscontext.getString(R.string.sunriseNotificationChannelId); // The user-visible name of the channel.
+        String description = toolscontext.getString(R.string.sunriseNotificationsChannelDescription); // The user-visible description of the channel.
 
         Intent intent;
         PendingIntent pendingIntent;
@@ -173,7 +178,8 @@ public class ToolsManager {
                 mChannel = new NotificationChannel(id, name, importance);
                 mChannel.setDescription(description);
                 mChannel.enableVibration(true);
-                mChannel.setVibrationPattern(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
+                mChannel.enableLights(true);
+                mChannel.setVibrationPattern(viberationPattern);
                 notifManager.createNotificationChannel(mChannel);
             }
             builder = new NotificationCompat.Builder(toolscontext, id);
@@ -186,11 +192,10 @@ public class ToolsManager {
                     .setSmallIcon(R.drawable.ic_haya_notification) // required
                     .setColor(toolscontext.getColor(R.color.fajerViewColor))
                     .setContentText("")  // required
-                    .setDefaults(Notification.DEFAULT_VIBRATE | Notification.DEFAULT_LIGHTS | Notification.DEFAULT_SOUND)
                     .setAutoCancel(true)
+                    .setDefaults(Notification.DEFAULT_VIBRATE | Notification.DEFAULT_LIGHTS | Notification.DEFAULT_SOUND)
                     .setContentIntent(pendingIntent)
-                    .setTicker(aMessage)
-                    .setVibrate(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
+                    .setTicker(aMessage);
 
         } else {
 
@@ -211,7 +216,7 @@ public class ToolsManager {
                     .setAutoCancel(true)
                     .setContentIntent(pendingIntent)
                     .setTicker(aMessage)
-                    .setVibrate(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400})
+                    .setVibrate(viberationPattern)
                     .setPriority(Notification.PRIORITY_HIGH);
 
         } // else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

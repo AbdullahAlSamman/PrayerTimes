@@ -64,4 +64,10 @@
     <string name="alarmSilent">صامت (إشعار فقط)</string>
     <string name="settingsTitle">الإعدادات</string>
     <string name="midnight_title">لمنتصف الليل</string>
+    <string name="notificationChannelSettings">Athan Notification</string>
+    <string name="notificationChannelId">athan_channel</string>
+    <string name="notificationsChannelDescription">Athan Settings</string>
+    <string name="sunriseNotificationChannelSettings">Sunrise Notification</string>
+    <string name="sunriseNotificationChannelId">notification_channel</string>
+    <string name="sunriseNotificationsChannelDescription">Sunrise Settings</string>
 </resources>
