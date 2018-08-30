@@ -1,9 +1,6 @@
 package com.gals.prayertimes;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.text.format.DateUtils;
@@ -26,23 +23,10 @@ import java.util.StringTokenizer;
 
 public class Prayer {
     private static final String parseClassName = "Prayers";
-    private static final int FAJER_ALARM_REQUEST_CODE = 2010;
-    private static final int SUNRISE_ALARM_REQUEST_CODE = 2020;
-    private static final int DUHR_ALARM_REQUEST_CODE = 2030;
-    private static final int ASR_ALARM_REQUEST_CODE = 2040;
-    private static final int SUNSET_ALARM_REQUEST_CODE = 2050;
-    private static final int ISHA_ALARM_REQUEST_CODE = 2060;
     ToolsManager tools;
     Uri fullAthan = Uri.parse("android.resource://com.gals.prayertimes/" + R.raw.fullathan);
     Uri halfAthan = Uri.parse("android.resource://com.gals.prayertimes/" + R.raw.halfathan);
     Uri silentAthan = Uri.parse("android.resource://com.gals.prayertimes/" + R.raw.silent);
-    private PendingIntent pendingIntent;
-    private PendingIntent fajerIntent;
-    private PendingIntent sunriesIntent;
-    private PendingIntent duhrIntent;
-    private PendingIntent asrIntent;
-    private PendingIntent sunsetIntent;
-    private PendingIntent ishaIntent;
     private String currentPrayerName;
     private String remmainingPrayerTime;
     private Context activity;
@@ -712,56 +696,6 @@ public class Prayer {
         Date today = new Date();
         if (DateUtils.isToday(today.getTime()))
             return true;
-        return false;
-    }
-
-
-    @Deprecated
-    public Boolean setPrayersAlarms() {
-        try {
-            /* Retrieve a PendingIntent that will perform a broadcast */
-            Intent alarmIntent = new Intent(getActivity().getApplicationContext(), AlarmReceiver.class);
-            fajerIntent = PendingIntent.getBroadcast(getActivity().getApplicationContext(), FAJER_ALARM_REQUEST_CODE, alarmIntent, 0);
-            sunriesIntent = PendingIntent.getBroadcast(getActivity().getApplicationContext(), SUNRISE_ALARM_REQUEST_CODE, alarmIntent, 0);
-            duhrIntent = PendingIntent.getBroadcast(getActivity().getApplicationContext(), DUHR_ALARM_REQUEST_CODE, alarmIntent, 0);
-            asrIntent = PendingIntent.getBroadcast(getActivity().getApplicationContext(), ASR_ALARM_REQUEST_CODE, alarmIntent, 0);
-            sunsetIntent = PendingIntent.getBroadcast(getActivity().getApplicationContext(), SUNSET_ALARM_REQUEST_CODE, alarmIntent, 0);
-            ishaIntent = PendingIntent.getBroadcast(getActivity().getApplicationContext(), ISHA_ALARM_REQUEST_CODE, alarmIntent, 0);
-
-            AlarmManager manager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);//get instance of alarm manager
-            manager.set(AlarmManager.RTC_WAKEUP, fajerTime.getTimeInMillis(), fajerIntent);
-            manager.set(AlarmManager.RTC_WAKEUP, sunriseTime.getTimeInMillis(), sunriesIntent);
-            manager.set(AlarmManager.RTC_WAKEUP, duhrTime.getTimeInMillis(), duhrIntent);
-            manager.set(AlarmManager.RTC_WAKEUP, asrTime.getTimeInMillis(), asrIntent);
-            manager.set(AlarmManager.RTC_WAKEUP, sunsetTime.getTimeInMillis(), sunsetIntent);
-            manager.set(AlarmManager.RTC_WAKEUP, ishaTime.getTimeInMillis(), ishaIntent);//set alarm manager with entered timer by converting into milliseconds
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
-    @Deprecated
-    public void stopAlarmManager() {
-        try {
-            AlarmManager manager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
-            manager.cancel(fajerIntent);//cancel the alarm manager of the pending intent
-            manager.cancel(sunriesIntent);
-            manager.cancel(duhrIntent);
-            manager.cancel(asrIntent);
-            manager.cancel(sunsetIntent);
-            manager.cancel(ishaIntent);
-            Log.i("Alarm", "All Alarms are canceled");
-        } catch (Exception e) {
-            Log.i("Alarm", "Error");
-            e.printStackTrace();
-        }
-    }
-
-    @Deprecated
-    public Boolean isAlarmExist() {
-
         return false;
     }
 
