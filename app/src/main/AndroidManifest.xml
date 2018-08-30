@@ -55,10 +55,6 @@
             android:name=".PrayersODNotificationService"
             android:enabled="true"
             android:exported="true" />
-        <service
-            android:name=".PrayersNotificationJobScheduler"
-            android:exported="false"
-            android:permission="android.permission.BIND_JOB_SERVICE" />
 
         <service
             android:name=".MusicPlayer"
@@ -84,10 +80,6 @@
             </intent-filter>
         </receiver>
 
-        <receiver
-            android:name=".AlarmReceiver"
-            android:enabled="true"
-            android:exported="true" />
     </application>
 
 </manifest>
