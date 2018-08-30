@@ -73,8 +73,8 @@ public class Prayer {
             Log.i("Constractor", "There is no date in Localstorage");
         }
 
-        // To Convert Strings to Time using Calander instance
-        setCalanderPrayersTime();
+        // To Convert Strings to Time using Calender instance
+        setCalenderPrayersTime();
     }
 
     public Boolean getNotificaiton() {
@@ -93,7 +93,7 @@ public class Prayer {
         this.notificaitonType = notificaitonType;
     }
 
-    public void setCalanderPrayersTime() {
+    public void setCalenderPrayersTime() {
         fajerTime = Calendar.getInstance();
         sunriseTime = Calendar.getInstance();
         duhrTime = Calendar.getInstance();
@@ -458,6 +458,9 @@ public class Prayer {
             currentTime.set(Calendar.HOUR_OF_DAY, Integer.parseInt(cTime[0].trim()));
             currentTime.set(Calendar.MINUTE, Integer.parseInt(cTime[1].trim()));
 
+            // to update calender instances if the times are updated
+            this.setCalenderPrayersTime();
+
             if (currentTime.before(fajerTime)) {
                 setRemmainingPrayerTime(tools.difTimes(fajerTime, currentTime));
                 setCurrentPrayerName(getActivity().getString(R.string.pFajer));
@@ -482,24 +485,24 @@ public class Prayer {
                 setRemmainingPrayerTime(tools.difTimes(ishaTime, currentTime));
                 setCurrentPrayerName(getActivity().getString(R.string.pIsha));
                 return true;
-            } else if (currentTime.before(midNightTime)) {
+            } else if (currentTime.before(midNightTime) || currentTime.equals(midNightTime)) {
                 setRemmainingPrayerTime(tools.difTimes(midNightTime, currentTime));
                 setCurrentPrayerName(getActivity().getString(R.string.midnight_title));
                 return true;
             } else {
-                //TODO: Updatedate trigger
-                printTest();
+                Log.e("Calc1", "The value is False");
                 return false;
             }
 
         } catch (NumberFormatException e) {
             e.printStackTrace();
+            Log.e("Calc2", "The value is False");
             return false;
         }
 
     }
 
-    public Boolean notficationCheckPrayers() {
+    public Boolean notificationCheckPrayers() {
 
         try {
             cTime = new SimpleDateFormat("HH:mm").format(new Date()).split(":");
@@ -509,6 +512,9 @@ public class Prayer {
             currentTime.set(Calendar.HOUR_OF_DAY, Integer.parseInt(cTime[0].trim()));
             currentTime.set(Calendar.MINUTE, Integer.parseInt(cTime[1].trim()));
             Log.i("Current Time ", cTime[0] + ":" + cTime[1]);
+
+            //update Calender Instances if the values changes
+            this.setCalenderPrayersTime();
 
             if (tools.isEqualTime(currentTime, fajerTime)) {
                 Log.i("Current Time ", cTime[0] + ":" + cTime[1]);
@@ -692,11 +698,14 @@ public class Prayer {
         }
     }
 
-    public Boolean isToday() {
-        Date today = new Date();
-        if (DateUtils.isToday(today.getTime()))
-            return true;
-        return false;
+    public boolean isDayHasChanged(String date) {
+        try {
+            Date currentDate = new SimpleDateFormat("dd.MM.yyyy").parse(date);
+            return DateUtils.isToday(currentDate.getTime() + DateUtils.DAY_IN_MILLIS);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return true; // to trigger an Update when the date is not determined
     }
 
     public Boolean isRamadan() {

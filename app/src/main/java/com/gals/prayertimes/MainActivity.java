@@ -217,7 +217,6 @@ public class MainActivity extends AppCompatActivity {
 
     //update the time to next prayer
     private void updateRemaningTime() {
-
         if (prayer.calculateTimeBetweenPrayers()) {
 
             if (prayer.isNextAPrayer()) {
@@ -229,13 +228,15 @@ public class MainActivity extends AppCompatActivity {
                 nextPrayerText.setText(prayer.getCurrentPrayerName());
                 nextPrayerPanner.setText(getString(R.string.remmaning_time));
             }
+
+            nextPrayerTime.setVisibility(View.VISIBLE);
+            nextPrayerText.setVisibility(View.VISIBLE);
+            nextPrayerPanner.setVisibility(View.VISIBLE);
+
         } else {
-            //TODO: Trigger Update by restarting
-//            needUpdate = true;
             nextPrayerTime.setVisibility(View.INVISIBLE);
             nextPrayerText.setVisibility(View.INVISIBLE);
             nextPrayerPanner.setVisibility(View.INVISIBLE);
-
         }
     }
 
@@ -244,6 +245,12 @@ public class MainActivity extends AppCompatActivity {
         if (prayer.getLocalStorage()) {
 //            prayer.printTest();
             prayer.dateText();
+
+            Log.i("isChangeTheDayTest", "" + prayer.isDayHasChanged(prayer.getsDate()));
+
+            if (prayer.isDayHasChanged(prayer.getsDate())) {
+                updatePrayers(this.settings);
+            }
 
             updateRemaningTime();
             updateBackground();
@@ -262,13 +269,16 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    //TODO: change the position of the check to service if service run always
-    private void checkTodayPrayers(SharedPreferences settings) {
+    private void updatePrayers(SharedPreferences settings) {
         // update the data from server if the date is changed
-        if (!prayer.isToday() && tools.isNetworkAvailable()) {
-            GetServerData task = new GetServerData(null, prayer, settings, this.getBaseContext(), true);
-            task.execute("", "", "");
-            prayer.getLocalStorage();
+        if (tools.isNetworkAvailable()) {
+            try {
+                GetServerData task = new GetServerData(null, prayer, settings, this.getBaseContext(), true);
+                task.execute("", "", "");
+                prayer.getLocalStorage();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 

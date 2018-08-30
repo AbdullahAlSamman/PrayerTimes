@@ -42,7 +42,6 @@ public class PrayersODNotificationService extends Service {
         prayer = new Prayer(settings, this);
 
         //startForeground(12, new Notification());
-        //TODO: update the localStorage when is not today
         prayerTimeCheck = new Timer();
         prayerTimeCheckTask = new TimerTask() {
             @Override
@@ -51,7 +50,7 @@ public class PrayersODNotificationService extends Service {
                     prayer.getLocalStorage();
                     if (prayer.getNotificaiton()) {
                         Log.i("Service", "TimeCheck");
-                        if (prayer.notficationCheckPrayers()) {
+                        if (prayer.notificationCheckPrayers()) {
                             if (prayer.getCurrentPrayerName() == getString(R.string.pSunrise)) {
 //                                if (prayer.getAthan() == null)
                                 tools.createNotification(getString(R.string.notSunrise), tools.generateRandomNotificationId());
