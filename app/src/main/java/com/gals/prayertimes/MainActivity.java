@@ -103,9 +103,7 @@ public class MainActivity extends AppCompatActivity {
 
         //Ads Facebook Code
         adView = new com.facebook.ads.AdView(this, "215308835976224_215309109309530", AdSize.BANNER_HEIGHT_50);
-//        //Add test Devices for my account
-        adSettings.addTestDevice("a78a8458-d5e0-44e7-b00f-1039ac315962");
-        adSettings.addTestDevice("1f4f7c91-0782-43b8-a14c-f94d0b8abb1e");
+
         // Find the Ad Container
         LinearLayout adContainer = (LinearLayout) findViewById(R.id.banner_container);
 
