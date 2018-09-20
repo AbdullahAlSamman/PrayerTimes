@@ -17,12 +17,12 @@ import android.widget.Switch;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link SettingsFragment.OnFragmentInteractionListener} interface
+ * {@link AthanSettingsFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link SettingsFragment#newInstance} factory method to
+ * Use the {@link AthanSettingsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class SettingsFragment extends Fragment {
+public class AthanSettingsFragment extends Fragment {
     public static final String PREFS_NAME = "MyLocalStorage";
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -49,7 +49,7 @@ public class SettingsFragment extends Fragment {
     private String mParam2;
     private OnFragmentInteractionListener mListener;
 
-    public SettingsFragment() {
+    public AthanSettingsFragment() {
         // Required empty public constructor
     }
 
@@ -59,11 +59,11 @@ public class SettingsFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment SettingsFragment.
+     * @return A new instance of fragment AthanSettingsFragment.
      */
     //Rename and change types and number of parameters
-    public static SettingsFragment newInstance(String param1, String param2) {
-        SettingsFragment fragment = new SettingsFragment();
+    public static AthanSettingsFragment newInstance(String param1, String param2) {
+        AthanSettingsFragment fragment = new AthanSettingsFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);

@@ -70,4 +70,6 @@
     <string name="sunriseNotificationChannelSettings">Sunrise Notification</string>
     <string name="sunriseNotificationChannelId">notification_channel</string>
     <string name="sunriseNotificationsChannelDescription">Sunrise Settings</string>
+    <string name="settingsPrivacyPolicy">سياسة الخصوصية</string>
+    <string name="settingsAboutUs">عنا</string>
 </resources>
