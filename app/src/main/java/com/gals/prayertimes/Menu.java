@@ -8,7 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
 // in order to get the Fragments to work you need to implement those Interactions interfaces it is necessary.
-public class Menu extends AppCompatActivity implements AthanSettingsFragment.OnFragmentInteractionListener, MenuItemFragment.OnListFragmentInteractionListener {
+public class Menu extends AppCompatActivity implements AthanSettingsFragment.OnFragmentInteractionListener, MenuItemFragment.OnListFragmentInteractionListener, PrivacyPolicyFragment.OnFragmentInteractionListener {
 
     public static final String PREFS_NAME = "MyLocalStorage";
     ToolsManager tools;
@@ -25,7 +25,6 @@ public class Menu extends AppCompatActivity implements AthanSettingsFragment.OnF
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setIcon(R.drawable.mysalay);
 
-        AthanSettingsFragment athanSettings = new AthanSettingsFragment();
         MenuItemFragment menuSettings = new MenuItemFragment();
         getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer, menuSettings).commit();
 

@@ -85,18 +85,23 @@ public class MenuItemFragment extends Fragment {
                     new RecyclerItemClickListener(getContext(), recyclerView, new RecyclerItemClickListener.OnItemClickListener() {
                         @Override
                         public void onItemClick(View view, int position) {
-                            AthanSettingsFragment nextFrag = new AthanSettingsFragment();
+                            AthanSettingsFragment athanFrag = new AthanSettingsFragment();
+                            PrivacyPolicyFragment ppFrag = new PrivacyPolicyFragment();
 
                             switch (position) {
                                 case 0:
                                     Log.i("List", "Item Click " + position);
                                     getActivity().getSupportFragmentManager().beginTransaction()
-                                            .replace(R.id.fragmentContainer, nextFrag, "")
+                                            .replace(R.id.fragmentContainer, athanFrag, "")
                                             .addToBackStack(null)
                                             .commit();
                                     break;
                                 case 1:
                                     Log.i("List", "Item Click " + position);
+                                    getActivity().getSupportFragmentManager().beginTransaction()
+                                            .replace(R.id.fragmentContainer, ppFrag, "")
+                                            .addToBackStack(null)
+                                            .commit();
                                     break;
                                 case 2:
                                     Log.i("List", "Item Click " + position);
