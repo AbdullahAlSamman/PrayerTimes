@@ -6,8 +6,6 @@ import android.net.Uri;
 import android.text.format.DateUtils;
 import android.util.Log;
 
-import com.parse.ParseObject;
-
 import org.json.JSONArray;
 
 import java.io.BufferedReader;
@@ -111,7 +109,6 @@ public class Prayer {
         duTime = getDuhr().split(":");
         asTime = getAsr().split(":");
         isTime = getIsha().split(":");
-        Log.e("setCal", getFajer());
 
         fajerTime.set(Calendar.HOUR_OF_DAY, Integer.parseInt(frTime[0].trim()));
         fajerTime.set(Calendar.MINUTE, Integer.parseInt(frTime[1].trim()));
@@ -280,18 +277,15 @@ public class Prayer {
     }
 
     public Boolean getTodayPrayers(String dateToday) {
-        //TODO: change the get data function
-        ParseObject now = new ParseObject("Prayers");
         Boolean result = false;
         try {
-            URL url = new URL("http://prayers.esy.es/api/prayers/2");
+            URL url = new URL("http://prayers.esy.es/api/prayers/" + dateToday);
             HttpURLConnection httpConn = (HttpURLConnection) url.openConnection();
             httpConn.setRequestMethod("GET");
             InputStream inputStream = httpConn.getInputStream();
             InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
             BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
             String line = bufferedReader.readLine();
-            Log.i("Data from the server", line);
             httpConn.disconnect();
             JSONArray json = new JSONArray(line);
 
@@ -312,7 +306,6 @@ public class Prayer {
         }
         return result;
     }
-
 
     public Boolean getLocalStorage() {
         if (getSettings().getString("objectId", "") != null) {
@@ -709,10 +702,14 @@ public class Prayer {
     }
 
     public Boolean isRamadan() {
-        StringTokenizer mdate = new StringTokenizer(getmDate(), ".");
-        mdate.nextToken();
-        if (Integer.parseInt(mdate.nextToken()) == 9)
-            return true;
+        try {
+            StringTokenizer mdate = new StringTokenizer(getmDate(), ".");
+            mdate.nextToken();
+            if (Integer.parseInt(mdate.nextToken()) == 9)
+                return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return false;
     }
 
