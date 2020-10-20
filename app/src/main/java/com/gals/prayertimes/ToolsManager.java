@@ -25,6 +25,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -78,6 +79,16 @@ public class ToolsManager {
         String todayMonth = new SimpleDateFormat("MM").format(new Date());
         String todayYear = new SimpleDateFormat("yyyy").format(new Date());
         return convert2Decimal(todayDay) + "." + convert2Decimal(todayMonth) + "." + convert2Decimal(todayYear);
+    }
+
+    public Date convertStringToDate(String date) {
+        try {
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+            return format.parse(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public void createNotification(String aMessage, Uri sound, int notificaitonDefaults, int notificationID) {

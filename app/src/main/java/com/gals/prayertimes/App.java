@@ -5,8 +5,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.Log;
 
-import com.parse.Parse;
-
 /**
  * Created by Genius on 1/25/2018.
  */
@@ -22,18 +20,9 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
         tools = new ToolsManager(getApplicationContext());
-        try {
-            // Parse
-            Parse.initialize(this);
-
-        } catch (Exception err) {
-            Log.d("debug", err.toString());
-        }
 
         settings = getSharedPreferences(PREFS_NAME, 0);
         prayer = new Prayer(settings, getApplicationContext());
-        //        Start Prayers Service Kitkat and older versions
-//        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
         try {
             if (prayer.getNotificaiton()) {
                 Intent pService = new Intent(this, PrayersODNotificationService.class);
@@ -44,6 +33,5 @@ public class App extends Application {
         } catch (Exception e) {
             e.printStackTrace();
         }
-//        }
     }
 }

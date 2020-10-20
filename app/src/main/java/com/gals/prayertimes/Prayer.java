@@ -6,15 +6,16 @@ import android.net.Uri;
 import android.text.format.DateUtils;
 import android.util.Log;
 
-import com.parse.FindCallback;
-import com.parse.ParseException;
-import com.parse.ParseObject;
-import com.parse.ParseQuery;
+import org.json.JSONArray;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 import java.util.StringTokenizer;
 
 /**
@@ -275,43 +276,35 @@ public class Prayer {
         this.activity = activity;
     }
 
-
     public Boolean getTodayPrayers(String dateToday) {
-
-        ParseObject now = new ParseObject("Prayers");
         Boolean result = false;
         try {
-            ParseQuery<ParseObject> today = new ParseQuery("Prayers");
-            today.whereEqualTo("sDate", dateToday);
-            today.findInBackground(new FindCallback<ParseObject>() {
-                public void done(List<ParseObject> prayersList, ParseException e) {
-                    if (e == null) {
-                        Log.i("Prayers", "Retrieved " + prayersList.size() + " Prayer");
-                    } else {
-                        Log.i("Prayers", "Error: " + e.getMessage());
-                    }
-                }
-            });
+            URL url = new URL("http://prayers.esy.es/api/prayers/" + dateToday);
+            HttpURLConnection httpConn = (HttpURLConnection) url.openConnection();
+            httpConn.setRequestMethod("GET");
+            InputStream inputStream = httpConn.getInputStream();
+            InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+            String line = bufferedReader.readLine();
+            httpConn.disconnect();
+            JSONArray json = new JSONArray(line);
 
-            now = (ParseObject) today.getFirst();
-
-            setObjectId(now.getObjectId());
-            setCreatedAt(now.getCreatedAt());
-            setUpdatedAt(now.getUpdatedAt());
-            setsDate(now.getString("sDate"));
-            setmDate(now.getString("mDate"));
-            setFajer(now.getString("fajer"));
-            setSunrise(now.getString("sunrise"));
-            setDuhr(now.getString("duhr"));
-            setAsr(now.getString("asr"));
-            setMaghrib(now.getString("maghrib"));
-            setIsha(now.getString("isha"));
+            setObjectId(json.getJSONObject(0).getString("id"));
+            setCreatedAt(null);
+            setUpdatedAt(null);
+            setsDate(json.getJSONObject(0).getString("sDate"));
+            setmDate(json.getJSONObject(0).getString("mDate"));
+            setFajer(json.getJSONObject(0).getString("fajer"));
+            setSunrise(json.getJSONObject(0).getString("sunrise"));
+            setDuhr(json.getJSONObject(0).getString("duhr"));
+            setAsr(json.getJSONObject(0).getString("asr"));
+            setMaghrib(json.getJSONObject(0).getString("maghrib"));
+            setIsha(json.getJSONObject(0).getString("isha"));
             result = true;
-            return result;
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return result;
+        } catch (Exception e1) {
+            e1.printStackTrace();
         }
+        return result;
     }
 
     public Boolean getLocalStorage() {
@@ -709,10 +702,14 @@ public class Prayer {
     }
 
     public Boolean isRamadan() {
-        StringTokenizer mdate = new StringTokenizer(getmDate(), ".");
-        mdate.nextToken();
-        if (Integer.parseInt(mdate.nextToken()) == 9)
-            return true;
+        try {
+            StringTokenizer mdate = new StringTokenizer(getmDate(), ".");
+            mdate.nextToken();
+            if (Integer.parseInt(mdate.nextToken()) == 9)
+                return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return false;
     }
 
