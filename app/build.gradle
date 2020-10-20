@@ -17,11 +17,11 @@ android {
             storeFile file('C:/Users/Genius/.android/debug.keystore')
         }
     }
-    compileSdkVersion 26
-    buildToolsVersion '27.0.3'
+    compileSdkVersion 30
+    buildToolsVersion '30.0.2'
     defaultConfig {
         applicationId 'com.gals.prayertimes'
-        minSdkVersion 17
+        minSdkVersion 24
         targetSdkVersion 26
         versionName '0.9.07'
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -42,16 +42,18 @@ android {
 }
 
 dependencies {
+    //noinspection GradleCompatible
     implementation 'com.android.support:support-v4:26.1.0'
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     testImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    implementation 'com.android.support:appcompat-v7:26.+'
-    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+    //noinspection GradleCompatible
+    implementation 'com.android.support:appcompat-v7:26.1.0'
+    implementation 'com.android.support.constraint:constraint-layout:2.0.2'
     implementation 'com.parse:parse-android:1.16.5'
     implementation 'com.parse.bolts:bolts-android:1.4.0'
-    implementation 'com.squareup.okhttp3:okhttp:3.2.0'
+    implementation 'com.squareup.okhttp3:okhttp:4.9.0'
     implementation 'com.facebook.android:audience-network-sdk:4.99.0'
-    testImplementation 'junit:junit:4.12'
+    testImplementation 'junit:junit:4.13.1'
 }

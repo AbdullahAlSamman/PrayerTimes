@@ -240,31 +240,36 @@ public class MainActivity extends AppCompatActivity {
 
     //Set data on the UI Elements
     private void setSettingsUI() {
-        if (prayer.getLocalStorage()) {
+        try {
+            if (prayer.getLocalStorage()) {
 //            prayer.printTest();
-            prayer.dateText();
+                prayer.dateText();
 
-            Log.i("isChangeTheDayTest", "" + prayer.isDayHasChanged(prayer.getsDate()));
+                Log.i("isChangeTheDayTest", "" + prayer.isDayHasChanged(prayer.getsDate()));
 
-            if (prayer.isDayHasChanged(prayer.getsDate())) {
-                updatePrayers(this.settings);
+                if (prayer.isDayHasChanged(prayer.getsDate())) {
+                    updatePrayers(this.settings);
+                }
+
+                updateRemaningTime();
+                updateBackground();
+
+                sDatePanner.setText(prayer.getsFullDate());
+                mDatePanner.setText(prayer.getmFullDate());
+                dayPanner.setText(prayer.getDay());
+                fajerTime.setText(prayer.getFajer());
+                sunriseTime.setText(prayer.getSunrise());
+                duhrTime.setText(prayer.getDuhr());
+                asrTime.setText(prayer.getAsr());
+                maghribTime.setText(prayer.getMaghrib());
+                ishaTime.setText(prayer.getIsha());
+            } else {
+                Log.i("SettingsUI Update", "there is no data at all");
             }
-
-            updateRemaningTime();
-            updateBackground();
-
-            sDatePanner.setText(prayer.getsFullDate());
-            mDatePanner.setText(prayer.getmFullDate());
-            dayPanner.setText(prayer.getDay());
-            fajerTime.setText(prayer.getFajer());
-            sunriseTime.setText(prayer.getSunrise());
-            duhrTime.setText(prayer.getDuhr());
-            asrTime.setText(prayer.getAsr());
-            maghribTime.setText(prayer.getMaghrib());
-            ishaTime.setText(prayer.getIsha());
-        } else {
-            Log.i("SettingsUI Update", "there is no data at all");
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
     }
 
     private void updatePrayers(SharedPreferences settings) {
