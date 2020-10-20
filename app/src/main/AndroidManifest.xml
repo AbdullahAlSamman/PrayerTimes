@@ -54,16 +54,6 @@
             android:exported="true" />
 
         <receiver
-            android:name=".PrayersODNotificationBootRestart"
-            android:enabled="true"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-                <action android:name=".PrayersNotificationService" />
-            </intent-filter>
-        </receiver>
-
-        <receiver
             android:name=".PrayersODNotificationServiceRestart"
             android:enabled="true"
             android:exported="true">
