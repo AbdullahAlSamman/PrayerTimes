@@ -71,7 +71,7 @@ public class Prayer {
         if (this.getLocalStorage()) {
             Log.i("Constractor", "Loaded from the Localstorage");
         } else {
-            Log.i("Constractor", "There is no date in Localstorage");
+            Log.i("Constructor", "There is no date in Localstorage");
         }
 
         // To Convert Strings to Time using Calender instance

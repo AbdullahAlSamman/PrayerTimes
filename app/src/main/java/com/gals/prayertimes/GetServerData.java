@@ -96,7 +96,7 @@ public class GetServerData extends AsyncTask<String, Void, String> {
                     getToMain().putExtra("result", getActivity().getString(R.string.checkInternet));
                 }
             } else {
-                getToMain().putExtra("checkInternt", getActivity().getString(R.string.checkInternet));
+                getToMain().putExtra("checkInternet", getActivity().getString(R.string.checkInternet));
             }
         } catch (Exception e) {
             e.printStackTrace();

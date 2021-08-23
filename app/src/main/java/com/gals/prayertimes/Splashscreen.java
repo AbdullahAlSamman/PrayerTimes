@@ -12,6 +12,12 @@ public class Splashscreen extends AppCompatActivity {
     SharedPreferences settings;
     ToolsManager tools;
     Intent toMain;
+    //TODO: change to database.
+    //TODO: handel exceptions well.
+    //TODO: Testing.
+    //TODO: remove old code.
+    //TODO: background services.
+
 
 
     @Override
