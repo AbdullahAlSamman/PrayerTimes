@@ -1,4 +1,4 @@
-package com.gals.prayertimes;
+package com.gals.prayertimes.ui;
 
 import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
@@ -8,8 +8,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.gals.prayertimes.MenuItemFragment.OnListFragmentInteractionListener;
-import com.gals.prayertimes.SettingsMenuContent.SettingsMenuItem;
+import com.gals.prayertimes.R;
+import com.gals.prayertimes.ui.MenuItemFragment.OnListFragmentInteractionListener;
+import com.gals.prayertimes.ui.SettingsMenuContent.SettingsMenuItem;
 
 import java.util.List;
 

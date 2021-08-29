@@ -1,4 +1,4 @@
-package com.gals.prayertimes;
+package com.gals.prayertimes.ui;
 
 import android.content.Context;
 import androidx.recyclerview.widget.RecyclerView;

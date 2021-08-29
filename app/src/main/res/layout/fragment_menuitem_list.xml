@@ -8,5 +8,5 @@
     android:layout_height="match_parent"
     android:layoutDirection="rtl"
     app:layoutManager="LinearLayoutManager"
-    tools:context=".MenuItemFragment"
+    tools:context=".ui.MenuItemFragment"
     tools:listitem="@layout/fragment_menuitem" />

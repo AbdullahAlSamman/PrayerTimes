@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.gals.prayertimes.Splashscreen">
+    tools:context="com.gals.prayertimes.ui.Splashscreen">
 
     <RelativeLayout
         android:layout_width="match_parent"

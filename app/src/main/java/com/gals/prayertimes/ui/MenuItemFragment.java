@@ -1,4 +1,4 @@
-package com.gals.prayertimes;
+package com.gals.prayertimes.ui;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -11,7 +11,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.gals.prayertimes.SettingsMenuContent.SettingsMenuItem;
+import com.gals.prayertimes.R;
+import com.gals.prayertimes.ui.SettingsMenuContent.SettingsMenuItem;
 
 import java.util.ArrayList;
 import java.util.List;

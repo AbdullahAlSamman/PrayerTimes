@@ -1,4 +1,4 @@
-package com.gals.prayertimes;
+package com.gals.prayertimes.ui;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -17,6 +17,10 @@ import com.facebook.ads.AdError;
 import com.facebook.ads.AdListener;
 import com.facebook.ads.AdSettings;
 import com.facebook.ads.AdSize;
+import com.gals.prayertimes.utils.DataManager;
+import com.gals.prayertimes.model.Prayer;
+import com.gals.prayertimes.R;
+import com.gals.prayertimes.utils.ToolsManager;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -137,7 +141,7 @@ public class MainActivity extends AppCompatActivity {
         adView.loadAd();
 
 
-        // Change Statusbar color
+        // Change Status bar color
         tools.changeStatusBarColor(getWindow());
 
         prayer = new Prayer(settings, this.getBaseContext());
@@ -245,17 +249,17 @@ public class MainActivity extends AppCompatActivity {
 //            prayer.printTest();
                 prayer.dateText();
 
-                Log.i("isChangeTheDayTest", "" + prayer.isDayHasChanged(prayer.getsDate()));
+                Log.i("isChangeTheDayTest", "" + prayer.isDayHasChanged(prayer.getSDate()));
 
-                if (prayer.isDayHasChanged(prayer.getsDate())) {
+                if (prayer.isDayHasChanged(prayer.getSDate())) {
                     updatePrayers(this.settings);
                 }
 
                 updateRemaningTime();
                 updateBackground();
 
-                sDatePanner.setText(prayer.getsFullDate());
-                mDatePanner.setText(prayer.getmFullDate());
+                sDatePanner.setText(prayer.getSFullDate());
+                mDatePanner.setText(prayer.getMFullDate());
                 dayPanner.setText(prayer.getDay());
                 fajerTime.setText(prayer.getFajer());
                 sunriseTime.setText(prayer.getSunrise());
@@ -276,7 +280,7 @@ public class MainActivity extends AppCompatActivity {
         // update the data from server if the date is changed
         if (tools.isNetworkAvailable()) {
             try {
-                GetServerData task = new GetServerData(null, prayer, settings, this.getBaseContext(), true);
+                DataManager task = new DataManager(null, prayer, settings, this.getBaseContext(), true);
                 task.execute("", "", "");
                 prayer.getLocalStorage();
             } catch (Exception e) {

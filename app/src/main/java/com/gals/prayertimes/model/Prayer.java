@@ -1,10 +1,18 @@
-package com.gals.prayertimes;
+package com.gals.prayertimes.model;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.text.format.DateUtils;
 import android.util.Log;
+
+import androidx.annotation.NonNull;
+import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
+
+import com.gals.prayertimes.R;
+import com.gals.prayertimes.utils.ToolsManager;
 
 import org.json.JSONArray;
 
@@ -22,17 +30,30 @@ import java.util.StringTokenizer;
  * Created by Genius on 1/26/2018.
  */
 
+@Entity(tableName = "prayers")
 public class Prayer {
+    @Ignore
     private static final String parseClassName = "Prayers";
+    @Ignore
     ToolsManager tools;
+    @Ignore
     Uri fullAthan = Uri.parse("android.resource://com.gals.prayertimes/" + R.raw.fullathan);
+    @Ignore
     Uri halfAthan = Uri.parse("android.resource://com.gals.prayertimes/" + R.raw.halfathan);
+    @Ignore
     Uri silentAthan = Uri.parse("android.resource://com.gals.prayertimes/" + R.raw.silent);
+    @Ignore
     private String currentPrayerName;
+    @Ignore
     private String remmainingPrayerTime;
+    @Ignore
     private Context activity;
+    @PrimaryKey
+    @NonNull
     private String objectId;
+    @Ignore
     private Date updatedAt;
+    @Ignore
     private Date createdAt;
     private String sFullDate;
     private String mFullDate;
@@ -45,23 +66,41 @@ public class Prayer {
     private String asr;
     private String maghrib;
     private String isha;
+    @Ignore
     private SharedPreferences settings;
+    @Ignore
     private Boolean notificaiton;
+    @Ignore
     private String notificaitonType;
+    @Ignore
     private Calendar fajerTime;
+    @Ignore
     private Calendar sunriseTime;
+    @Ignore
     private Calendar duhrTime;
+    @Ignore
     private Calendar asrTime;
+    @Ignore
     private Calendar sunsetTime;
+    @Ignore
     private Calendar ishaTime;
+    @Ignore
     private Calendar midNightTime;
+    @Ignore
     private Calendar currentTime;
+    @Ignore
     private String[] ssTime;
+    @Ignore
     private String[] frTime;
+    @Ignore
     private String[] srTime;
+    @Ignore
     private String[] duTime;
+    @Ignore
     private String[] asTime;
+    @Ignore
     private String[] isTime;
+    @Ignore
     private String[] cTime;
 
     public Prayer(SharedPreferences settings, Context activity) {
@@ -76,6 +115,10 @@ public class Prayer {
 
         // To Convert Strings to Time using Calender instance
         setCalenderPrayersTime();
+    }
+
+    public Prayer() {
+
     }
 
     public Boolean getNotificaiton() {
@@ -132,19 +175,19 @@ public class Prayer {
         midNightTime.set(Calendar.MINUTE, 59);
     }
 
-    public String getsFullDate() {
+    public String getSFullDate() {
         return sFullDate;
     }
 
-    public void setsFullDate(String sFullDate) {
+    public void setSFullDate(String sFullDate) {
         this.sFullDate = sFullDate;
     }
 
-    public String getmFullDate() {
+    public String getMFullDate() {
         return mFullDate;
     }
 
-    public void setmFullDate(String mFullDate) {
+    public void setMFullDate(String mFullDate) {
         this.mFullDate = mFullDate;
     }
 
@@ -204,19 +247,19 @@ public class Prayer {
         this.createdAt = createdAt;
     }
 
-    public String getsDate() {
+    public String getSDate() {
         return sDate;
     }
 
-    public void setsDate(String sDate) {
+    public void setSDate(String sDate) {
         this.sDate = sDate;
     }
 
-    public String getmDate() {
+    public String getMDate() {
         return mDate;
     }
 
-    public void setmDate(String mDate) {
+    public void setMDate(String mDate) {
         this.mDate = mDate;
     }
 
@@ -292,8 +335,8 @@ public class Prayer {
             setObjectId(json.getJSONObject(0).getString("id"));
             setCreatedAt(null);
             setUpdatedAt(null);
-            setsDate(json.getJSONObject(0).getString("sDate"));
-            setmDate(json.getJSONObject(0).getString("mDate"));
+            setSDate(json.getJSONObject(0).getString("sDate"));
+            setMDate(json.getJSONObject(0).getString("mDate"));
             setFajer(json.getJSONObject(0).getString("fajer"));
             setSunrise(json.getJSONObject(0).getString("sunrise"));
             setDuhr(json.getJSONObject(0).getString("duhr"));
@@ -310,8 +353,8 @@ public class Prayer {
     public Boolean getLocalStorage() {
         if (getSettings().getString("objectId", "") != null) {
             setObjectId(getSettings().getString("objectId", null));
-            setsDate(getSettings().getString("sDate", ""));
-            setmDate(getSettings().getString("mDate", ""));
+            setSDate(getSettings().getString("sDate", ""));
+            setMDate(getSettings().getString("mDate", ""));
             setFajer(getSettings().getString("fajer", "4:00"));
             setSunrise(getSettings().getString("sunrise", "8:00"));
             setDuhr(getSettings().getString("duhr", "12:00"));
@@ -333,8 +376,8 @@ public class Prayer {
                 editor.putString("createdAt", getCreatedAt().toString());
                 editor.putString("updatedAt", getUpdatedAt().toString());
             }
-            editor.putString("sDate", getsDate());
-            editor.putString("mDate", getmDate());
+            editor.putString("sDate", getSDate());
+            editor.putString("mDate", getMDate());
             editor.putString("fajer", getFajer());
             editor.putString("sunrise", getSunrise());
             editor.putString("duhr", getDuhr());
@@ -356,8 +399,8 @@ public class Prayer {
         Log.i("info", getObjectId() + "\n" +
                 getCreatedAt() + "\n" +
                 getUpdatedAt() + "\n" +
-                getsDate() + "\n" +
-                getmDate() + "\n" +
+                getSDate() + "\n" +
+                getMDate() + "\n" +
                 getFajer() + "\n" +
                 getSunrise() + "\n" +
                 getDuhr() + "\n" +
@@ -591,8 +634,8 @@ public class Prayer {
                     break;
             }
 
-            StringTokenizer sdate = new StringTokenizer(getsDate(), ".");
-            StringTokenizer mdate = new StringTokenizer(getmDate(), ".");
+            StringTokenizer sdate = new StringTokenizer(getSDate(), ".");
+            StringTokenizer mdate = new StringTokenizer(getMDate(), ".");
             ssdate = sdate.nextToken() + " ";
             mmdate = mdate.nextToken() + " ";
             switch (Integer.parseInt(sdate.nextToken())) {
@@ -681,8 +724,8 @@ public class Prayer {
             mmdate = mmdate + " " + mdate.nextToken();
 
             setDay(day);
-            setmFullDate(mmdate);
-            setsFullDate(ssdate);
+            setMFullDate(mmdate);
+            setSFullDate(ssdate);
 
             return true;
         } catch (Exception e) {
@@ -703,7 +746,7 @@ public class Prayer {
 
     public Boolean isRamadan() {
         try {
-            StringTokenizer mdate = new StringTokenizer(getmDate(), ".");
+            StringTokenizer mdate = new StringTokenizer(getMDate(), ".");
             mdate.nextToken();
             if (Integer.parseInt(mdate.nextToken()) == 9)
                 return true;

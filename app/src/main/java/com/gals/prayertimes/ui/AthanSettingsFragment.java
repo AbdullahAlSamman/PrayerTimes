@@ -1,4 +1,4 @@
-package com.gals.prayertimes;
+package com.gals.prayertimes.ui;
 
 import android.content.Context;
 import android.content.Intent;
@@ -12,6 +12,12 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.RadioButton;
 import android.widget.Switch;
+
+import com.gals.prayertimes.model.Prayer;
+import com.gals.prayertimes.services.PrayersODNotificationService;
+import com.gals.prayertimes.R;
+import com.gals.prayertimes.utils.ToolsManager;
+import com.gals.prayertimes.services.MusicPlayer;
 
 
 /**

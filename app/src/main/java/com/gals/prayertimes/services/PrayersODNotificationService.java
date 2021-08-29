@@ -1,4 +1,4 @@
-package com.gals.prayertimes;
+package com.gals.prayertimes.services;
 
 import android.app.AlarmManager;
 import android.app.Notification;
@@ -10,6 +10,10 @@ import android.content.SharedPreferences;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.util.Log;
+
+import com.gals.prayertimes.model.Prayer;
+import com.gals.prayertimes.R;
+import com.gals.prayertimes.utils.ToolsManager;
 
 import java.util.Timer;
 import java.util.TimerTask;

@@ -1,9 +1,15 @@
-package com.gals.prayertimes;
+package com.gals.prayertimes.ui;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.gals.prayertimes.utils.DataManager;
+import com.gals.prayertimes.model.Prayer;
+import com.gals.prayertimes.db.AppDB;
+import com.gals.prayertimes.utils.ToolsManager;
 
 
 public class Splashscreen extends AppCompatActivity {
@@ -11,13 +17,13 @@ public class Splashscreen extends AppCompatActivity {
     Prayer prayer;
     SharedPreferences settings;
     ToolsManager tools;
+    AppDB db;
     Intent toMain;
     //TODO: change to database.
     //TODO: handel exceptions well.
     //TODO: Testing.
     //TODO: remove old code.
     //TODO: background services.
-
 
 
     @Override
@@ -33,7 +39,7 @@ public class Splashscreen extends AppCompatActivity {
         // Change Statusbar color
         tools.changeStatusBarColor(getWindow());
 
-        GetServerData task = new GetServerData(toMain, prayer, settings, this.getBaseContext(), false);
+        DataManager task = new DataManager(toMain, prayer, settings, this.getBaseContext(), false);
         task.execute("", "", "");
 
         /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {

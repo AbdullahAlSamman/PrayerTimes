@@ -1,4 +1,4 @@
-package com.gals.prayertimes;
+package com.gals.prayertimes.services;
 
 import android.app.Service;
 import android.content.Intent;

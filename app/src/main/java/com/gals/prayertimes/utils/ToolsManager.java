@@ -1,4 +1,4 @@
-package com.gals.prayertimes;
+package com.gals.prayertimes.utils;
 
 import android.app.Activity;
 import android.app.ActivityManager;
@@ -24,6 +24,9 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+
+import com.gals.prayertimes.R;
+import com.gals.prayertimes.ui.MainActivity;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

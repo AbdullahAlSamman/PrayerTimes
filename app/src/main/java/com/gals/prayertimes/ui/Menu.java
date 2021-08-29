@@ -1,4 +1,4 @@
-package com.gals.prayertimes;
+package com.gals.prayertimes.ui;
 
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -6,6 +6,9 @@ import android.os.Bundle;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import android.view.MenuItem;
+
+import com.gals.prayertimes.R;
+import com.gals.prayertimes.utils.ToolsManager;
 
 // in order to get the Fragments to work you need to implement those Interactions interfaces it is necessary.
 public class Menu extends AppCompatActivity implements AthanSettingsFragment.OnFragmentInteractionListener, MenuItemFragment.OnListFragmentInteractionListener, PrivacyPolicyFragment.OnFragmentInteractionListener {
