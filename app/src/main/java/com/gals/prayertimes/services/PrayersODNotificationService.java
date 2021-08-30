@@ -7,14 +7,18 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.util.Log;
 
+import com.gals.prayertimes.db.AppDB;
 import com.gals.prayertimes.model.Prayer;
 import com.gals.prayertimes.R;
 import com.gals.prayertimes.utils.ToolsManager;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -40,42 +44,7 @@ public class PrayersODNotificationService extends Service {
 
         tools = new ToolsManager(getBaseContext());
 
-        prayer = new Prayer(this);
-
-        //startForeground(12, new Notification());
-        prayerTimeCheck = new Timer();
-        prayerTimeCheckTask = new TimerTask() {
-            @Override
-            public void run() {
-                try {
-                    prayer.getLocalStorage();
-                    if (prayer.getNotificaiton()) {
-                        Log.i("Service", "TimeCheck");
-                        if (prayer.notificationCheckPrayers()) {
-                            if (prayer.getCurrentPrayerName() == getString(R.string.pSunrise)) {
-//                                if (prayer.getAthan() == null)
-                                tools.createNotification(getString(R.string.notSunrise), tools.generateRandomNotificationId());
-//                                else
-//                                    tools.createNotification(getString(R.string.notSunrise), prayer.silentAthan, Notification.DEFAULT_LIGHTS);
-                            } else {
-                                if (prayer.getAthan() == null)
-                                    tools.createNotification(getString(R.string.notPrayer) + " " + prayer.getCurrentPrayerName(), tools.generateRandomNotificationId());
-                                else
-                                    tools.createNotification(getString(R.string.notPrayer) + " " + prayer.getCurrentPrayerName(), prayer.getAthan(), Notification.DEFAULT_LIGHTS, tools.generateRandomNotificationId());
-                            }
-                            Log.i("Service", "Notificaiton for " + prayer.getCurrentPrayerName());
-                            // Sleep for 1 Min so only one notification works
-                            //TimeUnit.MINUTES.sleep(1);
-
-                            Thread.sleep(60000);
-                        }
-                    }
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        };
-        prayerTimeCheck.scheduleAtFixedRate(prayerTimeCheckTask, 1000, 20000);
+        new GetPrayerFromDB().execute(getBaseContext());
     }
 
 
@@ -121,4 +90,61 @@ public class PrayersODNotificationService extends Service {
         }
 //        }
     }
+
+    /**
+     * The type Get data from db.
+     * load all countries data from db to memory objects to be displayed in recycler view.
+     */
+    public class GetPrayerFromDB extends AsyncTask<Context, String, String> {
+
+        @Override
+        protected String doInBackground(Context... contexts) {
+            prayer = AppDB.getInstance(getBaseContext()).prayerDao().findByDate(new SimpleDateFormat("dd.MM.yyyy").format(new Date()));
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+//            TODO: fix the service to give notification with data from db
+            //startForeground(12, new Notification());
+             /*prayerTimeCheck = new Timer();
+            prayerTimeCheckTask = new TimerTask() {
+                @Override
+                public void run() {
+                   try {
+                        if (prayer != null) {
+                            if (prayer.getNotificaiton()) {
+                                Log.i("Service", "TimeCheck");
+                                if (prayer.notificationCheckPrayers()) {
+                                    if (prayer.getCurrentPrayerName() == getString(R.string.pSunrise)) {
+//                                if (prayer.getAthan() == null)
+                                        tools.createNotification(getString(R.string.notSunrise), tools.generateRandomNotificationId());
+//                                else
+//                                    tools.createNotification(getString(R.string.notSunrise), prayer.silentAthan, Notification.DEFAULT_LIGHTS);
+                                    } else {
+                                        if (prayer.getAthan() == null)
+                                            tools.createNotification(getString(R.string.notPrayer) + " " + prayer.getCurrentPrayerName(), tools.generateRandomNotificationId());
+                                        else
+                                            tools.createNotification(getString(R.string.notPrayer) + " " + prayer.getCurrentPrayerName(), prayer.getAthan(), Notification.DEFAULT_LIGHTS, tools.generateRandomNotificationId());
+                                    }
+                                    Log.i("Service", "Notificaiton for " + prayer.getCurrentPrayerName());
+                                    // Sleep for 1 Min so only one notification works
+                                    //TimeUnit.MINUTES.sleep(1);
+
+                                    Thread.sleep(60000);
+                                }
+                            }
+                        }
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            };
+            prayerTimeCheck.scheduleAtFixedRate(prayerTimeCheckTask, 1000, 20000);
+        }*/
+        }
+    }
 }
+
+

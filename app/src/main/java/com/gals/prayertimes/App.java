@@ -26,12 +26,12 @@ public class App extends Application {
         db = AppDB.getInstance(getApplicationContext());
 
         try {
-            if (prayer.getNotificaiton()) {
-                Intent pService = new Intent(this, PrayersODNotificationService.class);
-                startService(pService);
-                Log.i("App/Service", "Starting new Service");
-            } else
-                Log.i("App/Service", "not starting Notification is off");
+//            if (prayer.getNotificaiton()) {
+            Intent pService = new Intent(this, PrayersODNotificationService.class);
+            startService(pService);
+            Log.i("App/Service", "Starting new Service");
+//            } else
+//                Log.i("App/Service", "not starting Notification is off");
         } catch (Exception e) {
             e.printStackTrace();
         }

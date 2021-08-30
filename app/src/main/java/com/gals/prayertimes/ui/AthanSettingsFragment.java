@@ -37,7 +37,6 @@ public class AthanSettingsFragment extends Fragment {
     Intent musicFullAthanIntent;
     Intent musicHalfAthanIntent;
     ToolsManager tools;
-    SharedPreferences settings;
     CustomRadioGroup radioGroup;
     Prayer prayer;
     RadioButton radioFullAthan;
@@ -123,7 +122,7 @@ public class AthanSettingsFragment extends Fragment {
 
         tools = new ToolsManager(getContext());
         prayer = new Prayer(getContext());
-        prayer.getLocalStorage();
+        //TODO: save app settings to a database instead of local storage
         radioGroup = new CustomRadioGroup(view, R.id.radioFullAthan, R.id.radioHalfAthan, R.id.radioToneAthan, R.id.radioSilentAthan);
 
         turnOnAlarm.setChecked(prayer.getNotificaiton());
@@ -250,8 +249,8 @@ public class AthanSettingsFragment extends Fragment {
                         break;
                 }
             }
-            prayer.setLocalStorage(settings);
-            prayer.printTest();
+//            prayer.setLocalStorage(settings);
+//            prayer.printTest();
             if (tools.isServiceRunning(MusicPlayer.class)) {
                 getContext().stopService(musicFullAthanIntent);
                 getContext().stopService(musicHalfAthanIntent);

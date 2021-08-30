@@ -370,6 +370,7 @@ public class Prayer {
         return false;
     }
 
+    @Deprecated
     public Boolean setLocalStorage(SharedPreferences settings) {
         try {
             SharedPreferences.Editor editor = settings.edit();

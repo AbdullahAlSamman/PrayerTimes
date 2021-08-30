@@ -179,12 +179,14 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(settingsActivity);
             }
         });
+
+        new GetPrayerFromDB().execute(getBaseContext());
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        setSettingsUI();
+        new DataManager(null, prayer, null, this.getBaseContext(), true).execute("", "", "");
     }
 
     @Override
@@ -248,8 +250,7 @@ public class MainActivity extends AppCompatActivity {
     //Set data on the UI Elements
     private void setSettingsUI() {
         try {
-            if (prayer != null) {
-//            prayer.printTest();
+            if (prayer.isValid()) {
                 prayer.dateText();
 
                 Log.i("isChangeTheDayTest", "" + prayer.isDayHasChanged(prayer.getSDate()));
@@ -283,8 +284,7 @@ public class MainActivity extends AppCompatActivity {
         // update the data from server if the date is changed
         if (tools.isNetworkAvailable()) {
             try {
-                DataManager task = new DataManager(null, prayer, null, this.getBaseContext(), true);
-                task.execute("", "", "");
+                new DataManager(null, prayer, null, this.getBaseContext(), true).execute("", "", "");
                 prayer = db.prayerDao().findByDate(new SimpleDateFormat("dd.MM.yyyy").format(new Date()));
             } catch (Exception e) {
                 e.printStackTrace();
@@ -354,7 +354,7 @@ public class MainActivity extends AppCompatActivity {
      * The type Get data from db.
      * load all countries data from db to memory objects to be displayed in recycler view.
      */
-    public class GetDataFromDB extends AsyncTask<Context, String, String> {
+    public class GetPrayerFromDB extends AsyncTask<Context, String, String> {
 
         @Override
         protected String doInBackground(Context... contexts) {
@@ -365,11 +365,10 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-            if (prayer == null) {
-                // send user ui message to restart the app.
-//                tvMainInfo.setText(getResources().getString(R.string.internet_disconnected_retry));
-            } else {
+            if (prayer.isValid()) {
                 startUIUpdate(20000);
+            } else {
+
             }
         }
     }
