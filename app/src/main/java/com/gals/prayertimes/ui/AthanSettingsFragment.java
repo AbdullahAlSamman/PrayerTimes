@@ -5,7 +5,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+
 import androidx.fragment.app.Fragment;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,8 +31,7 @@ import com.gals.prayertimes.services.MusicPlayer;
  * create an instance of this fragment.
  */
 public class AthanSettingsFragment extends Fragment {
-    public static final String PREFS_NAME = "MyLocalStorage";
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+    // the fragment initialization parameters
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     Intent musicFullAthanIntent;
@@ -120,9 +121,8 @@ public class AthanSettingsFragment extends Fragment {
 
         turnOnAlarm = (Switch) view.findViewById(R.id.switchAlarmOn);
 
-        settings = getActivity().getSharedPreferences(PREFS_NAME, 0);
         tools = new ToolsManager(getContext());
-        prayer = new Prayer(settings, getContext());
+        prayer = new Prayer(getContext());
         prayer.getLocalStorage();
         radioGroup = new CustomRadioGroup(view, R.id.radioFullAthan, R.id.radioHalfAthan, R.id.radioToneAthan, R.id.radioSilentAthan);
 

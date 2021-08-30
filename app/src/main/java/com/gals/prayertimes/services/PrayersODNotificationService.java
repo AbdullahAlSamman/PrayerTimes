@@ -19,8 +19,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class PrayersODNotificationService extends Service {
-
-    public static final String PREFS_NAME = "MyLocalStorage";
     TimerTask prayerTimeCheckTask;
     Timer prayerTimeCheck;
     Prayer prayer;
@@ -38,12 +36,11 @@ public class PrayersODNotificationService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        Log.i("Service:", "Started");
+        Log.i("ODN/Service:", "Started");
 
-        SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
         tools = new ToolsManager(getBaseContext());
 
-        prayer = new Prayer(settings, this);
+        prayer = new Prayer(this);
 
         //startForeground(12, new Notification());
         prayerTimeCheck = new Timer();

@@ -55,8 +55,11 @@ public class Prayer {
     private Date updatedAt;
     @Ignore
     private Date createdAt;
+    @Ignore
     private String sFullDate;
+    @Ignore
     private String mFullDate;
+    @Ignore
     private String day;
     private String sDate;
     private String mDate;
@@ -103,15 +106,14 @@ public class Prayer {
     @Ignore
     private String[] cTime;
 
-    public Prayer(SharedPreferences settings, Context activity) {
-        setSettings(settings);
+    public Prayer(Context activity) {
         setActivity(activity);
         tools = new ToolsManager(getActivity());
-        if (this.getLocalStorage()) {
-            Log.i("Constractor", "Loaded from the Localstorage");
-        } else {
-            Log.i("Constructor", "There is no date in Localstorage");
-        }
+//        if (this.getLocalStorage()) {
+//            Log.i("Prayer/Constractor", "Loaded from the Localstorage");
+//        } else {
+//            Log.i("Prayer/Constructor", "There is no date in Localstorage");
+//        }
 
         // To Convert Strings to Time using Calender instance
         setCalenderPrayersTime();
@@ -396,7 +398,7 @@ public class Prayer {
     }
 
     public void printTest() {
-        Log.i("info", getObjectId() + "\n" +
+        Log.i("Prayer/info", getObjectId() + "\n" +
                 getCreatedAt() + "\n" +
                 getUpdatedAt() + "\n" +
                 getSDate() + "\n" +
@@ -422,7 +424,7 @@ public class Prayer {
 
                 currentTime.set(Calendar.HOUR_OF_DAY, Integer.parseInt(cTime[0].trim()));
                 currentTime.set(Calendar.MINUTE, Integer.parseInt(cTime[1].trim()));
-                Log.i("Current Time ", cTime[0] + ":" + cTime[1]);
+                Log.i("Prayer/Current Time ", cTime[0] + ":" + cTime[1]);
 
                 if (currentTime.before(sunsetTime) && currentTime.after(sunriseTime)) {
                     return false;
@@ -547,51 +549,51 @@ public class Prayer {
 
             currentTime.set(Calendar.HOUR_OF_DAY, Integer.parseInt(cTime[0].trim()));
             currentTime.set(Calendar.MINUTE, Integer.parseInt(cTime[1].trim()));
-            Log.i("Current Time ", cTime[0] + ":" + cTime[1]);
+            Log.i("Prayer/Current Time ", cTime[0] + ":" + cTime[1]);
 
             //update Calender Instances if the values changes
             this.setCalenderPrayersTime();
 
             if (tools.isEqualTime(currentTime, fajerTime)) {
-                Log.i("Current Time ", cTime[0] + ":" + cTime[1]);
-                Log.i("Fajer Time ", frTime[0] + ":" + frTime[1]);
+                Log.i("Prayer/Current Time ", cTime[0] + ":" + cTime[1]);
+                Log.i("Prayer/Fajer Time ", frTime[0] + ":" + frTime[1]);
                 setRemmainingPrayerTime(tools.difTimes(fajerTime, currentTime));
                 setCurrentPrayerName(getActivity().getString(R.string.pFajer));
                 return true;
             } else if (tools.isEqualTime(currentTime, sunriseTime)) {
-                Log.i("Current Time ", cTime[0] + ":" + cTime[1]);
-                Log.i("Sunrise Time ", srTime[0] + ":" + srTime[1]);
+                Log.i("Prayer/Current Time ", cTime[0] + ":" + cTime[1]);
+                Log.i("Prayer/Sunrise Time ", srTime[0] + ":" + srTime[1]);
                 setRemmainingPrayerTime(tools.difTimes(sunriseTime, currentTime));
                 setCurrentPrayerName(getActivity().getString(R.string.pSunrise));
                 return true;
             } else if (tools.isEqualTime(currentTime, duhrTime)) {
-                Log.i("Current Time ", cTime[0] + ":" + cTime[1]);
-                Log.i("duhr Time ", duTime[0] + ":" + duTime[1]);
+                Log.i("Prayer/Current Time ", cTime[0] + ":" + cTime[1]);
+                Log.i("Prayer/duhr Time ", duTime[0] + ":" + duTime[1]);
                 setRemmainingPrayerTime(tools.difTimes(duhrTime, currentTime));
                 setCurrentPrayerName(getActivity().getString(R.string.pDuhr));
                 return true;
             } else if (tools.isEqualTime(currentTime, asrTime)) {
-                Log.i("Current Time ", cTime[0] + ":" + cTime[1]);
-                Log.i("Asr Time ", asTime[0] + ":" + asTime[1]);
+                Log.i("Prayer/Current Time ", cTime[0] + ":" + cTime[1]);
+                Log.i("Prayer/Asr Time ", asTime[0] + ":" + asTime[1]);
                 setRemmainingPrayerTime(tools.difTimes(asrTime, currentTime));
                 setCurrentPrayerName(getActivity().getString(R.string.pAsr));
                 return true;
             } else if (tools.isEqualTime(currentTime, sunsetTime)) {
-                Log.i("Current Time ", cTime[0] + ":" + cTime[1]);
-                Log.i("Sunset Time ", ssTime[0] + ":" + ssTime[1]);
+                Log.i("Prayer/Current Time ", cTime[0] + ":" + cTime[1]);
+                Log.i("Prayer/Sunset Time ", ssTime[0] + ":" + ssTime[1]);
                 setRemmainingPrayerTime(tools.difTimes(sunsetTime, currentTime));
                 setCurrentPrayerName(getActivity().getString(R.string.pMaghrib));
                 return true;
             } else if (tools.isEqualTime(currentTime, ishaTime)) {
-                Log.i("Current Time ", cTime[0] + ":" + cTime[1]);
-                Log.i("Isha Time ", cTime[0] + ":" + cTime[1]);
+                Log.i("Prayer/Current Time ", cTime[0] + ":" + cTime[1]);
+                Log.i("Prayer/Isha Time ", cTime[0] + ":" + cTime[1]);
                 setRemmainingPrayerTime(tools.difTimes(ishaTime, currentTime));
                 setCurrentPrayerName(getActivity().getString(R.string.pIsha));
                 return true;
             } else {
                 setCurrentPrayerName("");
                 setRemmainingPrayerTime("");
-                Log.i("Equals Check ", "False");
+                Log.i("Prayer/Equals Check ", "False");
                 return false;
             }
         } catch (NumberFormatException e) {
@@ -774,5 +776,9 @@ public class Prayer {
                 break;
         }
         return null;
+    }
+
+    public boolean isValid() {
+        return this.objectId != null && this.sDate != null;
     }
 }

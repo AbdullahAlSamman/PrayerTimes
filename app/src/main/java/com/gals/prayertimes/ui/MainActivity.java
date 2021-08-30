@@ -1,10 +1,14 @@
 package com.gals.prayertimes.ui;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
@@ -17,19 +21,22 @@ import com.facebook.ads.AdError;
 import com.facebook.ads.AdListener;
 import com.facebook.ads.AdSettings;
 import com.facebook.ads.AdSize;
+import com.gals.prayertimes.db.AppDB;
 import com.gals.prayertimes.utils.DataManager;
 import com.gals.prayertimes.model.Prayer;
 import com.gals.prayertimes.R;
 import com.gals.prayertimes.utils.ToolsManager;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
 
 public class MainActivity extends AppCompatActivity {
 
-    public static final String PREFS_NAME = "MyLocalStorage";
     static boolean needUpdate = false;
+    AppDB db;
     Intent main;
     ImageView background;
     Prayer prayer;
@@ -59,7 +66,6 @@ public class MainActivity extends AppCompatActivity {
     TextView nextPrayerPanner;
     ImageButton btnSettings;
     ToolsManager tools;
-    SharedPreferences settings;
     Timer updateUITimer;
     private com.facebook.ads.AdView adView;
     private AdSettings adSettings;
@@ -70,8 +76,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(com.gals.prayertimes.R.layout.activity_main);
 
         //Tools and Local Storage
-        settings = getSharedPreferences(PREFS_NAME, 0);
         tools = new ToolsManager(getBaseContext());
+        db = AppDB.getInstance(getBaseContext());
 
         //UI Elements
         background = (ImageView) findViewById(com.gals.prayertimes.R.id.background);
@@ -114,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
         // Add the ad view to your activity layout
         adContainer.addView(adView);
 
-        adView.setAdListener(new AdListener() {
+/*        adView.setAdListener(new AdListener() {
             @Override
             public void onError(Ad ad, AdError adError) {
                 // Ad error callback
@@ -138,33 +144,30 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // Request an ad
-        adView.loadAd();
-
+        adView.loadAd();*/
 
         // Change Status bar color
         tools.changeStatusBarColor(getWindow());
 
-        prayer = new Prayer(settings, this.getBaseContext());
+//        try {
+//            //TODO: Internet warning
+//            main = getIntent();
+//            if (main.getStringExtra("checkInternt") != null) {
+////                make an massage internet connection
+//                Log.e("info", main.getStringExtra("checkInternt"));
+//                setSettingsUI();
+//            } else if (main.getStringExtra("result") != null) {
+//                Log.e("info", "There is no Results from database please check");
+//                setSettingsUI();
+//            } else {
+//                Log.e("info", "internet Connection is good");
+//                setSettingsUI();
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
 
-        try {
-            //TODO: Internet warning
-            main = getIntent();
-            if (main.getStringExtra("checkInternt") != null) {
-//                make an massage internet connection
-                Log.e("info", main.getStringExtra("checkInternt"));
-                setSettingsUI();
-            } else if (main.getStringExtra("result") != null) {
-                Log.e("info", "There is no Results from database please check");
-                setSettingsUI();
-            } else {
-                Log.e("info", "internet Connection is good");
-                setSettingsUI();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        startUIUpdate(20000);
+//        startUIUpdate(20000);
 
         changeFontSizes();
         tools.setActivityLanguage("en");
@@ -218,7 +221,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //update the time to next prayer
-    private void updateRemaningTime() {
+    private void updateRemainingTime() {
         if (prayer.calculateTimeBetweenPrayers()) {
 
             if (prayer.isNextAPrayer()) {
@@ -245,17 +248,17 @@ public class MainActivity extends AppCompatActivity {
     //Set data on the UI Elements
     private void setSettingsUI() {
         try {
-            if (prayer.getLocalStorage()) {
+            if (prayer != null) {
 //            prayer.printTest();
                 prayer.dateText();
 
                 Log.i("isChangeTheDayTest", "" + prayer.isDayHasChanged(prayer.getSDate()));
 
                 if (prayer.isDayHasChanged(prayer.getSDate())) {
-                    updatePrayers(this.settings);
+                    updatePrayers();
                 }
 
-                updateRemaningTime();
+                updateRemainingTime();
                 updateBackground();
 
                 sDatePanner.setText(prayer.getSFullDate());
@@ -276,13 +279,13 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void updatePrayers(SharedPreferences settings) {
+    private void updatePrayers() {
         // update the data from server if the date is changed
         if (tools.isNetworkAvailable()) {
             try {
-                DataManager task = new DataManager(null, prayer, settings, this.getBaseContext(), true);
+                DataManager task = new DataManager(null, prayer, null, this.getBaseContext(), true);
                 task.execute("", "", "");
-                prayer.getLocalStorage();
+                prayer = db.prayerDao().findByDate(new SimpleDateFormat("dd.MM.yyyy").format(new Date()));
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -345,6 +348,30 @@ public class MainActivity extends AppCompatActivity {
         };
         updateUITimer = new Timer();
         updateUITimer.schedule(timertask, 0, time);
+    }
+
+    /**
+     * The type Get data from db.
+     * load all countries data from db to memory objects to be displayed in recycler view.
+     */
+    public class GetDataFromDB extends AsyncTask<Context, String, String> {
+
+        @Override
+        protected String doInBackground(Context... contexts) {
+            prayer = db.prayerDao().findByDate(new SimpleDateFormat("dd.MM.yyyy").format(new Date()));
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            if (prayer == null) {
+                // send user ui message to restart the app.
+//                tvMainInfo.setText(getResources().getString(R.string.internet_disconnected_retry));
+            } else {
+                startUIUpdate(20000);
+            }
+        }
     }
 }
 

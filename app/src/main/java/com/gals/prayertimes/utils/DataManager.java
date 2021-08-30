@@ -27,18 +27,15 @@ import java.util.Date;
 
 public class DataManager extends AsyncTask<String, Void, String> {
     String todayDate;
-    Prayer prayer;
-    SharedPreferences settings;
     Intent toMain;
     Context activity;
+    Prayer prayer;
     Boolean updateDate;
     ToolsManager tools;
     AppDB db;
 
     public DataManager(Intent intent, Prayer prayer, SharedPreferences settings, Context activity, Boolean updateData) {
         setToMain(intent);
-        setPrayer(prayer);
-        setSettings(settings);
         setActivity(activity);
         setUpdateDate(updateData);
         tools = new ToolsManager(getActivity());
@@ -69,22 +66,6 @@ public class DataManager extends AsyncTask<String, Void, String> {
         this.todayDate = todayDate;
     }
 
-    public Prayer getPrayer() {
-        return prayer;
-    }
-
-    public void setPrayer(Prayer prayer) {
-        this.prayer = prayer;
-    }
-
-    public SharedPreferences getSettings() {
-        return settings;
-    }
-
-    public void setSettings(SharedPreferences settings) {
-        this.settings = settings;
-    }
-
     public Intent getToMain() {
         return toMain;
     }
@@ -101,11 +82,12 @@ public class DataManager extends AsyncTask<String, Void, String> {
             if (tools.isRTL()) {
                 setTodayDate(tools.convertDate());
             }
-            Log.i("Info:", getTodayDate());
+            Log.i("DataManager/Info:", getTodayDate());
             if (tools.isNetworkAvailable()) {
-                if (this.getPrayerFromServer(this.getTodayDate())) {
-                    this.saveData(getPrayer());
-                    getPrayer().printTest();
+                Prayer prayer = this.getPrayerFromServer(this.getTodayDate());
+                if (prayer.isValid()) {
+                    this.saveData(prayer);
+                    prayer.printTest();
                 } else {
                     getToMain().putExtra("result", getActivity().getString(R.string.checkInternet));
                 }
@@ -129,11 +111,11 @@ public class DataManager extends AsyncTask<String, Void, String> {
     }
 
     protected void saveData(Prayer prayer) {
-        db.prayerDao().insert(getPrayer());
+        db.prayerDao().insert(prayer);
     }
 
-    protected boolean getPrayerFromServer(String todayDate) {
-        boolean result = false;
+    protected Prayer getPrayerFromServer(String todayDate) {
+        Prayer prayer = new Prayer();
         try {
             URL url = new URL("http://prayers.esy.es/api/prayers/" + todayDate);
             HttpURLConnection httpConn = (HttpURLConnection) url.openConnection();
@@ -145,21 +127,20 @@ public class DataManager extends AsyncTask<String, Void, String> {
             httpConn.disconnect();
 
             JSONArray json = new JSONArray(line);
-            getPrayer().setObjectId(json.getJSONObject(0).getString("id"));
-            getPrayer().setCreatedAt(null);
-            getPrayer().setUpdatedAt(null);
-            getPrayer().setSDate(json.getJSONObject(0).getString("sDate"));
-            getPrayer().setMDate(json.getJSONObject(0).getString("mDate"));
-            getPrayer().setFajer(json.getJSONObject(0).getString("fajer"));
-            getPrayer().setSunrise(json.getJSONObject(0).getString("sunrise"));
-            getPrayer().setDuhr(json.getJSONObject(0).getString("duhr"));
-            getPrayer().setAsr(json.getJSONObject(0).getString("asr"));
-            getPrayer().setMaghrib(json.getJSONObject(0).getString("maghrib"));
-            getPrayer().setIsha(json.getJSONObject(0).getString("isha"));
-            result = true;
+            prayer.setObjectId(json.getJSONObject(0).getString("id"));
+            prayer.setCreatedAt(null);
+            prayer.setUpdatedAt(null);
+            prayer.setSDate(json.getJSONObject(0).getString("sDate"));
+            prayer.setMDate(json.getJSONObject(0).getString("mDate"));
+            prayer.setFajer(json.getJSONObject(0).getString("fajer"));
+            prayer.setSunrise(json.getJSONObject(0).getString("sunrise"));
+            prayer.setDuhr(json.getJSONObject(0).getString("duhr"));
+            prayer.setAsr(json.getJSONObject(0).getString("asr"));
+            prayer.setMaghrib(json.getJSONObject(0).getString("maghrib"));
+            prayer.setIsha(json.getJSONObject(0).getString("isha"));
         } catch (Exception e1) {
             e1.printStackTrace();
         }
-        return result;
+        return prayer;
     }
 }

@@ -13,11 +13,8 @@ import com.gals.prayertimes.utils.ToolsManager;
 
 
 public class Splashscreen extends AppCompatActivity {
-    public static final String PREFS_NAME = "MyLocalStorage";
-    Prayer prayer;
-    SharedPreferences settings;
+
     ToolsManager tools;
-    AppDB db;
     Intent toMain;
     //TODO: change to database.
     //TODO: handel exceptions well.
@@ -32,14 +29,12 @@ public class Splashscreen extends AppCompatActivity {
         setContentView(com.gals.prayertimes.R.layout.activity_splashscreen);
 
         toMain = new Intent(this, MainActivity.class);
-        settings = getSharedPreferences(PREFS_NAME, 0);
-        prayer = new Prayer(settings, this.getBaseContext());
         tools = new ToolsManager(getBaseContext());
 
         // Change Statusbar color
         tools.changeStatusBarColor(getWindow());
 
-        DataManager task = new DataManager(toMain, prayer, settings, this.getBaseContext(), false);
+        DataManager task = new DataManager(toMain, null, null, this.getBaseContext(), false);
         task.execute("", "", "");
 
         /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {

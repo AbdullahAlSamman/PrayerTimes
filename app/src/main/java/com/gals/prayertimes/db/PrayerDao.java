@@ -2,6 +2,7 @@ package com.gals.prayertimes.db;
 
 import androidx.room.Dao;
 import androidx.room.Insert;
+import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 
 import com.gals.prayertimes.model.Prayer;
@@ -22,7 +23,7 @@ public interface PrayerDao {
     @Query("SELECT * FROM prayers WHERE sDate LIKE :date  LIMIT 1")
     Prayer findByDate(String date);
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(Prayer prayer);
 
 
