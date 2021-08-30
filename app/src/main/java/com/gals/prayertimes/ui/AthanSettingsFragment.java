@@ -121,7 +121,8 @@ public class AthanSettingsFragment extends Fragment {
         turnOnAlarm = (Switch) view.findViewById(R.id.switchAlarmOn);
 
         tools = new ToolsManager(getContext());
-        prayer = new Prayer(getContext());
+        prayer = new Prayer();
+        prayer.setActivity(getContext());
         //TODO: save app settings to a database instead of local storage
         radioGroup = new CustomRadioGroup(view, R.id.radioFullAthan, R.id.radioHalfAthan, R.id.radioToneAthan, R.id.radioSilentAthan);
 

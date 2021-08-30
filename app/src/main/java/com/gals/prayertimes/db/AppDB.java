@@ -11,7 +11,7 @@ import androidx.room.TypeConverters;
 import com.gals.prayertimes.model.Prayer;
 
 @Database(entities = {Prayer.class}, version = 1, exportSchema = false)
-@TypeConverters(Converters.class)
+//@TypeConverters(Converters.class)
 public abstract class AppDB extends RoomDatabase {
     private static final String DB_NAME = "prayers-db";
     private static AppDB instance;

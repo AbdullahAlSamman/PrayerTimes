@@ -17,11 +17,11 @@ public interface PrayerDao {
     /**
      * Find times of a certain date.
      *
-     * @param date the today date
+     * @param arg0 the today date
      * @return the prayer
      */
-    @Query("SELECT * FROM prayers WHERE sDate LIKE :date  LIMIT 1")
-    Prayer findByDate(String date);
+    @Query("SELECT * FROM prayers WHERE sDate LIKE :arg0  LIMIT 1")
+    Prayer findByDate(String arg0);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(Prayer prayer);

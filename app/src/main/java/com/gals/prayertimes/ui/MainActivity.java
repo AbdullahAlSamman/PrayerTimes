@@ -251,6 +251,7 @@ public class MainActivity extends AppCompatActivity {
     private void setSettingsUI() {
         try {
             if (prayer.isValid()) {
+                prayer.init(getBaseContext());
                 prayer.dateText();
 
                 Log.i("isChangeTheDayTest", "" + prayer.isDayHasChanged(prayer.getSDate()));

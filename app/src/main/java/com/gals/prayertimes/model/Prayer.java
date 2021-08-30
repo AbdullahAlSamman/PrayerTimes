@@ -106,7 +106,8 @@ public class Prayer {
     @Ignore
     private String[] cTime;
 
-    public Prayer(Context activity) {
+    //TODO: fix model class from any dependencies to activity calls or tool manager
+/*    public Prayer(Context activity) {
         setActivity(activity);
         tools = new ToolsManager(getActivity());
 //        if (this.getLocalStorage()) {
@@ -117,11 +118,12 @@ public class Prayer {
 
         // To Convert Strings to Time using Calender instance
         setCalenderPrayersTime();
-    }
+    }*/
 
     public Prayer() {
 
     }
+
 
     public Boolean getNotificaiton() {
         return notificaiton;
@@ -319,6 +321,16 @@ public class Prayer {
 
     public void setActivity(Context activity) {
         this.activity = activity;
+    }
+
+    public void setTools(ToolsManager tools) {
+        this.tools = tools;
+    }
+
+    public void init(Context context) {
+        setActivity(context);
+        setTools(new ToolsManager(context));
+        setCalenderPrayersTime();
     }
 
     public Boolean getTodayPrayers(String dateToday) {
@@ -605,9 +617,9 @@ public class Prayer {
 
     public Boolean dateText() {
         try {
-            String day = "";
-            String ssdate = null;
-            String mmdate = null;
+            String day = " ";
+            String ssdate = " ";
+            String mmdate = " ";
             Calendar calendar = Calendar.getInstance();
             int intDay = calendar.get(Calendar.DAY_OF_WEEK);
 

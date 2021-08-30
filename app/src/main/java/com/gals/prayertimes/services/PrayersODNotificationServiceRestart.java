@@ -17,7 +17,8 @@ public class PrayersODNotificationServiceRestart extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         try {
             tools = new ToolsManager(context);
-            prayer = new Prayer(context);
+            prayer = new Prayer();
+            prayer.setActivity(context);
 
             //This Receiver is for restarting the service for old devices
             if (prayer.getNotificaiton()) {
