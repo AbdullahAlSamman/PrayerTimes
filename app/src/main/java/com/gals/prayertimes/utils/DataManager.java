@@ -117,16 +117,17 @@ public class DataManager extends AsyncTask<String, Void, String> {
     protected Prayer getPrayerFromServer(String todayDate) {
         Prayer prayer = new Prayer();
         try {
-            URL url = new URL("http://prayers.esy.es/api/prayers/" + todayDate);
+            URL url = new URL("http://prayersapi.scienceontheweb.net/api/prayer/" + todayDate);
             HttpURLConnection httpConn = (HttpURLConnection) url.openConnection();
             httpConn.setRequestMethod("GET");
             InputStream inputStream = httpConn.getInputStream();
             InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
             BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-            String line = bufferedReader.readLine();
+            String htmlResponse = bufferedReader.readLine();
             httpConn.disconnect();
 
-            JSONArray json = new JSONArray(line);
+            Log.e("error", htmlResponse);
+            JSONArray json = new JSONArray(htmlResponse);
             prayer.setObjectId(json.getJSONObject(0).getString("id"));
             prayer.setCreatedAt(null);
             prayer.setUpdatedAt(null);

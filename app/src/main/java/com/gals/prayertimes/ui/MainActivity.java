@@ -366,10 +366,12 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-            if (prayer.isValid()) {
-                startUIUpdate(20000);
-            } else {
+            if (prayer != null) {
+                if (prayer.isValid()) {
+                    startUIUpdate(20000);
+                } else {
 
+                }
             }
         }
     }
