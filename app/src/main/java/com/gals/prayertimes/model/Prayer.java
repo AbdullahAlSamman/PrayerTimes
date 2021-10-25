@@ -121,7 +121,6 @@ public class Prayer {
     }*/
 
     public Prayer() {
-
     }
 
 
@@ -364,6 +363,7 @@ public class Prayer {
         return result;
     }
 
+    @Deprecated
     public Boolean getLocalStorage() {
         if (getSettings().getString("objectId", "") != null) {
             setObjectId(getSettings().getString("objectId", null));

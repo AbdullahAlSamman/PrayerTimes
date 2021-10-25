@@ -25,4 +25,9 @@ public class Converters {
         return null;
     }
 
+    @TypeConverter
+    static Boolean stringToBoolean(String bool) {
+        return Boolean.parseBoolean(bool);
+    }
+
 }

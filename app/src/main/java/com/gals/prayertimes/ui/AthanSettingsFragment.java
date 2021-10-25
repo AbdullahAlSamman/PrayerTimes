@@ -15,11 +15,15 @@ import android.widget.ImageButton;
 import android.widget.RadioButton;
 import android.widget.Switch;
 
+import com.gals.prayertimes.db.AppDB;
 import com.gals.prayertimes.model.Prayer;
 import com.gals.prayertimes.services.PrayersODNotificationService;
 import com.gals.prayertimes.R;
 import com.gals.prayertimes.utils.ToolsManager;
 import com.gals.prayertimes.services.MusicPlayer;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 
 /**
@@ -34,6 +38,7 @@ public class AthanSettingsFragment extends Fragment {
     // the fragment initialization parameters
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    AppDB db;
     Intent musicFullAthanIntent;
     Intent musicHalfAthanIntent;
     ToolsManager tools;
@@ -96,6 +101,8 @@ public class AthanSettingsFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        db = AppDB.getInstance(getActivity().getBaseContext());
+//        prayer = db.prayerDao().findByDate(new SimpleDateFormat("dd.MM.yyyy").format(new Date()));
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);

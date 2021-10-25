@@ -17,7 +17,7 @@ public class Splashscreen extends AppCompatActivity {
     ToolsManager tools;
     Intent toMain;
     //TODO: change to database.
-    //TODO: handel exceptions well.
+    //TODO: handle exceptions well.
     //TODO: Testing.
     //TODO: remove old code.
     //TODO: background services.

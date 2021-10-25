@@ -3,12 +3,14 @@ package com.gals.prayertimes.utils;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.os.AsyncTask;
 import android.util.Log;
 
 import com.gals.prayertimes.R;
 import com.gals.prayertimes.db.AppDB;
 import com.gals.prayertimes.model.Prayer;
+import com.gals.prayertimes.model.Settings;
 import com.gals.prayertimes.utils.ToolsManager;
 
 import org.json.JSONArray;
@@ -88,11 +90,11 @@ public class DataManager extends AsyncTask<String, Void, String> {
                 if (prayer.isValid()) {
                     this.saveData(prayer);
                     prayer.printTest();
-                } else {
-                    getToMain().putExtra("result", getActivity().getString(R.string.checkInternet));
+
                 }
-            } else {
-                getToMain().putExtra("checkInternet", getActivity().getString(R.string.checkInternet));
+            }
+            if (db.settingsDao().isExists() == false) {
+                this.saveSettings(new Settings(false, "silent"));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -112,6 +114,10 @@ public class DataManager extends AsyncTask<String, Void, String> {
 
     protected void saveData(Prayer prayer) {
         db.prayerDao().insert(prayer);
+    }
+
+    protected void saveSettings(Settings settings) {
+        db.settingsDao().insert(settings);
     }
 
     protected Prayer getPrayerFromServer(String todayDate) {
