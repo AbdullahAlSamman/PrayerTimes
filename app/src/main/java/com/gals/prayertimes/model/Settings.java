@@ -8,6 +8,7 @@ import java.util.Set;
 
 @Entity(tableName = "settings")
 public class Settings {
+
     @PrimaryKey(autoGenerate = true)
     private int id;
     @ColumnInfo(defaultValue = "false")
@@ -47,4 +48,5 @@ public class Settings {
     public void setNotificationType(String notificationType) {
         this.notificationType = notificationType;
     }
+
 }

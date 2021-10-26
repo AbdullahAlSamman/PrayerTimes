@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -17,6 +18,7 @@ import android.widget.Switch;
 
 import com.gals.prayertimes.db.AppDB;
 import com.gals.prayertimes.model.Prayer;
+import com.gals.prayertimes.model.Settings;
 import com.gals.prayertimes.services.PrayersODNotificationService;
 import com.gals.prayertimes.R;
 import com.gals.prayertimes.utils.ToolsManager;
@@ -43,7 +45,6 @@ public class AthanSettingsFragment extends Fragment {
     Intent musicHalfAthanIntent;
     ToolsManager tools;
     CustomRadioGroup radioGroup;
-    Prayer prayer;
     RadioButton radioFullAthan;
     RadioButton radioHalfAthan;
     RadioButton radioToneAthan;
@@ -59,6 +60,8 @@ public class AthanSettingsFragment extends Fragment {
     private String mParam1;
     private String mParam2;
     private OnFragmentInteractionListener mListener;
+    private Settings settings;
+
 
     public AthanSettingsFragment() {
         // Required empty public constructor
@@ -102,12 +105,13 @@ public class AthanSettingsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         db = AppDB.getInstance(getActivity().getBaseContext());
-//        prayer = db.prayerDao().findByDate(new SimpleDateFormat("dd.MM.yyyy").format(new Date()));
+
+        new GetSettingsFromDB().execute(this.getContext());
+
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-
 
     }
 
@@ -128,31 +132,8 @@ public class AthanSettingsFragment extends Fragment {
         turnOnAlarm = (Switch) view.findViewById(R.id.switchAlarmOn);
 
         tools = new ToolsManager(getContext());
-        prayer = new Prayer();
-        prayer.setActivity(getContext());
-        //TODO: save app settings to a database instead of local storage
+
         radioGroup = new CustomRadioGroup(view, R.id.radioFullAthan, R.id.radioHalfAthan, R.id.radioToneAthan, R.id.radioSilentAthan);
-
-        turnOnAlarm.setChecked(prayer.getNotificaiton());
-        if (!turnOnAlarm.isChecked())
-            radioGroup.setAllDisabled();
-
-        switch (prayer.getNotificaitonType()) {
-            case "full":
-                radioFullAthan.setChecked(true);
-                break;
-            case "half":
-                radioHalfAthan.setChecked(true);
-                break;
-            case "tone":
-                radioToneAthan.setChecked(true);
-                break;
-            case "silent":
-                radioSilentAthan.setChecked(true);
-                break;
-            default:
-                break;
-        }
 
         turnOnAlarm.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -209,6 +190,29 @@ public class AthanSettingsFragment extends Fragment {
         return view;
     }
 
+    protected void updateUI() {
+        turnOnAlarm.setChecked(settings.isNotification());
+        if (!turnOnAlarm.isChecked())
+            radioGroup.setAllDisabled();
+
+        switch (settings.getNotificationType()) {
+            case "full":
+                radioFullAthan.setChecked(true);
+                break;
+            case "half":
+                radioHalfAthan.setChecked(true);
+                break;
+            case "tone":
+                radioToneAthan.setChecked(true);
+                break;
+            case "silent":
+                radioSilentAthan.setChecked(true);
+                break;
+            default:
+                break;
+        }
+    }
+
     // Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
@@ -233,8 +237,8 @@ public class AthanSettingsFragment extends Fragment {
         mListener = null;
         //Save the Values and Stop Music if running
         try {
-            prayer.setNotificaiton(turnOnAlarm.isChecked());
-            if (!prayer.getNotificaiton())
+            settings.setNotification(turnOnAlarm.isChecked());
+            if (!settings.isNotification())
                 startStopNotificationService(false);
             else
                 startStopNotificationService(true);
@@ -242,27 +246,29 @@ public class AthanSettingsFragment extends Fragment {
             if (radioGroup.getSelectedRadio() != null) {
                 switch (radioGroup.getSelectedRadio().getContentDescription().toString()) {
                     case "full":
-                        prayer.setNotificaitonType("full");
+                        settings.setNotificationType("full");
                         break;
                     case "half":
-                        prayer.setNotificaitonType("half");
+                        settings.setNotificationType("half");
                         break;
                     case "tone":
-                        prayer.setNotificaitonType("tone");
+                        settings.setNotificationType("tone");
                         break;
                     case "silent":
-                        prayer.setNotificaitonType("silent");
+                        settings.setNotificationType("silent");
                         break;
                     default:
                         break;
                 }
             }
-//            prayer.setLocalStorage(settings);
-//            prayer.printTest();
+
             if (tools.isServiceRunning(MusicPlayer.class)) {
                 getContext().stopService(musicFullAthanIntent);
                 getContext().stopService(musicHalfAthanIntent);
             }
+
+            new SettingsToDB().execute(this.getContext());
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -280,6 +286,36 @@ public class AthanSettingsFragment extends Fragment {
             }
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    /**
+     * The get data from db.
+     * load all countries data from db to memory objects to be displayed in recycler view.
+     */
+    public class GetSettingsFromDB extends AsyncTask<Context, String, String> {
+        @Override
+        protected String doInBackground(Context... contexts) {
+            settings = db.settingsDao().getSettings();
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            updateUI();
+        }
+    }
+
+    /**
+     * Update settings db
+     * load all countries data from db to memory objects to be displayed in recycler view.
+     */
+    public class SettingsToDB extends AsyncTask<Context, String, String> {
+        @Override
+        protected String doInBackground(Context... contexts) {
+            db.settingsDao().update(settings);
+            return null;
         }
     }
 
