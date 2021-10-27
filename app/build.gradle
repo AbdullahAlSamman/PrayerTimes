@@ -23,10 +23,10 @@ android {
         applicationId 'com.gals.prayertimes'
         minSdkVersion 24
         targetSdkVersion 31
-        versionName '0.9.07'
+        versionName '0.9.4'
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
         signingConfig signingConfigs.Gebetszeiten
-        versionCode 8
+        versionCode 14
     }
     buildTypes {
         release {
@@ -46,12 +46,12 @@ dependencies {
     //noinspection GradleCompatible
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    testImplementation('androidx.test.espresso:espresso-core:3.1.0', {
+    testImplementation('androidx.test.espresso:espresso-core:3.4.0', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     //noinspection GradleCompatible
     implementation 'androidx.appcompat:appcompat:1.3.1'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.1'
     implementation 'com.parse:parse-android:1.16.5'
     implementation 'com.parse.bolts:bolts-android:1.4.0'
     implementation 'com.squareup.okhttp3:okhttp:4.9.0'
