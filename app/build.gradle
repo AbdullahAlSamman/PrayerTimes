@@ -17,16 +17,16 @@ android {
             storeFile file('C:/Users/Genius/.android/debug.keystore')
         }
     }
-    compileSdkVersion 31
-    buildToolsVersion '30.0.2'
+    compileSdkVersion 30
+    buildToolsVersion '31.0.0'
     defaultConfig {
         applicationId 'com.gals.prayertimes'
         minSdkVersion 24
-        targetSdkVersion 31
-        versionName '0.9.4'
+        targetSdkVersion 30
+        versionName '0.9.5'
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
         signingConfig signingConfigs.Gebetszeiten
-        versionCode 14
+        versionCode 15
     }
     buildTypes {
         release {

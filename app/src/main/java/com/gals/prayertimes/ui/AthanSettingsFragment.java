@@ -296,7 +296,11 @@ public class AthanSettingsFragment extends Fragment {
     public class GetSettingsFromDB extends AsyncTask<Context, String, String> {
         @Override
         protected String doInBackground(Context... contexts) {
-            settings = db.settingsDao().getSettings();
+            try {
+                settings = db.settingsDao().getSettings();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             return null;
         }
 
@@ -314,7 +318,11 @@ public class AthanSettingsFragment extends Fragment {
     public class SettingsToDB extends AsyncTask<Context, String, String> {
         @Override
         protected String doInBackground(Context... contexts) {
-            db.settingsDao().update(settings);
+            try {
+                db.settingsDao().update(settings);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             return null;
         }
     }

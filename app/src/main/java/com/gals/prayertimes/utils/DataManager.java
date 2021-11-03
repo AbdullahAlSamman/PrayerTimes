@@ -113,11 +113,20 @@ public class DataManager extends AsyncTask<String, Void, String> {
     }
 
     protected void saveData(Prayer prayer) {
-        db.prayerDao().insert(prayer);
+        try {
+            db.prayerDao().insert(prayer);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     protected void saveSettings(Settings settings) {
-        db.settingsDao().insert(settings);
+        try {
+            db.prayerDao().insert(prayer);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     protected Prayer getPrayerFromServer(String todayDate) {
@@ -132,7 +141,7 @@ public class DataManager extends AsyncTask<String, Void, String> {
             String htmlResponse = bufferedReader.readLine();
             httpConn.disconnect();
 
-            Log.e("error", htmlResponse);
+            Log.e("Server Data", htmlResponse);
             JSONArray json = new JSONArray(htmlResponse);
             prayer.setObjectId(json.getJSONObject(0).getString("id"));
             prayer.setCreatedAt(null);

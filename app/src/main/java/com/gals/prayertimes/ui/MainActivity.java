@@ -359,7 +359,11 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected String doInBackground(Context... contexts) {
-            prayer = db.prayerDao().findByDate(new SimpleDateFormat("dd.MM.yyyy").format(new Date()));
+            try {
+                prayer = db.prayerDao().findByDate(new SimpleDateFormat("dd.MM.yyyy").format(new Date()));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             return null;
         }
 
