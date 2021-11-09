@@ -10,6 +10,8 @@ import com.gals.prayertimes.model.Prayer;
 import com.gals.prayertimes.services.PrayersODNotificationService;
 import com.gals.prayertimes.utils.ToolsManager;
 
+import java.util.Locale;
+
 /**
  * Created by Genius on 1/25/2018.
  */

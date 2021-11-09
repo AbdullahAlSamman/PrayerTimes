@@ -19,6 +19,7 @@ import com.gals.prayertimes.utils.ToolsManager;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -99,7 +100,7 @@ public class PrayersODNotificationService extends Service {
 
         @Override
         protected String doInBackground(Context... contexts) {
-            prayer = AppDB.getInstance(getBaseContext()).prayerDao().findByDate(new SimpleDateFormat("dd.MM.yyyy").format(new Date()));
+            prayer = AppDB.getInstance(getBaseContext()).prayerDao().findByDate(new SimpleDateFormat("dd.MM.yyyy", Locale.US).format(new Date()));
             return null;
         }
 

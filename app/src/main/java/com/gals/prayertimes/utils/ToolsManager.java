@@ -18,8 +18,10 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
+
 import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
+
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -349,12 +351,14 @@ public class ToolsManager {
         }
     }
 
+    @Deprecated
     public int generateRandomNotificationId() {
         Random rand = new Random();
 
         return rand.nextInt(5000 - 1000 + 1) + 1000;
     }
 
+    @Deprecated
     public void restartActivity(Context currentActivity, final Class<? extends Activity> activityToStart) {
         Intent intent = new Intent(currentActivity, activityToStart);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);

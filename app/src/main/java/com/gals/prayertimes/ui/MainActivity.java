@@ -29,6 +29,7 @@ import com.gals.prayertimes.utils.ToolsManager;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -75,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(com.gals.prayertimes.R.layout.activity_main);
 
-        //Tools and Local Storage
+        //Tools and DB
         tools = new ToolsManager(getBaseContext());
         db = AppDB.getInstance(getBaseContext());
 
@@ -286,7 +287,7 @@ public class MainActivity extends AppCompatActivity {
         if (tools.isNetworkAvailable()) {
             try {
                 new DataManager(null, prayer, null, this.getBaseContext(), true).execute("", "", "");
-                prayer = db.prayerDao().findByDate(new SimpleDateFormat("dd.MM.yyyy").format(new Date()));
+                prayer = db.prayerDao().findByDate(new SimpleDateFormat("dd.MM.yyyy", Locale.US).format(new Date()));
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -360,7 +361,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected String doInBackground(Context... contexts) {
             try {
-                prayer = db.prayerDao().findByDate(new SimpleDateFormat("dd.MM.yyyy").format(new Date()));
+                prayer = db.prayerDao().findByDate(new SimpleDateFormat("dd.MM.yyyy", Locale.US).format(new Date()));
             } catch (Exception e) {
                 e.printStackTrace();
             }
