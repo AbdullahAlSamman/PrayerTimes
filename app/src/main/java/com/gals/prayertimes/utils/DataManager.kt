@@ -78,8 +78,8 @@ class DataManager(
     override fun onPostExecute(s: String?) {
         super.onPostExecute(s)
         //change the course of events for update or splashscreen
-        if (!updateDate!!) {
-            toMain!!.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
+        if (!updateDate) {
+            toMain.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
             activity!!.startActivity(toMain)
         }
     }

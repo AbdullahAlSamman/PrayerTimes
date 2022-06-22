@@ -116,15 +116,15 @@ public class AthanSettingsFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
         // View Elements id's
-        radioFullAthan = (RadioButton) view.findViewById(R.id.radioFullAthan);
-        radioHalfAthan = (RadioButton) view.findViewById(R.id.radioHalfAthan);
-        radioToneAthan = (RadioButton) view.findViewById(R.id.radioToneAthan);
-        radioSilentAthan = (RadioButton) view.findViewById(R.id.radioSilentAthan);
+        radioFullAthan = view.findViewById(R.id.radioFullAthan);
+        radioHalfAthan = view.findViewById(R.id.radioHalfAthan);
+        radioToneAthan = view.findViewById(R.id.radioToneAthan);
+        radioSilentAthan = view.findViewById(R.id.radioSilentAthan);
 
-        playFullAthan = (ImageButton) view.findViewById(R.id.playFullAthan);
-        playHalfAthan = (ImageButton) view.findViewById(R.id.playHalfAthan);
+        playFullAthan = view.findViewById(R.id.playFullAthan);
+        playHalfAthan = view.findViewById(R.id.playHalfAthan);
 
-        turnOnAlarm = (Switch) view.findViewById(R.id.switchAlarmOn);
+        turnOnAlarm = view.findViewById(R.id.switchAlarmOn);
 
         tools = new UtilsManager(getContext());
 
