@@ -8,13 +8,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.view.MenuItem;
 
 import com.gals.prayertimes.R;
-import com.gals.prayertimes.utils.ToolsManager;
+import com.gals.prayertimes.utils.UtilsManager;
 
 // in order to get the Fragments to work you need to implement those Interactions interfaces it is necessary.
 public class Menu extends AppCompatActivity implements AthanSettingsFragment.OnFragmentInteractionListener, MenuItemFragment.OnListFragmentInteractionListener, PrivacyPolicyFragment.OnFragmentInteractionListener {
 
     public static final String PREFS_NAME = "MyLocalStorage";
-    ToolsManager tools;
+    UtilsManager      tools;
     SharedPreferences settings;
 
     @Override
@@ -22,7 +22,7 @@ public class Menu extends AppCompatActivity implements AthanSettingsFragment.OnF
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
 
-        tools = new ToolsManager(getApplicationContext());
+        tools = new UtilsManager(getApplicationContext());
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);

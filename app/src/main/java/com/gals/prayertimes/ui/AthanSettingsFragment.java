@@ -2,7 +2,6 @@ package com.gals.prayertimes.ui;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -17,15 +16,11 @@ import android.widget.RadioButton;
 import android.widget.Switch;
 
 import com.gals.prayertimes.db.AppDB;
-import com.gals.prayertimes.model.Prayer;
-import com.gals.prayertimes.model.Settings;
+import com.gals.prayertimes.db.entities.Settings;
 import com.gals.prayertimes.services.PrayersODNotificationService;
 import com.gals.prayertimes.R;
-import com.gals.prayertimes.utils.ToolsManager;
+import com.gals.prayertimes.utils.UtilsManager;
 import com.gals.prayertimes.services.MusicPlayer;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 
 /**
@@ -42,8 +37,8 @@ public class AthanSettingsFragment extends Fragment {
     private static final String ARG_PARAM2 = "param2";
     AppDB db;
     Intent musicFullAthanIntent;
-    Intent musicHalfAthanIntent;
-    ToolsManager tools;
+    Intent           musicHalfAthanIntent;
+    UtilsManager     tools;
     CustomRadioGroup radioGroup;
     RadioButton radioFullAthan;
     RadioButton radioHalfAthan;
@@ -131,7 +126,7 @@ public class AthanSettingsFragment extends Fragment {
 
         turnOnAlarm = (Switch) view.findViewById(R.id.switchAlarmOn);
 
-        tools = new ToolsManager(getContext());
+        tools = new UtilsManager(getContext());
 
         radioGroup = new CustomRadioGroup(view, R.id.radioFullAthan, R.id.radioHalfAthan, R.id.radioToneAthan, R.id.radioSilentAthan);
 

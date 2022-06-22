@@ -2,7 +2,6 @@ package com.gals.prayertimes.ui;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -20,7 +19,7 @@ import com.gals.prayertimes.db.AppDB;
 import com.gals.prayertimes.utils.DataManager;
 import com.gals.prayertimes.model.Prayer;
 import com.gals.prayertimes.R;
-import com.gals.prayertimes.utils.ToolsManager;
+import com.gals.prayertimes.utils.UtilsManager;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -60,9 +59,9 @@ public class MainActivity extends AppCompatActivity {
     TextView nextPrayerTime;
     TextView nextPrayerText;
     TextView nextPrayerPanner;
-    ImageButton btnSettings;
-    ToolsManager tools;
-    Timer updateUITimer;
+    ImageButton  btnSettings;
+    UtilsManager tools;
+    Timer        updateUITimer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(com.gals.prayertimes.R.layout.activity_main);
 
         //Tools and DB
-        tools = new ToolsManager(getBaseContext());
+        tools = new UtilsManager(getBaseContext());
         db = AppDB.getInstance(getBaseContext());
 
         //UI Elements
@@ -207,11 +206,11 @@ public class MainActivity extends AppCompatActivity {
         if (prayer.calculateTimeBetweenPrayers()) {
 
             if (prayer.isNextAPrayer()) {
-                nextPrayerTime.setText(prayer.getRemmainingPrayerTime());
+                nextPrayerTime.setText(prayer.getRemainingPrayerTime());
                 nextPrayerText.setText(prayer.getCurrentPrayerName());
                 nextPrayerPanner.setText(getString(R.string.remmaning_prayer_time));
             } else {
-                nextPrayerTime.setText(prayer.getRemmainingPrayerTime());
+                nextPrayerTime.setText(prayer.getRemainingPrayerTime());
                 nextPrayerText.setText(prayer.getCurrentPrayerName());
                 nextPrayerPanner.setText(getString(R.string.remmaning_time));
             }

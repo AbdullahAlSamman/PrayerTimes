@@ -1,21 +1,18 @@
 package com.gals.prayertimes.ui;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.gals.prayertimes.utils.DataManager;
-import com.gals.prayertimes.model.Prayer;
-import com.gals.prayertimes.db.AppDB;
-import com.gals.prayertimes.utils.ToolsManager;
+import com.gals.prayertimes.utils.UtilsManager;
 
 
 public class Splashscreen extends AppCompatActivity {
 
-    ToolsManager tools;
-    Intent toMain;
+    UtilsManager tools;
+    Intent       toMain;
     //TODO: change to database.
     //TODO: handle exceptions well.
     //TODO: Testing.
@@ -29,7 +26,7 @@ public class Splashscreen extends AppCompatActivity {
         setContentView(com.gals.prayertimes.R.layout.activity_splashscreen);
 
         toMain = new Intent(this, MainActivity.class);
-        tools = new ToolsManager(getBaseContext());
+        tools = new UtilsManager(getBaseContext());
 
         // Change Statusbar color
         tools.changeStatusBarColor(getWindow());

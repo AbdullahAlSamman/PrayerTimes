@@ -41,13 +41,13 @@ import java.util.Random;
  * Created by Genius on 13.02.2018.
  */
 
-public class ToolsManager {
+public class UtilsManager {
 
     private Context toolscontext;
     private NotificationManager notifManager;
     private long[] viberationPattern = new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400};
 
-    public ToolsManager(Context context) {
+    public UtilsManager(Context context) {
         toolscontext = context;
     }
 

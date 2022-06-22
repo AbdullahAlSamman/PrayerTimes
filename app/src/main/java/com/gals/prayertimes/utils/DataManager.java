@@ -8,7 +8,7 @@ import android.util.Log;
 
 import com.gals.prayertimes.db.AppDB;
 import com.gals.prayertimes.model.Prayer;
-import com.gals.prayertimes.model.Settings;
+import com.gals.prayertimes.db.entities.Settings;
 
 import org.json.JSONArray;
 
@@ -29,15 +29,15 @@ public class DataManager extends AsyncTask<String, Void, String> {
     Intent toMain;
     Context activity;
     Prayer prayer;
-    Boolean updateDate;
-    ToolsManager tools;
-    AppDB db;
+    Boolean      updateDate;
+    UtilsManager tools;
+    AppDB        db;
 
     public DataManager(Intent intent, Prayer prayer, SharedPreferences settings, Context activity, Boolean updateData) {
         setToMain(intent);
         setActivity(activity);
         setUpdateDate(updateData);
-        tools = new ToolsManager(getActivity());
+        tools = new UtilsManager(getActivity());
         db = AppDB.getInstance(getActivity());
     }
 
@@ -89,7 +89,7 @@ public class DataManager extends AsyncTask<String, Void, String> {
                     this.savePrayer(prayer);
                 }
             }
-            if (db.settingsDao().isExists() == false) {
+            if (!db.settingsDao().isExists()) {
                 this.saveSettings(new Settings(false, "silent"));
             }
         } catch (Exception e) {

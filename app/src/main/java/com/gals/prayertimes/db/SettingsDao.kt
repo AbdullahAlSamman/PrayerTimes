@@ -5,7 +5,7 @@ import androidx.room.Insert
 import androidx.room.Update
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.gals.prayertimes.model.Settings
+import com.gals.prayertimes.db.entities.Settings
 
 /**
  * The interface Prayer dao.

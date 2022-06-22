@@ -12,7 +12,7 @@ import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import com.gals.prayertimes.R;
-import com.gals.prayertimes.utils.ToolsManager;
+import com.gals.prayertimes.utils.UtilsManager;
 
 import org.json.JSONArray;
 
@@ -31,7 +31,7 @@ public class Prayer {
     @Ignore
     private static final String parseClassName = "Prayers";
     @Ignore
-    ToolsManager tools;
+    UtilsManager tools;
     @Ignore
     Uri fullAthan = Uri.parse("android.resource://com.gals.prayertimes/" + R.raw.fullathan);
     @Ignore
@@ -120,20 +120,20 @@ public class Prayer {
     }
 
 
-    public Boolean getNotificaiton() {
+    public Boolean getNotification() {
         return notificaiton;
     }
 
-    public void setNotificaiton(Boolean notificaiton) {
-        this.notificaiton = notificaiton;
+    public void setNotification(Boolean notification) {
+        this.notificaiton = notification;
     }
 
-    public String getNotificaitonType() {
+    public String getNotificationType() {
         return notificaitonType;
     }
 
-    public void setNotificaitonType(String notificaitonType) {
-        this.notificaitonType = notificaitonType;
+    public void setNotificationType(String notificationType) {
+        this.notificaitonType = notificationType;
     }
 
     public void setCalenderPrayersTime() {
@@ -206,12 +206,12 @@ public class Prayer {
         this.currentPrayerName = currentPrayerName;
     }
 
-    public String getRemmainingPrayerTime() {
+    public String getRemainingPrayerTime() {
         return remmainingPrayerTime;
     }
 
-    public void setRemmainingPrayerTime(String remmainingPrayerTime) {
-        this.remmainingPrayerTime = remmainingPrayerTime;
+    public void setRemainingPrayerTime(String remainingPrayerTime) {
+        this.remmainingPrayerTime = remainingPrayerTime;
     }
 
     public SharedPreferences getSettings() {
@@ -318,13 +318,13 @@ public class Prayer {
         this.activity = activity;
     }
 
-    public void setTools(ToolsManager tools) {
+    public void setTools(UtilsManager tools) {
         this.tools = tools;
     }
 
     public void init(Context context) {
         setActivity(context);
-        setTools(new ToolsManager(context));
+        setTools(new UtilsManager(context));
         setCalenderPrayersTime();
     }
 
@@ -371,8 +371,8 @@ public class Prayer {
             setAsr(getSettings().getString("asr", "16:00"));
             setMaghrib(getSettings().getString("maghrib", "18:00"));
             setIsha(getSettings().getString("isha", "21:00"));
-            setNotificaiton(getSettings().getBoolean("notification", true));
-            setNotificaitonType(getSettings().getString("notificationType", "tone")); // Values: full, half, tone, silent
+            setNotification(getSettings().getBoolean("notification", true));
+            setNotificationType(getSettings().getString("notificationType", "tone")); // Values: full, half, tone, silent
             return true;
         }
         return false;
@@ -395,8 +395,8 @@ public class Prayer {
             editor.putString("asr", getAsr());
             editor.putString("maghrib", getMaghrib());
             editor.putString("isha", getIsha());
-            editor.putBoolean("notification", getNotificaiton());
-            editor.putString("notificationType", getNotificaitonType());
+            editor.putBoolean("notification", getNotification());
+            editor.putString("notificationType", getNotificationType());
 
             editor.commit();
             return true;
@@ -418,8 +418,8 @@ public class Prayer {
                 getAsr() + "\n" +
                 getMaghrib() + "\n" +
                 getIsha() + "\n" +
-                getNotificaiton() + "\n" +
-                getNotificaitonType());
+                getNotification() + "\n" +
+                getNotificationType());
     }
 
     public Boolean isNight() {
@@ -509,31 +509,31 @@ public class Prayer {
             this.setCalenderPrayersTime();
 
             if (currentTime.before(fajerTime)) {
-                setRemmainingPrayerTime(tools.difTimes(fajerTime, currentTime));
+                setRemainingPrayerTime(tools.difTimes(fajerTime, currentTime));
                 setCurrentPrayerName(getActivity().getString(R.string.pFajer));
                 return true;
             } else if (currentTime.before(sunriseTime)) {
-                setRemmainingPrayerTime(tools.difTimes(sunriseTime, currentTime));
+                setRemainingPrayerTime(tools.difTimes(sunriseTime, currentTime));
                 setCurrentPrayerName(getActivity().getString(R.string.pDSunrise));
                 return true;
             } else if (currentTime.before(duhrTime)) {
-                setRemmainingPrayerTime(tools.difTimes(duhrTime, currentTime));
+                setRemainingPrayerTime(tools.difTimes(duhrTime, currentTime));
                 setCurrentPrayerName(getActivity().getString(R.string.pDuhr));
                 return true;
             } else if (currentTime.before(asrTime)) {
-                setRemmainingPrayerTime(tools.difTimes(asrTime, currentTime));
+                setRemainingPrayerTime(tools.difTimes(asrTime, currentTime));
                 setCurrentPrayerName(getActivity().getString(R.string.pAsr));
                 return true;
             } else if (currentTime.before(sunsetTime)) {
-                setRemmainingPrayerTime(tools.difTimes(sunsetTime, currentTime));
+                setRemainingPrayerTime(tools.difTimes(sunsetTime, currentTime));
                 setCurrentPrayerName(getActivity().getString(R.string.pMaghrib));
                 return true;
             } else if (currentTime.before(ishaTime)) {
-                setRemmainingPrayerTime(tools.difTimes(ishaTime, currentTime));
+                setRemainingPrayerTime(tools.difTimes(ishaTime, currentTime));
                 setCurrentPrayerName(getActivity().getString(R.string.pIsha));
                 return true;
             } else if (currentTime.before(midNightTime) || currentTime.equals(midNightTime)) {
-                setRemmainingPrayerTime(tools.difTimes(midNightTime, currentTime));
+                setRemainingPrayerTime(tools.difTimes(midNightTime, currentTime));
                 setCurrentPrayerName(getActivity().getString(R.string.midnight_title));
                 return true;
             } else {
@@ -566,42 +566,42 @@ public class Prayer {
             if (tools.isEqualTime(currentTime, fajerTime)) {
                 Log.i("Prayer/Current Time ", cTime[0] + ":" + cTime[1]);
                 Log.i("Prayer/Fajer Time ", frTime[0] + ":" + frTime[1]);
-                setRemmainingPrayerTime(tools.difTimes(fajerTime, currentTime));
+                setRemainingPrayerTime(tools.difTimes(fajerTime, currentTime));
                 setCurrentPrayerName(getActivity().getString(R.string.pFajer));
                 return true;
             } else if (tools.isEqualTime(currentTime, sunriseTime)) {
                 Log.i("Prayer/Current Time ", cTime[0] + ":" + cTime[1]);
                 Log.i("Prayer/Sunrise Time ", srTime[0] + ":" + srTime[1]);
-                setRemmainingPrayerTime(tools.difTimes(sunriseTime, currentTime));
+                setRemainingPrayerTime(tools.difTimes(sunriseTime, currentTime));
                 setCurrentPrayerName(getActivity().getString(R.string.pSunrise));
                 return true;
             } else if (tools.isEqualTime(currentTime, duhrTime)) {
                 Log.i("Prayer/Current Time ", cTime[0] + ":" + cTime[1]);
                 Log.i("Prayer/duhr Time ", duTime[0] + ":" + duTime[1]);
-                setRemmainingPrayerTime(tools.difTimes(duhrTime, currentTime));
+                setRemainingPrayerTime(tools.difTimes(duhrTime, currentTime));
                 setCurrentPrayerName(getActivity().getString(R.string.pDuhr));
                 return true;
             } else if (tools.isEqualTime(currentTime, asrTime)) {
                 Log.i("Prayer/Current Time ", cTime[0] + ":" + cTime[1]);
                 Log.i("Prayer/Asr Time ", asTime[0] + ":" + asTime[1]);
-                setRemmainingPrayerTime(tools.difTimes(asrTime, currentTime));
+                setRemainingPrayerTime(tools.difTimes(asrTime, currentTime));
                 setCurrentPrayerName(getActivity().getString(R.string.pAsr));
                 return true;
             } else if (tools.isEqualTime(currentTime, sunsetTime)) {
                 Log.i("Prayer/Current Time ", cTime[0] + ":" + cTime[1]);
                 Log.i("Prayer/Sunset Time ", ssTime[0] + ":" + ssTime[1]);
-                setRemmainingPrayerTime(tools.difTimes(sunsetTime, currentTime));
+                setRemainingPrayerTime(tools.difTimes(sunsetTime, currentTime));
                 setCurrentPrayerName(getActivity().getString(R.string.pMaghrib));
                 return true;
             } else if (tools.isEqualTime(currentTime, ishaTime)) {
                 Log.i("Prayer/Current Time ", cTime[0] + ":" + cTime[1]);
                 Log.i("Prayer/Isha Time ", cTime[0] + ":" + cTime[1]);
-                setRemmainingPrayerTime(tools.difTimes(ishaTime, currentTime));
+                setRemainingPrayerTime(tools.difTimes(ishaTime, currentTime));
                 setCurrentPrayerName(getActivity().getString(R.string.pIsha));
                 return true;
             } else {
                 setCurrentPrayerName("");
-                setRemmainingPrayerTime("");
+                setRemainingPrayerTime("");
                 Log.i("Prayer/Equals Check ", "False");
                 return false;
             }
@@ -768,7 +768,7 @@ public class Prayer {
     }
 
     public Uri getAthan() {
-        switch (getNotificaitonType()) {
+        switch (getNotificationType()) {
             case "full":
                 return fullAthan;
 

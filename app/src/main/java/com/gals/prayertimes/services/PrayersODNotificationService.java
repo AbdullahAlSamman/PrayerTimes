@@ -1,12 +1,10 @@
 package com.gals.prayertimes.services;
 
 import android.app.AlarmManager;
-import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.IBinder;
 import android.os.SystemClock;
@@ -14,8 +12,7 @@ import android.util.Log;
 
 import com.gals.prayertimes.db.AppDB;
 import com.gals.prayertimes.model.Prayer;
-import com.gals.prayertimes.R;
-import com.gals.prayertimes.utils.ToolsManager;
+import com.gals.prayertimes.utils.UtilsManager;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -26,8 +23,8 @@ import java.util.TimerTask;
 public class PrayersODNotificationService extends Service {
     TimerTask prayerTimeCheckTask;
     Timer prayerTimeCheck;
-    Prayer prayer;
-    ToolsManager tools;
+    Prayer       prayer;
+    UtilsManager tools;
 
     public PrayersODNotificationService() {
 
@@ -43,7 +40,7 @@ public class PrayersODNotificationService extends Service {
         super.onCreate();
         Log.i("ODN/Service:", "Started");
 
-        tools = new ToolsManager(getBaseContext());
+        tools = new UtilsManager(getBaseContext());
 
         new GetPrayerFromDB().execute(getBaseContext());
     }
