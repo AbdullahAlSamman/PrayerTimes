@@ -1,19 +1,17 @@
-package com.gals.prayertimes.db;
+package com.gals.prayertimes.db
 
-import androidx.room.Dao;
-import androidx.room.Insert;
-import androidx.room.OnConflictStrategy;
-import androidx.room.Query;
-
-import com.gals.prayertimes.model.Prayer;
+import androidx.room.Dao
+import androidx.room.Insert
+import com.gals.prayertimes.model.Prayer
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
 
 /**
  * The interface Prayer dao.
  * defines all the queries as function with sql query to retrive or insert or delete data from data base the implementation with be generated in compile time form Room Library.
  */
 @Dao
-public interface PrayerDao {
-
+interface PrayerDao {
     /**
      * Find times of a certain date.
      *
@@ -21,10 +19,8 @@ public interface PrayerDao {
      * @return the prayer
      */
     @Query("SELECT * FROM prayers WHERE sDate LIKE :arg0  LIMIT 1")
-    Prayer findByDate(String arg0);
+    fun findByDate(arg0: String?): Prayer?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insert(Prayer prayer);
-
-
+    fun insert(prayer: Prayer?)
 }

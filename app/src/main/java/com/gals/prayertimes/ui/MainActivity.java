@@ -16,11 +16,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.facebook.ads.Ad;
-import com.facebook.ads.AdError;
-import com.facebook.ads.AdListener;
-import com.facebook.ads.AdSettings;
-import com.facebook.ads.AdSize;
 import com.gals.prayertimes.db.AppDB;
 import com.gals.prayertimes.utils.DataManager;
 import com.gals.prayertimes.model.Prayer;
@@ -68,8 +63,6 @@ public class MainActivity extends AppCompatActivity {
     ImageButton btnSettings;
     ToolsManager tools;
     Timer updateUITimer;
-    private com.facebook.ads.AdView adView;
-    private AdSettings adSettings;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,16 +103,6 @@ public class MainActivity extends AppCompatActivity {
         ishaLay = (LinearLayout) findViewById(R.id.ishaLayout);
 
         btnSettings = (ImageButton) findViewById(R.id.settingButton);
-
-
-        //Ads Facebook Code
-        adView = new com.facebook.ads.AdView(this, "215308835976224_215309109309530", AdSize.BANNER_HEIGHT_90);
-
-        // Find the Ad Container
-        LinearLayout adContainer = (LinearLayout) findViewById(R.id.banner_container);
-
-        // Add the ad view to your activity layout
-        adContainer.addView(adView);
 
 /*        adView.setAdListener(new AdListener() {
             @Override
@@ -192,10 +175,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        //Ads get Destroyed
-        if (adView != null) {
-            adView.destroy();
-        }
         super.onDestroy();
     }
 

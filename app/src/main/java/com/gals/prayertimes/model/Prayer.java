@@ -26,10 +26,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.StringTokenizer;
 
-/**
- * Created by Genius on 1/26/2018.
- */
-
 @Entity(tableName = "prayers")
 public class Prayer {
     @Ignore
