@@ -169,7 +169,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        new DataManager(null, prayer, null, this.getBaseContext(), true).execute("", "", "");
+        new DataManager(null,
+                        this.getBaseContext(), true).execute("", "", "");
     }
 
     @Override
@@ -264,7 +265,8 @@ public class MainActivity extends AppCompatActivity {
         // update the data from server if the date is changed
         if (tools.isNetworkAvailable()) {
             try {
-                new DataManager(null, prayer, null, this.getBaseContext(), true).execute("", "", "");
+                new DataManager(null,
+                                this.getBaseContext(), true).execute("", "", "");
                 prayer = db.prayerDao().findByDate(new SimpleDateFormat("dd.MM.yyyy", Locale.US).format(new Date()));
             } catch (Exception e) {
                 e.printStackTrace();

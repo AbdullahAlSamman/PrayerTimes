@@ -31,7 +31,8 @@ public class Splashscreen extends AppCompatActivity {
         // Change Statusbar color
         tools.changeStatusBarColor(getWindow());
 
-        new DataManager(toMain, null, null, this.getBaseContext(), false).execute("", "", "");
+        new DataManager(toMain,
+                        this.getBaseContext(), false).execute("", "", "");
 
         /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             prayer.setPrayersAlarms();

@@ -37,18 +37,14 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Random;
 
-/**
- * Created by Genius on 13.02.2018.
- */
-
 public class UtilsManager {
 
-    private Context toolscontext;
-    private NotificationManager notifManager;
-    private long[] viberationPattern = new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400};
+    private Context             toolsContext;
+    private NotificationManager notificationManager;
+    private long[]              vibrationPattern = new long[]{ 100, 200, 300, 400, 500, 400, 300, 200, 400};
 
     public UtilsManager(Context context) {
-        toolscontext = context;
+        toolsContext = context;
     }
 
     public static String convert2Decimal(String number) {
@@ -70,7 +66,7 @@ public class UtilsManager {
     }
 
     public boolean isServiceRunning(Class<?> serviceClass) {
-        ActivityManager manager = (ActivityManager) toolscontext.getSystemService(Context.ACTIVITY_SERVICE);
+        ActivityManager manager = (ActivityManager) toolsContext.getSystemService(Context.ACTIVITY_SERVICE);
         for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
             if (serviceClass.getName().equals(service.service.getClassName())) {
                 return true;
@@ -98,22 +94,22 @@ public class UtilsManager {
 
     public void createNotification(String aMessage, Uri sound, int notificaitonDefaults, int notificationID) {
         // There are hardcoding only for show it's just strings
-        String name = toolscontext.getString(R.string.notificationChannelSettings);
-        String id = toolscontext.getString(R.string.notificationChannelId); // The user-visible name of the channel.
-        String description = toolscontext.getString(R.string.notificationsChannelDescription); // The user-visible description of the channel.
+        String name = toolsContext.getString(R.string.notificationChannelSettings);
+        String id = toolsContext.getString(R.string.notificationChannelId); // The user-visible name of the channel.
+        String description = toolsContext.getString(R.string.notificationsChannelDescription); // The user-visible description of the channel.
 
         Intent intent;
         PendingIntent pendingIntent;
         NotificationCompat.Builder builder;
 
-        if (notifManager == null) {
-            notifManager =
-                    (NotificationManager) toolscontext.getSystemService(Context.NOTIFICATION_SERVICE);
+        if (notificationManager == null) {
+            notificationManager =
+                    (NotificationManager) toolsContext.getSystemService(Context.NOTIFICATION_SERVICE);
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             int importance = NotificationManager.IMPORTANCE_HIGH; //Makes Sound and Headup Notification
-            NotificationChannel mChannel = notifManager.getNotificationChannel(id);
+            NotificationChannel mChannel = notificationManager.getNotificationChannel(id);
 
             // Notification Attributes for Oreo+
             AudioAttributes attributes = new AudioAttributes.Builder()
@@ -126,18 +122,18 @@ public class UtilsManager {
                 mChannel.enableVibration(true);
                 mChannel.enableLights(true);
                 mChannel.setSound(sound, attributes); // Sound set must be on the Notification Channel not the Builder
-                mChannel.setVibrationPattern(viberationPattern);
-                notifManager.createNotificationChannel(mChannel);
+                mChannel.setVibrationPattern(vibrationPattern);
+                notificationManager.createNotificationChannel(mChannel);
             }
-            builder = new NotificationCompat.Builder(toolscontext, id);
+            builder = new NotificationCompat.Builder(toolsContext, id);
 
-            intent = new Intent(toolscontext, MainActivity.class);
+            intent = new Intent(toolsContext, MainActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            pendingIntent = PendingIntent.getActivity(toolscontext, 0, intent, 0);
+            pendingIntent = PendingIntent.getActivity(toolsContext, 0, intent, 0);
 
             builder.setContentTitle(aMessage)  // required
                     .setSmallIcon(R.drawable.ic_haya_notification) // required
-                    .setColor(toolscontext.getColor(R.color.fajerViewColor))
+                    .setColor(toolsContext.getColor(R.color.fajerViewColor))
                     .setContentText("")  // required
 //                    .setDefaults(notificaitonDefaults) //Don't use Defaults that will block the channel settings
                     .setAutoCancel(true)
@@ -146,10 +142,10 @@ public class UtilsManager {
 
         } else {
 
-            builder = new NotificationCompat.Builder(toolscontext);
-            intent = new Intent(toolscontext, MainActivity.class);
+            builder = new NotificationCompat.Builder(toolsContext);
+            intent = new Intent(toolsContext, MainActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            pendingIntent = PendingIntent.getActivity(toolscontext, 0, intent, 0);
+            pendingIntent = PendingIntent.getActivity(toolsContext, 0, intent, 0);
 
             if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 builder.setSmallIcon(R.drawable.ic_haya_notification);
@@ -157,56 +153,56 @@ public class UtilsManager {
                 builder.setSmallIcon(R.mipmap.ic_notification);
 
             builder.setContentTitle(aMessage)                           // required
-                    .setContentText(toolscontext.getString(R.string.app_name))  // required
-                    .setDefaults(notificaitonDefaults)
-                    .setAutoCancel(true)
-                    .setTicker(aMessage)
-                    .setVibrate(viberationPattern)
-                    .setPriority(Notification.PRIORITY_HIGH)
-                    .setSound(sound)
-                    .setContentIntent(pendingIntent);
+                   .setContentText(toolsContext.getString(R.string.app_name))  // required
+                   .setDefaults(notificaitonDefaults)
+                   .setAutoCancel(true)
+                   .setTicker(aMessage)
+                   .setVibrate(vibrationPattern)
+                   .setPriority(Notification.PRIORITY_HIGH)
+                   .setSound(sound)
+                   .setContentIntent(pendingIntent);
         } // else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 
         Notification notification = builder.build();
-        notifManager.notify(notificationID, notification);
+        notificationManager.notify(notificationID, notification);
     }
 
     public void createNotification(String aMessage, int notificationID) {
 
         // There are hardcoding only for show it's just strings
-        String name = toolscontext.getString(R.string.sunriseNotificationChannelSettings);
-        String id = toolscontext.getString(R.string.sunriseNotificationChannelId); // The user-visible name of the channel.
-        String description = toolscontext.getString(R.string.sunriseNotificationsChannelDescription); // The user-visible description of the channel.
+        String name = toolsContext.getString(R.string.sunriseNotificationChannelSettings);
+        String id = toolsContext.getString(R.string.sunriseNotificationChannelId); // The user-visible name of the channel.
+        String description = toolsContext.getString(R.string.sunriseNotificationsChannelDescription); // The user-visible description of the channel.
 
         Intent intent;
         PendingIntent pendingIntent;
         NotificationCompat.Builder builder;
 
-        if (notifManager == null) {
-            notifManager =
-                    (NotificationManager) toolscontext.getSystemService(Context.NOTIFICATION_SERVICE);
+        if (notificationManager == null) {
+            notificationManager =
+                    (NotificationManager) toolsContext.getSystemService(Context.NOTIFICATION_SERVICE);
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             int importance = NotificationManager.IMPORTANCE_HIGH;
-            NotificationChannel mChannel = notifManager.getNotificationChannel(id);
+            NotificationChannel mChannel = notificationManager.getNotificationChannel(id);
             if (mChannel == null) {
                 mChannel = new NotificationChannel(id, name, importance);
                 mChannel.setDescription(description);
                 mChannel.enableVibration(true);
                 mChannel.enableLights(true);
-                mChannel.setVibrationPattern(viberationPattern);
-                notifManager.createNotificationChannel(mChannel);
+                mChannel.setVibrationPattern(vibrationPattern);
+                notificationManager.createNotificationChannel(mChannel);
             }
-            builder = new NotificationCompat.Builder(toolscontext, id);
+            builder = new NotificationCompat.Builder(toolsContext, id);
 
-            intent = new Intent(toolscontext, MainActivity.class);
+            intent = new Intent(toolsContext, MainActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            pendingIntent = PendingIntent.getActivity(toolscontext, 0, intent, 0);
+            pendingIntent = PendingIntent.getActivity(toolsContext, 0, intent, 0);
 
             builder.setContentTitle(aMessage)  // required
                     .setSmallIcon(R.drawable.ic_haya_notification) // required
-                    .setColor(toolscontext.getColor(R.color.fajerViewColor))
+                    .setColor(toolsContext.getColor(R.color.fajerViewColor))
                     .setContentText("")  // required
                     .setAutoCancel(true)
                     .setDefaults(Notification.DEFAULT_VIBRATE | Notification.DEFAULT_LIGHTS | Notification.DEFAULT_SOUND)
@@ -215,11 +211,11 @@ public class UtilsManager {
 
         } else {
 
-            builder = new NotificationCompat.Builder(toolscontext);
+            builder = new NotificationCompat.Builder(toolsContext);
 
-            intent = new Intent(toolscontext, MainActivity.class);
+            intent = new Intent(toolsContext, MainActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            pendingIntent = PendingIntent.getActivity(toolscontext, 0, intent, 0);
+            pendingIntent = PendingIntent.getActivity(toolsContext, 0, intent, 0);
 
             if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 builder.setSmallIcon(R.drawable.ic_haya_notification);
@@ -227,22 +223,22 @@ public class UtilsManager {
                 builder.setSmallIcon(R.mipmap.ic_notification);
 
             builder.setContentTitle(aMessage)                           // required
-                    .setContentText(toolscontext.getString(R.string.app_name))  // required
-                    .setDefaults(Notification.DEFAULT_VIBRATE | Notification.DEFAULT_LIGHTS | Notification.DEFAULT_SOUND)
-                    .setAutoCancel(true)
-                    .setContentIntent(pendingIntent)
-                    .setTicker(aMessage)
-                    .setVibrate(viberationPattern)
-                    .setPriority(Notification.PRIORITY_HIGH);
+                   .setContentText(toolsContext.getString(R.string.app_name))  // required
+                   .setDefaults(Notification.DEFAULT_VIBRATE | Notification.DEFAULT_LIGHTS | Notification.DEFAULT_SOUND)
+                   .setAutoCancel(true)
+                   .setContentIntent(pendingIntent)
+                   .setTicker(aMessage)
+                   .setVibrate(vibrationPattern)
+                   .setPriority(Notification.PRIORITY_HIGH);
 
         } // else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 
         Notification notification = builder.build();
-        notifManager.notify(notificationID, notification);
+        notificationManager.notify(notificationID, notification);
     }
 
     public void setActivityLanguage(String lang) {
-        Resources res = toolscontext.getResources();
+        Resources res = toolsContext.getResources();
         Configuration newConfig = new Configuration(res.getConfiguration());
         Locale locale = new Locale(lang);
         newConfig.locale = locale;
@@ -284,17 +280,17 @@ public class UtilsManager {
 
     public Boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager
-                = (ConnectivityManager) toolscontext.getSystemService(Context.CONNECTIVITY_SERVICE);
+                = (ConnectivityManager) toolsContext.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
 
     public Boolean isRTL() {
-        Configuration config = toolscontext.getResources().getConfiguration();
+        Configuration config = toolsContext.getResources().getConfiguration();
         if (config.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL) {
             config.setLayoutDirection(new Locale("ar"));
-            toolscontext.getResources().updateConfiguration(config, toolscontext.getResources().getDisplayMetrics());
+            toolsContext.getResources().updateConfiguration(config, toolsContext.getResources().getDisplayMetrics());
             //in Right To Left layout
             Log.i("RTL", "The Language is RTL");
             return true;
@@ -307,12 +303,12 @@ public class UtilsManager {
     public void changeStatusBarColor(Window window) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(toolscontext.getResources().getColor(R.color.ishaViewColor));
+            window.setStatusBarColor(toolsContext.getResources().getColor(R.color.ishaViewColor));
         }
     }
 
     public Boolean isScreenSmall() {
-        double density = toolscontext.getResources().getDisplayMetrics().density;
+        double density = toolsContext.getResources().getDisplayMetrics().density;
         if (density <= 1.5) {
             return true;
         }
@@ -324,7 +320,7 @@ public class UtilsManager {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
             try {
 
-                ComponentName serviceComponent = new ComponentName(toolscontext, serviceClass.getName());
+                ComponentName serviceComponent = new ComponentName(toolsContext, serviceClass.getName());
 
                 JobInfo.Builder builder = new JobInfo.Builder(0, serviceComponent);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -339,7 +335,7 @@ public class UtilsManager {
                 builder.setRequiresCharging(false); // we don't care if the device is charging or not
 
 
-                JobScheduler jobScheduler = (JobScheduler) toolscontext.getSystemService(Context.JOB_SCHEDULER_SERVICE);
+                JobScheduler jobScheduler = (JobScheduler) toolsContext.getSystemService(Context.JOB_SCHEDULER_SERVICE);
 
                 jobScheduler.schedule(builder.build());
                 Log.i("JobScheduler", "Scheduled job " + serviceClass.getName() + " started");

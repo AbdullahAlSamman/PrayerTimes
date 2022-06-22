@@ -44,7 +44,7 @@ abstract class AppDB : RoomDatabase() {
          */
         @JvmStatic
         @Synchronized
-        fun getInstance(context: Context): AppDB? {
+        fun getInstance(context: Context): AppDB {
             if (instance == null) {
                 instance = Room.databaseBuilder(
                     context.applicationContext,
@@ -52,7 +52,7 @@ abstract class AppDB : RoomDatabase() {
                     DB_NAME
                 ).build()
             }
-            return instance
+            return instance as AppDB
         }
     }
 }
