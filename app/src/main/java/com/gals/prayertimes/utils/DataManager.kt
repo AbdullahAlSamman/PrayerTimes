@@ -16,23 +16,37 @@ import java.net.HttpURLConnection
 import java.net.URL
 import java.text.SimpleDateFormat
 import java.util.Date
+import java.util.Locale
 
 class DataManager(
     intent: Intent?,
     activity: Context?,
-    updateData: Boolean?
+    updateData: Boolean
 ) : AsyncTask<String?, Void?, String?>() {
-    var todayDate: String? = null
-    var toMain: Intent? = null
-    var activity: Context? = null
-    var prayer: Prayer? = null
-    var updateDate: Boolean? = null
-    var tools: UtilsManager
-    var db: AppDB
+    private lateinit var toMain: Intent
+    private var activity: Context? = null
+    private lateinit var todayDate: String
+    private val updateDate: Boolean
+    private val tools: UtilsManager
+    private val db: AppDB
+
+    init {
+        if (intent != null) {
+            this.toMain = intent
+        }
+        this.activity = activity
+        this.updateDate = updateData
+        this.tools = UtilsManager(activity)
+        this.db = getInstance(activity!!)
+    }
+
+    @Deprecated("Deprecated in Java")
     override fun doInBackground(vararg params: String?): String? {
-        // here fix arabic numbers
         try {
-            todayDate = SimpleDateFormat("dd.MM.yyyy").format(Date())
+            todayDate = SimpleDateFormat(
+                "dd.MM.yyyy",
+                Locale.US
+            ).format(Date())
             if (tools.isRTL) {
                 todayDate = tools.convertDate()
             }
@@ -105,8 +119,7 @@ class DataManager(
                 htmlResponse
             )
             val json = JSONArray(htmlResponse)
-            prayer.objectId = json.getJSONObject(0)
-                .getString("id")
+            prayer.objectId = json.getJSONObject(0).getString("id")
             prayer.createdAt = null
             prayer.updatedAt = null
             prayer.sDate = json.getJSONObject(0).getString("sDate")
@@ -121,13 +134,5 @@ class DataManager(
             e1.printStackTrace()
         }
         return prayer
-    }
-
-    init {
-        toMain = intent
-        this.activity = activity
-        updateDate = updateData
-        tools = UtilsManager(activity)
-        db = getInstance(activity!!)
     }
 }

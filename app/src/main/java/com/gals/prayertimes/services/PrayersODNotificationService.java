@@ -70,8 +70,6 @@ public class PrayersODNotificationService extends Service {
     @Override
     public void onTaskRemoved(Intent rootIntent) {
         super.onTaskRemoved(rootIntent);
-        //Restarting the service for API 19
-//        if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT) {
         try {
             Intent restartService = new Intent(getApplicationContext(),
                     PrayersODNotificationServiceRestart.class);
@@ -86,19 +84,14 @@ public class PrayersODNotificationService extends Service {
         } catch (Exception e) {
             e.printStackTrace();
         }
-//        }
     }
 
-    /**
-     * The type Get data from db.
-     * load all countries data from db to memory objects to be displayed in recycler view.
-     */
     public class GetPrayerFromDB extends AsyncTask<Context, String, String> {
 
         @Override
         protected String doInBackground(Context... contexts) {
             prayer = AppDB.getInstance(getBaseContext()).prayerDao().findByDate(new SimpleDateFormat("dd.MM.yyyy", Locale.US).format(new Date()));
-            return null;
+            return "";
         }
 
         @Override
