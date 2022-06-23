@@ -85,7 +85,7 @@ class MenuItemFragment : Fragment() {
                     recyclerView,
                     object : RecyclerItemClickListener.OnItemClickListener {
                         override fun onItemClick(
-                            view: View,
+                            view: View?,
                             position: Int
                         ) {
                             val athanFrag = AthanSettingsFragment()
@@ -132,12 +132,12 @@ class MenuItemFragment : Fragment() {
                         }
 
                         override fun onLongItemClick(
-                            view: View,
+                            view: View?,
                             position: Int
                         ) {
-                            // do whatever
                         }
-                    })
+                    }
+                )
             )
         }
         return view
@@ -157,7 +157,7 @@ class MenuItemFragment : Fragment() {
 
     override fun onDetach() {
         super.onDetach()
-        mListener = null
+        mListener.run { }
     }
 
     /**
