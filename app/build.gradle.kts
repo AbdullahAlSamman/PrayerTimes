@@ -5,17 +5,10 @@ plugins {
 }
 
 android {
-    /*   signingConfigs {
-           Gebetszeiten {
-               keyAlias "Gebetszeiten"
-               keyPassword "@Gals18"
-               storeFile file("D:/Projects/Gebetszeiten/SignKeys/key.jks")
-               storePassword "@Gebetszeiten18"
-           }
-           Debug {
-               storeFile file("C:/Users/Genius/.android/debug.keystore")
-           }
-       }*/
+    signingConfigs {
+        create("release") {
+        }
+    }
     compileSdk = 30
     buildToolsVersion = "31.0.0"
     defaultConfig {
@@ -24,23 +17,27 @@ android {
         targetSdk = 30
         versionName = "0.9.6"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        /*signingConfig signingConfigs.Gebetszeiten*/
         versionCode = 16
     }
     buildTypes {
         release {
             isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android.txt"),
                 "proguard-rules.pro"
             )
-            /*signingConfig signingConfigs.Gebetszeiten*/
+            isDebuggable = false
+            isJniDebuggable = false
         }
+    }
+    dependenciesInfo {
+        includeInApk = true
     }
 }
 
 dependencies {
-    val roomVersion: String = "2.4.0-alpha03"
+    val roomVersion = "2.4.0-alpha03"
 
     implementation("androidx.legacy:legacy-support-v4:1.0.0")
     implementation("androidx.recyclerview:recyclerview:1.2.1")
@@ -48,8 +45,8 @@ dependencies {
     implementation("androidx.constraintlayout:constraintlayout:2.1.1")
     implementation("com.squareup.okhttp3:okhttp:4.9.1")
     implementation("androidx.room:room-runtime:$roomVersion")
-    annotationProcessor("androidx.room:room-compiler:$roomVersion")
     kapt("androidx.room:room-compiler:$roomVersion")
+    annotationProcessor("androidx.room:room-compiler:$roomVersion")
 
     testImplementation("junit:junit:4.13.2")
 }

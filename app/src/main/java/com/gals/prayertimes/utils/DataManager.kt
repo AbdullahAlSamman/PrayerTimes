@@ -1,5 +1,6 @@
 package com.gals.prayertimes.utils
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.AsyncTask
@@ -23,8 +24,9 @@ class DataManager(
     activity: Context?,
     updateData: Boolean
 ) : AsyncTask<String?, Void?, String?>() {
-    private lateinit var toMain: Intent
+    @SuppressLint("StaticFieldLeak")
     private var activity: Context? = null
+    private lateinit var toMain: Intent
     private lateinit var todayDate: String
     private val updateDate: Boolean
     private val tools: UtilsManager
