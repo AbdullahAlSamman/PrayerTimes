@@ -148,7 +148,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    //update the time to next prayer
+    /**update the time to next prayer*/
     private fun updateRemainingTime() {
         if (prayer.calculateTimeBetweenPrayers()) {
             if (prayer.isNextAPrayer) {
@@ -264,7 +264,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // Timer to update the ui
+    /**Timer to update the ui*/
     private fun startUIUpdate(time: Int = 25000) {
         val handler = Handler()
         val timerTask: TimerTask = object : TimerTask() {
