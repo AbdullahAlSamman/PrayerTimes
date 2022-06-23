@@ -5,11 +5,12 @@ import android.content.Context
 import android.content.Intent
 import android.os.AsyncTask
 import android.util.Log
+import com.gals.prayertimes.EntityPrayer
 import com.gals.prayertimes.R
 import com.gals.prayertimes.db.AppDB
 import com.gals.prayertimes.db.AppDB.Companion.getInstance
+import com.gals.prayertimes.db.entities.Prayer.Companion.isValid
 import com.gals.prayertimes.db.entities.Settings
-import com.gals.prayertimes.model.Prayer
 import org.json.JSONArray
 import java.io.BufferedReader
 import java.io.InputStreamReader
@@ -38,8 +39,8 @@ class DataManager(
         }
         this.activity = activity
         this.updateDate = updateData
-        this.tools = UtilsManager(activity)
-        this.db = getInstance(activity!!)
+        this.tools = activity?.let { UtilsManager(it) }!!
+        this.db = getInstance(activity)
     }
 
     @Deprecated("Deprecated in Java")
@@ -54,12 +55,12 @@ class DataManager(
             }
             Log.i(
                 "DataManager/Info:",
-                todayDate.toString()
+                todayDate
             )
             if (tools.isNetworkAvailable) {
                 val prayer = getPrayerFromServer(todayDate)
-                if (prayer.isValid) {
-                    prayer.printTest()
+                if (prayer.isValid()) {
+                    tools.printTest(prayer)
                     savePrayer(prayer)
                 }
             }
@@ -86,10 +87,9 @@ class DataManager(
         }
     }
 
-    private fun savePrayer(prayer: Prayer?) {
+    private fun savePrayer(prayer: EntityPrayer?) {
         try {
-            db.prayerDao()
-                ?.insert(prayer)
+            db.prayerDao()?.insert(prayer)
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -103,8 +103,8 @@ class DataManager(
         }
     }
 
-    private fun getPrayerFromServer(todayDate: String?): Prayer {
-        val prayer = Prayer()
+    private fun getPrayerFromServer(todayDate: String?): EntityPrayer {
+        var prayer: EntityPrayer = EntityPrayer.EMPTY
         try {
             val url = URL(
                 activity?.getString(R.string.app_server_link) + todayDate
@@ -121,17 +121,17 @@ class DataManager(
                 htmlResponse
             )
             val json = JSONArray(htmlResponse)
-            prayer.objectId = json.getJSONObject(0).getString("id")
-            prayer.createdAt = null
-            prayer.updatedAt = null
-            prayer.sDate = json.getJSONObject(0).getString("sDate")
-            prayer.mDate = json.getJSONObject(0).getString("mDate")
-            prayer.fajer = json.getJSONObject(0).getString("fajer")
-            prayer.sunrise = json.getJSONObject(0).getString("sunrise")
-            prayer.duhr = json.getJSONObject(0).getString("duhr")
-            prayer.asr = json.getJSONObject(0).getString("asr")
-            prayer.maghrib = json.getJSONObject(0).getString("maghrib")
-            prayer.isha = json.getJSONObject(0).getString("isha")
+            prayer = EntityPrayer(
+                objectId = json.getJSONObject(0).getString("id"),
+                sDate = json.getJSONObject(0).getString("sDate"),
+                mDate = json.getJSONObject(0).getString("mDate"),
+                fajer = json.getJSONObject(0).getString("fajer"),
+                sunrise = json.getJSONObject(0).getString("sunrise"),
+                duhr = json.getJSONObject(0).getString("duhr"),
+                asr = json.getJSONObject(0).getString("asr"),
+                maghrib = json.getJSONObject(0).getString("maghrib"),
+                isha = json.getJSONObject(0).getString("isha"),
+            )
         } catch (e1: Exception) {
             e1.printStackTrace()
         }

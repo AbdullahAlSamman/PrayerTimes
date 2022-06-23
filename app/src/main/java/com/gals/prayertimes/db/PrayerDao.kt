@@ -5,6 +5,7 @@ import androidx.room.Insert
 import com.gals.prayertimes.model.Prayer
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import com.gals.prayertimes.EntityPrayer
 
 /**
  * The interface Prayer dao.
@@ -19,8 +20,8 @@ interface PrayerDao {
      * @return the prayer
      */
     @Query("SELECT * FROM prayers WHERE sDate LIKE :arg0  LIMIT 1")
-    fun findByDate(arg0: String?): Prayer?
+    fun findByDate(arg0: String?): EntityPrayer?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(prayer: Prayer?)
+    fun insert(prayer: EntityPrayer?)
 }

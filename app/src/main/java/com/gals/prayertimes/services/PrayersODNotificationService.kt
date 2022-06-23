@@ -10,19 +10,15 @@ import android.os.AsyncTask
 import android.os.IBinder
 import android.os.SystemClock
 import android.util.Log
+import com.gals.prayertimes.EntityPrayer
 import com.gals.prayertimes.db.AppDB.Companion.getInstance
-import com.gals.prayertimes.model.Prayer
 import com.gals.prayertimes.utils.UtilsManager
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-import java.util.Timer
-import java.util.TimerTask
 
 class PrayersODNotificationService : Service() {
-    var prayerTimeCheckTask: TimerTask? = null
-    var prayerTimeCheck: Timer? = null
-    var prayer: Prayer? = null
+    var prayer: EntityPrayer? = null
     var tools: UtilsManager? = null
     override fun onBind(intent: Intent): IBinder? {
         return null

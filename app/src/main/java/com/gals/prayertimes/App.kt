@@ -9,6 +9,9 @@ import com.gals.prayertimes.model.Prayer
 import com.gals.prayertimes.services.PrayersODNotificationService
 import com.gals.prayertimes.utils.UtilsManager
 
+typealias DomainPrayer = Prayer
+typealias EntityPrayer = com.gals.prayertimes.db.entities.Prayer
+
 class App : Application() {
     lateinit var tools: UtilsManager
     lateinit var prayer: Prayer

@@ -79,7 +79,7 @@ class AthanSettingsFragment : Fragment() {
         playFullAthan = view.findViewById(R.id.playFullAthan)
         playHalfAthan = view.findViewById(R.id.playHalfAthan)
         turnOnAlarm = view.findViewById(R.id.switchAlarmOn)
-        tools = UtilsManager(context)
+        tools = context?.let { UtilsManager(it) }!!
         radioGroup = CustomRadioGroup(
             view,
             R.id.radioFullAthan,

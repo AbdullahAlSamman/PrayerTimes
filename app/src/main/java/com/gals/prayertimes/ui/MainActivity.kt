@@ -14,10 +14,12 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import com.gals.prayertimes.DomainPrayer
+import com.gals.prayertimes.EntityPrayer
 import com.gals.prayertimes.R
 import com.gals.prayertimes.db.AppDB
 import com.gals.prayertimes.db.AppDB.Companion.getInstance
-import com.gals.prayertimes.model.Prayer
+import com.gals.prayertimes.db.entities.Prayer.Companion.toDomain
 import com.gals.prayertimes.utils.DataManager
 import com.gals.prayertimes.utils.UtilsManager
 import java.text.SimpleDateFormat
@@ -29,7 +31,8 @@ import java.util.TimerTask
 class MainActivity : AppCompatActivity() {
     lateinit var db: AppDB
     lateinit var background: ImageView
-    lateinit var prayer: Prayer
+    lateinit var domainPrayer: DomainPrayer
+    lateinit var prayer: EntityPrayer
     lateinit var fajerLay: LinearLayout
     lateinit var sunriseLay: LinearLayout
     lateinit var duhrLay: LinearLayout
@@ -123,8 +126,8 @@ class MainActivity : AppCompatActivity() {
 
     /**Update Background pic according to time*/
     private fun updateBackground() {
-        if (!prayer.isNight) {
-            if (prayer.isRamadan) {
+        if (!domainPrayer.isNight) {
+            if (domainPrayer.isRamadan) {
                 background.setImageResource(R.drawable.ramadan_day)
             } else {
                 background.setImageResource(R.drawable.background_day)
@@ -135,7 +138,7 @@ class MainActivity : AppCompatActivity() {
                 "Day time"
             )
         } else {
-            if (prayer.isRamadan) {
+            if (domainPrayer.isRamadan) {
                 background.setImageResource(R.drawable.ramadan_night)
             } else {
                 background.setImageResource(R.drawable.background_night)
@@ -150,14 +153,14 @@ class MainActivity : AppCompatActivity() {
 
     /**update the time to next prayer*/
     private fun updateRemainingTime() {
-        if (prayer.calculateTimeBetweenPrayers()) {
-            if (prayer.isNextAPrayer) {
-                nextPrayerTime.text = prayer.remainingPrayerTime
-                nextPrayerText.text = prayer.currentPrayerName
+        if (domainPrayer.calculateTimeBetweenPrayers()) {
+            if (domainPrayer.isNextAPrayer) {
+                nextPrayerTime.text = domainPrayer.remainingPrayerTime
+                nextPrayerText.text = domainPrayer.currentPrayerName
                 nextPrayerPanner.text = getString(R.string.remmaning_prayer_time)
             } else {
-                nextPrayerTime.text = prayer.remainingPrayerTime
-                nextPrayerText.text = prayer.currentPrayerName
+                nextPrayerTime.text = domainPrayer.remainingPrayerTime
+                nextPrayerText.text = domainPrayer.currentPrayerName
                 nextPrayerPanner.text = getString(R.string.remmaning_time)
             }
             nextPrayerTime.visibility = View.VISIBLE
@@ -173,27 +176,27 @@ class MainActivity : AppCompatActivity() {
     //Set data on the UI Elements
     private fun setSettingsUI() {
         try {
-            if (prayer.isValid) {
-                prayer.init(baseContext)
-                prayer.dateText()
+            if (domainPrayer.isValid) {
+                domainPrayer.init(baseContext)
+                domainPrayer.dateText()
                 Log.i(
                     "isChangeTheDayTest",
-                    "" + prayer.isDayHasChanged(prayer.sDate)
+                    "" + domainPrayer.isDayHasChanged(domainPrayer.sDate)
                 )
-                if (prayer.isDayHasChanged(prayer.sDate)) {
+                if (domainPrayer.isDayHasChanged(domainPrayer.sDate)) {
                     updatePrayers()
                 }
                 updateRemainingTime()
                 updateBackground()
-                sDatePanner.text = prayer.sFullDate
-                mDatePanner.text = prayer.mFullDate
-                dayPanner.text = prayer.day
-                fajerTime.text = prayer.fajer
-                sunriseTime.text = prayer.sunrise
-                duhrTime.text = prayer.duhr
-                asrTime.text = prayer.asr
-                maghribTime.text = prayer.maghrib
-                ishaTime.text = prayer.isha
+                sDatePanner.text = domainPrayer.sFullDate
+                mDatePanner.text = domainPrayer.mFullDate
+                dayPanner.text = domainPrayer.day
+                fajerTime.text = domainPrayer.fajer
+                sunriseTime.text = domainPrayer.sunrise
+                duhrTime.text = domainPrayer.duhr
+                asrTime.text = domainPrayer.asr
+                maghribTime.text = domainPrayer.maghrib
+                ishaTime.text = domainPrayer.isha
             } else {
                 Log.i(
                     "SettingsUI Update",
@@ -224,6 +227,7 @@ class MainActivity : AppCompatActivity() {
                         Locale.US
                     ).format(Date())
                 )!!
+                convertEntityToDomain()
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -286,6 +290,10 @@ class MainActivity : AppCompatActivity() {
         )
     }
 
+    private fun convertEntityToDomain() {
+        domainPrayer = prayer.toDomain()
+    }
+
     /**
      * Get data from db.
      */
@@ -299,6 +307,7 @@ class MainActivity : AppCompatActivity() {
                         Locale.US
                     ).format(Date())
                 )!!
+                convertEntityToDomain()
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -308,7 +317,7 @@ class MainActivity : AppCompatActivity() {
         @Deprecated("Deprecated in Java")
         override fun onPostExecute(s: String?) {
             super.onPostExecute(s)
-            if (prayer.isValid) {
+            if (domainPrayer.isValid) {
                 startUIUpdate()
             }
         }

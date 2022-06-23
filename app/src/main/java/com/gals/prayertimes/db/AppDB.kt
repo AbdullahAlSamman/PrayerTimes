@@ -5,7 +5,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.gals.prayertimes.model.Prayer
+import com.gals.prayertimes.db.entities.Prayer
 import com.gals.prayertimes.db.entities.Settings
 
 @Database(
