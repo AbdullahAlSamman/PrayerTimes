@@ -63,7 +63,7 @@ class MenuItemFragment : Fragment() {
         items.add(m2)
         items.add(m3)
 
-        // Set the adapter
+        /**Set the adapter*/
         if (view is RecyclerView) {
             val context = view.getContext()
             val recyclerView = view

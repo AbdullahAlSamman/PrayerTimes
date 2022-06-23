@@ -14,7 +14,6 @@ import android.view.WindowManager
 import com.gals.prayertimes.DomainPrayer
 import com.gals.prayertimes.R
 import com.gals.prayertimes.db.entities.Prayer
-import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -22,9 +21,9 @@ import java.util.Locale
 import java.util.Random
 import kotlin.math.ceil
 
-class UtilsManager(private val toolsContext: Context) {
-      fun isServiceRunning(serviceClass: Class<*>): Boolean {
-        val manager = toolsContext.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+class UtilsManager(private val utilsContext: Context) {
+    fun isServiceRunning(serviceClass: Class<*>): Boolean {
+        val manager = utilsContext.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
         for (service in manager.getRunningServices(Int.MAX_VALUE)) {
             if (serviceClass.name
                 == service.service.className
@@ -51,11 +50,11 @@ class UtilsManager(private val toolsContext: Context) {
         return convert2Decimal(todayDay) + "." + convert2Decimal(todayMonth) + "." + convert2Decimal(todayYear)
     }
 
-    fun setActivityLanguage(lang: String?) {
-        val res = toolsContext.resources
+    fun setActivityLanguage(lang: String) {
+        val res = utilsContext.resources
         val newConfig = Configuration(res.configuration)
         val locale = Locale(lang)
-        newConfig.locale = locale
+        newConfig.setLocale(locale)
         newConfig.setLayoutDirection(locale)
         res.updateConfiguration(
             newConfig,
@@ -84,22 +83,22 @@ class UtilsManager(private val toolsContext: Context) {
         small: Calendar
     ): String {
         val result = big.timeInMillis - small.timeInMillis
-        val Hours = ceil((result / (1000 * 60 * 60)).toDouble()).toInt()
-        val Mins = ceil((result / (1000 * 60) % 60).toDouble()).toInt()
-        var mins = Mins.toString() + ""
-        var hours = Hours.toString() + ""
-        if (Mins < 10) {
-            mins = "0$Mins"
+        val intHours = ceil((result / (1000 * 60 * 60)).toDouble()).toInt()
+        val intMinutes = ceil((result / (1000 * 60) % 60).toDouble()).toInt()
+        var minutes = intMinutes.toString() + ""
+        var hours = intHours.toString() + ""
+        if (intMinutes < 10) {
+            minutes = "0$intMinutes"
         }
-        if (Hours < 10) {
-            hours = "0$Hours"
+        if (intHours < 10) {
+            hours = "0$intHours"
         }
-        return "$hours:$mins"
+        return "$hours:$minutes"
     }
 
     val isNetworkAvailable: Boolean
         get() {
-            val connectivityManager = toolsContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            val connectivityManager = utilsContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
             val activeNetworkInfo = connectivityManager.activeNetworkInfo
             return activeNetworkInfo != null && activeNetworkInfo.isConnected
         }
@@ -107,14 +106,14 @@ class UtilsManager(private val toolsContext: Context) {
     //in Right To Left layout
     val isRTL: Boolean
         get() {
-            val config = toolsContext.resources
+            val config = utilsContext.resources
                 .configuration
             return if (config.layoutDirection == View.LAYOUT_DIRECTION_RTL) {
                 config.setLayoutDirection(Locale("ar"))
-                toolsContext.resources
+                utilsContext.resources
                     .updateConfiguration(
                         config,
-                        toolsContext.resources
+                        utilsContext.resources
                             .displayMetrics
                     )
                 //in Right To Left layout
@@ -135,14 +134,14 @@ class UtilsManager(private val toolsContext: Context) {
     fun changeStatusBarColor(window: Window) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-            window.statusBarColor = toolsContext.resources
+            window.statusBarColor = utilsContext.resources
                 .getColor(R.color.ishaViewColor)
         }
     }
 
     val isScreenSmall: Boolean
         get() {
-            val density = toolsContext.resources
+            val density = utilsContext.resources
                 .displayMetrics.density.toDouble()
             return density <= 1.5
         }

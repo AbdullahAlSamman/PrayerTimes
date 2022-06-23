@@ -173,7 +173,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    //Set data on the UI Elements
+    /**Set data on the UI Elements*/
     private fun setSettingsUI() {
         try {
             if (domainPrayer.isValid) {

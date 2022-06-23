@@ -39,14 +39,12 @@ class PrayersODNotificationService : Service() {
         flags: Int,
         startId: Int
     ): Int {
-        //START_STICKY is for preventing service from being killed
+        /**START_STICKY is for preventing service from being killed*/
         return START_STICKY
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        // Restarting the service from the Broadcast receiver API 17
-        //        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
         try {
             val pService = Intent(
                 this,
@@ -56,7 +54,6 @@ class PrayersODNotificationService : Service() {
         } catch (e: Exception) {
             e.printStackTrace()
         }
-        //        }
         Log.i(
             "Service",
             "Service is destroyed"
@@ -102,43 +99,7 @@ class PrayersODNotificationService : Service() {
 
         override fun onPostExecute(s: String) {
             super.onPostExecute(s)
-            //            TODO: fix the service to give notification with data from db
-            //startForeground(12, new Notification());
-            /*prayerTimeCheck = new Timer();
-            prayerTimeCheckTask = new TimerTask() {
-                @Override
-                public void run() {
-                   try {
-                        if (prayer != null) {
-                            if (prayer.getNotificaiton()) {
-                                Log.i("Service", "TimeCheck");
-                                if (prayer.notificationCheckPrayers()) {
-                                    if (prayer.getCurrentPrayerName() == getString(R.string.pSunrise)) {
-//                                if (prayer.getAthan() == null)
-                                        tools.createNotification(getString(R.string.notSunrise), tools.generateRandomNotificationId());
-//                                else
-//                                    tools.createNotification(getString(R.string.notSunrise), prayer.silentAthan, Notification.DEFAULT_LIGHTS);
-                                    } else {
-                                        if (prayer.getAthan() == null)
-                                            tools.createNotification(getString(R.string.notPrayer) + " " + prayer.getCurrentPrayerName(), tools.generateRandomNotificationId());
-                                        else
-                                            tools.createNotification(getString(R.string.notPrayer) + " " + prayer.getCurrentPrayerName(), prayer.getAthan(), Notification.DEFAULT_LIGHTS, tools.generateRandomNotificationId());
-                                    }
-                                    Log.i("Service", "Notificaiton for " + prayer.getCurrentPrayerName());
-                                    // Sleep for 1 Min so only one notification works
-                                    //TimeUnit.MINUTES.sleep(1);
-
-                                    Thread.sleep(60000);
-                                }
-                            }
-                        }
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            };
-            prayerTimeCheck.scheduleAtFixedRate(prayerTimeCheckTask, 1000, 20000);
-        }*/
+            // TODO: fix the service to give notification with data from db
         }
     }
 }

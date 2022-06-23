@@ -19,10 +19,13 @@ import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 import java.util.StringTokenizer;
 
 public class Prayer {
-	private static final String parseClassName = "Prayers";
+	//TODO: fix model class from any dependencies to activity calls or tool manager
+	private              String[] cTime;
+	private static final String   parseClassName = "Prayers";
 	UtilsManager tools;
 	Uri          fullAthan   =
 			Uri.parse("android.resource://com.gals.prayertimes/" + R.raw.fullathan);
@@ -64,21 +67,7 @@ public class Prayer {
 	private String[]          duTime;
 	private String[]          asTime;
 	private String[]          isTime;
-	private String[]          cTime;
 
-	//TODO: fix model class from any dependencies to activity calls or tool manager
-/*    public Prayer(Context activity) {
-        setActivity(activity);
-        tools = new ToolsManager(getActivity());
-//        if (this.getLocalStorage()) {
-//            Log.i("Prayer/Constractor", "Loaded from the Localstorage");
-//        } else {
-//            Log.i("Prayer/Constructor", "There is no date in Localstorage");
-//        }
-
-        // To Convert Strings to Time using Calender instance
-        setCalenderPrayersTime();
-    }*/
 
 	public Prayer() {
 
@@ -143,7 +132,6 @@ public class Prayer {
 		              Integer.parseInt(frTime[0].trim()));
 		fajerTime.set(Calendar.MINUTE,
 		              Integer.parseInt(frTime[1].trim()));
-
 		sunriseTime.set(Calendar.HOUR_OF_DAY,
 		                Integer.parseInt(srTime[0].trim()));
 		sunriseTime.set(Calendar.MINUTE,
@@ -477,7 +465,8 @@ public class Prayer {
 		try {
 
 			currentTime = Calendar.getInstance();
-			cTime = new SimpleDateFormat("HH:mm").format(new Date())
+			cTime = new SimpleDateFormat("HH:mm",
+			                             Locale.US).format(new Date())
 			                                     .split(":");
 
 			currentTime.set(Calendar.HOUR_OF_DAY,
@@ -509,7 +498,7 @@ public class Prayer {
 		try {
 
 			currentTime = Calendar.getInstance();
-			cTime = new SimpleDateFormat("HH:mm").format(new Date())
+			cTime = new SimpleDateFormat("HH:mm",Locale.US).format(new Date())
 			                                     .split(":");
 
 			currentTime.set(Calendar.HOUR_OF_DAY,
@@ -533,7 +522,7 @@ public class Prayer {
 		try {
 			currentTime = Calendar.getInstance();
 
-			cTime = new SimpleDateFormat("HH:mm").format(new Date())
+			cTime = new SimpleDateFormat("HH:mm",Locale.US).format(new Date())
 			                                     .split(":");
 
 			currentTime.set(Calendar.HOUR_OF_DAY,
@@ -597,7 +586,7 @@ public class Prayer {
 	public Boolean notificationCheckPrayers() {
 
 		try {
-			cTime = new SimpleDateFormat("HH:mm").format(new Date())
+			cTime = new SimpleDateFormat("HH:mm",Locale.US).format(new Date())
 			                                     .split(":");
 
 			currentTime = Calendar.getInstance();
