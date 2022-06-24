@@ -9,12 +9,12 @@ android {
         create("release") {
         }
     }
-    compileSdk = 30
+    compileSdk = 31
     buildToolsVersion = "31.0.0"
     defaultConfig {
         applicationId = "com.gals.prayertimes"
         minSdk = 24
-        targetSdk = 30
+        targetSdk = 31
         versionName = "0.9.6"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         versionCode = 16
@@ -34,13 +34,19 @@ android {
     dependenciesInfo {
         includeInApk = true
     }
+
+    dataBinding{
+        isEnabled = true
+    }
 }
 
 dependencies {
     val roomVersion = "2.4.0-alpha03"
+    val lifecycleVersion = "2.4.1"
 
     implementation("androidx.legacy:legacy-support-v4:1.0.0")
     implementation("androidx.recyclerview:recyclerview:1.2.1")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion")
     implementation("androidx.appcompat:appcompat:1.3.1")
     implementation("androidx.constraintlayout:constraintlayout:2.1.1")
     implementation("com.squareup.okhttp3:okhttp:4.9.1")

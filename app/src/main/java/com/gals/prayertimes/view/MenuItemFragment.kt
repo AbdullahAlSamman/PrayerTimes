@@ -1,4 +1,4 @@
-package com.gals.prayertimes.ui
+package com.gals.prayertimes.view
 
 import android.content.Context
 import android.os.Bundle
@@ -11,8 +11,8 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.gals.prayertimes.R
-import com.gals.prayertimes.ui.MenuItemFragment.OnListFragmentInteractionListener
-import com.gals.prayertimes.ui.SettingsMenuContent.SettingsMenuItem
+import com.gals.prayertimes.view.MenuItemFragment.OnListFragmentInteractionListener
+import com.gals.prayertimes.view.SettingsMenuContent.SettingsMenuItem
 
 /**
  * A fragment representing a list of Items.

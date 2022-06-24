@@ -1,4 +1,4 @@
-package com.gals.prayertimes.ui
+package com.gals.prayertimes.view
 
 import android.util.Log
 import android.view.LayoutInflater
@@ -8,8 +8,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.gals.prayertimes.R
-import com.gals.prayertimes.ui.MenuItemFragment.OnListFragmentInteractionListener
-import com.gals.prayertimes.ui.SettingsMenuContent.SettingsMenuItem
+import com.gals.prayertimes.view.MenuItemFragment.OnListFragmentInteractionListener
+import com.gals.prayertimes.view.SettingsMenuContent.SettingsMenuItem
 
 /**
  * [RecyclerView.Adapter] that can display a [SettingsMenuItem] and makes a call to the

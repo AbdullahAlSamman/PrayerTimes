@@ -1,6 +1,6 @@
 @file:Suppress("DEPRECATION")
 
-package com.gals.prayertimes.ui
+package com.gals.prayertimes.view
 
 import android.content.Context
 import android.content.Intent
@@ -14,6 +14,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProviders
 import com.gals.prayertimes.DomainPrayer
 import com.gals.prayertimes.EntityPrayer
 import com.gals.prayertimes.R
@@ -22,6 +23,8 @@ import com.gals.prayertimes.db.AppDB.Companion.getInstance
 import com.gals.prayertimes.db.entities.Prayer.Companion.toDomain
 import com.gals.prayertimes.utils.DataManager
 import com.gals.prayertimes.utils.UtilsManager
+import com.gals.prayertimes.viewmodel.MainViewModel
+import com.gals.prayertimes.viewmodel.MainViewModelFactory
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -29,6 +32,7 @@ import java.util.Timer
 import java.util.TimerTask
 
 class MainActivity : AppCompatActivity() {
+    private lateinit var viewModel: MainViewModel
     lateinit var db: AppDB
     lateinit var background: ImageView
     lateinit var domainPrayer: DomainPrayer
@@ -64,6 +68,12 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        val application = requireNotNull(this).application
+        val factory = MainViewModelFactory()
+        viewModel = ViewModelProviders.of(
+            this,
+            factory
+        ).get(MainViewModel::class.java)
 
         /**Tools and DB*/
         tools = UtilsManager(baseContext)

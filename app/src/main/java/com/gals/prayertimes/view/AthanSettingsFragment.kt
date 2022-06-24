@@ -1,4 +1,4 @@
-package com.gals.prayertimes.ui
+package com.gals.prayertimes.view
 
 import android.annotation.SuppressLint
 import android.content.Context

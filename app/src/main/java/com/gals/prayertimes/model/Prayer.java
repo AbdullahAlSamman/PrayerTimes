@@ -24,6 +24,7 @@ import java.util.StringTokenizer;
 
 public class Prayer {
 	//TODO: fix model class from any dependencies to activity calls or tool manager
+	//TODO: convert to kotlin when it is possible
 	private              String[] cTime;
 	private static final String   parseClassName = "Prayers";
 	UtilsManager tools;

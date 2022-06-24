@@ -1,4 +1,4 @@
-package com.gals.prayertimes.ui
+package com.gals.prayertimes.view
 
 import android.content.Intent
 import android.os.Bundle
@@ -11,11 +11,9 @@ class Splashscreen : AppCompatActivity() {
     lateinit var tools: UtilsManager
     lateinit var toMain: Intent
 
-    //TODO: change to database.
     //TODO: handle exceptions well.
-    //TODO: Testing.
-    //TODO: remove old code.
     //TODO: background services.
+    //TODO: Testing.
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splashscreen)

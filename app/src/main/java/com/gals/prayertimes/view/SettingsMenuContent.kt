@@ -1,4 +1,4 @@
-package com.gals.prayertimes.ui
+package com.gals.prayertimes.view
 
 /**
  * Helper class for providing sample name for user interfaces created by
