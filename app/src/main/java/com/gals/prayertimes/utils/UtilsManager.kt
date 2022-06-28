@@ -169,8 +169,6 @@ class UtilsManager(private val utilsContext: Context) {
             "Prayer/info",
             """
                 ${prayer.objectId}
-                ${prayer.createdAt}
-                ${prayer.updatedAt}
                 ${prayer.sDate}
                 ${prayer.mDate}
                 ${prayer.fajer}
@@ -179,8 +177,6 @@ class UtilsManager(private val utilsContext: Context) {
                 ${prayer.asr}
                 ${prayer.maghrib}
                 ${prayer.isha}
-                ${prayer.notification}
-                ${prayer.notificationType}
                 """.trimIndent()
         )
     }

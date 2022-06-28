@@ -25,7 +25,7 @@ class App : Application() {
                 this,
                 PrayersODNotificationService::class.java
             )
-            startService(pService)
+//            startService(pService)
             Log.i(
                 "App/Service",
                 "Starting new Service"

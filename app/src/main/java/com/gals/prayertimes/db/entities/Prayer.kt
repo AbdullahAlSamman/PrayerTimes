@@ -16,6 +16,7 @@ data class Prayer(
     val maghrib: String,
     val isha: String
 ) {
+
     companion object {
         val EMPTY: Prayer by lazy {
             Prayer(
