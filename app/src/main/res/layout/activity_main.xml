@@ -6,7 +6,7 @@
     <data>
 
         <variable
-            name="vm"
+            name="viewModel"
             type="com.gals.prayertimes.viewmodel.MainViewModel" />
     </data>
 
@@ -50,7 +50,8 @@
                 android:layout_marginStart="10dp"
                 android:layout_marginBottom="14dp"
                 android:columnCount="1"
-                android:rowCount="2">
+                android:rowCount="2"
+                tools:ignore="RelativeOverlap">
 
                 <LinearLayout
                     android:id="@+id/linerRemaining"
@@ -65,7 +66,7 @@
                         android:layout_marginEnd="4dp"
                         android:layout_weight="1"
                         android:fontFamily="@font/arial"
-                        android:text="@string/isha"
+                        android:text = "@{viewModel.currentPrayerName}"
                         android:textAlignment="center"
                         android:textColor="@color/dateTextColor"
                         android:textSize="20dp" />
@@ -132,7 +133,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
                     android:fontFamily="@font/arial"
-                    android:text="@{vm.sFullDate}"
+                    android:text="@{viewModel.sFullDate}"
                     android:textAlignment="center"
                     android:textColor="@color/dateTextColor"
                     android:textSize="20dp"
@@ -144,7 +145,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:fontFamily="@font/arial"
-                    android:text="@{vm.day}"
+                    android:text="@{viewModel.day}"
                     android:textAlignment="center"
                     android:textColor="@color/dateTextColor"
                     android:textDirection="rtl"
@@ -188,7 +189,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:fontFamily="@font/arial"
-                        android:text="@{vm.domainPrayer.isha}"
+                        android:text="@{viewModel.domainPrayer.isha}"
                         android:textAlignment="center"
                         android:textColor="@color/textColor"
                         android:textSize="20dp"
@@ -223,7 +224,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:fontFamily="@font/arial"
-                        android:text="@{vm.domainPrayer.maghrib}"
+                        android:text="@{viewModel.domainPrayer.maghrib}"
                         android:textAlignment="center"
                         android:textColor="@color/textColor"
                         android:textSize="20dp"
@@ -258,7 +259,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:fontFamily="@font/arial"
-                        android:text="@{vm.domainPrayer.asr}"
+                        android:text="@{viewModel.domainPrayer.asr}"
                         android:textAlignment="center"
                         android:textColor="@color/textColor"
                         android:textSize="20dp"
@@ -292,7 +293,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:fontFamily="@font/arial"
-                        android:text="@{vm.domainPrayer.duhr}"
+                        android:text="@{viewModel.domainPrayer.duhr}"
                         android:textAlignment="center"
                         android:textColor="@color/textColor"
                         android:textSize="20dp"
@@ -326,7 +327,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:fontFamily="@font/arial"
-                        android:text="@{vm.domainPrayer.sunrise}"
+                        android:text="@{viewModel.domainPrayer.sunrise}"
                         android:textAlignment="center"
                         android:textColor="@color/textColor"
                         android:textSize="20dp"
@@ -361,7 +362,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:fontFamily="@font/arial"
-                        android:text="@{vm.domainPrayer.fajer}"
+                        android:text="@{viewModel.viewFajerTime}"
                         android:textAlignment="center"
                         android:textColor="@color/textColor"
                         android:textSize="20dp"

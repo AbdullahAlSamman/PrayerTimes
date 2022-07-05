@@ -42,6 +42,6 @@ data class Prayer(
                 isha = this.isha.toString()
             )
 
-        fun Prayer.isValid() = objectId != null && sDate != null
+        fun Prayer.isValid(): Boolean = objectId != null && sDate != null
     }
 }
