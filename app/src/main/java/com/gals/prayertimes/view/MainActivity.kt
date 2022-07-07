@@ -1,14 +1,12 @@
 package com.gals.prayertimes.view
 
 import android.content.Context
-import android.content.Intent
 import android.os.AsyncTask
 import android.os.Bundle
 import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.gals.prayertimes.EntityPrayer
-import com.gals.prayertimes.R
 import com.gals.prayertimes.databinding.ActivityMainBinding
 import com.gals.prayertimes.db.AppDB
 import com.gals.prayertimes.db.AppDB.Companion.getInstance
@@ -51,15 +49,11 @@ class MainActivity : AppCompatActivity() {
             viewModelFactory
         )[MainViewModel::class.java]
 
+        binding.viewModel = viewModel
+
         /**Change Status bar color*/
         tools.changeStatusBarColor(window)
         tools.setActivityLanguage("en")
-        val settingsActivity = Intent(
-            this,
-            Menu::class.java
-        )
-        btnSettings = findViewById(R.id.image_button_settings)
-        btnSettings.setOnClickListener { startActivity(settingsActivity) }
         GetPrayerFromDB().execute(baseContext)
     }
 

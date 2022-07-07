@@ -1,6 +1,7 @@
 package com.gals.prayertimes.viewmodel
 
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import android.os.Handler
 import android.text.format.DateUtils
@@ -16,6 +17,7 @@ import com.gals.prayertimes.db.AppDB
 import com.gals.prayertimes.db.entities.Prayer.Companion.toDomain
 import com.gals.prayertimes.utils.DataManager
 import com.gals.prayertimes.utils.UtilsManager
+import com.gals.prayertimes.view.Menu
 import org.json.JSONArray
 import java.io.BufferedReader
 import java.io.InputStreamReader
@@ -36,20 +38,25 @@ class MainViewModel(
     private lateinit var updateUITimer: Timer
     lateinit var prayer: EntityPrayer
     lateinit var domainPrayer: DomainPrayer
-    var background: ObservableInt = ObservableInt()
+    var backgroundImage: ObservableInt = ObservableInt()
     var btnSettingsResource: ObservableInt = ObservableInt()
-    var sDateBanner: ObservableField<String> = ObservableField()
-    var mDateBanner: ObservableField<String> = ObservableField()
+    var sunDateBanner: ObservableField<String> = ObservableField()
+    var moonDateBanner: ObservableField<String> = ObservableField()
     var nextPrayerTime: ObservableField<String> = ObservableField()
     var nextPrayerText: ObservableField<String> = ObservableField()
     var nextPrayerBanner: ObservableField<String> = ObservableField()
     var currentPrayerName: ObservableField<String> = ObservableField()
     var viewFajerTime: ObservableField<String> = ObservableField()
+    var viewSunriseTime: ObservableField<String> = ObservableField()
+    var viewDuhrTime: ObservableField<String> = ObservableField()
+    var viewAsrTime: ObservableField<String> = ObservableField()
+    var viewMaghribTime: ObservableField<String> = ObservableField()
+    var viewIshaTime: ObservableField<String> = ObservableField()
     var prayerRemainingTimeSectionVisibility: ObservableBoolean = ObservableBoolean()
-    var remainingPrayerTime: String
+    var day:ObservableField<String> = ObservableField()
+    private lateinit var remainingPrayerTime: String
     lateinit var sFullDate: String
     lateinit var mFullDate: String
-    lateinit var day: String
     private lateinit var fajerTime: Calendar
     private var sunriseTime: Calendar = Calendar.getInstance()
     private lateinit var duhrTime: Calendar
@@ -65,7 +72,7 @@ class MainViewModel(
     private lateinit var asTime: Array<String>
     private lateinit var isTime: Array<String>
     private lateinit var cTime: Array<String>
-    var tools: UtilsManager? = null
+    var tools: UtilsManager
     var fullAthan = Uri.parse("android.resource://com.gals.prayertimes/" + R.raw.fullathan)
     var halfAthan = Uri.parse("android.resource://com.gals.prayertimes/" + R.raw.halfathan)
     var silentAthan = Uri.parse("android.resource://com.gals.prayertimes/" + R.raw.silent)
@@ -73,9 +80,7 @@ class MainViewModel(
     var notificationType: String? = null
 
     init {
-        remainingPrayerTime = ""
         tools = UtilsManager(application)
-        viewFajerTime.set("testing")
     }
 
     /**Timer to update the ui*/
@@ -113,8 +118,8 @@ class MainViewModel(
             }
             updateRemainingTime()
             updateBackground()
-            sDateBanner.set(sFullDate)
-            mDateBanner.set(mFullDate)
+            sunDateBanner.set(sFullDate)
+            moonDateBanner.set(mFullDate)
         } catch (e: Exception) {
             Log.i(
                 "SettingsUI Update",
@@ -689,9 +694,9 @@ class MainViewModel(
     private fun updateBackground() {
         if (!isNight) {
             if (isRamadan) {
-                background.set(R.drawable.ramadan_day)
+                backgroundImage.set(R.drawable.ramadan_day)
             } else {
-                background.set(R.drawable.background_day)
+                backgroundImage.set(R.drawable.background_day)
             }
             btnSettingsResource.set(R.drawable.round_settings_black)
             Log.i(
@@ -700,9 +705,9 @@ class MainViewModel(
             )
         } else {
             if (isRamadan) {
-                background.set(R.drawable.ramadan_night)
+                backgroundImage.set(R.drawable.ramadan_night)
             } else {
-                background.set(R.drawable.background_night)
+                backgroundImage.set(R.drawable.background_night)
             }
             btnSettingsResource.set(R.drawable.round_settings_white)
             Log.i(
@@ -714,5 +719,19 @@ class MainViewModel(
 
     fun updateViewObservableValues(prayer: DomainPrayer) {
         viewFajerTime.set(prayer.fajer)
+        viewSunriseTime.set(prayer.sunrise)
+        viewDuhrTime.set(prayer.duhr)
+        viewAsrTime.set(prayer.asr)
+        viewMaghribTime.set(prayer.maghrib)
+        viewIshaTime.set(prayer.isha)
+    }
+
+    fun navigateToSettings() {
+        application.startActivity(
+            Intent(
+                application,
+                Menu::class.java
+            ).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        )
     }
 }

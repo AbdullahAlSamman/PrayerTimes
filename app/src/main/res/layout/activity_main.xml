@@ -22,14 +22,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:contentDescription="@string/descriptions"
-            android:src="@drawable/background_night"
+            android:src="@{viewModel.backgroundImage}"
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageButton
             android:id="@+id/image_button_settings"
             style="@style/MainSettingsImageButtonStyle"
             android:contentDescription="@string/descriptions"
-            android:src="@drawable/round_settings_black"
+            android:onClick="@{()->viewModel.navigateToSettings()}"
+            android:src="@{viewModel.btnSettingsResource}"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -44,24 +45,25 @@
             <TextView
                 android:id="@+id/next_prayer_text"
                 style="@style/MainNextPrayerTextStyle"
-                android:text="@{viewModel.currentPrayerName}"
-                tools:text="@string/text_isha" />
+                android:text="@string/text_isha" />
 
             <TextView
                 android:id="@+id/prayer_text"
                 style="@style/MainPrayerTextStyle"
-                android:text="@string/text_remaining_time" />
+                android:text="@{viewModel.nextPrayerBanner}"
+                tools:text="@string/text_remaining_time" />
         </LinearLayout>
 
 
         <TextView
             android:id="@+id/next_prayer_time_text"
             style="@style/MainNextPrayerTimeTextStyle"
-            android:text="@string/test_time"
+            android:text="@{viewModel.nextPrayerTime}"
             app:layout_constraintBottom_toBottomOf="@+id/background_image"
             app:layout_constraintLeft_toLeftOf="@+id/cell_remaining_time"
             app:layout_constraintRight_toRightOf="@+id/cell_remaining_time"
-            app:layout_constraintTop_toBottomOf="@id/cell_remaining_time" />
+            app:layout_constraintTop_toBottomOf="@id/cell_remaining_time"
+            tools:text="@string/test_time" />
 
         <LinearLayout
             android:id="@+id/cell_date"
@@ -72,7 +74,8 @@
             <TextView
                 android:id="@+id/moon_date_view"
                 style="@style/MainMoonDateViewStyle"
-                android:text="@string/test_moon_date" />
+                android:text="@{viewModel.moonDateBanner}"
+                tools:text="@string/test_moon_date" />
 
             <TextView
                 style="@style/MainDateViewSeparator"
@@ -81,7 +84,7 @@
             <TextView
                 android:id="@+id/sun_date_view"
                 style="@style/MainSunDateViewStyle"
-                android:text="@{viewModel.sFullDate}"
+                android:text="@{viewModel.sunDateBanner}"
                 tools:text="@string/test_sun_date" />
 
             <TextView
@@ -108,7 +111,7 @@
             <TextView
                 android:id="@+id/isha_time_text"
                 style="@style/MainCellPrayerIshaTimeTextStyle"
-                android:text="@{viewModel.domainPrayer.isha}"
+                android:text="@{viewModel.viewIshaTime}"
                 tools:text="@string/test_time" />
 
         </LinearLayout>
@@ -129,7 +132,7 @@
             <TextView
                 android:id="@+id/maghrib_time_text"
                 style="@style/MainCellPrayerMaghribTimeTextStyle"
-                android:text="@{viewModel.domainPrayer.maghrib}"
+                android:text="@{viewModel.viewMaghribTime}"
                 tools:text="@string/test_time" />
 
         </LinearLayout>
@@ -150,7 +153,7 @@
             <TextView
                 android:id="@+id/asr_time_text"
                 style="@style/MainCellPrayerAstTimeTextStyle"
-                android:text="@{viewModel.domainPrayer.asr}"
+                android:text="@{viewModel.viewAsrTime}"
                 tools:text="@string/test_time" />
 
         </LinearLayout>
@@ -170,8 +173,7 @@
             <TextView
                 android:id="@+id/duhr_time_text"
                 style="@style/MainCellPrayerDuhrTimeTextStyle"
-                android:text="@{viewModel.domainPrayer.duhr}"
-                tools:text="@string/test_time" />
+                android:text="@string/test_time" />
 
         </LinearLayout>
 
@@ -190,7 +192,7 @@
             <TextView
                 android:id="@+id/sunrise_time_text"
                 style="@style/MainCellSunriseTimeTextStyle"
-                android:text="@{viewModel.domainPrayer.sunrise}"
+                android:text="@{viewModel.viewSunriseTime}"
                 tools:text="@string/test_time" />
 
         </LinearLayout>
