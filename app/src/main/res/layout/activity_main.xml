@@ -16,362 +16,381 @@
         android:layoutDirection="locale"
         tools:context="com.gals.prayertimes.view.MainActivity">
 
-        <RelativeLayout
+        <ImageView
+            android:id="@+id/background"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/descriptions"
+            android:cropToPadding="true"
+            android:scaleType="fitCenter"
+            android:src="@drawable/background_night"
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <ImageView
-                android:id="@+id/background"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                android:adjustViewBounds="true"
-                android:contentDescription="@string/descriptions"
-                android:cropToPadding="true"
-                android:scaleType="fitCenter"
-                android:src="@drawable/background_night" />
+        <ImageButton
+            android:id="@+id/settingButton"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:background="@null"
+            android:contentDescription="@string/descriptions"
+            android:scaleType="fitXY"
+            android:src="@drawable/round_settings_black"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <ImageButton
-                android:id="@+id/settingButton"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_alignParentEnd="true"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="10dp"
-                android:background="@null"
-                android:scaleType="fitXY"
-                android:src="@drawable/round_settings_black" />
+        <LinearLayout
+            android:id="@+id/linear_remaining"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginBottom="48dp"
+            app:layout_constraintBottom_toBottomOf="@+id/background"
+            app:layout_constraintLeft_toLeftOf="@+id/background">
 
-            <GridLayout
+            <TextView
+                android:id="@+id/nextPrayerText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignBottom="@id/background"
                 android:layout_marginStart="10dp"
-                android:layout_marginBottom="14dp"
-                android:columnCount="1"
-                android:rowCount="2"
-                tools:ignore="RelativeOverlap">
+                android:layout_marginEnd="4dp"
+                android:layout_weight="1"
+                android:fontFamily="@font/arial"
+                android:text="@{viewModel.currentPrayerName, default= @string/isha}"
+                android:textAlignment="center"
+                android:textColor="@color/dateTextColor"
+                android:textSize="20dp"
+                tools:text="@string/isha" />
 
-                <LinearLayout
-                    android:id="@+id/linerRemaining"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
-
-                    <TextView
-                        android:id="@+id/nextPrayerText"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="10dp"
-                        android:layout_marginEnd="4dp"
-                        android:layout_weight="1"
-                        android:fontFamily="@font/arial"
-                        android:text = "@{viewModel.currentPrayerName}"
-                        android:textAlignment="center"
-                        android:textColor="@color/dateTextColor"
-                        android:textSize="20dp" />
-
-                    <TextView
-                        android:id="@+id/prayerText"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="2"
-                        android:fontFamily="@font/arial"
-                        android:text="@string/remaining_time"
-                        android:textAlignment="center"
-                        android:textColor="@color/dateTextColor"
-                        android:textSize="20dp" />
-                </LinearLayout>
-
-
-                <TextView
-                    android:id="@+id/nextTimeText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom|center"
-                    android:layout_marginTop="2dp"
-                    android:layout_marginBottom="2dp"
-                    android:fontFamily="@font/arial"
-                    android:text="@string/ttime"
-                    android:textAlignment="center"
-                    android:textColor="@color/dateTextColor"
-                    android:textSize="22dp" />
-            </GridLayout>
-
-            <LinearLayout
-                android:id="@+id/linearDate"
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/prayerText"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/background"
-                android:layout_marginTop="5dp"
-                android:background="@color/dateColor"
-                android:orientation="horizontal">
+                android:layout_weight="2"
+                android:fontFamily="@font/arial"
+                android:text="@string/remaining_time"
+                android:textAlignment="center"
+                android:textColor="@color/dateTextColor"
+                android:textSize="20dp" />
+        </LinearLayout>
 
 
-                <TextView
-                    android:id="@+id/mDateView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="2"
-                    android:fontFamily="@font/arial"
-                    android:text="@string/testmDate"
-                    android:textAlignment="center"
-                    android:textColor="@color/dateTextColor"
-                    android:textSize="20dp" />
+        <TextView
+            android:id="@+id/nextTimeText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="16dp"
+            android:fontFamily="@font/arial"
+            android:text="@string/ttime"
+            android:textAlignment="center"
+            android:textColor="@color/dateTextColor"
+            android:textSize="22dp"
+            app:layout_constraintBottom_toBottomOf="@+id/background"
+            app:layout_constraintLeft_toLeftOf="@+id/linear_remaining"
+            app:layout_constraintRight_toRightOf="@+id/linear_remaining"
+            app:layout_constraintTop_toBottomOf="@id/linear_remaining" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/separator"
-                    android:textAlignment="center"
-                    android:textColor="@color/dateTextColor"
-                    android:textSize="20dp" />
-
-                <TextView
-                    android:id="@+id/sDateView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="2"
-                    android:fontFamily="@font/arial"
-                    android:text="@{viewModel.sFullDate}"
-                    android:textAlignment="center"
-                    android:textColor="@color/dateTextColor"
-                    android:textSize="20dp"
-                    tools:text="@string/testsDate" />
-
-                <TextView
-                    android:id="@+id/dayView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:fontFamily="@font/arial"
-                    android:text="@{viewModel.day}"
-                    android:textAlignment="center"
-                    android:textColor="@color/dateTextColor"
-                    android:textDirection="rtl"
-                    android:textSize="20dp"
-                    tools:text="@string/testDay" />
+        <LinearLayout
+            android:id="@+id/linear_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/background"
+            android:layout_marginTop="4dp"
+            android:background="@color/dateColor"
+            android:orientation="horizontal"
+            app:layout_constraintTop_toBottomOf="@+id/background">
 
 
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/linearPrayersTime"
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/mDateView"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/linearDate"
+                android:layout_weight="2"
+                android:fontFamily="@font/arial"
+                android:text="@string/testmDate"
+                android:textAlignment="center"
+                android:textColor="@color/dateTextColor"
+                android:textSize="20dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/separator"
+                android:textAlignment="center"
+                android:textColor="@color/dateTextColor"
+                android:textSize="20dp" />
+
+            <TextView
+                android:id="@+id/sDateView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:fontFamily="@font/arial"
+                android:text="@{viewModel.sFullDate,default= @string/testsDate}"
+                android:textAlignment="center"
+                android:textColor="@color/dateTextColor"
+                android:textSize="20dp"
+                tools:text="@string/testsDate" />
+
+            <TextView
+                android:id="@+id/dayView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/arial"
+                android:text="@{viewModel.day,default= @string/testDay}"
+                android:textAlignment="center"
+                android:textColor="@color/dateTextColor"
+                android:textDirection="rtl"
+                android:textSize="20dp"
+                tools:text="@string/testDay" />
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/linear_isha"
+            android:layout_width="0dp"
+            android:layout_height="120dp"
+            android:layout_marginStart="2dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="2dp"
+            android:background="@drawable/view_rectangle_6"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toStartOf="@+id/linear_maghrib"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/linear_date">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:layout_marginTop="5dp"
-                android:orientation="horizontal">
+                android:layout_marginBottom="20dp"
+                android:fontFamily="@font/arial"
+                android:text="@string/isha"
+                android:textAlignment="center"
+                android:textColor="@color/textColor"
+                android:textSize="20dp" />
 
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="120dp"
-                    android:layout_marginStart="2dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/view_rectangle_6"
-                    android:orientation="vertical">
+            <TextView
+                android:id="@+id/ishaTimeText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:fontFamily="@font/arial"
+                android:text="@{viewModel.domainPrayer.isha,default= @string/ttime}"
+                android:textAlignment="center"
+                android:textColor="@color/textColor"
+                android:textSize="20dp"
+                tools:text="@string/ttime" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginBottom="20dp"
-                        android:fontFamily="@font/arial"
-                        android:text="@string/isha"
-                        android:textAlignment="center"
-                        android:textColor="@color/textColor"
-                        android:textSize="20dp" />
-
-                    <TextView
-                        android:id="@+id/ishaTimeText"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:fontFamily="@font/arial"
-                        android:text="@{viewModel.domainPrayer.isha}"
-                        android:textAlignment="center"
-                        android:textColor="@color/textColor"
-                        android:textSize="20dp"
-                        tools:text="@string/ttime" />
-
-                </LinearLayout>
+        </LinearLayout>
 
 
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="120dp"
-                    android:layout_marginStart="2dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/view_rectangle_5"
-                    android:orientation="vertical">
+        <LinearLayout
+            android:id="@+id/linear_maghrib"
+            android:layout_width="0dp"
+            android:layout_height="120dp"
+            android:layout_marginStart="2dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="2dp"
+            android:background="@drawable/view_rectangle_5"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toStartOf="@+id/linear_asr"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/linear_isha"
+            app:layout_constraintTop_toBottomOf="@+id/linear_date">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginBottom="20dp"
-                        android:fontFamily="@font/arial"
-                        android:text="@string/maghrib"
-                        android:textAlignment="center"
-                        android:textColor="@color/textColor"
-                        android:textSize="20dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="20dp"
+                android:fontFamily="@font/arial"
+                android:text="@string/maghrib"
+                android:textAlignment="center"
+                android:textColor="@color/textColor"
+                android:textSize="20dp" />
 
-                    <TextView
-                        android:id="@+id/maghribTimeText"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:fontFamily="@font/arial"
-                        android:text="@{viewModel.domainPrayer.maghrib}"
-                        android:textAlignment="center"
-                        android:textColor="@color/textColor"
-                        android:textSize="20dp"
-                        tools:text="@string/ttime" />
+            <TextView
+                android:id="@+id/maghribTimeText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:fontFamily="@font/arial"
+                android:text="@{viewModel.domainPrayer.maghrib,default= @string/ttime}"
+                android:textAlignment="center"
+                android:textColor="@color/textColor"
+                android:textSize="20dp"
+                tools:text="@string/ttime" />
 
-                </LinearLayout>
+        </LinearLayout>
 
 
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="120dp"
-                    android:layout_marginStart="2dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/view_rectangle_4"
-                    android:orientation="vertical">
+        <LinearLayout
+            android:id="@+id/linear_asr"
+            android:layout_width="0dp"
+            android:layout_height="120dp"
+            android:layout_marginStart="2dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/view_rectangle_4"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toStartOf="@+id/linear_duhr"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/linear_maghrib"
+            app:layout_constraintTop_toBottomOf="@+id/linear_date">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginBottom="20dp"
-                        android:fontFamily="@font/arial"
-                        android:text="@string/asr"
-                        android:textAlignment="center"
-                        android:textColor="@color/textColor"
-                        android:textSize="20dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="20dp"
+                android:fontFamily="@font/arial"
+                android:text="@string/asr"
+                android:textAlignment="center"
+                android:textColor="@color/textColor"
+                android:textSize="20dp" />
 
-                    <TextView
-                        android:id="@+id/asrTimeText"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:fontFamily="@font/arial"
-                        android:text="@{viewModel.domainPrayer.asr}"
-                        android:textAlignment="center"
-                        android:textColor="@color/textColor"
-                        android:textSize="20dp"
-                        tools:text="@string/ttime" />
+            <TextView
+                android:id="@+id/asrTimeText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:fontFamily="@font/arial"
+                android:text="@{viewModel.domainPrayer.asr,default= @string/ttime}"
+                android:textAlignment="center"
+                android:textColor="@color/textColor"
+                android:textSize="20dp"
+                tools:text="@string/ttime" />
 
-                </LinearLayout>
+        </LinearLayout>
 
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="120dp"
-                    android:layout_marginStart="2dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/view_rectangle_3"
-                    android:orientation="vertical">
+        <LinearLayout
+            android:id="@+id/linear_duhr"
+            android:layout_width="0dp"
+            android:layout_height="120dp"
+            android:layout_marginStart="2dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/view_rectangle_3"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toStartOf="@+id/linear_sunrise"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/linear_asr"
+            app:layout_constraintTop_toBottomOf="@+id/linear_date">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginBottom="20dp"
-                        android:fontFamily="@font/arial"
-                        android:text="@string/duhr"
-                        android:textAlignment="center"
-                        android:textColor="@color/textColor"
-                        android:textSize="20dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="20dp"
+                android:fontFamily="@font/arial"
+                android:text="@string/duhr"
+                android:textAlignment="center"
+                android:textColor="@color/textColor"
+                android:textSize="20dp" />
 
-                    <TextView
-                        android:id="@+id/duhrTimeText"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:fontFamily="@font/arial"
-                        android:text="@{viewModel.domainPrayer.duhr}"
-                        android:textAlignment="center"
-                        android:textColor="@color/textColor"
-                        android:textSize="20dp"
-                        tools:text="@string/ttime" />
+            <TextView
+                android:id="@+id/duhrTimeText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:fontFamily="@font/arial"
+                android:text="@{viewModel.domainPrayer.duhr,default= @string/ttime}"
+                android:textAlignment="center"
+                android:textColor="@color/textColor"
+                android:textSize="20dp"
+                tools:text="@string/ttime" />
 
-                </LinearLayout>
+        </LinearLayout>
 
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="120dp"
-                    android:layout_marginStart="2dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/view_rectangle_2"
-                    android:orientation="vertical">
+        <LinearLayout
+            android:id="@+id/linear_sunrise"
+            android:layout_width="0dp"
+            android:layout_height="120dp"
+            android:layout_marginStart="2dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/view_rectangle_2"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toStartOf="@+id/linear_fajer"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/linear_duhr"
+            app:layout_constraintTop_toBottomOf="@+id/linear_date">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginBottom="20dp"
-                        android:fontFamily="@font/arial"
-                        android:text="@string/sunrise"
-                        android:textAlignment="center"
-                        android:textColor="@color/textColor"
-                        android:textSize="20dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="20dp"
+                android:fontFamily="@font/arial"
+                android:text="@string/sunrise"
+                android:textAlignment="center"
+                android:textColor="@color/textColor"
+                android:textSize="20dp" />
 
-                    <TextView
-                        android:id="@+id/sunriseTimeText"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:fontFamily="@font/arial"
-                        android:text="@{viewModel.domainPrayer.sunrise}"
-                        android:textAlignment="center"
-                        android:textColor="@color/textColor"
-                        android:textSize="20dp"
-                        tools:text="@string/ttime" />
+            <TextView
+                android:id="@+id/sunriseTimeText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:fontFamily="@font/arial"
+                android:text="@{viewModel.domainPrayer.sunrise,default= @string/ttime}"
+                android:textAlignment="center"
+                android:textColor="@color/textColor"
+                android:textSize="20dp"
+                tools:text="@string/ttime" />
 
-                </LinearLayout>
+        </LinearLayout>
 
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="120dp"
-                    android:layout_marginStart="2dp"
-                    android:layout_marginEnd="2dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/view_rectangle_1"
-                    android:orientation="vertical">
+        <LinearLayout
+            android:id="@+id/linear_fajer"
+            android:layout_width="0dp"
+            android:layout_height="120dp"
+            android:layout_marginStart="2dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="2dp"
+            android:background="@drawable/view_rectangle_1"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/linear_sunrise"
+            app:layout_constraintTop_toBottomOf="@+id/linear_date">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginBottom="20dp"
-                        android:fontFamily="@font/arial"
-                        android:text="@string/fajer"
-                        android:textAlignment="center"
-                        android:textColor="@color/textColor"
-                        android:textSize="20dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="20dp"
+                android:fontFamily="@font/arial"
+                android:text="@string/fajer"
+                android:textAlignment="center"
+                android:textColor="@color/textColor"
+                android:textSize="20dp" />
 
-                    <TextView
-                        android:id="@+id/fajerTimeText"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:fontFamily="@font/arial"
-                        android:text="@{viewModel.viewFajerTime}"
-                        android:textAlignment="center"
-                        android:textColor="@color/textColor"
-                        android:textSize="20dp"
-                        tools:text="@string/ttime" />
+            <TextView
+                android:id="@+id/fajerTimeText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:fontFamily="@font/arial"
+                android:text="@{viewModel.viewFajerTime, default= @string/ttime}"
+                android:textAlignment="center"
+                android:textColor="@color/textColor"
+                android:textSize="20dp"
+                tools:text="@string/ttime" />
 
-                </LinearLayout>
-            </LinearLayout>
-
-        </RelativeLayout>
+        </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

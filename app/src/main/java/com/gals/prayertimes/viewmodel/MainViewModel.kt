@@ -8,7 +8,6 @@ import android.util.Log
 import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableInt
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.gals.prayertimes.DomainPrayer
 import com.gals.prayertimes.EntityPrayer
@@ -45,9 +44,9 @@ class MainViewModel(
     var nextPrayerText: ObservableField<String> = ObservableField()
     var nextPrayerBanner: ObservableField<String> = ObservableField()
     var currentPrayerName: ObservableField<String> = ObservableField()
-    var viewFajerTime: MutableLiveData<String> = MutableLiveData()
+    var viewFajerTime: ObservableField<String> = ObservableField()
     var prayerRemainingTimeSectionVisibility: ObservableBoolean = ObservableBoolean()
-    lateinit var remainingPrayerTime: String
+    var remainingPrayerTime: String
     lateinit var sFullDate: String
     lateinit var mFullDate: String
     lateinit var day: String
@@ -75,18 +74,18 @@ class MainViewModel(
 
     init {
         remainingPrayerTime = ""
-        viewFajerTime.value = "test"
         tools = UtilsManager(application)
+        viewFajerTime.set("testing")
     }
 
     /**Timer to update the ui*/
-    internal fun startUIUpdate(time: Int = 25000) {
+    internal fun startDateUpdate(time: Int = 25000) {
         val handler = Handler()
         val timerTask: TimerTask = object : TimerTask() {
             override fun run() {
                 handler.post {
                     try {
-                        setSettingsUI()
+                        updateDateUIObservables()
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
@@ -102,7 +101,7 @@ class MainViewModel(
     }
 
     /**Set data on the UI Elements*/
-    internal fun setSettingsUI() {
+    internal fun updateDateUIObservables() {
         try {
             buildDateTexts()
             Log.i(
@@ -714,6 +713,6 @@ class MainViewModel(
     }
 
     fun updateViewObservableValues(prayer: DomainPrayer) {
-        viewFajerTime.value = prayer.fajer
+        viewFajerTime.set(prayer.fajer)
     }
 }

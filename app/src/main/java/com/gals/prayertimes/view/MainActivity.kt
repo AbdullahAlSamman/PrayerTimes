@@ -6,9 +6,7 @@ import android.os.AsyncTask
 import android.os.Bundle
 import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
-import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
-import com.gals.prayertimes.DomainPrayer
 import com.gals.prayertimes.EntityPrayer
 import com.gals.prayertimes.R
 import com.gals.prayertimes.databinding.ActivityMainBinding
@@ -28,7 +26,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var viewModelFactory: MainViewModelFactory
     private lateinit var binding: ActivityMainBinding
     lateinit var db: AppDB
-    lateinit var domainPrayer: DomainPrayer
     lateinit var prayer: EntityPrayer
     lateinit var tools: UtilsManager
     lateinit var btnSettings: ImageButton
@@ -41,10 +38,8 @@ class MainActivity : AppCompatActivity() {
         db = getInstance(baseContext)
 
         /** View Model Factory and data binding*/
-        binding = DataBindingUtil.setContentView(
-            this,
-            R.layout.activity_main
-        )
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         binding.lifecycleOwner = this
 
         viewModelFactory = MainViewModelFactory(
@@ -81,10 +76,6 @@ class MainActivity : AppCompatActivity() {
         )
     }
 
-    private fun convertEntityToDomain() {
-        domainPrayer = prayer.toDomain()
-    }
-
     /**
      * Get data from db.
      */
@@ -105,10 +96,9 @@ class MainActivity : AppCompatActivity() {
 
         override fun onPostExecute(s: String?) {
             super.onPostExecute(s)
-            convertEntityToDomain()
             viewModel.updateViewObservableValues(prayer.toDomain())
             viewModel.domainPrayer = prayer.toDomain()
-            viewModel.startUIUpdate()
+            viewModel.startDateUpdate()
         }
     }
 }
