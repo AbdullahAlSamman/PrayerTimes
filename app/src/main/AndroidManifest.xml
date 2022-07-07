@@ -44,7 +44,7 @@
 
         <activity
             android:name=".view.Menu"
-            android:label="@string/settingsTitle" />
+            android:label="@string/text_settings_title" />
 
         <service
             android:name=".services.PrayersODNotificationService"

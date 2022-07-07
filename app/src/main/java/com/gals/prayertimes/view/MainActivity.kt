@@ -58,7 +58,7 @@ class MainActivity : AppCompatActivity() {
             this,
             Menu::class.java
         )
-        btnSettings = findViewById(R.id.settingButton)
+        btnSettings = findViewById(R.id.image_button_settings)
         btnSettings.setOnClickListener { startActivity(settingsActivity) }
         GetPrayerFromDB().execute(baseContext)
     }

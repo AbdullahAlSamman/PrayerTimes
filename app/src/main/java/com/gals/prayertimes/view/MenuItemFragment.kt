@@ -47,17 +47,17 @@ class MenuItemFragment : Fragment() {
         val m1 = SettingsMenuItem(
             1,
             R.drawable.notifications_active_black_48,
-            getString(R.string.alarmSettings)
+            getString(R.string.text_alarm_settings)
         )
         val m2 = SettingsMenuItem(
             2,
             R.drawable.import_contacts_black_48,
-            getString(R.string.settingsPrivacyPolicy)
+            getString(R.string.text_settings_privacy_policy)
         )
         val m3 = SettingsMenuItem(
             3,
             R.drawable.info_black_48,
-            getString(R.string.settingsAboutUs)
+            getString(R.string.text_settings_about_us)
         )
         items.add(m1)
         items.add(m2)

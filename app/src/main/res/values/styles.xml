@@ -1,12 +1,9 @@
 <resources>
 
-    <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/ishaViewColor</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-        <!--<item name="android:supportsRtl">true</item>-->
+        <item name="colorPrimary">@color/background_color_time_isha</item>
+        <item name="colorPrimaryDark">@color/color_primary_dark</item>
+        <item name="colorAccent">@color/color_primary_accent</item>
         <item name="android:layoutDirection">ltr</item>
     </style>
 
@@ -19,12 +16,270 @@
     </style>
 
     <style name="FullscreenActionBarStyle" parent="Widget.AppCompat.ActionBar">
-        <item name="android:background">@color/fajerViewColor</item>
+        <item name="android:background">@color/background_color_time_fajer</item>
     </style>
 
-    <style name="fontForSmallDevices">
+    <style name="MainTextStyle">
+
+    </style>
+
+    <style name="FontForSmallDevices">
         <item name="android:fontFamily">@font/arial</item>
-        <item name="android:textSize">16dp</item>
+        <item name="android:textSize">@dimen/text_font_size_small</item>
+    </style>
+
+    <style name="TextLightStyle">
+        <item name="android:fontFamily">@font/arial</item>
+        <item name="android:textSize">@dimen/text_font_size_medium</item>
+        <item name="android:textColor">@color/text_color_secondary_white</item>
+    </style>
+
+    <style name="TextDarkStyle">
+        <item name="android:fontFamily">@font/arial</item>
+        <item name="android:textSize">@dimen/text_font_size_medium</item>
+        <item name="android:textColor">@color/text_color_primary_black</item>
+    </style>
+
+    <style name="MainBackgroundImageStyle">
+        <item name="android:adjustViewBounds">true</item>
+        <item name="android:cropToPadding">true</item>
+        <item name="android:scaleType">fitCenter</item>
+    </style>
+
+    <style name="MainSettingsImageButtonStyle">
+        <item name="android:layout_width">@dimen/settings_image_button_size</item>
+        <item name="android:layout_height">@dimen/settings_image_button_size</item>
+        <item name="android:layout_alignParentEnd">true</item>
+        <item name="android:layout_marginTop">@dimen/settings_image_button_margin</item>
+        <item name="android:layout_marginEnd">@dimen/settings_image_button_margin</item>
+        <item name="android:background">@null</item>
+        <item name="android:scaleType">fitXY</item>
+    </style>
+
+    <style name="MainLinearRemainingPrayerNameStyle">
+        <item name="android:layout_marginStart">24dp</item>
+        <item name="android:layout_marginBottom">48dp</item>
+    </style>
+
+    <style name="MainNextPrayerTextStyle" parent="TextLightStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginStart">10dp</item>
+        <item name="android:layout_marginEnd">4dp</item>
+        <item name="android:textAlignment">center</item>
+    </style>
+
+    <style name="MainPrayerTextStyle" parent="TextLightStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textAlignment">center</item>
+    </style>
+
+    <style name="MainNextPrayerTimeTextStyle" parent="TextLightStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">2dp</item>
+        <item name="android:layout_marginBottom">16dp</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:textSize">@dimen/text_font_size_large</item>
+    </style>
+
+    <style name="MainLinearlayoutDateStyle">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_below">@+id/background_image</item>
+        <item name="android:layout_marginTop">4dp</item>
+        <item name="android:background">@color/background_color_view_date</item>
+        <item name="android:orientation">horizontal</item>
+    </style>
+
+    <style name="MainMoonDateViewStyle" parent="TextLightStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">2</item>
+        <item name="android:textAlignment">center</item>
+    </style>
+
+    <style name="MainDateViewSeparator" parent="TextLightStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textAlignment">center</item>
+    </style>
+
+    <style name="MainSunDateViewStyle" parent="TextLightStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">2</item>
+        <item name="android:textAlignment">center</item>
+    </style>
+
+    <style name="MainDayDateViewStyle" parent="TextLightStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:textDirection">rtl</item>
+    </style>
+
+    <style name="MainCellPrayerIshaStyle">
+        <item name="android:layout_width">@dimen/layout_width_cell_prayer</item>
+        <item name="android:layout_height">@dimen/layout_height_cell_prayer</item>
+        <item name="android:layout_marginStart">@dimen/margin_start_end_between_prayer</item>
+        <item name="android:layout_marginTop">@dimen/margin_top_cell_prayer</item>
+        <item name="android:layout_marginEnd">@dimen/margin_start_end_between_prayer</item>
+        <item name="android:background">@drawable/view_prayer_rectangle</item>
+        <item name="android:backgroundTint">@color/background_color_time_isha</item>
+        <item name="android:orientation">vertical</item>
+    </style>
+
+    <style name="MainCellPrayerIshaTextStyle" parent="TextDarkStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:layout_marginTop">@dimen/margin_top_cell_prayer_text</item>
+        <item name="android:layout_marginBottom">@dimen/margin_bottom_cell_prayer_text</item>
+        <item name="android:textAlignment">center</item>
+    </style>
+
+    <style name="MainCellPrayerIshaTimeTextStyle" parent="TextDarkStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:textAlignment">center</item>
+    </style>
+
+    <style name="MainCellPrayerMaghribStyle">
+        <item name="android:layout_width">@dimen/layout_width_cell_prayer</item>
+        <item name="android:layout_height">@dimen/layout_height_cell_prayer</item>
+        <item name="android:layout_marginStart">@dimen/margin_start_end_between_prayer</item>
+        <item name="android:layout_marginTop">@dimen/margin_top_cell_prayer</item>
+        <item name="android:layout_marginEnd">@dimen/margin_start_end_between_prayer</item>
+        <item name="android:background">@drawable/view_prayer_rectangle</item>
+        <item name="android:backgroundTint">@color/background_color_time_maghrib</item>
+        <item name="android:orientation">vertical</item>
+    </style>
+
+    <style name="MainCellPrayerMaghribTextStyle" parent="TextDarkStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:layout_marginTop">@dimen/margin_top_cell_prayer_text</item>
+        <item name="android:layout_marginBottom">@dimen/margin_bottom_cell_prayer_text</item>
+        <item name="android:textAlignment">center</item>
+    </style>
+
+    <style name="MainCellPrayerMaghribTimeTextStyle" parent="TextDarkStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:textAlignment">center</item>
+    </style>
+
+    <style name="MainCellPrayerAsrStyle">
+        <item name="android:layout_width">@dimen/layout_width_cell_prayer</item>
+        <item name="android:layout_height">@dimen/layout_height_cell_prayer</item>
+        <item name="android:layout_marginStart">@dimen/margin_start_end_between_prayer</item>
+        <item name="android:layout_marginTop">@dimen/margin_top_cell_prayer</item>
+        <item name="android:layout_marginEnd">@dimen/margin_start_end_between_prayer</item>
+        <item name="android:background">@drawable/view_prayer_rectangle</item>
+        <item name="android:backgroundTint">@color/background_color_time_asr</item>
+        <item name="android:orientation">vertical</item>
+    </style>
+
+    <style name="MainCellPrayerAsrTextStyle" parent="TextDarkStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:layout_marginTop">@dimen/margin_top_cell_prayer_text</item>
+        <item name="android:layout_marginBottom">@dimen/margin_bottom_cell_prayer_text</item>
+        <item name="android:textAlignment">center</item>
+    </style>
+
+    <style name="MainCellPrayerAstTimeTextStyle" parent="TextDarkStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:textAlignment">center</item>
+    </style>
+
+    <style name="MainCellPrayerDuhrStyle">
+        <item name="android:layout_width">@dimen/layout_width_cell_prayer</item>
+        <item name="android:layout_height">@dimen/layout_height_cell_prayer</item>
+        <item name="android:layout_marginStart">@dimen/margin_start_end_between_prayer</item>
+        <item name="android:layout_marginTop">@dimen/margin_top_cell_prayer</item>
+        <item name="android:layout_marginEnd">@dimen/margin_start_end_between_prayer</item>
+        <item name="android:background">@drawable/view_prayer_rectangle</item>
+        <item name="android:backgroundTint">@color/background_color_time_duhr</item>
+        <item name="android:orientation">vertical</item>
+    </style>
+
+    <style name="MainCellPrayerDuhrTextStyle" parent="TextDarkStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:layout_marginTop">@dimen/margin_top_cell_prayer_text</item>
+        <item name="android:layout_marginBottom">@dimen/margin_bottom_cell_prayer_text</item>
+        <item name="android:textAlignment">center</item>
+    </style>
+
+    <style name="MainCellPrayerDuhrTimeTextStyle" parent="TextDarkStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:textAlignment">center</item>
+    </style>
+
+    <style name="MainCellPrayerSunriseStyle">
+        <item name="android:layout_width">@dimen/layout_width_cell_prayer</item>
+        <item name="android:layout_height">@dimen/layout_height_cell_prayer</item>
+        <item name="android:layout_marginStart">@dimen/margin_start_end_between_prayer</item>
+        <item name="android:layout_marginTop">@dimen/margin_top_cell_prayer</item>
+        <item name="android:layout_marginEnd">@dimen/margin_start_end_between_prayer</item>
+        <item name="android:background">@drawable/view_prayer_rectangle</item>
+        <item name="android:backgroundTint">@color/background_color_time_sunrise</item>
+        <item name="android:orientation">vertical</item>
+    </style>
+
+    <style name="MainCellPrayerSunriseTextStyle" parent="TextDarkStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:layout_marginTop">@dimen/margin_top_cell_prayer_text</item>
+        <item name="android:layout_marginBottom">@dimen/margin_bottom_cell_prayer_text</item>
+        <item name="android:textAlignment">center</item>
+    </style>
+
+    <style name="MainCellSunriseTimeTextStyle" parent="TextDarkStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:textAlignment">center</item>
+    </style>
+
+    <style name="MainCellPrayerFajerStyle">
+        <item name="android:layout_width">@dimen/layout_width_cell_prayer</item>
+        <item name="android:layout_height">@dimen/layout_height_cell_prayer</item>
+        <item name="android:layout_marginStart">@dimen/margin_start_end_between_prayer</item>
+        <item name="android:layout_marginTop">@dimen/margin_top_cell_prayer</item>
+        <item name="android:layout_marginEnd">@dimen/margin_start_end_between_prayer</item>
+        <item name="android:background">@drawable/view_prayer_rectangle</item>
+        <item name="android:backgroundTint">@color/background_color_time_fajer</item>
+        <item name="android:orientation">vertical</item>
+    </style>
+
+    <style name="MainCellPrayerFajerTextStyle" parent="TextDarkStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:layout_marginTop">@dimen/margin_top_cell_prayer_text</item>
+        <item name="android:layout_marginBottom">@dimen/margin_bottom_cell_prayer_text</item>
+        <item name="android:textAlignment">center</item>
+    </style>
+
+    <style name="MainCellPrayerFajerTimeTextStyle" parent="TextDarkStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:textAlignment">center</item>
     </style>
 
 </resources>

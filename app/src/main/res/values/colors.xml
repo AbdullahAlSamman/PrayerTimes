@@ -1,18 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
-    <color name="dateColor">#757272</color>
-    <color name="dateTextColor">#FFFFFF</color>
-    <color name="fajerViewColor">#42BEE3</color>
-    <color name="sunreiseViewColor">#FDBA13</color>
-    <color name="doherViewColor">#E6DF18</color>
-    <color name="asserViewColor">#FDD700</color>
-    <color name="magrebViewColor">#F47421</color>
-    <color name="ishaViewColor">#4E7D87</color>
-    <color name="textColor">#000000</color>
-    <color name="actionColor">#333366</color>
+    <color name="color_primary">#3F51B5</color>
+    <color name="color_primary_dark">#303F9F</color>
+    <color name="color_primary_accent">#FF4081</color>
+    <color name="color_primary_action">#333366</color>
+    <color name="background_color_view_date">#757272</color>
+    <color name="background_color_time_fajer">#42BEE3</color>
+    <color name="background_color_time_sunrise">#FDBA13</color>
+    <color name="background_color_time_duhr">#E6DF18</color>
+    <color name="background_color_time_asr">#FDD700</color>
+    <color name="background_color_time_maghrib">#F47421</color>
+    <color name="background_color_time_isha">#4E7D87</color>
+    <color name="text_color_primary_black">#000000</color>
+    <color name="text_color_secondary_white">#FFFFFF</color>
     <color name="black_overlay">#66000000</color>
-
 </resources>

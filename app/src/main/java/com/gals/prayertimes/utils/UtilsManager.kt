@@ -135,7 +135,7 @@ class UtilsManager(private val utilsContext: Context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
             window.statusBarColor = utilsContext.resources
-                .getColor(R.color.ishaViewColor)
+                .getColor(R.color.background_color_time_isha)
         }
     }
 

@@ -156,11 +156,11 @@ class MainViewModel(
             if (isNextAPrayer) {
                 nextPrayerTime.set(remainingPrayerTime)
                 nextPrayerText.set(currentPrayerName.toString())
-                nextPrayerBanner.set(application.getString(R.string.remmaning_prayer_time))
+                nextPrayerBanner.set(application.getString(R.string.text_remaining_prayer_time))
             } else {
                 nextPrayerTime.set(remainingPrayerTime)
                 nextPrayerText.set(currentPrayerName.toString())
-                nextPrayerBanner.set(application.getString(R.string.remaining_time))
+                nextPrayerBanner.set(application.getString(R.string.text_remaining_time))
             }
             prayerRemainingTimeSectionVisibility.set(true)
         } else {
@@ -299,49 +299,49 @@ class MainViewModel(
                     fajerTime,
                     currentTime
                 )
-                currentPrayerName.set(application.getString(R.string.pFajer))
+                currentPrayerName.set(application.getString(R.string.text_prayer_fajer))
                 true
             } else if (currentTime.before(sunriseTime)) {
                 remainingPrayerTime = tools!!.difTimes(
                     sunriseTime,
                     currentTime
                 )
-                currentPrayerName.set(application.getString(R.string.pDSunrise))
+                currentPrayerName.set(application.getString(R.string.text_prayer_day_sunrise))
                 true
             } else if (currentTime.before(duhrTime)) {
                 remainingPrayerTime = tools!!.difTimes(
                     duhrTime,
                     currentTime
                 )
-                currentPrayerName.set(application.getString(R.string.pDuhr))
+                currentPrayerName.set(application.getString(R.string.text_prayer_duhr))
                 true
             } else if (currentTime.before(asrTime)) {
                 remainingPrayerTime = tools!!.difTimes(
                     asrTime,
                     currentTime
                 )
-                currentPrayerName.set(application.getString(R.string.pAsr))
+                currentPrayerName.set(application.getString(R.string.text_prayer_asr))
                 true
             } else if (currentTime.before(sunsetTime)) {
                 remainingPrayerTime = tools!!.difTimes(
                     sunsetTime,
                     currentTime
                 )
-                currentPrayerName.set(application.getString(R.string.pMaghrib))
+                currentPrayerName.set(application.getString(R.string.text_prayer_maghrib))
                 true
             } else if (currentTime.before(ishaTime)) {
                 remainingPrayerTime = tools!!.difTimes(
                     ishaTime,
                     currentTime
                 )
-                currentPrayerName.set(application.getString(R.string.pIsha))
+                currentPrayerName.set(application.getString(R.string.text_prayer_isha))
                 true
             } else if (currentTime.before(midNightTime) || currentTime == midNightTime) {
                 remainingPrayerTime = tools!!.difTimes(
                     midNightTime,
                     currentTime
                 )
-                currentPrayerName.set(application.getString(R.string.midnight_title))
+                currentPrayerName.set(application.getString(R.string.text_midnight_time_title))
                 true
             } else {
                 Log.e(
@@ -400,7 +400,7 @@ class MainViewModel(
                     fajerTime,
                     currentTime
                 )
-                currentPrayerName.set(application.getString(R.string.pFajer))
+                currentPrayerName.set(application.getString(R.string.text_prayer_fajer))
                 true
             } else if (tools!!.isEqualTime(
                     currentTime,
@@ -419,7 +419,7 @@ class MainViewModel(
                     sunriseTime,
                     currentTime
                 )
-                currentPrayerName.set(application.getString(R.string.pSunrise))
+                currentPrayerName.set(application.getString(R.string.text_prayer_sunrise))
                 true
             } else if (tools!!.isEqualTime(
                     currentTime,
@@ -438,7 +438,7 @@ class MainViewModel(
                     duhrTime,
                     currentTime
                 )
-                currentPrayerName.set(application.getString(R.string.pDuhr))
+                currentPrayerName.set(application.getString(R.string.text_prayer_duhr))
                 true
             } else if (tools!!.isEqualTime(
                     currentTime,
@@ -457,7 +457,7 @@ class MainViewModel(
                     asrTime,
                     currentTime
                 )
-                currentPrayerName.set(application.getString(R.string.pAsr))
+                currentPrayerName.set(application.getString(R.string.text_prayer_asr))
                 true
             } else if (tools!!.isEqualTime(
                     currentTime,
@@ -476,7 +476,7 @@ class MainViewModel(
                     sunsetTime,
                     currentTime
                 )
-                currentPrayerName.set(application.getString(R.string.pMaghrib))
+                currentPrayerName.set(application.getString(R.string.text_prayer_maghrib))
                 true
             } else if (tools!!.isEqualTime(
                     currentTime,
@@ -495,7 +495,7 @@ class MainViewModel(
                     ishaTime!!,
                     currentTime
                 )
-                currentPrayerName.set(application.getString(R.string.pIsha))
+                currentPrayerName.set(application.getString(R.string.text_prayer_isha))
                 true
             } else {
                 currentPrayerName.set("")
@@ -519,13 +519,13 @@ class MainViewModel(
             var mmdate = " "
             val calendar = Calendar.getInstance()
             when (calendar[Calendar.DAY_OF_WEEK]) {
-                Calendar.SATURDAY -> day = application.getString(R.string.dSat)
-                Calendar.SUNDAY -> day = application.getString(R.string.dSun)
-                Calendar.MONDAY -> day = application.getString(R.string.dMon)
-                Calendar.TUESDAY -> day = application.getString(R.string.dTue)
-                Calendar.WEDNESDAY -> day = application.getString(R.string.dWeb)
-                Calendar.THURSDAY -> day = application.getString(R.string.dThr)
-                Calendar.FRIDAY -> day = application.getString(R.string.dFri)
+                Calendar.SATURDAY -> day = application.getString(R.string.text_day_sat)
+                Calendar.SUNDAY -> day = application.getString(R.string.text_day_sun)
+                Calendar.MONDAY -> day = application.getString(R.string.text_day_mon)
+                Calendar.TUESDAY -> day = application.getString(R.string.text_day_tue)
+                Calendar.WEDNESDAY -> day = application.getString(R.string.text_day_web)
+                Calendar.THURSDAY -> day = application.getString(R.string.text_day_thr)
+                Calendar.FRIDAY -> day = application.getString(R.string.text_day_fri)
                 else -> {}
             }
             val sdate = StringTokenizer(
@@ -539,33 +539,33 @@ class MainViewModel(
             ssdate = sdate.nextToken() + " "
             mmdate = mdate.nextToken() + " "
             when (sdate.nextToken().toInt()) {
-                1 -> ssdate += application.getString(R.string.sMonthJan)
-                2 -> ssdate += application.getString(R.string.sMonthFeb)
-                3 -> ssdate += application.getString(R.string.sMonthMar)
-                4 -> ssdate += application.getString(R.string.sMonthApr)
-                5 -> ssdate += application.getString(R.string.sMonthMay)
-                6 -> ssdate += application.getString(R.string.sMonthJun)
-                7 -> ssdate += application.getString(R.string.sMonthJul)
-                8 -> ssdate += application.getString(R.string.sMonthAug)
-                9 -> ssdate += application.getString(R.string.sMonthSep)
-                10 -> ssdate += application.getString(R.string.sMonthOct)
-                11 -> ssdate += application.getString(R.string.sMonthNov)
-                12 -> ssdate += application.getString(R.string.sMonthDec)
+                1 -> ssdate += application.getString(R.string.text_sun_month_jan)
+                2 -> ssdate += application.getString(R.string.text_sun_month_feb)
+                3 -> ssdate += application.getString(R.string.text_sun_month_mar)
+                4 -> ssdate += application.getString(R.string.text_sun_month_apr)
+                5 -> ssdate += application.getString(R.string.text_sun_month_may)
+                6 -> ssdate += application.getString(R.string.text_sun_month_jun)
+                7 -> ssdate += application.getString(R.string.text_sun_month_jul)
+                8 -> ssdate += application.getString(R.string.text_sun_month_aug)
+                9 -> ssdate += application.getString(R.string.text_sun_month_sep)
+                10 -> ssdate += application.getString(R.string.text_sun_month_oct)
+                11 -> ssdate += application.getString(R.string.text_sun_month_nov)
+                12 -> ssdate += application.getString(R.string.text_sun_month_dec)
                 else -> {}
             }
             when (mdate.nextToken().toInt()) {
-                1 -> mmdate += application.getString(R.string.mMonthMuhram)
-                2 -> mmdate += application.getString(R.string.mMonthSafer)
-                3 -> mmdate += application.getString(R.string.mMonthRabiAoul)
-                4 -> mmdate += application.getString(R.string.mMonthRabiAker)
-                5 -> mmdate += application.getString(R.string.mMonthGamadaAoul)
-                6 -> mmdate += application.getString(R.string.mMonthGamadaAker)
-                7 -> mmdate += application.getString(R.string.mMonthRajb)
-                8 -> mmdate += application.getString(R.string.mMonthShaban)
-                9 -> mmdate += application.getString(R.string.mMonthRamadan)
-                10 -> mmdate += application.getString(R.string.mMonthShual)
-                11 -> mmdate += application.getString(R.string.mMonthZoKada)
-                12 -> mmdate += application.getString(R.string.mMonthZoHaga)
+                1 -> mmdate += application.getString(R.string.text_moon_month_muhram)
+                2 -> mmdate += application.getString(R.string.text_moon_month_safer)
+                3 -> mmdate += application.getString(R.string.text_moon_month_rabi_aoul)
+                4 -> mmdate += application.getString(R.string.text_moon_month_rabi_aker)
+                5 -> mmdate += application.getString(R.string.text_moon_month_gamada_aoul)
+                6 -> mmdate += application.getString(R.string.text_moon_month_gamada_aker)
+                7 -> mmdate += application.getString(R.string.text_moon_month_rajb)
+                8 -> mmdate += application.getString(R.string.text_moon_month_shaban)
+                9 -> mmdate += application.getString(R.string.text_moon_month_ramadan)
+                10 -> mmdate += application.getString(R.string.text_moon_month_shual)
+                11 -> mmdate += application.getString(R.string.text_moon_month_zo_kada)
+                12 -> mmdate += application.getString(R.string.text_moon_month_zo_haga)
                 else -> {}
             }
             ssdate = ssdate + " " + sdate.nextToken()

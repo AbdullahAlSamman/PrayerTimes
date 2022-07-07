@@ -1,4 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <dimen name="settings_image_button_size">50dp</dimen>
+    <dimen name="settings_image_button_margin">12dp</dimen>
     <dimen name="text_margin">16dp</dimen>
+    <dimen name="text_font_size_medium">20dp</dimen>
+    <dimen name="text_font_size_small">16dp</dimen>
+    <dimen name="text_font_size_large">22dp</dimen>
+    <dimen name="margin_start_end_between_prayer">2dp</dimen>
+    <dimen name="margin_top_cell_prayer">8dp</dimen>
+    <dimen name="margin_top_cell_prayer_text">5dp</dimen>
+    <dimen name="margin_bottom_cell_prayer_text">20dp</dimen>
+    <dimen name="layout_width_cell_prayer">0dp</dimen>
+    <dimen name="layout_height_cell_prayer">120dp</dimen>
 </resources>
