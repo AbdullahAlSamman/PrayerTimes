@@ -22,17 +22,19 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:contentDescription="@string/descriptions"
-            android:src="@{viewModel.backgroundImage}"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:imageResource="@{viewModel.backgroundImage}"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@drawable/background_night" />
 
         <ImageButton
             android:id="@+id/image_button_settings"
             style="@style/MainSettingsImageButtonStyle"
             android:contentDescription="@string/descriptions"
             android:onClick="@{()->viewModel.navigateToSettings()}"
-            android:src="@{viewModel.btnSettingsResource}"
+            app:imageResource="@{viewModel.btnSettingsResource}"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src = "@drawable/round_settings_white"/>
 
         <LinearLayout
             android:id="@+id/cell_remaining_time"
@@ -45,7 +47,8 @@
             <TextView
                 android:id="@+id/next_prayer_text"
                 style="@style/MainNextPrayerTextStyle"
-                android:text="@string/text_isha" />
+                android:text="@{viewModel.currentPrayerName}"
+                tools:text="@string/text_isha" />
 
             <TextView
                 android:id="@+id/prayer_text"
@@ -90,7 +93,7 @@
             <TextView
                 android:id="@+id/day_date_view"
                 style="@style/MainDayDateViewStyle"
-                android:text="@{viewModel.day}"
+                android:text="@{viewModel.viewDayName}"
                 tools:text="@string/test_day" />
 
         </LinearLayout>

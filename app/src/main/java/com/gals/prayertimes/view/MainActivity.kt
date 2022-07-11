@@ -3,7 +3,6 @@ package com.gals.prayertimes.view
 import android.content.Context
 import android.os.AsyncTask
 import android.os.Bundle
-import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.gals.prayertimes.EntityPrayer
@@ -26,34 +25,14 @@ class MainActivity : AppCompatActivity() {
     lateinit var db: AppDB
     lateinit var prayer: EntityPrayer
     lateinit var tools: UtilsManager
-    lateinit var btnSettings: ImageButton
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         //TODO: Internet warning
+        configureTools()
+        configureDataBinding()
+        configureMVVM()
+        configureUI()
 
-        /**Tools and DB*/
-        tools = UtilsManager(baseContext)
-        db = getInstance(baseContext)
-
-        /** View Model Factory and data binding*/
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-        binding.lifecycleOwner = this
-
-        viewModelFactory = MainViewModelFactory(
-            application = this.applicationContext,
-            database = db
-        )
-        viewModel = ViewModelProvider(
-            this,
-            viewModelFactory
-        )[MainViewModel::class.java]
-
-        binding.viewModel = viewModel
-
-        /**Change Status bar color*/
-        tools.changeStatusBarColor(window)
-        tools.setActivityLanguage("en")
         GetPrayerFromDB().execute(baseContext)
     }
 
@@ -68,6 +47,7 @@ class MainActivity : AppCompatActivity() {
             "",
             ""
         )
+        viewModel.startDateUpdate()
     }
 
     /**
@@ -91,8 +71,36 @@ class MainActivity : AppCompatActivity() {
         override fun onPostExecute(s: String?) {
             super.onPostExecute(s)
             viewModel.updateViewObservableValues(prayer.toDomain())
-            viewModel.domainPrayer = prayer.toDomain()
             viewModel.startDateUpdate()
         }
+    }
+
+    private fun configureMVVM() {
+        viewModelFactory = MainViewModelFactory(
+            application = this.applicationContext,
+            database = db
+        )
+        viewModel = ViewModelProvider(
+            this,
+            viewModelFactory
+        )[MainViewModel::class.java]
+
+        binding.viewModel = viewModel
+    }
+
+    private fun configureDataBinding() {
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        binding.lifecycleOwner = this
+    }
+
+    private fun configureUI() {
+        tools.changeStatusBarColor(window)
+        tools.setActivityLanguage("en")
+    }
+
+    private fun configureTools() {
+        tools = UtilsManager(baseContext)
+        db = getInstance(baseContext)
     }
 }
