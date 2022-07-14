@@ -20,16 +20,8 @@ import com.gals.prayertimes.db.entities.Settings
 import com.gals.prayertimes.services.MusicPlayer
 import com.gals.prayertimes.services.PrayersODNotificationService
 import com.gals.prayertimes.utils.UtilsManager
-import java.util.Objects
+import java.util.*
 
-/**
- * A simple [Fragment] subclass.
- * Activities that contain this fragment must implement the
- * [AthanSettingsFragment.OnFragmentInteractionListener] interface
- * to handle interaction events.
- * Use the [AthanSettingsFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class AthanSettingsFragment : Fragment() {
     lateinit var db: AppDB
     lateinit var musicFullAthanIntent: Intent
@@ -46,19 +38,12 @@ class AthanSettingsFragment : Fragment() {
     var playerFullAthanOn = false
     var playerHalfAthanOn = false
 
-    //Default Params
-    private var mParam1: String? = null
-    private var mParam2: String? = null
     private var mListener: OnFragmentInteractionListener? = null
     private var settings: Settings? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         db = getInstance(requireActivity().baseContext)
         GetSettingsFromDB().execute(this.context)
-        if (arguments != null) {
-            mParam1 = requireArguments().getString(ARG_PARAM1)
-            mParam2 = requireArguments().getString(ARG_PARAM2)
-        }
     }
 
     override fun onCreateView(
@@ -167,7 +152,7 @@ class AthanSettingsFragment : Fragment() {
         } else {
             throw RuntimeException(
                 context.toString()
-                    + " must implement OnFragmentInteractionListener"
+                        + " must implement OnFragmentInteractionListener"
             )
         }
     }
@@ -230,7 +215,7 @@ class AthanSettingsFragment : Fragment() {
         @Deprecated("Deprecated in Java")
         override fun doInBackground(vararg params: Context?): String? {
             try {
-                settings = Objects.requireNonNull(db.settingsDao())?.settings
+                settings = Objects.requireNonNull(db.settingsDao).settings
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -253,7 +238,7 @@ class AthanSettingsFragment : Fragment() {
         @Deprecated("Deprecated in Java")
         override fun doInBackground(vararg params: Context?): String? {
             try {
-                Objects.requireNonNull(db.settingsDao())?.update(settings)
+                Objects.requireNonNull(db.settingsDao).update(settings)
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -261,50 +246,14 @@ class AthanSettingsFragment : Fragment() {
         }
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     *
-     *
-     * See the Android Training lesson [Communicating with Other Fragments](http://developer.android.com/training/basics/fragments/communicating.html) for more information.
-     */
     interface OnFragmentInteractionListener {
         // Update argument type and name
         fun onFragmentInteraction(uri: Uri?)
     }
 
     companion object {
-        // the fragment initialization parameters
-        private const val ARG_PARAM1 = "param1"
-        private const val ARG_PARAM2 = "param2"
+        fun newInstance(): AthanSettingsFragment =
+            AthanSettingsFragment()
 
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment AthanSettingsFragment.
-         */
-        //Rename and change types and number of parameters
-        fun newInstance(
-            param1: String?,
-            param2: String?
-        ): AthanSettingsFragment {
-            val fragment = AthanSettingsFragment()
-            val args = Bundle()
-            args.putString(
-                ARG_PARAM1,
-                param1
-            )
-            args.putString(
-                ARG_PARAM2,
-                param2
-            )
-            fragment.arguments = args
-            return fragment
-        }
     }
 }

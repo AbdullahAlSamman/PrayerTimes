@@ -128,7 +128,7 @@ class MainViewModel(
                 )
 
                 dataManager.run {
-                    prayer = database.prayerDao()?.findByDate(
+                    prayer = database.prayerDao.findByDate(
                         SimpleDateFormat(
                             "dd.MM.yyyy",
                             Locale.US

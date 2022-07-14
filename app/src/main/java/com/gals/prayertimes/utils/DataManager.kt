@@ -64,7 +64,7 @@ class DataManager(
                     savePrayer(prayer)
                 }
             }
-            if (!db.settingsDao()?.isExists!!) {
+            if (!db.settingsDao.isExists) {
                 saveSettings(
                     Settings(
                         false,
@@ -89,7 +89,7 @@ class DataManager(
 
     private fun savePrayer(prayer: EntityPrayer?) {
         try {
-            db.prayerDao()?.insert(prayer)
+            db.prayerDao.insert(prayer)
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -97,7 +97,7 @@ class DataManager(
 
     private fun saveSettings(settings: Settings?) {
         try {
-            db.settingsDao()?.insert(settings)
+            db.settingsDao.insert(settings)
         } catch (e: Exception) {
             e.printStackTrace()
         }

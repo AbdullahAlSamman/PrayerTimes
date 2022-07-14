@@ -56,7 +56,7 @@ class MainActivity : AppCompatActivity() {
     inner class GetPrayerFromDB : AsyncTask<Context?, String?, String?>() {
         override fun doInBackground(vararg params: Context?): String? {
             try {
-                prayer = db.prayerDao()?.findByDate(
+                prayer = db.prayerDao.findByDate(
                     SimpleDateFormat(
                         "dd.MM.yyyy",
                         Locale.US

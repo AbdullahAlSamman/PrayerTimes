@@ -21,7 +21,7 @@ abstract class AppDB : RoomDatabase() {
      *
      * @return the Prayer dao
      */
-    abstract fun prayerDao(): PrayerDao?
+    abstract val prayerDao: PrayerDao
 
     /**
      * Settings dao.
@@ -29,7 +29,7 @@ abstract class AppDB : RoomDatabase() {
      *
      * @return the Settings dao
      */
-    abstract fun settingsDao(): SettingsDao?
+    abstract val settingsDao: SettingsDao
 
     companion object {
         private const val DB_NAME = "prayers-db"

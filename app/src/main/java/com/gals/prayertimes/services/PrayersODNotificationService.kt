@@ -88,7 +88,7 @@ class PrayersODNotificationService : Service() {
 
     inner class GetPrayerFromDB : AsyncTask<Context?, String?, String>() {
         override fun doInBackground(vararg params: Context?): String {
-            prayer = getInstance(baseContext).prayerDao()!!.findByDate(
+            prayer = getInstance(baseContext).prayerDao.findByDate(
                 SimpleDateFormat(
                     "dd.MM.yyyy",
                     Locale.US
