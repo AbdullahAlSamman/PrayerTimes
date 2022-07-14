@@ -1,6 +1,7 @@
 package com.gals.prayertimes.network
 
 import retrofit2.Call
+import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
@@ -8,14 +9,21 @@ import retrofit2.http.Path
 
 interface PrayerService {
     @GET("api/prayer/{today_date}")
-    fun getTodayPrayer(@Path("today_date") date: String): Call<List<NetworkPrayer>>
-}
+    suspend fun getTodayPrayer(@Path("today_date") date: String): Response<List<NetworkPrayer>>
 
-object PrayerServerData {
-    private val retrofit = Retrofit.Builder()
-        .baseUrl("http://prayersapi.scienceontheweb.net/")
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
+    companion object {
+        var service: PrayerService? = null
 
-    val prayer = retrofit.create(PrayerService::class.java)
+        fun getInstance(): PrayerService? {
+            if (service == null) {
+                val retrofit = Retrofit.Builder()
+                    .baseUrl("http://prayersapi.scienceontheweb.net/")
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build()
+
+                service = retrofit.create(PrayerService::class.java)
+            }
+            return service
+        }
+    }
 }
