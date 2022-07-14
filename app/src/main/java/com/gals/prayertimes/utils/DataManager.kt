@@ -11,14 +11,18 @@ import com.gals.prayertimes.db.AppDB
 import com.gals.prayertimes.db.AppDB.Companion.getInstance
 import com.gals.prayertimes.db.entities.Prayer.Companion.isValid
 import com.gals.prayertimes.db.entities.Settings
+import com.gals.prayertimes.network.NetworkPrayer
+import com.gals.prayertimes.network.PrayerServerData
 import org.json.JSONArray
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
 import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
+import java.util.*
 
 class DataManager(
     intent: Intent?,
@@ -58,7 +62,7 @@ class DataManager(
                 todayDate
             )
             if (tools.isNetworkAvailable) {
-                val prayer = getPrayerFromServer(todayDate)
+                val prayer = getPrayerFromServerRetro(todayDate)
                 if (prayer.isValid()) {
                     tools.printTest(prayer)
                     savePrayer(prayer)
@@ -82,8 +86,8 @@ class DataManager(
         super.onPostExecute(s)
         /**Change the course of events for update or splashscreen*/
         if (!updateDate) {
-            toMain.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
-            activity!!.startActivity(toMain)
+//            toMain.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
+//            activity!!.startActivity(toMain)
         }
     }
 
@@ -135,6 +139,32 @@ class DataManager(
         } catch (e1: Exception) {
             e1.printStackTrace()
         }
+        return prayer
+    }
+
+    private fun getPrayerFromServerRetro(todayDate: String): EntityPrayer {
+        val result = PrayerServerData.prayer.getTodayPrayer(todayDate)
+        var prayer: EntityPrayer = EntityPrayer.EMPTY
+
+        result.enqueue(object : Callback<List<NetworkPrayer>> {
+            override fun onResponse(
+                call: Call<List<NetworkPrayer>>,
+                response: Response<List<NetworkPrayer>>
+            ) {
+                if (response.isSuccessful) {
+
+                    prayer = response.body()!!.first().toEntity()
+                    db.prayerDao.insert(prayer)
+                }
+            }
+
+            override fun onFailure(call: Call<List<NetworkPrayer>>, t: Throwable) {
+                Log.e("DataManager Retrofit", t.message.toString())
+            }
+
+        }
+        )
+
         return prayer
     }
 }

@@ -9,22 +9,22 @@ import com.gals.prayertimes.EntityPrayer
 import com.gals.prayertimes.databinding.ActivityMainBinding
 import com.gals.prayertimes.db.AppDB
 import com.gals.prayertimes.db.AppDB.Companion.getInstance
-import com.gals.prayertimes.db.entities.Prayer.Companion.toDomain
+import com.gals.prayertimes.db.entities.Prayer.Companion.isValid
 import com.gals.prayertimes.utils.DataManager
 import com.gals.prayertimes.utils.UtilsManager
+import com.gals.prayertimes.utils.toDomain
 import com.gals.prayertimes.viewmodel.MainViewModel
-import com.gals.prayertimes.viewmodel.MainViewModelFactory
+import com.gals.prayertimes.viewmodel.factory.MainViewModelFactory
 import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
+import java.util.*
 
 class MainActivity : AppCompatActivity() {
     private lateinit var viewModel: MainViewModel
     private lateinit var viewModelFactory: MainViewModelFactory
     private lateinit var binding: ActivityMainBinding
     lateinit var db: AppDB
-    lateinit var prayer: EntityPrayer
     lateinit var tools: UtilsManager
+    var prayer: EntityPrayer = EntityPrayer.EMPTY
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         //TODO: Internet warning
@@ -62,6 +62,9 @@ class MainActivity : AppCompatActivity() {
                         Locale.US
                     ).format(Date())
                 )!!
+                if (prayer.isValid().not()) {
+                    prayer = EntityPrayer.EMPTY
+                }
             } catch (e: Exception) {
                 e.printStackTrace()
             }

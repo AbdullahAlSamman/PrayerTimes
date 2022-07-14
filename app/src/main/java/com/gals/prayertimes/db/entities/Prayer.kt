@@ -32,18 +32,6 @@ data class Prayer(
             )
         }
 
-        fun Prayer.toDomain(): DomainPrayer = DomainPrayer(
-            this.objectId,
-            this.sDate,
-            this.mDate,
-            this.fajer,
-            this.sunrise,
-            this.duhr,
-            this.asr,
-            this.maghrib,
-            this.isha
-        )
-
         fun Prayer.isValid(): Boolean = this.objectId != null && this.sDate != null
     }
 }

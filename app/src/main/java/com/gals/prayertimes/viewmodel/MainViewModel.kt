@@ -12,17 +12,12 @@ import com.gals.prayertimes.DomainPrayer
 import com.gals.prayertimes.EntityPrayer
 import com.gals.prayertimes.R
 import com.gals.prayertimes.db.AppDB
-import com.gals.prayertimes.db.entities.Prayer.Companion.toDomain
 import com.gals.prayertimes.utils.DataManager
 import com.gals.prayertimes.utils.UtilsManager
+import com.gals.prayertimes.utils.toDomain
 import com.gals.prayertimes.view.Menu
 import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Date
-import java.util.Locale
-import java.util.StringTokenizer
-import java.util.Timer
-import java.util.TimerTask
+import java.util.*
 
 class MainViewModel(
     private val application: Context,
@@ -117,7 +112,7 @@ class MainViewModel(
         /** update the data from server if the date is changed*/
         if (tools.isNetworkAvailable) {
             try {
-               val dataManager = DataManager(
+                val dataManager = DataManager(
                     null,
                     application.applicationContext,
                     true
