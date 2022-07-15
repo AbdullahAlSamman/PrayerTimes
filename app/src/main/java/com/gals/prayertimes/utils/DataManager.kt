@@ -25,21 +25,16 @@ class DataManager(
     updateData: Boolean
 ) : AsyncTask<String?, Void?, String?>() {
     @SuppressLint("StaticFieldLeak")
-    private var activity: Context? = null
+    private val activity: Context? = activity!!
     private lateinit var toMain: Intent
     private lateinit var todayDate: String
-    private val updateDate: Boolean
-    private val tools: UtilsManager
-    private val db: AppDB
+    private val tools: UtilsManager = UtilsManager(activity!!)
+    private val db: AppDB = getInstance(activity!!)
 
     init {
         if (intent != null) {
             this.toMain = intent
         }
-        this.activity = activity
-        this.updateDate = updateData
-        this.tools = activity?.let { UtilsManager(it) }!!
-        this.db = getInstance(activity)
     }
 
     @Deprecated("Deprecated in Java")
@@ -57,11 +52,7 @@ class DataManager(
                 todayDate
             )
             if (tools.isNetworkAvailable()) {
-                val prayer = getPrayerFromServer(todayDate)
-                if (prayer.isValid()) {
-                    tools.printTest(prayer)
-                    savePrayer(prayer)
-                }
+              /**Done*/
             }
             if (!db.settingsDao.isExists) {
                 saveSettings(
@@ -75,15 +66,6 @@ class DataManager(
             e.printStackTrace()
         }
         return null
-    }
-
-    override fun onPostExecute(s: String?) {
-        super.onPostExecute(s)
-        /**Change the course of events for update or splashscreen*/
-        if (!updateDate) {
-            toMain.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
-            activity!!.startActivity(toMain)
-        }
     }
 
     private fun savePrayer(prayer: EntityPrayer?) {

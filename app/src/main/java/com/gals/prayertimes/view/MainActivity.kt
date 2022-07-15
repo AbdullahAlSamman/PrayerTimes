@@ -10,7 +10,6 @@ import com.gals.prayertimes.databinding.ActivityMainBinding
 import com.gals.prayertimes.db.AppDB
 import com.gals.prayertimes.db.AppDB.Companion.getInstance
 import com.gals.prayertimes.db.entities.Prayer.Companion.isValid
-import com.gals.prayertimes.utils.DataManager
 import com.gals.prayertimes.utils.UtilsManager
 import com.gals.prayertimes.utils.toDomain
 import com.gals.prayertimes.viewmodel.MainViewModel
@@ -38,16 +37,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        DataManager(
-            null,
-            this.baseContext,
-            true
-        ).execute(
-            "",
-            "",
-            ""
-        )
-        viewModel.startDateUpdate()
+        viewModel.updateDateUIObservables()
     }
 
     /**

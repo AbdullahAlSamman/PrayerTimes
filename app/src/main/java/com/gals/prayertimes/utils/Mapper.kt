@@ -3,6 +3,8 @@ package com.gals.prayertimes.utils
 import com.gals.prayertimes.DomainPrayer
 import com.gals.prayertimes.EntityPrayer
 import com.gals.prayertimes.network.NetworkPrayer
+import java.text.SimpleDateFormat
+import java.util.*
 
 fun EntityPrayer.toDomain(): DomainPrayer = DomainPrayer(
     this.objectId,
@@ -27,3 +29,8 @@ fun NetworkPrayer.toEntity(): EntityPrayer = EntityPrayer(
     maghrib = this.maghrib,
     isha = this.isha
 )
+
+fun getTodayDate(): String = SimpleDateFormat(
+    "dd.MM.yyyy",
+    Locale.US
+).format(Date())

@@ -45,7 +45,6 @@ class Splashscreen : AppCompatActivity() {
 
     private fun configureMVVM() {
         viewModelFactory = SplashscreenViewModelFactory(
-            database = db,
             repository = Repository(db, PrayerService.getInstance())
         )
         viewModel = ViewModelProvider(

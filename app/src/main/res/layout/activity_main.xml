@@ -176,7 +176,8 @@
             <TextView
                 android:id="@+id/duhr_time_text"
                 style="@style/MainCellPrayerDuhrTimeTextStyle"
-                android:text="@string/test_time" />
+                android:text="@{viewModel.viewDuhrTime}"
+                tools:text="@string/test_time" />
 
         </LinearLayout>
 

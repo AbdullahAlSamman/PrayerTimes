@@ -8,22 +8,32 @@ import android.util.Log
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableInt
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.gals.prayertimes.DomainPrayer
 import com.gals.prayertimes.EntityPrayer
 import com.gals.prayertimes.R
 import com.gals.prayertimes.db.AppDB
-import com.gals.prayertimes.utils.DataManager
+import com.gals.prayertimes.network.PrayerService
+import com.gals.prayertimes.utils.Repository
 import com.gals.prayertimes.utils.UtilsManager
+import com.gals.prayertimes.utils.getTodayDate
 import com.gals.prayertimes.utils.toDomain
 import com.gals.prayertimes.view.Menu
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.*
 
 class MainViewModel(
     private val application: Context,
-    private val database: AppDB
+    private val database: AppDB,
 ) : ViewModel() {
     private val tools: UtilsManager = UtilsManager(application)
+    private val repository: Repository = Repository(
+        database = database,
+        prayerService = PrayerService.getInstance()
+    )
     private var sunriseTime: Calendar = Calendar.getInstance()
     private var midNightTime: Calendar = Calendar.getInstance()
     private lateinit var updateUITimer: Timer
@@ -41,9 +51,6 @@ class MainViewModel(
     private lateinit var asTime: Array<String>
     private lateinit var isTime: Array<String>
     private lateinit var cTime: Array<String>
-    private lateinit var prayer: EntityPrayer
-    private lateinit var sFullDate: String
-    private lateinit var mFullDate: String
     var domainPrayer: DomainPrayer = DomainPrayer.EMPTY
     var backgroundImage: ObservableInt = ObservableInt()
     var btnSettingsResource: ObservableInt = ObservableInt()
@@ -69,6 +76,7 @@ class MainViewModel(
         viewAsrTime.set(prayer.asr)
         viewMaghribTime.set(prayer.maghrib)
         viewIshaTime.set(prayer.isha)
+        buildDateTexts()
     }
 
     fun navigateToSettings() {
@@ -106,7 +114,6 @@ class MainViewModel(
     /**Set data on the UI Elements*/
     internal fun updateDateUIObservables() {
         try {
-            buildDateTexts()
             Log.i(
                 "isChangeTheDayTest",
                 "" + isDayHasChanged(domainPrayer.sDate)
@@ -114,13 +121,12 @@ class MainViewModel(
             if (isDayHasChanged(domainPrayer.sDate)) {
                 updatePrayers()
             }
+            buildDateTexts()
             updateRemainingTime()
             updateBackground()
-            sunDateBanner.set(sFullDate)
-            moonDateBanner.set(mFullDate)
         } catch (e: Exception) {
             Log.i(
-                "SettingsUI Update",
+                "Data Update UI",
                 "there is no data at all"
             )
             e.printStackTrace()
@@ -130,28 +136,14 @@ class MainViewModel(
     private fun updatePrayers() {
         /** update the data from server if the date is changed*/
         if (tools.isNetworkAvailable()) {
-            try {
-                val dataManager = DataManager(
-                    null,
-                    application.applicationContext,
-                    true
-                ).execute(
-                    "",
-                    "",
-                    ""
-                )
-
-                dataManager.run {
-                    prayer = database.prayerDao.findByDate(
-                        SimpleDateFormat(
-                            "dd.MM.yyyy",
-                            Locale.US
-                        ).format(Date())
-                    )!!
-                    domainPrayer = prayer.toDomain()
+            viewModelScope.launch {
+                withContext(Dispatchers.IO) {
+                    if (repository.refreshPrayer(getTodayDate())) {
+                        domainPrayer = repository.refreshPrayerFromDB(getTodayDate())!!.toDomain()
+                        buildDateTexts()
+                        updateViewObservableValues(domainPrayer)
+                    }
                 }
-            } catch (e: Exception) {
-                e.printStackTrace()
             }
         }
     }
@@ -540,10 +532,10 @@ class MainViewModel(
                 12 -> mmdate += application.getString(R.string.text_moon_month_zo_haga)
                 else -> {}
             }
-            ssdate = ssdate + " " + sdate.nextToken()
-            mmdate = mmdate + " " + mdate.nextToken()
-            mFullDate = mmdate
-            sFullDate = ssdate
+            ssdate += " " + sdate.nextToken()
+            mmdate += " " + mdate.nextToken()
+            moonDateBanner.set(mmdate)
+            sunDateBanner.set(ssdate)
             true
         } catch (e: java.lang.Exception) {
             e.printStackTrace()
