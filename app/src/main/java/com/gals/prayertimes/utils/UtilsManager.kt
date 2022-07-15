@@ -1,24 +1,18 @@
 package com.gals.prayertimes.utils
 
-import android.app.Activity
 import android.app.ActivityManager
 import android.content.Context
-import android.content.Intent
 import android.content.res.Configuration
 import android.net.ConnectivityManager
-import android.os.Build
 import android.util.Log
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
 import com.gals.prayertimes.DomainPrayer
+import com.gals.prayertimes.EntityPrayer
 import com.gals.prayertimes.R
-import com.gals.prayertimes.db.entities.Prayer
 import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Date
-import java.util.Locale
-import java.util.Random
+import java.util.*
 import kotlin.math.ceil
 
 class UtilsManager(private val utilsContext: Context) {
@@ -47,7 +41,9 @@ class UtilsManager(private val utilsContext: Context) {
             "yyyy",
             Locale.US
         ).format(Date())
-        return convert2Decimal(todayDay) + "." + convert2Decimal(todayMonth) + "." + convert2Decimal(todayYear)
+        return convert2Decimal(todayDay) + "." +
+                convert2Decimal(todayMonth) + "." +
+                convert2Decimal(todayYear)
     }
 
     fun setActivityLanguage(lang: String) {
@@ -96,57 +92,46 @@ class UtilsManager(private val utilsContext: Context) {
         return "$hours:$minutes"
     }
 
-    val isNetworkAvailable: Boolean
-        get() {
-            val connectivityManager = utilsContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-            val activeNetworkInfo = connectivityManager.activeNetworkInfo
-            return activeNetworkInfo != null && activeNetworkInfo.isConnected
-        }
+    fun isNetworkAvailable(): Boolean {
+        val connectivityManager =
+            utilsContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val activeNetworkInfo = connectivityManager.activeNetworkInfo
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected
+    }
 
-    //in Right To Left layout
-    val isRTL: Boolean
-        get() {
-            val config = utilsContext.resources
-                .configuration
-            return if (config.layoutDirection == View.LAYOUT_DIRECTION_RTL) {
-                config.setLayoutDirection(Locale("ar"))
-                utilsContext.resources
-                    .updateConfiguration(
-                        config,
-                        utilsContext.resources
-                            .displayMetrics
-                    )
-                //in Right To Left layout
-                Log.i(
-                    "RTL",
-                    "The Language is RTL"
+    /**Check right to left layout*/
+    fun isRTL(): Boolean {
+        val config = utilsContext.resources
+            .configuration
+        return if (config.layoutDirection == View.LAYOUT_DIRECTION_RTL) {
+            config.setLayoutDirection(Locale("ar"))
+            utilsContext.resources
+                .updateConfiguration(
+                    config,
+                    utilsContext.resources
+                        .displayMetrics
                 )
-                true
-            } else {
-                Log.i(
-                    "RTL",
-                    "The Language is LTR"
-                )
-                false
-            }
-        }
-
-    fun changeStatusBarColor(window: Window) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-            window.statusBarColor = utilsContext.resources
-                .getColor(R.color.background_color_time_isha)
+            Log.i(
+                "RTL",
+                "The Language is RTL"
+            )
+            true
+        } else {
+            Log.i(
+                "RTL",
+                "The Language is LTR"
+            )
+            false
         }
     }
 
-    val isScreenSmall: Boolean
-        get() {
-            val density = utilsContext.resources
-                .displayMetrics.density.toDouble()
-            return density <= 1.5
-        }
+    fun changeStatusBarColor(window: Window) {
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+        window.statusBarColor = utilsContext.resources
+            .getColor(R.color.background_color_time_isha)
+    }
 
-    fun printTest(prayer: Prayer) {
+    fun printTest(prayer: EntityPrayer) {
         Log.i(
             "Prayer/info",
             """
@@ -181,39 +166,8 @@ class UtilsManager(private val utilsContext: Context) {
         )
     }
 
-    @Deprecated("")
-    fun generateRandomNotificationId(): Int {
-        val rand = Random()
-        return rand.nextInt(5000 - 1000 + 1) + 1000
-    }
-
-    @Deprecated("")
-    fun restartActivity(
-        currentActivity: Context,
-        activityToStart: Class<out Activity?>?
-    ) {
-        val intent = Intent(
-            currentActivity,
-            activityToStart
-        )
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
-        currentActivity.startActivity(intent)
-    }
-
     companion object {
-        private val VIBRATION_PATTERN = longArrayOf(
-            100,
-            200,
-            300,
-            400,
-            500,
-            400,
-            300,
-            200,
-            400
-        )
-
-        fun convert2Decimal(number: String): String? {
+        fun convert2Decimal(number: String): String {
             try {
                 val chars = CharArray(number.length)
                 for (i in number.indices) {
@@ -229,7 +183,7 @@ class UtilsManager(private val utilsContext: Context) {
             } catch (e: Exception) {
                 e.printStackTrace()
             }
-            return null
+            return ""
         }
     }
 }

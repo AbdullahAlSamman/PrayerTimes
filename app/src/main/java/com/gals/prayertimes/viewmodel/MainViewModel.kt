@@ -44,7 +44,7 @@ class MainViewModel(
     private lateinit var prayer: EntityPrayer
     private lateinit var sFullDate: String
     private lateinit var mFullDate: String
-    lateinit var domainPrayer: DomainPrayer
+    var domainPrayer: DomainPrayer = DomainPrayer.EMPTY
     var backgroundImage: ObservableInt = ObservableInt()
     var btnSettingsResource: ObservableInt = ObservableInt()
     var sunDateBanner: ObservableField<String> = ObservableField()
@@ -60,6 +60,25 @@ class MainViewModel(
     var viewAsrTime: ObservableField<String> = ObservableField()
     var viewMaghribTime: ObservableField<String> = ObservableField()
     var viewIshaTime: ObservableField<String> = ObservableField()
+
+    fun updateViewObservableValues(prayer: DomainPrayer) {
+        domainPrayer = prayer
+        viewFajerTime.set(prayer.fajer)
+        viewSunriseTime.set(prayer.sunrise)
+        viewDuhrTime.set(prayer.duhr)
+        viewAsrTime.set(prayer.asr)
+        viewMaghribTime.set(prayer.maghrib)
+        viewIshaTime.set(prayer.isha)
+    }
+
+    fun navigateToSettings() {
+        application.startActivity(
+            Intent(
+                application,
+                Menu::class.java
+            ).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        )
+    }
 
     /**Timer to update the ui*/
     internal fun startDateUpdate(time: Int = 25000) {
@@ -110,7 +129,7 @@ class MainViewModel(
 
     private fun updatePrayers() {
         /** update the data from server if the date is changed*/
-        if (tools.isNetworkAvailable) {
+        if (tools.isNetworkAvailable()) {
             try {
                 val dataManager = DataManager(
                     null,
@@ -468,8 +487,8 @@ class MainViewModel(
 
     private fun buildDateTexts(): Boolean {
         return try {
-            var ssdate = " "
-            var mmdate = " "
+            lateinit var ssdate: String
+            lateinit var mmdate: String
             val calendar = Calendar.getInstance()
             when (calendar[Calendar.DAY_OF_WEEK]) {
                 Calendar.SATURDAY -> viewDayName.set(application.getString(R.string.text_day_sat))
@@ -662,24 +681,5 @@ class MainViewModel(
                 "Night time"
             )
         }
-    }
-
-    fun updateViewObservableValues(prayer: DomainPrayer) {
-        domainPrayer = prayer
-        viewFajerTime.set(prayer.fajer)
-        viewSunriseTime.set(prayer.sunrise)
-        viewDuhrTime.set(prayer.duhr)
-        viewAsrTime.set(prayer.asr)
-        viewMaghribTime.set(prayer.maghrib)
-        viewIshaTime.set(prayer.isha)
-    }
-
-    fun navigateToSettings() {
-        application.startActivity(
-            Intent(
-                application,
-                Menu::class.java
-            ).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        )
     }
 }

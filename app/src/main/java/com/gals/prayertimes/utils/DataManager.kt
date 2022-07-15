@@ -49,14 +49,14 @@ class DataManager(
                 "dd.MM.yyyy",
                 Locale.US
             ).format(Date())
-            if (tools.isRTL) {
+            if (tools.isRTL()) {
                 todayDate = tools.convertDate()
             }
             Log.i(
                 "DataManager/Info:",
                 todayDate
             )
-            if (tools.isNetworkAvailable) {
+            if (tools.isNetworkAvailable()) {
                 val prayer = getPrayerFromServer(todayDate)
                 if (prayer.isValid()) {
                     tools.printTest(prayer)

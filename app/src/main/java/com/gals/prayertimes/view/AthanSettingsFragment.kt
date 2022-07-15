@@ -23,23 +23,23 @@ import com.gals.prayertimes.utils.UtilsManager
 import java.util.*
 
 class AthanSettingsFragment : Fragment() {
-    lateinit var db: AppDB
-    lateinit var musicFullAthanIntent: Intent
-    lateinit var musicHalfAthanIntent: Intent
-    lateinit var tools: UtilsManager
-    lateinit var radioGroup: CustomRadioGroup
-    lateinit var radioFullAthan: RadioButton
-    lateinit var radioHalfAthan: RadioButton
-    lateinit var radioToneAthan: RadioButton
-    lateinit var radioSilentAthan: RadioButton
-    lateinit var playFullAthan: ImageButton
-    lateinit var playHalfAthan: ImageButton
-    lateinit var turnOnAlarm: Switch
-    var playerFullAthanOn = false
-    var playerHalfAthanOn = false
-
+    private lateinit var db: AppDB
+    private lateinit var musicFullAthanIntent: Intent
+    private lateinit var musicHalfAthanIntent: Intent
+    private lateinit var tools: UtilsManager
+    private lateinit var radioGroup: CustomRadioGroup
+    private lateinit var radioFullAthan: RadioButton
+    private lateinit var radioHalfAthan: RadioButton
+    private lateinit var radioToneAthan: RadioButton
+    private lateinit var radioSilentAthan: RadioButton
+    private lateinit var playFullAthan: ImageButton
+    private lateinit var playHalfAthan: ImageButton
     private var mListener: OnFragmentInteractionListener? = null
     private var settings: Settings? = null
+    private var playerHalfAthanOn = false
+    private var playerFullAthanOn = false
+    lateinit var turnOnAlarm: Switch
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         db = getInstance(requireActivity().baseContext)
@@ -95,7 +95,7 @@ class AthanSettingsFragment : Fragment() {
             "athanType",
             R.raw.halfathan
         )
-        playFullAthan.setOnClickListener(View.OnClickListener {
+        playFullAthan.setOnClickListener {
             if (!playerFullAthanOn) {
                 playerFullAthanOn = true
                 playHalfAthan.isEnabled = false
@@ -107,20 +107,20 @@ class AthanSettingsFragment : Fragment() {
                 context?.stopService(musicFullAthanIntent)
                 playFullAthan.setImageResource(android.R.drawable.ic_media_play)
             }
-        })
-        playHalfAthan.setOnClickListener(View.OnClickListener {
+        }
+        playHalfAthan.setOnClickListener {
             if (!playerHalfAthanOn) {
-                playFullAthan.setEnabled(false)
+                playFullAthan.isEnabled = false
                 playerHalfAthanOn = true
                 context?.startService(musicHalfAthanIntent)
                 playHalfAthan.setImageResource(android.R.drawable.ic_media_pause)
             } else if (playerHalfAthanOn) {
                 playerHalfAthanOn = false
-                playFullAthan.setEnabled(true)
+                playFullAthan.isEnabled = true
                 context?.stopService(musicHalfAthanIntent)
                 playHalfAthan.setImageResource(android.R.drawable.ic_media_play)
             }
-        })
+        }
 
         /** Inflate the layout for this fragment*/
         return view

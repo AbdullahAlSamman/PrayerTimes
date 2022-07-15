@@ -28,16 +28,15 @@ class SplashscreenViewModel(
         viewModelScope.launch {
             loading.postValue(true)
             val response = repository.getPrayer(todayDate)
-            withContext(Dispatchers.IO) {
+            withContext(Dispatchers.Default) {
                 if (response!!.isSuccessful) {
-                    println(response.body()?.first().toString())
                     database.prayerDao.insert(response.body()!!.first().toEntity())
                 } else {
                     Log.e("SplashVM Data Request", response.message())
                 }
             }
-            withContext(Dispatchers.Main){
-                if(response!!.isSuccessful){
+            withContext(Dispatchers.Main) {
+                if (response!!.isSuccessful) {
                     loading.value = false
                 }
             }
