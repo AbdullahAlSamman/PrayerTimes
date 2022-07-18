@@ -10,9 +10,9 @@ import com.gals.prayertimes.repository.network.PrayerService
 import com.gals.prayertimes.utils.toEntity
 
 class Repository(
-    private val database: AppDB,
-    private val prayerService: PrayerService?
+    private val database: AppDB
 ) {
+    private val prayerService: PrayerService? = PrayerService.getInstance()
 
     suspend fun refreshPrayer(todayDate: String): Boolean {
         val prayer: EntityPrayer? = refreshPrayerFromDB(todayDate)
@@ -48,8 +48,7 @@ class Repository(
 
     fun getSettings(): Settings? = database.settingsDao.settings
 
-    private suspend fun getPrayerFromNetwork(todayDate: String) =
-        prayerService?.getTodayPrayer(todayDate)
+    private suspend fun getPrayerFromNetwork(todayDate: String) = prayerService?.getTodayPrayer(todayDate)
 
     private fun saveSettings(settings: Settings) = database.settingsDao.insert(settings)
 

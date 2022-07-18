@@ -1,4 +1,4 @@
-package com.gals.prayertimes.view
+package com.gals.prayertimes.adapter
 
 import android.content.Context
 import android.view.GestureDetector

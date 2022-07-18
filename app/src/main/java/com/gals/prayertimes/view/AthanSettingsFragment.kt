@@ -21,6 +21,7 @@ import com.gals.prayertimes.model.NotificationType
 import com.gals.prayertimes.services.MusicPlayer
 import com.gals.prayertimes.services.PrayersODNotificationService
 import com.gals.prayertimes.utils.UtilsManager
+import com.gals.prayertimes.view.custom.CustomRadioGroup
 import java.util.*
 
 class AthanSettingsFragment : Fragment() {

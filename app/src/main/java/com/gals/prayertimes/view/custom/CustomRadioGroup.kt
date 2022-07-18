@@ -1,4 +1,4 @@
-package com.gals.prayertimes.view
+package com.gals.prayertimes.view.custom
 
 import android.view.View
 import android.widget.RadioButton

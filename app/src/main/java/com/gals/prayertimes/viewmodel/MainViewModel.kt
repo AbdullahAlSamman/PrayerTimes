@@ -11,9 +11,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gals.prayertimes.DomainPrayer
 import com.gals.prayertimes.R
-import com.gals.prayertimes.repository.db.AppDB
-import com.gals.prayertimes.repository.network.PrayerService
 import com.gals.prayertimes.repository.Repository
+import com.gals.prayertimes.repository.db.AppDB
 import com.gals.prayertimes.utils.UtilsManager
 import com.gals.prayertimes.utils.getTodayDate
 import com.gals.prayertimes.utils.toDomain
@@ -30,8 +29,7 @@ class MainViewModel(
 ) : ViewModel() {
     private val tools: UtilsManager = UtilsManager(application)
     private val repository: Repository = Repository(
-        database = database,
-        prayerService = PrayerService.getInstance()
+        database = database
     )
     private var sunriseTime: Calendar = Calendar.getInstance()
     private var midNightTime: Calendar = Calendar.getInstance()

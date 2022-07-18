@@ -11,18 +11,10 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.gals.prayertimes.R
-import com.gals.prayertimes.view.MenuItemFragment.OnListFragmentInteractionListener
-import com.gals.prayertimes.view.SettingsMenuContent.SettingsMenuItem
+import com.gals.prayertimes.adapter.MyMenuItemRecyclerViewAdapter
+import com.gals.prayertimes.adapter.RecyclerItemClickListener
+import com.gals.prayertimes.adapter.SettingsMenuContent.SettingsMenuItem
 
-/**
- * A fragment representing a list of Items.
- *
- * Activities containing this fragment MUST implement the [OnListFragmentInteractionListener]
- * interface.
- *
- * Mandatory empty constructor for the fragment manager to instantiate the
- * fragment (e.g. upon screen orientation changes).
- */
 class MenuItemFragment : Fragment() {
     private var mColumnCount = 1
     private var mListener: OnListFragmentInteractionListener? = null
@@ -43,25 +35,23 @@ class MenuItemFragment : Fragment() {
             container,
             false
         )
-        val items: MutableList<SettingsMenuItem> = ArrayList()
-        val m1 = SettingsMenuItem(
-            1,
-            R.drawable.notifications_active_black_48,
-            getString(R.string.text_alarm_settings)
+        val items: MutableList<SettingsMenuItem> = arrayListOf(
+            SettingsMenuItem(
+                1,
+                R.drawable.notifications_active_black_48,
+                getString(R.string.text_alarm_settings)
+            ),
+            SettingsMenuItem(
+                2,
+                R.drawable.import_contacts_black_48,
+                getString(R.string.text_settings_privacy_policy)
+            ),
+            SettingsMenuItem(
+                3,
+                R.drawable.info_black_48,
+                getString(R.string.text_settings_about_us)
+            )
         )
-        val m2 = SettingsMenuItem(
-            2,
-            R.drawable.import_contacts_black_48,
-            getString(R.string.text_settings_privacy_policy)
-        )
-        val m3 = SettingsMenuItem(
-            3,
-            R.drawable.info_black_48,
-            getString(R.string.text_settings_about_us)
-        )
-        items.add(m1)
-        items.add(m2)
-        items.add(m3)
 
         /**Set the adapter*/
         if (view is RecyclerView) {
@@ -150,7 +140,7 @@ class MenuItemFragment : Fragment() {
         } else {
             throw RuntimeException(
                 context.toString()
-                    + " must implement OnListFragmentInteractionListener"
+                        + " must implement OnListFragmentInteractionListener"
             )
         }
     }
@@ -160,13 +150,6 @@ class MenuItemFragment : Fragment() {
         mListener.run { }
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * See the Android Training lesson [Communicating with Other Fragments](http://developer.android.com/training/basics/fragments/communicating.html) for more information.
-     */
     interface OnListFragmentInteractionListener {
         fun onListFragmentInteraction(item: SettingsMenuItem?)
     }

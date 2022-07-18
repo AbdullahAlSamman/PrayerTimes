@@ -7,7 +7,7 @@ import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import com.gals.prayertimes.R
 import com.gals.prayertimes.view.MenuItemFragment.OnListFragmentInteractionListener
-import com.gals.prayertimes.view.SettingsMenuContent.SettingsMenuItem
+import com.gals.prayertimes.adapter.SettingsMenuContent.SettingsMenuItem
 import com.gals.prayertimes.utils.UtilsManager
 
 class Menu : AppCompatActivity(), AthanSettingsFragment.OnFragmentInteractionListener, OnListFragmentInteractionListener, PrivacyPolicyFragment.OnFragmentInteractionListener {
