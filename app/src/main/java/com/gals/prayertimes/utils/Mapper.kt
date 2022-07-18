@@ -2,7 +2,7 @@ package com.gals.prayertimes.utils
 
 import com.gals.prayertimes.DomainPrayer
 import com.gals.prayertimes.EntityPrayer
-import com.gals.prayertimes.network.NetworkPrayer
+import com.gals.prayertimes.repository.network.model.NetworkPrayer
 import java.text.SimpleDateFormat
 import java.util.*
 

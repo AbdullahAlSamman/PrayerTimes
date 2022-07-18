@@ -14,9 +14,10 @@ import android.widget.RadioButton
 import android.widget.Switch
 import androidx.fragment.app.Fragment
 import com.gals.prayertimes.R
-import com.gals.prayertimes.db.AppDB
-import com.gals.prayertimes.db.AppDB.Companion.getInstance
-import com.gals.prayertimes.db.entities.Settings
+import com.gals.prayertimes.repository.db.AppDB
+import com.gals.prayertimes.repository.db.AppDB.Companion.getInstance
+import com.gals.prayertimes.repository.db.entities.Settings
+import com.gals.prayertimes.model.NotificationType
 import com.gals.prayertimes.services.MusicPlayer
 import com.gals.prayertimes.services.PrayersODNotificationService
 import com.gals.prayertimes.utils.UtilsManager
@@ -132,10 +133,10 @@ class AthanSettingsFragment : Fragment() {
             radioGroup.setAllDisabled()
         }
         when (settings?.notificationType) {
-            "full" -> radioFullAthan.isChecked = true
-            "half" -> radioHalfAthan.isChecked = true
-            "tone" -> radioToneAthan.isChecked = true
-            "silent" -> radioSilentAthan.isChecked = true
+            NotificationType.FULL.value -> radioFullAthan.isChecked = true
+            NotificationType.HALF.value -> radioHalfAthan.isChecked = true
+            NotificationType.TONE.value -> radioToneAthan.isChecked = true
+            NotificationType.SILENT.value -> radioSilentAthan.isChecked = true
             else -> {}
         }
     }

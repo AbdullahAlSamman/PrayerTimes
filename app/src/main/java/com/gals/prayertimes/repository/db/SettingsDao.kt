@@ -1,11 +1,11 @@
-package com.gals.prayertimes.db
+package com.gals.prayertimes.repository.db
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Update
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.gals.prayertimes.db.entities.Settings
+import com.gals.prayertimes.repository.db.entities.Settings
 
 /**
  * The interface Prayer dao.

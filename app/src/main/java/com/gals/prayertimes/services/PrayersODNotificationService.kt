@@ -11,11 +11,9 @@ import android.os.IBinder
 import android.os.SystemClock
 import android.util.Log
 import com.gals.prayertimes.EntityPrayer
-import com.gals.prayertimes.db.AppDB.Companion.getInstance
+import com.gals.prayertimes.repository.db.AppDB.Companion.getInstance
 import com.gals.prayertimes.utils.UtilsManager
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
+import com.gals.prayertimes.utils.getTodayDate
 
 class PrayersODNotificationService : Service() {
     var prayer: EntityPrayer? = null
@@ -89,10 +87,7 @@ class PrayersODNotificationService : Service() {
     inner class GetPrayerFromDB : AsyncTask<Context?, String?, String>() {
         override fun doInBackground(vararg params: Context?): String {
             prayer = getInstance(baseContext).prayerDao.findByDate(
-                SimpleDateFormat(
-                    "dd.MM.yyyy",
-                    Locale.US
-                ).format(Date())
+                getTodayDate()
             )
             return ""
         }

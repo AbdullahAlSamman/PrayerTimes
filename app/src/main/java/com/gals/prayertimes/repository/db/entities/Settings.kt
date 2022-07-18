@@ -1,16 +1,15 @@
-package com.gals.prayertimes.db.entities
+package com.gals.prayertimes.repository.db.entities
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "settings")
-class Settings(
+data class Settings(
+    @PrimaryKey(autoGenerate = true)
+    var id: Int = 0,
     @field:ColumnInfo(defaultValue = "false")
     var isNotification: Boolean,
     @field:ColumnInfo(defaultValue = "silent")
     var notificationType: String
-) {
-    @PrimaryKey(autoGenerate = true)
-    var id = 0
-}
+)

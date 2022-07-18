@@ -1,6 +1,6 @@
-package com.gals.prayertimes.network
+package com.gals.prayertimes.repository.network
 
-import retrofit2.Call
+import com.gals.prayertimes.repository.network.model.NetworkPrayer
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory

@@ -1,4 +1,4 @@
-package com.gals.prayertimes.db
+package com.gals.prayertimes.repository.db
 
 import androidx.room.TypeConverter
 import java.text.SimpleDateFormat

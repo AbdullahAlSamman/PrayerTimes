@@ -7,9 +7,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.gals.prayertimes.EntityPrayer
 import com.gals.prayertimes.databinding.ActivityMainBinding
-import com.gals.prayertimes.db.AppDB
-import com.gals.prayertimes.db.AppDB.Companion.getInstance
-import com.gals.prayertimes.db.entities.Prayer.Companion.isValid
+import com.gals.prayertimes.repository.db.AppDB
+import com.gals.prayertimes.repository.db.AppDB.Companion.getInstance
+import com.gals.prayertimes.repository.db.entities.Prayer.Companion.isValid
 import com.gals.prayertimes.utils.UtilsManager
 import com.gals.prayertimes.utils.toDomain
 import com.gals.prayertimes.viewmodel.MainViewModel

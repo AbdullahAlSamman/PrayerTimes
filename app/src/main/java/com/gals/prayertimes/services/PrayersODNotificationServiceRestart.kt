@@ -3,12 +3,8 @@ package com.gals.prayertimes.services
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.icu.util.MeasureUnit.EM
 import android.util.Log
 import com.gals.prayertimes.DomainPrayer
-import com.gals.prayertimes.EntityPrayer
-import com.gals.prayertimes.db.entities.Prayer.Companion.EMPTY
-import com.gals.prayertimes.model.Prayer
 import com.gals.prayertimes.utils.UtilsManager
 
 class PrayersODNotificationServiceRestart : BroadcastReceiver() {

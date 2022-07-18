@@ -10,11 +10,10 @@ import androidx.databinding.ObservableInt
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gals.prayertimes.DomainPrayer
-import com.gals.prayertimes.EntityPrayer
 import com.gals.prayertimes.R
-import com.gals.prayertimes.db.AppDB
-import com.gals.prayertimes.network.PrayerService
-import com.gals.prayertimes.utils.Repository
+import com.gals.prayertimes.repository.db.AppDB
+import com.gals.prayertimes.repository.network.PrayerService
+import com.gals.prayertimes.repository.Repository
 import com.gals.prayertimes.utils.UtilsManager
 import com.gals.prayertimes.utils.getTodayDate
 import com.gals.prayertimes.utils.toDomain

@@ -1,11 +1,13 @@
-package com.gals.prayertimes.utils
+package com.gals.prayertimes.repository
 
 import android.util.Log
 import com.gals.prayertimes.EntityPrayer
-import com.gals.prayertimes.db.AppDB
-import com.gals.prayertimes.db.entities.Prayer.Companion.isValid
-import com.gals.prayertimes.db.entities.Settings
-import com.gals.prayertimes.network.PrayerService
+import com.gals.prayertimes.repository.db.AppDB
+import com.gals.prayertimes.repository.db.entities.Prayer.Companion.isValid
+import com.gals.prayertimes.repository.db.entities.Settings
+import com.gals.prayertimes.model.NotificationType
+import com.gals.prayertimes.repository.network.PrayerService
+import com.gals.prayertimes.utils.toEntity
 
 class Repository(
     private val database: AppDB,
@@ -28,24 +30,23 @@ class Repository(
         return false
     }
 
-    suspend fun refreshSettings(settings: Settings): Boolean {
+    suspend fun refreshSettings(
+        settings: Settings = Settings(
+            isNotification = false,
+            notificationType = NotificationType.SILENT.value
+        )
+    ): Boolean =
         if (isSettingsExists()) {
             saveSettings(settings)
-            return true
+            true
         } else {
-            saveSettings(
-                Settings(
-                    false,
-                    "silent"
-                )
-            )
-            return false
+            saveSettings(settings)
+            false
         }
-    }
 
     fun refreshPrayerFromDB(todayDate: String) = database.prayerDao.findByDate(todayDate)
 
-    suspend fun getSettings(): Settings? = database.settingsDao.settings
+    fun getSettings(): Settings? = database.settingsDao.settings
 
     private suspend fun getPrayerFromNetwork(todayDate: String) =
         prayerService?.getTodayPrayer(todayDate)

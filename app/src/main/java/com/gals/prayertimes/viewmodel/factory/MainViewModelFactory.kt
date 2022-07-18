@@ -3,7 +3,7 @@ package com.gals.prayertimes.viewmodel.factory
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.gals.prayertimes.db.AppDB
+import com.gals.prayertimes.repository.db.AppDB
 import com.gals.prayertimes.viewmodel.MainViewModel
 
 class MainViewModelFactory(

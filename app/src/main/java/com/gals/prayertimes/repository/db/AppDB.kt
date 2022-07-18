@@ -1,12 +1,12 @@
-package com.gals.prayertimes.db
+package com.gals.prayertimes.repository.db
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.gals.prayertimes.db.entities.Prayer
-import com.gals.prayertimes.db.entities.Settings
+import com.gals.prayertimes.repository.db.entities.Prayer
+import com.gals.prayertimes.repository.db.entities.Settings
 
 @Database(
     entities = [Prayer::class, Settings::class],

@@ -3,14 +3,14 @@ package com.gals.prayertimes
 import android.app.Application
 import android.content.Intent
 import android.util.Log
-import com.gals.prayertimes.db.AppDB
-import com.gals.prayertimes.db.AppDB.Companion.getInstance
+import com.gals.prayertimes.repository.db.AppDB
+import com.gals.prayertimes.repository.db.AppDB.Companion.getInstance
 import com.gals.prayertimes.model.Prayer
 import com.gals.prayertimes.services.PrayersODNotificationService
 import com.gals.prayertimes.utils.UtilsManager
 
 typealias DomainPrayer = Prayer
-typealias EntityPrayer = com.gals.prayertimes.db.entities.Prayer
+typealias EntityPrayer = com.gals.prayertimes.repository.db.entities.Prayer
 
 class App : Application() {
     lateinit var tools: UtilsManager

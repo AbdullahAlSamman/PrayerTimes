@@ -1,8 +1,7 @@
-package com.gals.prayertimes.db.entities
+package com.gals.prayertimes.repository.db.entities
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.gals.prayertimes.DomainPrayer
 
 @Entity(tableName = "prayers")
 data class Prayer(

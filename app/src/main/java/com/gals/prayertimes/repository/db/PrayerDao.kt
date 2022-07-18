@@ -1,8 +1,7 @@
-package com.gals.prayertimes.db
+package com.gals.prayertimes.repository.db
 
 import androidx.room.Dao
 import androidx.room.Insert
-import com.gals.prayertimes.model.Prayer
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.gals.prayertimes.EntityPrayer

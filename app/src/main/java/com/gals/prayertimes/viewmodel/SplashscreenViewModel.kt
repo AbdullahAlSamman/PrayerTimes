@@ -3,7 +3,7 @@ package com.gals.prayertimes.viewmodel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.gals.prayertimes.utils.Repository
+import com.gals.prayertimes.repository.Repository
 import com.gals.prayertimes.utils.getTodayDate
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -14,12 +14,13 @@ class SplashscreenViewModel(
 ) : ViewModel() {
     val loading = MutableLiveData<Boolean>()
 
-    fun getPrayer() {
+    fun updateData() {
         viewModelScope.launch {
             loading.postValue(true)
             var response: Boolean
             withContext(Dispatchers.IO) {
-                response = repository.refreshPrayer(getTodayDate())
+                refreshSettings()
+                response = getPrayer()
             }
             withContext(Dispatchers.Main) {
                 if (response) {
@@ -28,5 +29,9 @@ class SplashscreenViewModel(
             }
         }
     }
+
+    private suspend fun getPrayer(): Boolean = repository.refreshPrayer(getTodayDate())
+
+    private suspend fun refreshSettings() = repository.refreshSettings()
 
 }

@@ -7,9 +7,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.gals.prayertimes.R
-import com.gals.prayertimes.db.AppDB
-import com.gals.prayertimes.network.PrayerService
-import com.gals.prayertimes.utils.Repository
+import com.gals.prayertimes.repository.db.AppDB
+import com.gals.prayertimes.repository.network.PrayerService
+import com.gals.prayertimes.repository.Repository
 import com.gals.prayertimes.utils.UtilsManager
 import com.gals.prayertimes.viewmodel.SplashscreenViewModel
 import com.gals.prayertimes.viewmodel.factory.SplashscreenViewModelFactory
@@ -39,7 +39,7 @@ class Splashscreen : AppCompatActivity() {
         /**Change Status bar color*/
         tools.changeStatusBarColor(window)
 
-        viewModel.getPrayer()
+        viewModel.updateData()
 
     }
 
