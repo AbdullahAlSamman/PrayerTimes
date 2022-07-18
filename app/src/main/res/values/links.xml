@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources translatable="false">
     <string name="app_server_link">http://prayersapi.scienceontheweb.net/api/prayer/</string>
+    <string name="privacy_policy_link">file:///android_asset/privacy_policy.html</string>
 </resources>

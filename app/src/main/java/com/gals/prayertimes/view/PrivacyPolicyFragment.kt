@@ -28,8 +28,6 @@ class PrivacyPolicyFragment : Fragment() {
 
         configureMVVM()
 
-        viewModel.loadUrl(binding)
-
         return binding.root
     }
 

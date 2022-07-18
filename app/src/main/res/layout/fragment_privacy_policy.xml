@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
@@ -15,10 +16,10 @@
         tools:context=".view.PrivacyPolicyFragment">
 
         <WebView
-            android:id="@+id/privacy_policy_web_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="8dp" />
+            android:layout_margin="8dp"
+            app:loadUrl="@{viewModel.url}" />
 
     </FrameLayout>
 </layout>
