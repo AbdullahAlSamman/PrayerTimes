@@ -1,203 +1,211 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:textDirection="rtl"
-    tools:context=".view.AthanSettingsFragment">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
+    <data>
 
-    <RelativeLayout
+        <variable
+            name="viewModel"
+            type="com.gals.prayertimes.viewmodel.AthanSettingsViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="20dp">
+        android:layout_height="match_parent"
+        android:textDirection="rtl"
+        tools:context=".view.AthanSettingsFragment">
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_below="@+id/headerSettings"
-            android:background="@android:color/darker_gray" />
 
-        <TextView
-            android:id="@+id/headerSettings"
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/text_settings_title"
-            android:textAlignment="center"
-            android:textSize="25dp" />
+            app:layout_constraintTop_toTopOf="parent">
 
-        <LinearLayout
-            android:id="@+id/alarmHeaderLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/headerSettings"
-            android:layout_marginBottom="25dp"
-            android:layout_marginTop="15dp"
-            android:orientation="horizontal">
-
-            <Switch
-                android:id="@+id/switchAlarmOn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="5dp"
-                android:layout_marginStart="5dp"
-                android:gravity="center" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_below="@+id/headerSettings"
+                android:background="@android:color/darker_gray" />
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="5"
-                android:fontFamily="@font/arial"
-                android:text="@string/text_alarm_settings"
-                android:textSize="22dp" />
-
-        </LinearLayout>
-
-        <RadioGroup
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/alarmHeaderLayout"
-            android:layout_marginEnd="10dp"
-            android:layout_marginStart="10dp">
-
-            <LinearLayout
+                android:id="@+id/headerSettings"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
+                android:text="@string/text_settings_title"
+                android:textAlignment="center"
+                android:textSize="25dp" />
+
+            <LinearLayout
+                android:id="@+id/alarmHeaderLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/headerSettings"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="25dp"
                 android:orientation="horizontal">
 
-                <ImageButton
-                    android:id="@+id/playFullAthan"
-                    android:layout_width="70dp"
+                <Switch
+                    android:id="@+id/switchAlarmOn"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@null"
-                    android:src="@android:drawable/ic_media_play" />
+                    android:layout_marginStart="5dp"
+                    android:layout_marginEnd="5dp"
+                    android:gravity="center" />
 
                 <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="4"
-                    android:fontFamily="@font/arial"
-                    android:text="@string/text_alarm_full_athan"
-                    android:textAlignment="textStart"
-                    android:textSize="20dp" />
-
-                <RadioButton
-                    android:id="@+id/radioFullAthan"
-                    android:layout_width="50dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:contentDescription="full"
-                    android:gravity="right" />
+                    android:layout_weight="5"
+                    android:fontFamily="@font/arial"
+                    android:text="@string/text_alarm_settings"
+                    android:textSize="22dp" />
 
             </LinearLayout>
 
-            <LinearLayout
+            <RadioGroup
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:orientation="horizontal">
+                android:layout_below="@+id/alarmHeaderLayout"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp">
 
-                <ImageButton
-                    android:id="@+id/playHalfAthan"
-                    android:layout_width="70dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@null"
-                    android:src="@android:drawable/ic_media_play" />
-
-                <TextView
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="4"
-                    android:fontFamily="@font/arial"
-                    android:text="@string/text_alarm_half_athan"
-                    android:textAlignment="textStart"
-                    android:textSize="20dp" />
-
-                <RadioButton
-                    android:id="@+id/radioHalfAthan"
-                    android:layout_width="50dp"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:contentDescription="half"
-                    android:gravity="right" />
+                    android:layout_marginBottom="10dp"
+                    android:orientation="horizontal">
 
-            </LinearLayout>
+                    <ImageButton
+                        android:id="@+id/playFullAthan"
+                        android:layout_width="70dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@null"
+                        android:src="@android:drawable/ic_media_play" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:orientation="horizontal">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="4"
+                        android:fontFamily="@font/arial"
+                        android:text="@string/text_alarm_full_athan"
+                        android:textAlignment="textStart"
+                        android:textSize="20dp" />
 
-                <ImageButton
-                    android:id="@+id/playToneAthan"
-                    android:layout_width="70dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@null" />
+                    <RadioButton
+                        android:id="@+id/radioFullAthan"
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:contentDescription="full"
+                        android:gravity="right" />
 
-                <TextView
+                </LinearLayout>
+
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="4"
-                    android:fontFamily="@font/arial"
-                    android:text="@string/text_alarm_tone"
-                    android:textAlignment="textStart"
-                    android:textSize="20dp" />
-
-                <RadioButton
-                    android:id="@+id/radioToneAthan"
-                    android:layout_width="50dp"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:contentDescription="tone"
-                    android:gravity="right" />
+                    android:layout_marginBottom="10dp"
+                    android:orientation="horizontal">
 
-            </LinearLayout>
+                    <ImageButton
+                        android:id="@+id/playHalfAthan"
+                        android:layout_width="70dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@null"
+                        android:src="@android:drawable/ic_media_play" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:orientation="horizontal">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="4"
+                        android:fontFamily="@font/arial"
+                        android:text="@string/text_alarm_half_athan"
+                        android:textAlignment="textStart"
+                        android:textSize="20dp" />
 
-                <ImageButton
-                    android:layout_width="70dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@null" />
+                    <RadioButton
+                        android:id="@+id/radioHalfAthan"
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:contentDescription="half"
+                        android:gravity="right" />
 
-                <TextView
+                </LinearLayout>
+
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="4"
-                    android:fontFamily="@font/arial"
-                    android:text="@string/text_alarm_silent"
-                    android:textAlignment="textStart"
-                    android:textSize="20dp" />
-
-                <RadioButton
-                    android:id="@+id/radioSilentAthan"
-                    android:layout_width="50dp"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:contentDescription="silent"
-                    android:gravity="right" />
+                    android:layout_marginBottom="10dp"
+                    android:orientation="horizontal">
 
-            </LinearLayout>
+                    <ImageButton
+                        android:id="@+id/playToneAthan"
+                        android:layout_width="70dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@null" />
 
-        </RadioGroup>
-    </RelativeLayout>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="4"
+                        android:fontFamily="@font/arial"
+                        android:text="@string/text_alarm_tone"
+                        android:textAlignment="textStart"
+                        android:textSize="20dp" />
+
+                    <RadioButton
+                        android:id="@+id/radioToneAthan"
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:contentDescription="tone"
+                        android:gravity="right" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:orientation="horizontal">
+
+                    <ImageButton
+                        android:layout_width="70dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@null" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="4"
+                        android:fontFamily="@font/arial"
+                        android:text="@string/text_alarm_silent"
+                        android:textAlignment="textStart"
+                        android:textSize="20dp" />
+
+                    <RadioButton
+                        android:id="@+id/radioSilentAthan"
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:contentDescription="silent"
+                        android:gravity="right" />
+
+                </LinearLayout>
+
+            </RadioGroup>
+        </RelativeLayout>
 
 
-</FrameLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

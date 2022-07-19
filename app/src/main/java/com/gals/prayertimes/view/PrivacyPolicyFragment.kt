@@ -10,11 +10,11 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.gals.prayertimes.databinding.FragmentPrivacyPolicyBinding
 import com.gals.prayertimes.viewmodel.PrivacyPolicyViewModel
-import com.gals.prayertimes.viewmodel.factory.PrivacyPolicyFactory
+import com.gals.prayertimes.viewmodel.factory.PrivacyPolicyViewModelFactory
 
 class PrivacyPolicyFragment : Fragment() {
     private lateinit var viewModel: PrivacyPolicyViewModel
-    private lateinit var viewModelFactory: PrivacyPolicyFactory
+    private lateinit var viewModelFactory: PrivacyPolicyViewModelFactory
     private lateinit var binding: FragmentPrivacyPolicyBinding
     private lateinit var mListener: OnFragmentInteractionListener
 
@@ -53,7 +53,7 @@ class PrivacyPolicyFragment : Fragment() {
     }
 
     private fun configureMVVM() {
-        viewModelFactory = PrivacyPolicyFactory()
+        viewModelFactory = PrivacyPolicyViewModelFactory()
         viewModel = ViewModelProvider(
             this,
             viewModelFactory

@@ -13,18 +13,25 @@ import android.widget.ImageButton
 import android.widget.RadioButton
 import android.widget.Switch
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.gals.prayertimes.R
+import com.gals.prayertimes.databinding.FragmentSettingsBinding
+import com.gals.prayertimes.model.NotificationType
 import com.gals.prayertimes.repository.db.AppDB
 import com.gals.prayertimes.repository.db.AppDB.Companion.getInstance
 import com.gals.prayertimes.repository.db.entities.Settings
-import com.gals.prayertimes.model.NotificationType
 import com.gals.prayertimes.services.MusicPlayer
 import com.gals.prayertimes.services.PrayersODNotificationService
 import com.gals.prayertimes.utils.UtilsManager
 import com.gals.prayertimes.view.custom.CustomRadioGroup
+import com.gals.prayertimes.viewmodel.AthanSettingsViewModel
+import com.gals.prayertimes.viewmodel.factory.AthanSettingsViewModelFactory
 import java.util.*
 
 class AthanSettingsFragment : Fragment() {
+    private lateinit var viewModel: AthanSettingsViewModel
+    private lateinit var viewModelFactory: AthanSettingsViewModelFactory
+    private lateinit var binding: FragmentSettingsBinding
     private lateinit var db: AppDB
     private lateinit var musicFullAthanIntent: Intent
     private lateinit var musicHalfAthanIntent: Intent
@@ -37,43 +44,49 @@ class AthanSettingsFragment : Fragment() {
     private lateinit var playFullAthan: ImageButton
     private lateinit var playHalfAthan: ImageButton
     private var mListener: OnFragmentInteractionListener? = null
-    private var settings: Settings? = null
+    private lateinit var settings: Settings
     private var playerHalfAthanOn = false
     private var playerFullAthanOn = false
     lateinit var turnOnAlarm: Switch
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        db = getInstance(requireActivity().baseContext)
-        GetSettingsFromDB().execute(this.context)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        val view = inflater.inflate(
-            R.layout.fragment_settings,
-            container,
-            false
-        )
+    ): View {
+        db = getInstance(requireActivity().baseContext)
+        GetSettingsFromDB().execute(this.context)
+
+        viewModelFactory = AthanSettingsViewModelFactory()
+        viewModel = ViewModelProvider(
+            this,
+            viewModelFactory
+        )[AthanSettingsViewModel::class.java]
+
+        binding = FragmentSettingsBinding.inflate(layoutInflater, container, false)
+        binding.lifecycleOwner = this
+
+        binding.viewModel = viewModel
+
         /**View Elements id's*/
-        radioFullAthan = view.findViewById(R.id.radioFullAthan)
-        radioHalfAthan = view.findViewById(R.id.radioHalfAthan)
-        radioToneAthan = view.findViewById(R.id.radioToneAthan)
-        radioSilentAthan = view.findViewById(R.id.radioSilentAthan)
-        playFullAthan = view.findViewById(R.id.playFullAthan)
-        playHalfAthan = view.findViewById(R.id.playHalfAthan)
-        turnOnAlarm = view.findViewById(R.id.switchAlarmOn)
-        tools = context?.let { UtilsManager(it) }!!
-        radioGroup = CustomRadioGroup(
-            view,
-            R.id.radioFullAthan,
-            R.id.radioHalfAthan,
-            R.id.radioToneAthan,
-            R.id.radioSilentAthan
-        )
+        radioFullAthan = binding.radioFullAthan
+        radioHalfAthan = binding.radioHalfAthan
+        radioToneAthan = binding.radioToneAthan
+        radioSilentAthan = binding.radioSilentAthan
+        playFullAthan = binding.playFullAthan
+        playHalfAthan = binding.playHalfAthan
+        turnOnAlarm = binding.switchAlarmOn
+        tools = UtilsManager(requireContext())
+
+        /*  radioGroup = view?.let {
+              CustomRadioGroup(
+                  it,
+                  R.id.radioFullAthan,
+                  R.id.radioHalfAthan,
+                  R.id.radioToneAthan,
+                  R.id.radioSilentAthan
+              )
+          }!!*/
         turnOnAlarm.setOnClickListener {
             if (turnOnAlarm.isChecked) {
                 radioGroup.setAllEnabled()
@@ -124,27 +137,21 @@ class AthanSettingsFragment : Fragment() {
             }
         }
 
-        /** Inflate the layout for this fragment*/
-        return view
+        return binding.root
     }
 
     private fun updateUI() {
-        turnOnAlarm.isChecked = settings!!.isNotification
+        turnOnAlarm.isChecked = settings.isNotification
         if (!turnOnAlarm.isChecked) {
             radioGroup.setAllDisabled()
         }
-        when (settings?.notificationType) {
+        when (settings.notificationType) {
             NotificationType.FULL.value -> radioFullAthan.isChecked = true
             NotificationType.HALF.value -> radioHalfAthan.isChecked = true
             NotificationType.TONE.value -> radioToneAthan.isChecked = true
             NotificationType.SILENT.value -> radioSilentAthan.isChecked = true
             else -> {}
         }
-    }
-
-    // Rename method, update argument and hook method into UI event
-    fun onButtonPressed(uri: Uri?) {
-        mListener?.onFragmentInteraction(uri)
     }
 
     override fun onAttach(context: Context) {
@@ -164,8 +171,8 @@ class AthanSettingsFragment : Fragment() {
         mListener = null
         //Save the Values and Stop Music if running
         try {
-            settings?.isNotification = turnOnAlarm.isChecked
-            if (!settings?.isNotification!!) {
+            settings.isNotification = turnOnAlarm.isChecked
+            if (!settings.isNotification) {
                 startStopNotificationService(false)
             } else {
                 startStopNotificationService(true)
@@ -173,10 +180,10 @@ class AthanSettingsFragment : Fragment() {
             when (radioGroup.selectedRadio
                 .contentDescription
                 .toString()) {
-                "full" -> settings?.notificationType = "full"
-                "half" -> settings?.notificationType = "half"
-                "tone" -> settings?.notificationType = "tone"
-                "silent" -> settings?.notificationType = "silent"
+                "full" -> settings.notificationType = "full"
+                "half" -> settings.notificationType = "half"
+                "tone" -> settings.notificationType = "tone"
+                "silent" -> settings.notificationType = "silent"
                 else -> {}
             }
             if (tools.isServiceRunning(MusicPlayer::class.java)) {
@@ -217,7 +224,7 @@ class AthanSettingsFragment : Fragment() {
         @Deprecated("Deprecated in Java")
         override fun doInBackground(vararg params: Context?): String? {
             try {
-                settings = Objects.requireNonNull(db.settingsDao).settings
+                settings = db.settingsDao.settings!!
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -249,13 +256,11 @@ class AthanSettingsFragment : Fragment() {
     }
 
     interface OnFragmentInteractionListener {
-        // Update argument type and name
         fun onFragmentInteraction(uri: Uri?)
     }
 
     companion object {
         fun newInstance(): AthanSettingsFragment =
             AthanSettingsFragment()
-
     }
 }
