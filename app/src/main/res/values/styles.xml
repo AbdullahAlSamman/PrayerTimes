@@ -53,14 +53,14 @@
     </style>
 
     <style name="MainLinearRemainingPrayerNameStyle">
-        <item name="android:layout_marginStart">24dp</item>
-        <item name="android:layout_marginBottom">48dp</item>
+        <item name="android:layout_marginStart">@dimen/spacing_24</item>
+        <item name="android:layout_marginBottom">@dimen/spacing_48</item>
     </style>
 
     <style name="MainNextPrayerTextStyle" parent="TextLightStyle">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginEnd">4dp</item>
+        <item name="android:layout_marginEnd">@dimen/spacing_4</item>
         <item name="android:textAlignment">center</item>
     </style>
 
@@ -73,8 +73,8 @@
     <style name="MainNextPrayerTimeTextStyle" parent="TextLightStyle">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginTop">2dp</item>
-        <item name="android:layout_marginBottom">16dp</item>
+        <item name="android:layout_marginTop">@dimen/spacing_2</item>
+        <item name="android:layout_marginBottom">@dimen/spacing_16</item>
         <item name="android:textAlignment">center</item>
         <item name="android:textSize">@dimen/text_font_size_large</item>
     </style>
@@ -82,7 +82,7 @@
     <style name="MainLinearlayoutDateStyle">
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_below">@+id/background_image</item>
-        <item name="android:layout_marginTop">4dp</item>
+        <item name="android:layout_marginTop">@dimen/spacing_4</item>
         <item name="android:background">@color/background_color_view_date</item>
         <item name="android:orientation">horizontal</item>
     </style>
@@ -270,6 +270,159 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_gravity">center</item>
         <item name="android:textAlignment">center</item>
+    </style>
+
+    <style name="FragmentAthanAlarmSwitchViewStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginStart">@dimen/spacing_8</item>
+        <item name="android:layout_marginTop">@dimen/spacing_16</item>
+        <item name="android:layout_marginEnd">@dimen/spacing_8</item>
+        <item name="android:layout_marginBottom">@dimen/spacing_24</item>
+    </style>
+
+    <style name="FragmentAthanAlarmSwitchStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginStart">5dp</item>
+        <item name="android:layout_marginEnd">5dp</item>
+        <item name="android:gravity">center_vertical</item>
+    </style>
+
+    <style name="FragmentAthanAlarmSwitchTextStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">5</item>
+        <item name="android:fontFamily">@font/arial</item>
+        <item name="android:textSize">22dp</item>
+    </style>
+
+    <style name="FragmentAthanRadioGroupStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginStart">10dp</item>
+        <item name="android:layout_marginTop">16dp</item>
+        <item name="android:layout_marginEnd">16dp</item>
+        <item name="android:orientation">vertical</item>
+    </style>
+
+    <style name="FragmentAthanRadioButtonFullStyle">
+        <item name="android:layout_width">@dimen/spacing_32</item>
+        <item name="android:layout_height">@dimen/spacing_32</item>
+        <item name="android:layout_gravity">center</item>
+    </style>
+
+    <style name="FragmentAthanRadioButtonHalfStyle">
+        <item name="android:layout_width">@dimen/spacing_32</item>
+        <item name="android:layout_height">@dimen/spacing_32</item>
+        <item name="android:layout_gravity">center</item>
+    </style>
+
+    <style name="FragmentAthanRadioButtonToneStyle">
+        <item name="android:layout_width">@dimen/spacing_32</item>
+        <item name="android:layout_height">@dimen/spacing_32</item>
+        <item name="android:layout_gravity">center</item>
+    </style>
+
+    <style name="FragmentAthanRadioButtonSilentStyle">
+        <item name="android:layout_width">@dimen/spacing_32</item>
+        <item name="android:layout_height">@dimen/spacing_32</item>
+        <item name="android:layout_gravity">center</item>
+    </style>
+
+    <style name="FragmentAthanFullViewStyle">
+        <item name="android:layout_width">@dimen/spacing_0</item>
+        <item name="android:layout_height">@dimen/spacing_32</item>
+        <item name="android:layout_marginStart">@dimen/spacing_16</item>
+        <item name="android:layout_marginTop">@dimen/spacing_16</item>
+        <item name="android:layout_marginEnd">@dimen/spacing_4</item>
+        <item name="android:orientation">horizontal</item>
+    </style>
+
+    <style name="FragmentAthanFullImageButtonStyle">
+        <item name="android:layout_width">@dimen/spacing_0</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:background">@null</item>
+    </style>
+
+    <style name="FragmentAthanFullTextStyle">
+        <item name="android:layout_width">@dimen/spacing_0</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">4</item>
+        <item name="android:fontFamily">@font/arial</item>
+        <item name="android:textAlignment">textStart</item>
+        <item name="android:textSize">20dp</item>
+    </style>
+
+    <style name="FragmentAthanHalfViewStyle">
+        <item name="android:layout_width">@dimen/spacing_0</item>
+        <item name="android:layout_height">@dimen/spacing_32</item>
+        <item name="android:layout_marginStart">@dimen/spacing_16</item>
+        <item name="android:layout_marginEnd">@dimen/spacing_4</item>
+        <item name="android:orientation">horizontal</item>
+    </style>
+
+    <style name="FragmentAthanHalfImageButtonStyle">
+        <item name="android:layout_width">@dimen/spacing_0</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:background">@null</item>
+    </style>
+
+    <style name="FragmentAthanHalfTextStyle">
+        <item name="android:layout_width">@dimen/spacing_0</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_weight">4</item>
+        <item name="android:fontFamily">@font/arial</item>
+        <item name="android:textAlignment">textStart</item>
+        <item name="android:textSize">20dp</item>
+    </style>
+
+    <style name="FragmentAthanToneViewStyle">
+        <item name="android:layout_width">@dimen/spacing_0</item>
+        <item name="android:layout_height">@dimen/spacing_32</item>
+        <item name="android:layout_marginStart">@dimen/spacing_16</item>
+        <item name="android:layout_marginEnd">@dimen/spacing_4</item>
+    </style>
+
+    <style name="FragmentAthanToneImageButtonStyle">
+        <item name="android:layout_width">@dimen/spacing_48</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:background">@null</item>
+    </style>
+
+    <style name="FragmentAthanToneTextStyle">
+        <item name="android:layout_width">@dimen/spacing_0</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">4</item>
+        <item name="android:fontFamily">@font/arial</item>
+        <item name="android:textAlignment">textStart</item>
+        <item name="android:textSize">20dp</item>
+    </style>
+
+    <style name="FragmentAthanSilentViewStyle">
+        <item name="android:layout_width">@dimen/spacing_0</item>
+        <item name="android:layout_height">@dimen/spacing_32</item>
+        <item name="android:layout_marginStart">@dimen/spacing_16</item>
+        <item name="android:layout_marginEnd">@dimen/spacing_4</item>
+    </style>
+
+    <style name="FragmentAthanSilentImageButtonStyle">
+        <item name="android:layout_width">@dimen/spacing_48</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:background">@null</item>
+    </style>
+
+    <style name="FragmentAthanSilentTextStyle">
+        <item name="android:layout_width">@dimen/spacing_0</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">4</item>
+        <item name="android:fontFamily">@font/arial</item>
+        <item name="android:textAlignment">textStart</item>
+        <item name="android:textSize">20dp</item>
     </style>
 
 </resources>

@@ -11,22 +11,21 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.RadioButton
-import android.widget.Switch
+import androidx.appcompat.widget.SwitchCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.gals.prayertimes.R
 import com.gals.prayertimes.databinding.FragmentSettingsBinding
 import com.gals.prayertimes.model.NotificationType
+import com.gals.prayertimes.repository.Repository
 import com.gals.prayertimes.repository.db.AppDB
 import com.gals.prayertimes.repository.db.AppDB.Companion.getInstance
 import com.gals.prayertimes.repository.db.entities.Settings
 import com.gals.prayertimes.services.MusicPlayer
 import com.gals.prayertimes.services.PrayersODNotificationService
 import com.gals.prayertimes.utils.UtilsManager
-import com.gals.prayertimes.view.custom.CustomRadioGroup
 import com.gals.prayertimes.viewmodel.AthanSettingsViewModel
 import com.gals.prayertimes.viewmodel.factory.AthanSettingsViewModelFactory
-import java.util.*
 
 class AthanSettingsFragment : Fragment() {
     private lateinit var viewModel: AthanSettingsViewModel
@@ -36,18 +35,18 @@ class AthanSettingsFragment : Fragment() {
     private lateinit var musicFullAthanIntent: Intent
     private lateinit var musicHalfAthanIntent: Intent
     private lateinit var tools: UtilsManager
-    private lateinit var radioGroup: CustomRadioGroup
     private lateinit var radioFullAthan: RadioButton
     private lateinit var radioHalfAthan: RadioButton
     private lateinit var radioToneAthan: RadioButton
     private lateinit var radioSilentAthan: RadioButton
     private lateinit var playFullAthan: ImageButton
     private lateinit var playHalfAthan: ImageButton
-    private var mListener: OnFragmentInteractionListener? = null
     private lateinit var settings: Settings
+    private lateinit var turnOnAlarm: SwitchCompat
+    private var mListener: OnFragmentInteractionListener? = null
     private var playerHalfAthanOn = false
     private var playerFullAthanOn = false
-    lateinit var turnOnAlarm: Switch
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -57,7 +56,9 @@ class AthanSettingsFragment : Fragment() {
         db = getInstance(requireActivity().baseContext)
         GetSettingsFromDB().execute(this.context)
 
-        viewModelFactory = AthanSettingsViewModelFactory()
+        viewModelFactory = AthanSettingsViewModelFactory(
+            Repository(db)
+        )
         viewModel = ViewModelProvider(
             this,
             viewModelFactory
@@ -69,16 +70,16 @@ class AthanSettingsFragment : Fragment() {
         binding.viewModel = viewModel
 
         /**View Elements id's*/
-        radioFullAthan = binding.radioFullAthan
-        radioHalfAthan = binding.radioHalfAthan
-        radioToneAthan = binding.radioToneAthan
-        radioSilentAthan = binding.radioSilentAthan
+        radioFullAthan = binding.radioAthanFull
+        radioHalfAthan = binding.radioAthanHalf
+        radioToneAthan = binding.radioAthanTone
+        radioSilentAthan = binding.radioAthanSilent
         playFullAthan = binding.playFullAthan
         playHalfAthan = binding.playHalfAthan
         turnOnAlarm = binding.switchAlarmOn
         tools = UtilsManager(requireContext())
 
-        /*  radioGroup = view?.let {
+     /*    radioGroup = view?.let {
               CustomRadioGroup(
                   it,
                   R.id.radioFullAthan,
@@ -87,13 +88,6 @@ class AthanSettingsFragment : Fragment() {
                   R.id.radioSilentAthan
               )
           }!!*/
-        turnOnAlarm.setOnClickListener {
-            if (turnOnAlarm.isChecked) {
-                radioGroup.setAllEnabled()
-            } else {
-                radioGroup.setAllDisabled()
-            }
-        }
         musicFullAthanIntent = Intent(
             context,
             MusicPlayer::class.java
@@ -143,7 +137,7 @@ class AthanSettingsFragment : Fragment() {
     private fun updateUI() {
         turnOnAlarm.isChecked = settings.isNotification
         if (!turnOnAlarm.isChecked) {
-            radioGroup.setAllDisabled()
+            /*radioGroup.setAllDisabled()*/
         }
         when (settings.notificationType) {
             NotificationType.FULL.value -> radioFullAthan.isChecked = true
@@ -169,7 +163,7 @@ class AthanSettingsFragment : Fragment() {
     override fun onDetach() {
         super.onDetach()
         mListener = null
-        //Save the Values and Stop Music if running
+        /**Save the Values and Stop Music if running*/
         try {
             settings.isNotification = turnOnAlarm.isChecked
             if (!settings.isNotification) {
@@ -177,15 +171,13 @@ class AthanSettingsFragment : Fragment() {
             } else {
                 startStopNotificationService(true)
             }
-            when (radioGroup.selectedRadio
-                .contentDescription
-                .toString()) {
-                "full" -> settings.notificationType = "full"
-                "half" -> settings.notificationType = "half"
-                "tone" -> settings.notificationType = "tone"
-                "silent" -> settings.notificationType = "silent"
+    /*        when (radioGroup.selectedRadio.contentDescription.toString()) {
+                NotificationType.FULL.value -> settings.notificationType = NotificationType.FULL.value
+                NotificationType.HALF.value -> settings.notificationType = NotificationType.HALF.value
+                NotificationType.TONE.value -> settings.notificationType = NotificationType.TONE.value
+                NotificationType.SILENT.value-> settings.notificationType = NotificationType.SILENT.value
                 else -> {}
-            }
+            }*/
             if (tools.isServiceRunning(MusicPlayer::class.java)) {
                 context?.stopService(musicFullAthanIntent)
                 context?.stopService(musicHalfAthanIntent)
@@ -239,6 +231,7 @@ class AthanSettingsFragment : Fragment() {
     }
 
     /**
+     * TODO: Replace with coroutines
      * Update settings db
      * load all countries data from db to memory objects to be displayed in recycler view.
      */
@@ -247,7 +240,7 @@ class AthanSettingsFragment : Fragment() {
         @Deprecated("Deprecated in Java")
         override fun doInBackground(vararg params: Context?): String? {
             try {
-                Objects.requireNonNull(db.settingsDao).update(settings)
+                db.settingsDao.settings
             } catch (e: Exception) {
                 e.printStackTrace()
             }
