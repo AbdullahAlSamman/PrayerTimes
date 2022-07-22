@@ -1,22 +1,18 @@
 package com.gals.prayertimes.view
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.os.AsyncTask
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
-import android.widget.RadioButton
 import androidx.appcompat.widget.SwitchCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.gals.prayertimes.R
 import com.gals.prayertimes.databinding.FragmentSettingsBinding
-import com.gals.prayertimes.model.NotificationType
 import com.gals.prayertimes.repository.Repository
 import com.gals.prayertimes.repository.db.AppDB
 import com.gals.prayertimes.repository.db.AppDB.Companion.getInstance
@@ -35,10 +31,6 @@ class AthanSettingsFragment : Fragment() {
     private lateinit var musicFullAthanIntent: Intent
     private lateinit var musicHalfAthanIntent: Intent
     private lateinit var tools: UtilsManager
-    private lateinit var radioFullAthan: RadioButton
-    private lateinit var radioHalfAthan: RadioButton
-    private lateinit var radioToneAthan: RadioButton
-    private lateinit var radioSilentAthan: RadioButton
     private lateinit var playFullAthan: ImageButton
     private lateinit var playHalfAthan: ImageButton
     private lateinit var settings: Settings
@@ -54,7 +46,6 @@ class AthanSettingsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         db = getInstance(requireActivity().baseContext)
-        GetSettingsFromDB().execute(this.context)
 
         viewModelFactory = AthanSettingsViewModelFactory(
             Repository(db)
@@ -69,41 +60,29 @@ class AthanSettingsFragment : Fragment() {
 
         binding.viewModel = viewModel
 
+        viewModel.getSettings()
+
         /**View Elements id's*/
-        radioFullAthan = binding.radioAthanFull
-        radioHalfAthan = binding.radioAthanHalf
-        radioToneAthan = binding.radioAthanTone
-        radioSilentAthan = binding.radioAthanSilent
         playFullAthan = binding.playFullAthan
         playHalfAthan = binding.playHalfAthan
         turnOnAlarm = binding.switchAlarmOn
         tools = UtilsManager(requireContext())
 
-     /*    radioGroup = view?.let {
-              CustomRadioGroup(
-                  it,
-                  R.id.radioFullAthan,
-                  R.id.radioHalfAthan,
-                  R.id.radioToneAthan,
-                  R.id.radioSilentAthan
-              )
-          }!!*/
         musicFullAthanIntent = Intent(
             context,
             MusicPlayer::class.java
-        )
-        musicFullAthanIntent.putExtra(
+        ).putExtra(
             "athanType",
             R.raw.fullathan
         )
         musicHalfAthanIntent = Intent(
             context,
             MusicPlayer::class.java
-        )
-        musicHalfAthanIntent.putExtra(
+        ).putExtra(
             "athanType",
             R.raw.halfathan
         )
+
         playFullAthan.setOnClickListener {
             if (!playerFullAthanOn) {
                 playerFullAthanOn = true
@@ -130,22 +109,7 @@ class AthanSettingsFragment : Fragment() {
                 playHalfAthan.setImageResource(android.R.drawable.ic_media_play)
             }
         }
-
         return binding.root
-    }
-
-    private fun updateUI() {
-        turnOnAlarm.isChecked = settings.isNotification
-        if (!turnOnAlarm.isChecked) {
-            /*radioGroup.setAllDisabled()*/
-        }
-        when (settings.notificationType) {
-            NotificationType.FULL.value -> radioFullAthan.isChecked = true
-            NotificationType.HALF.value -> radioHalfAthan.isChecked = true
-            NotificationType.TONE.value -> radioToneAthan.isChecked = true
-            NotificationType.SILENT.value -> radioSilentAthan.isChecked = true
-            else -> {}
-        }
     }
 
     override fun onAttach(context: Context) {
@@ -160,32 +124,28 @@ class AthanSettingsFragment : Fragment() {
         }
     }
 
-    override fun onDetach() {
-        super.onDetach()
-        mListener = null
+    override fun onDestroyView() {
+        super.onDestroyView()
         /**Save the Values and Stop Music if running*/
         try {
-            settings.isNotification = turnOnAlarm.isChecked
-            if (!settings.isNotification) {
+            viewModel.saveSettings()
+            if (viewModel.alarm.get()) {
                 startStopNotificationService(false)
             } else {
                 startStopNotificationService(true)
             }
-    /*        when (radioGroup.selectedRadio.contentDescription.toString()) {
-                NotificationType.FULL.value -> settings.notificationType = NotificationType.FULL.value
-                NotificationType.HALF.value -> settings.notificationType = NotificationType.HALF.value
-                NotificationType.TONE.value -> settings.notificationType = NotificationType.TONE.value
-                NotificationType.SILENT.value-> settings.notificationType = NotificationType.SILENT.value
-                else -> {}
-            }*/
             if (tools.isServiceRunning(MusicPlayer::class.java)) {
                 context?.stopService(musicFullAthanIntent)
                 context?.stopService(musicHalfAthanIntent)
             }
-            SettingsToDB().execute(this.context)
         } catch (e: Exception) {
             e.printStackTrace()
         }
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        mListener = null
     }
 
     private fun startStopNotificationService(start: Boolean) {
@@ -206,45 +166,6 @@ class AthanSettingsFragment : Fragment() {
             }
         } catch (e: Exception) {
             e.printStackTrace()
-        }
-    }
-
-    /**
-     * Get data from db.
-     */
-    inner class GetSettingsFromDB : AsyncTask<Context?, String?, String?>() {
-        @Deprecated("Deprecated in Java")
-        override fun doInBackground(vararg params: Context?): String? {
-            try {
-                settings = db.settingsDao.settings!!
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-            return null
-        }
-
-        @Deprecated("Deprecated in Java")
-        override fun onPostExecute(s: String?) {
-            super.onPostExecute(s)
-            updateUI()
-        }
-    }
-
-    /**
-     * TODO: Replace with coroutines
-     * Update settings db
-     * load all countries data from db to memory objects to be displayed in recycler view.
-     */
-    @SuppressLint("StaticFieldLeak")
-    inner class SettingsToDB : AsyncTask<Context?, String?, String?>() {
-        @Deprecated("Deprecated in Java")
-        override fun doInBackground(vararg params: Context?): String? {
-            try {
-                db.settingsDao.settings
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-            return null
         }
     }
 

@@ -6,10 +6,10 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "settings")
 data class Settings(
-    @PrimaryKey(autoGenerate = true)
-    var id: Int = 0,
-    @field:ColumnInfo(defaultValue = "false")
-    var isNotification: Boolean,
-    @field:ColumnInfo(defaultValue = "silent")
+    @PrimaryKey
+    var id: Int = 1,
+    @ColumnInfo(defaultValue = "false")
+    var notification: Boolean,
+    @ColumnInfo(defaultValue = "silent")
     var notificationType: String
 )

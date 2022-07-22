@@ -275,6 +275,7 @@
     <style name="FragmentAthanAlarmSwitchViewStyle">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
+        <item name="android:orientation">horizontal</item>
         <item name="android:layout_marginStart">@dimen/spacing_8</item>
         <item name="android:layout_marginTop">@dimen/spacing_16</item>
         <item name="android:layout_marginEnd">@dimen/spacing_8</item>
@@ -283,18 +284,16 @@
 
     <style name="FragmentAthanAlarmSwitchStyle">
         <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginStart">5dp</item>
-        <item name="android:layout_marginEnd">5dp</item>
-        <item name="android:gravity">center_vertical</item>
+        <item name="android:layout_height">@dimen/spacing_32</item>
+        <item name="android:layout_gravity">center</item>
     </style>
 
-    <style name="FragmentAthanAlarmSwitchTextStyle">
+    <style name="FragmentAthanAlarmSwitchTextStyle" parent="TextDarkStyle">
         <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_height">match_parent</item>
         <item name="android:layout_weight">5</item>
         <item name="android:fontFamily">@font/arial</item>
-        <item name="android:textSize">22dp</item>
+        <item name="android:textSize">22sp</item>
     </style>
 
     <style name="FragmentAthanRadioGroupStyle">
@@ -346,13 +345,11 @@
         <item name="android:background">@null</item>
     </style>
 
-    <style name="FragmentAthanFullTextStyle">
+    <style name="FragmentAthanFullTextStyle" parent="TextDarkStyle">
         <item name="android:layout_width">@dimen/spacing_0</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_weight">4</item>
-        <item name="android:fontFamily">@font/arial</item>
         <item name="android:textAlignment">textStart</item>
-        <item name="android:textSize">20dp</item>
     </style>
 
     <style name="FragmentAthanHalfViewStyle">
@@ -370,13 +367,11 @@
         <item name="android:background">@null</item>
     </style>
 
-    <style name="FragmentAthanHalfTextStyle">
+    <style name="FragmentAthanHalfTextStyle" parent="TextDarkStyle">
         <item name="android:layout_width">@dimen/spacing_0</item>
         <item name="android:layout_height">match_parent</item>
         <item name="android:layout_weight">4</item>
-        <item name="android:fontFamily">@font/arial</item>
         <item name="android:textAlignment">textStart</item>
-        <item name="android:textSize">20dp</item>
     </style>
 
     <style name="FragmentAthanToneViewStyle">
@@ -393,13 +388,11 @@
         <item name="android:background">@null</item>
     </style>
 
-    <style name="FragmentAthanToneTextStyle">
+    <style name="FragmentAthanToneTextStyle" parent="TextDarkStyle">
         <item name="android:layout_width">@dimen/spacing_0</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_weight">4</item>
-        <item name="android:fontFamily">@font/arial</item>
         <item name="android:textAlignment">textStart</item>
-        <item name="android:textSize">20dp</item>
     </style>
 
     <style name="FragmentAthanSilentViewStyle">
@@ -416,13 +409,11 @@
         <item name="android:background">@null</item>
     </style>
 
-    <style name="FragmentAthanSilentTextStyle">
+    <style name="FragmentAthanSilentTextStyle" parent="TextDarkStyle">
         <item name="android:layout_width">@dimen/spacing_0</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_weight">4</item>
-        <item name="android:fontFamily">@font/arial</item>
         <item name="android:textAlignment">textStart</item>
-        <item name="android:textSize">20dp</item>
     </style>
 
 </resources>

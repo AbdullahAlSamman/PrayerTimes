@@ -20,7 +20,7 @@
         <LinearLayout
             android:id="@+id/view_layout_alarm_switch"
             style="@style/FragmentAthanAlarmSwitchViewStyle"
-            android:orientation="horizontal"
+            app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
             <androidx.appcompat.widget.SwitchCompat
@@ -42,27 +42,27 @@
             app:layout_constraintTop_toBottomOf="@+id/view_layout_alarm_switch">
 
             <RadioButton
-                android:id="@+id/radio_athan_full"
+                android:id="@+id/radio_button_athan_full"
                 style="@style/FragmentAthanRadioButtonFullStyle"
-                android:checked="@{viewModel.fullAthan}"
+                android:checked="@={viewModel.radioGroupObserver.fullAthan}"
                 android:enabled="@{viewModel.alarm}" />
 
             <RadioButton
-                android:id="@+id/radio_athan_half"
+                android:id="@+id/radio_button_athan_half"
                 style="@style/FragmentAthanRadioButtonHalfStyle"
-                android:checked="@{viewModel.halfAthan}"
+                android:checked="@={viewModel.radioGroupObserver.halfAthan}"
                 android:enabled="@{viewModel.alarm}" />
 
             <RadioButton
-                android:id="@+id/radio_athan_tone"
+                android:id="@+id/radio_button_athan_tone"
                 style="@style/FragmentAthanRadioButtonToneStyle"
-                android:checked="@{viewModel.toneAthan}"
+                android:checked="@={viewModel.radioGroupObserver.toneAthan}"
                 android:enabled="@{viewModel.alarm}" />
 
             <RadioButton
-                android:id="@+id/radio_athan_silent"
+                android:id="@+id/radio_button_athan_silent"
                 style="@style/FragmentAthanRadioButtonSilentStyle"
-                android:checked="@{viewModel.silentAthan}"
+                android:checked="@={viewModel.radioGroupObserver.silentAthan}"
                 android:enabled="@{viewModel.alarm}" />
         </RadioGroup>
 
