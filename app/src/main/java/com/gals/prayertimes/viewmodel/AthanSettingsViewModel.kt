@@ -1,6 +1,7 @@
 package com.gals.prayertimes.viewmodel
 
 import android.content.Context
+import android.content.Intent
 import android.media.AudioAttributes
 import android.media.MediaPlayer
 import android.net.Uri
@@ -12,6 +13,8 @@ import com.gals.prayertimes.R
 import com.gals.prayertimes.model.NotificationType
 import com.gals.prayertimes.repository.Repository
 import com.gals.prayertimes.repository.db.entities.Settings
+import com.gals.prayertimes.services.NotificationService
+import com.gals.prayertimes.utils.UtilsManager
 import com.gals.prayertimes.viewmodel.observer.RadioGroupObserver
 import kotlinx.coroutines.*
 
@@ -22,6 +25,7 @@ class AthanSettingsViewModel(
     private lateinit var musicPlayer: MediaPlayer
     private val mediaJob = Job()
     private val mediaScope = CoroutineScope(Dispatchers.Main + mediaJob)
+    private val tools = UtilsManager(context)
     val radioGroupObserver = RadioGroupObserver()
     val alarm: ObservableBoolean = ObservableBoolean(false)
     val isPlaying: ObservableBoolean = ObservableBoolean(false)
@@ -89,11 +93,23 @@ class AthanSettingsViewModel(
     }
 
     fun stopMediaPlayer() {
-        isPlaying.set(false)
-        musicPlayer.pause()
-        musicPlayer.seekTo(0)
-        athanFullVisibility.set(true)
-        athanHalfVisibility.set(true)
+        if (this::musicPlayer.isInitialized) {
+            isPlaying.set(false)
+            musicPlayer.pause()
+            musicPlayer.seekTo(0)
+            athanFullVisibility.set(true)
+            athanHalfVisibility.set(true)
+        }
+    }
+
+    fun startNotificationService() {
+        if (alarm.get()) {
+            context.startService(Intent(context, NotificationService::class.java))
+        } else {
+            if (tools.isServiceRunning(NotificationService::class.java)) {
+                context.stopService(Intent(context, NotificationService::class.java))
+            }
+        }
     }
 
     private fun initMediaPlayer() {

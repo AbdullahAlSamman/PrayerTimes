@@ -62,6 +62,7 @@ class AthanSettingsFragment : Fragment() {
         try {
             viewModel.saveSettings()
             viewModel.stopMediaPlayer()
+            viewModel.startNotificationService()
         } catch (e: Exception) {
             e.printStackTrace()
         }
