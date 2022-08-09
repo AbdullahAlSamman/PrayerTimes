@@ -30,7 +30,7 @@ class Repository(
         return false
     }
 
-    suspend fun refreshSettings(
+    fun refreshSettings(
         settings: Settings = Settings(
             notification = false,
             notificationType = NotificationType.SILENT.value

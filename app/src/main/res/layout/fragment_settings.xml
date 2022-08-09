@@ -16,7 +16,6 @@
         android:textDirection="rtl"
         tools:context=".view.AthanSettingsFragment">
 
-
         <LinearLayout
             android:id="@+id/view_layout_alarm_switch"
             style="@style/FragmentAthanAlarmSwitchViewStyle"
@@ -77,14 +76,15 @@
             <ImageButton
                 android:id="@+id/playFullAthan"
                 style="@style/FragmentAthanFullImageButtonStyle"
-                android:src="@android:drawable/ic_media_play" />
+                android:onClick="@{()->viewModel.playFullAthan()}"
+                app:goneUnless="@{viewModel.athanFullVisibility}"
+                app:imageResource="@{viewModel.isPlaying? android.R.drawable.ic_media_pause: android.R.drawable.ic_media_play}" />
 
             <TextView
                 style="@style/FragmentAthanFullTextStyle"
                 android:text="@string/text_alarm_full_athan" />
 
         </LinearLayout>
-
 
         <LinearLayout
             android:id="@+id/view_athan_alarm_half"
@@ -97,12 +97,13 @@
             <ImageButton
                 android:id="@+id/playHalfAthan"
                 style="@style/FragmentAthanHalfImageButtonStyle"
-                android:src="@android:drawable/ic_media_play" />
+                android:onClick="@{()-> viewModel.playHalfAthan()}"
+                app:goneUnless="@{viewModel.athanHalfVisibility}"
+                app:imageResource="@{viewModel.isPlaying? android.R.drawable.ic_media_pause: android.R.drawable.ic_media_play}" />
 
             <TextView
                 style="@style/FragmentAthanHalfTextStyle"
                 android:text="@string/text_alarm_half_athan" />
-
 
         </LinearLayout>
 
@@ -122,7 +123,6 @@
                 style="@style/FragmentAthanToneTextStyle"
                 android:text="@string/text_alarm_tone" />
 
-
         </LinearLayout>
 
         <LinearLayout
@@ -140,7 +140,6 @@
                 android:text="@string/text_alarm_silent" />
 
         </LinearLayout>
-
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

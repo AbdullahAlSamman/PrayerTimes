@@ -1,35 +1,76 @@
 package com.gals.prayertimes.viewmodel
 
+import android.content.Context
+import android.media.AudioAttributes
+import android.media.MediaPlayer
+import android.net.Uri
 import android.util.Log
-import androidx.databinding.BaseObservable
-import androidx.databinding.Bindable
 import androidx.databinding.ObservableBoolean
-import androidx.databinding.ObservableField
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.gals.prayertimes.BR
+import com.gals.prayertimes.R
 import com.gals.prayertimes.model.NotificationType
 import com.gals.prayertimes.repository.Repository
 import com.gals.prayertimes.repository.db.entities.Settings
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import com.gals.prayertimes.viewmodel.observer.RadioGroupObserver
+import kotlinx.coroutines.*
 
 class AthanSettingsViewModel(
-    private val repository: Repository
+    private val repository: Repository,
+    private val context: Context
 ) : ViewModel() {
-    val alarm: ObservableBoolean = ObservableBoolean(false)
+    private lateinit var musicPlayer: MediaPlayer
+    private val mediaJob = Job()
+    private val mediaScope = CoroutineScope(Dispatchers.Main + mediaJob)
     val radioGroupObserver = RadioGroupObserver()
+    val alarm: ObservableBoolean = ObservableBoolean(false)
+    val isPlaying: ObservableBoolean = ObservableBoolean(false)
+    val athanFullVisibility: ObservableBoolean = ObservableBoolean(true)
+    val athanHalfVisibility: ObservableBoolean = ObservableBoolean(true)
 
     fun alarmToggle(checked: Boolean) {
         alarm.set(checked)
         Log.i("changed the athan toggle", checked.toString())
     }
 
+    fun playFullAthan() {
+        if (!this::musicPlayer.isInitialized) {
+            initMediaPlayer()
+        }
+        mediaScope.launch(Dispatchers.IO) {
+            withContext(Dispatchers.IO) {
+                if (musicPlayer.isPlaying) {
+                    stopMediaPlayer()
+                } else {
+                    athanHalfVisibility.set(false)
+                    setMediaDataSource(NotificationType.FULL)
+                    startMediaPlayer()
+                }
+            }
+        }
+    }
+
+    fun playHalfAthan() {
+        if (!this::musicPlayer.isInitialized) {
+            initMediaPlayer()
+        }
+        mediaScope.launch(Dispatchers.IO) {
+            withContext(Dispatchers.IO) {
+                if (musicPlayer.isPlaying) {
+                    stopMediaPlayer()
+                } else {
+                    athanFullVisibility.set(false)
+                    setMediaDataSource(NotificationType.HALF)
+                    startMediaPlayer()
+                }
+            }
+        }
+    }
+
     fun getSettings() {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                radioGroupObserver.setNotificationInfo(repository.getSettings())
+                setNotificationInfo(repository.getSettings())
             }
         }
     }
@@ -47,59 +88,57 @@ class AthanSettingsViewModel(
         }
     }
 
-    inner class RadioGroupObserver : BaseObservable() {
-        var notificationType: ObservableField<String> = ObservableField()
+    fun stopMediaPlayer() {
+        isPlaying.set(false)
+        musicPlayer.pause()
+        musicPlayer.seekTo(0)
+        athanFullVisibility.set(true)
+        athanHalfVisibility.set(true)
+    }
 
-        @get:Bindable
-        var fullAthan: Boolean = false
-            set(value) {
-                field = value
-                if (value) {
-                    notificationType.set(NotificationType.FULL.value)
-                }
-                notifyPropertyChanged(BR.fullAthan)
-            }
-
-        @get:Bindable
-        var halfAthan: Boolean = false
-            set(value) {
-                field = value
-                if (value) {
-                    notificationType.set(NotificationType.HALF.value)
-                }
-                notifyPropertyChanged(BR.halfAthan)
-            }
-
-        @get:Bindable
-        var toneAthan: Boolean = false
-            set(value) {
-                field = value
-                if (value) {
-                    notificationType.set(NotificationType.TONE.value)
-                }
-                notifyPropertyChanged(BR.toneAthan)
-            }
-
-        @get:Bindable
-        var silentAthan: Boolean = false
-            set(value) {
-                field = value
-                if (value) {
-                    notificationType.set(NotificationType.SILENT.value)
-                }
-                notifyPropertyChanged(BR.silentAthan)
-            }
-
-
-        fun setNotificationInfo(settings: Settings?) {
-            alarm.set(settings?.notification == true)
-            notificationType.set(settings?.notificationType)
-            when (settings?.notificationType) {
-                NotificationType.FULL.value -> fullAthan = true
-                NotificationType.HALF.value -> halfAthan = true
-                NotificationType.TONE.value -> toneAthan = true
-                NotificationType.SILENT.value -> silentAthan = true
-            }
+    private fun initMediaPlayer() {
+        musicPlayer = MediaPlayer().apply {
+            setAudioAttributes(
+                AudioAttributes.Builder()
+                    .setUsage(AudioAttributes.USAGE_MEDIA)
+                    .setContentType(AudioAttributes.CONTENT_TYPE_MOVIE)
+                    .build()
+            )
+        }
+        musicPlayer.setOnCompletionListener {
+            stopMediaPlayer()
         }
     }
+
+    private fun setMediaDataSource(notificationType: NotificationType) {
+        musicPlayer.reset()
+        musicPlayer.setDataSource(
+            context,
+            getMediaPlayerAsset(notificationType)
+        )
+        musicPlayer.prepare()
+    }
+
+    private fun startMediaPlayer() {
+        musicPlayer.start()
+        isPlaying.set(true)
+    }
+
+    private fun setNotificationInfo(settings: Settings?) {
+        alarm.set(settings?.notification == true)
+        radioGroupObserver.notificationType.set(settings?.notificationType)
+        when (settings?.notificationType) {
+            NotificationType.FULL.value -> radioGroupObserver.fullAthan = true
+            NotificationType.HALF.value -> radioGroupObserver.halfAthan = true
+            NotificationType.TONE.value -> radioGroupObserver.toneAthan = true
+            NotificationType.SILENT.value -> radioGroupObserver.silentAthan = true
+        }
+    }
+
+    private fun getMediaPlayerAsset(notificationType: NotificationType): Uri =
+        when (notificationType) {
+            NotificationType.FULL -> Uri.parse("android.resource://com.gals.prayertimes/" + R.raw.fullathan)
+            NotificationType.HALF -> Uri.parse("android.resource://com.gals.prayertimes/" + R.raw.halfathan)
+            else -> Uri.parse("android.resource://com.gals.prayertimes/" + R.raw.fullathan)
+        }
 }
