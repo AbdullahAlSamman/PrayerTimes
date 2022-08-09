@@ -37,7 +37,6 @@ class Repository(
         )
     ): Boolean =
         if (isSettingsExists()) {
-            saveSettings(settings)
             true
         } else {
             saveSettings(settings)
@@ -53,7 +52,7 @@ class Repository(
     private suspend fun getPrayerFromNetwork(todayDate: String) =
         prayerService?.getTodayPrayer(todayDate)
 
-    private fun isSettingsExists(): Boolean = database.settingsDao.isExists
+    private fun isSettingsExists(): Boolean = database.settingsDao.isExists()
 
     private fun savePrayer(prayer: EntityPrayer) = database.prayerDao.insert(prayer)
 }

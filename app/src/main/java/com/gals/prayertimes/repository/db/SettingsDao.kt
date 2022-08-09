@@ -41,6 +41,6 @@ interface SettingsDao {
      * Check if the table has rows
      * @return the Settings
      */
-    @get:Query("SELECT EXISTS(SELECT * FROM settings)")
-    val isExists: Boolean
+    @Query("SELECT EXISTS(SELECT * FROM settings)")
+    fun isExists(): Boolean
 }

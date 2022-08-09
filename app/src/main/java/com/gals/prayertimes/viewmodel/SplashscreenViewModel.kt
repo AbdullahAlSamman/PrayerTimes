@@ -1,5 +1,6 @@
 package com.gals.prayertimes.viewmodel
 
+import android.os.Debug
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -15,6 +16,7 @@ class SplashscreenViewModel(
     val loading = MutableLiveData<Boolean>()
 
     fun updateData() {
+        Debug.waitForDebugger()
         viewModelScope.launch {
             loading.postValue(true)
             var response: Boolean
@@ -32,6 +34,6 @@ class SplashscreenViewModel(
 
     private suspend fun getPrayer(): Boolean = repository.refreshPrayer(getTodayDate())
 
-    private suspend fun refreshSettings() = repository.refreshSettings()
+    private fun refreshSettings() = repository.refreshSettings()
 
 }
