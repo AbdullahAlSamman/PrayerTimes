@@ -1,34 +1,24 @@
 package com.gals.prayertimes.view
 
 import android.annotation.SuppressLint
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
-import androidx.annotation.RequiresApi
-import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.gals.prayertimes.R
 import com.gals.prayertimes.repository.Repository
 import com.gals.prayertimes.repository.db.AppDB
-import com.gals.prayertimes.services.NotificationService
 import com.gals.prayertimes.utils.UtilsManager
 import com.gals.prayertimes.viewmodel.SplashscreenViewModel
 import com.gals.prayertimes.viewmodel.factory.SplashscreenViewModelFactory
-import java.util.*
 
 @SuppressLint("CustomSplashScreen")
 class Splashscreen : AppCompatActivity() {
+    private lateinit var toMain: Intent
     private lateinit var viewModel: SplashscreenViewModel
     private lateinit var viewModelFactory: SplashscreenViewModelFactory
     lateinit var tools: UtilsManager
-    lateinit var toMain: Intent
 
     //TODO: handle exceptions well.
     //TODO: background services.
@@ -46,20 +36,6 @@ class Splashscreen : AppCompatActivity() {
         tools.changeStatusBarColor(window)
 
         viewModel.updateData()
-
-        startService(Intent(this, NotificationService::class.java))
-        bindService(
-            Intent(this, NotificationService::class.java),
-            viewModel.timerServiceConnection,
-            Context.BIND_AUTO_CREATE
-        )
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        if (viewModel.isNotificationServiceBound) {
-            unbindService(viewModel.timerServiceConnection)
-        }
     }
 
     private fun configureMVVM() {
