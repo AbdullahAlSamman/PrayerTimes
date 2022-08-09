@@ -3,10 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.gals.prayertimes">
 
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
         android:name=".App"
@@ -49,18 +50,8 @@
             android:label="@string/text_settings_title" />
 
         <service
-            android:name=".services.PrayersODNotificationService"
-            android:enabled="true"
-            android:exported="true" />
-
-        <receiver
-            android:name=".services.PrayersODNotificationServiceRestart"
-            android:enabled="true"
-            android:exported="true">
-            <intent-filter>
-                <action android:name=".PrayersNotificationService" />
-            </intent-filter>
-        </receiver>
+            android:name=".services.NotificationService"
+            android:exported="false" />
 
     </application>
 
