@@ -3,6 +3,7 @@ package com.gals.prayertimes.view
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.os.Debug
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -21,11 +22,12 @@ class Splashscreen : AppCompatActivity() {
     lateinit var tools: UtilsManager
 
     //TODO: handle exceptions well.
-    //TODO: background services.
-    //TODO: Testing.
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splashscreen)
+
+        /**TODO: Remove*/
+        Debug.waitForDebugger()
 
         tools = UtilsManager(baseContext)
 
@@ -36,11 +38,13 @@ class Splashscreen : AppCompatActivity() {
         tools.changeStatusBarColor(window)
 
         viewModel.updateData()
+        viewModel.launchNotificationService()
     }
 
     private fun configureMVVM() {
         viewModelFactory = SplashscreenViewModelFactory(
-            repository = Repository(AppDB.getInstance(this))
+            repository = Repository(AppDB.getInstance(this)),
+            context = this
         )
         viewModel = ViewModelProvider(
             this,

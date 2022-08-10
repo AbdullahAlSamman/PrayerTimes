@@ -13,7 +13,7 @@ android {
     buildToolsVersion = "31.0.0"
     defaultConfig {
         applicationId = "com.gals.prayertimes"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 31
         versionName = "0.9.6"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"

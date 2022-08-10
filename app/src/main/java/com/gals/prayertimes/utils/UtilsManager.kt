@@ -19,9 +19,7 @@ class UtilsManager(private val utilsContext: Context) {
     fun isServiceRunning(serviceClass: Class<*>): Boolean {
         val manager = utilsContext.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
         for (service in manager.getRunningServices(Int.MAX_VALUE)) {
-            if (serviceClass.name
-                == service.service.className
-            ) {
+            if (serviceClass.name == service.service.className) {
                 return true
             }
         }
