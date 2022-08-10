@@ -15,8 +15,8 @@ class Repository(
     private val prayerService: PrayerService? = PrayerService.getInstance()
 
     suspend fun refreshPrayer(todayDate: String): Boolean {
-        val prayer: EntityPrayer? = getPrayerFromLocalDataSource(todayDate)
-        if (prayer?.isValid() == true) {
+        val prayer: EntityPrayer = getPrayerFromLocalDataSource(todayDate)
+        if (prayer.isValid()) {
             Log.e("Data Request", "exists locally in cache")
             return true
         }
