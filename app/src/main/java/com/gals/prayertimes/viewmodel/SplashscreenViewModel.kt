@@ -22,13 +22,14 @@ class SplashscreenViewModel(
     val loading = MutableLiveData<Boolean>()
     var savedSettings: Settings = Settings.EMPTY
 
-    fun updateData() {
+    fun prepareApp() {
         viewModelScope.launch {
             loading.postValue(true)
             var response: Boolean
             withContext(Dispatchers.IO) {
                 refreshSettings()
                 savedSettings = getSettings()
+                launchNotificationService()
                 response = getPrayer()
             }
             withContext(Dispatchers.Main) {
@@ -39,7 +40,7 @@ class SplashscreenViewModel(
         }
     }
 
-    fun launchNotificationService() {
+    private fun launchNotificationService() {
         if (!tools.isServiceRunning(NotificationService::class.java)) {
             if (savedSettings.notification) {
                 context.startService(Intent(context, NotificationService::class.java))
@@ -51,9 +52,9 @@ class SplashscreenViewModel(
         }
     }
 
-    private suspend fun getPrayer(): Boolean = repository.refreshPrayer(getTodayDate())
-
     private fun refreshSettings() = repository.refreshSettings()
 
-    private fun getSettings() = repository.getSettings()!!
+    private fun getSettings() = repository.getSettingsFromLocalDataSource()!!
+
+    private suspend fun getPrayer(): Boolean = repository.refreshPrayer(getTodayDate())
 }

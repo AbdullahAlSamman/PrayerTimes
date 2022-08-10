@@ -10,6 +10,7 @@ import androidx.databinding.ObservableInt
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gals.prayertimes.DomainPrayer
+import com.gals.prayertimes.EntityPrayer
 import com.gals.prayertimes.R
 import com.gals.prayertimes.repository.Repository
 import com.gals.prayertimes.repository.db.AppDB
@@ -24,12 +25,11 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class MainViewModel(
-    private val application: Context,
-    private val database: AppDB,
+    private val application: Context
 ) : ViewModel() {
     private val tools: UtilsManager = UtilsManager(application)
     private val repository: Repository = Repository(
-        database = database
+        database = AppDB.getInstance(application)
     )
     private var sunriseTime: Calendar = Calendar.getInstance()
     private var midNightTime: Calendar = Calendar.getInstance()
@@ -85,6 +85,23 @@ class MainViewModel(
         )
     }
 
+    fun getPrayer() {
+        var prayer: EntityPrayer
+        var waiting = false
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                prayer = repository.getPrayerFromLocalDataSource(getTodayDate())
+                waiting = true
+            }
+            withContext(Dispatchers.Main) {
+                if (waiting) {
+                    updateViewObservableValues(prayer.toDomain())
+                    startDateUpdate()
+                }
+            }
+        }
+    }
+
     /**Timer to update the ui*/
     internal fun startDateUpdate(time: Int = 25000) {
         /**TODO:Not right to create a time handler everytime memory usage*/
@@ -136,7 +153,8 @@ class MainViewModel(
             viewModelScope.launch {
                 withContext(Dispatchers.IO) {
                     if (repository.refreshPrayer(getTodayDate())) {
-                        domainPrayer = repository.refreshPrayerFromDB(getTodayDate())!!.toDomain()
+                        domainPrayer =
+                            repository.getPrayerFromLocalDataSource(getTodayDate()).toDomain()
                         buildDateTexts()
                         updateViewObservableValues(domainPrayer)
                     }
@@ -318,158 +336,6 @@ class MainViewModel(
                 "Calc2",
                 "The value is False"
             )
-            false
-        }
-    }
-
-    fun notificationCheckPrayers(): Boolean {
-        return try {
-            cTime = SimpleDateFormat(
-                "HH:mm",
-                Locale.US
-            ).format(Date())
-                .split(":".toRegex()).toTypedArray()
-            currentTime = Calendar.getInstance()
-            currentTime.set(
-                Calendar.HOUR_OF_DAY,
-                cTime[0].trim { it <= ' ' }.toInt()
-            )
-            currentTime.set(
-                Calendar.MINUTE,
-                cTime[1].trim { it <= ' ' }.toInt()
-            )
-            Log.i(
-                "Prayer/Current Time ",
-                cTime[0] + ":" + cTime[1]
-            )
-
-            //update Calender Instances if the values changes
-            setCalenderPrayersTime()
-            if (tools.isEqualTime(
-                    currentTime,
-                    fajerTime
-                )
-            ) {
-                Log.i(
-                    "Prayer/Current Time ",
-                    cTime[0] + ":" + cTime[1]
-                )
-                Log.i(
-                    "Prayer/Fajer Time ",
-                    frTime[0] + ":" + frTime[1]
-                )
-                remainingPrayerTime = tools.difTimes(
-                    fajerTime,
-                    currentTime
-                )
-                currentPrayerName.set(application.getString(R.string.text_prayer_fajer))
-                true
-            } else if (tools.isEqualTime(
-                    currentTime,
-                    sunriseTime
-                )
-            ) {
-                Log.i(
-                    "Prayer/Current Time ",
-                    cTime[0] + ":" + cTime[1]
-                )
-                Log.i(
-                    "Prayer/Sunrise Time ",
-                    srTime[0] + ":" + srTime[1]
-                )
-                remainingPrayerTime = tools.difTimes(
-                    sunriseTime,
-                    currentTime
-                )
-                currentPrayerName.set(application.getString(R.string.text_prayer_sunrise))
-                true
-            } else if (tools.isEqualTime(
-                    currentTime,
-                    duhrTime
-                )
-            ) {
-                Log.i(
-                    "Prayer/Current Time ",
-                    cTime[0] + ":" + cTime[1]
-                )
-                Log.i(
-                    "Prayer/duhr Time ",
-                    duTime[0] + ":" + duTime[1]
-                )
-                remainingPrayerTime = tools.difTimes(
-                    duhrTime,
-                    currentTime
-                )
-                currentPrayerName.set(application.getString(R.string.text_prayer_duhr))
-                true
-            } else if (tools.isEqualTime(
-                    currentTime,
-                    asrTime
-                )
-            ) {
-                Log.i(
-                    "Prayer/Current Time ",
-                    cTime[0] + ":" + cTime[1]
-                )
-                Log.i(
-                    "Prayer/Asr Time ",
-                    asTime[0] + ":" + asTime[1]
-                )
-                remainingPrayerTime = tools.difTimes(
-                    asrTime,
-                    currentTime
-                )
-                currentPrayerName.set(application.getString(R.string.text_prayer_asr))
-                true
-            } else if (tools.isEqualTime(
-                    currentTime,
-                    sunsetTime
-                )
-            ) {
-                Log.i(
-                    "Prayer/Current Time ",
-                    cTime[0] + ":" + cTime[1]
-                )
-                Log.i(
-                    "Prayer/Sunset Time ",
-                    ssTime[0] + ":" + ssTime[1]
-                )
-                remainingPrayerTime = tools.difTimes(
-                    sunsetTime,
-                    currentTime
-                )
-                currentPrayerName.set(application.getString(R.string.text_prayer_maghrib))
-                true
-            } else if (tools.isEqualTime(
-                    currentTime,
-                    ishaTime
-                )
-            ) {
-                Log.i(
-                    "Prayer/Current Time ",
-                    cTime[0] + ":" + cTime[1]
-                )
-                Log.i(
-                    "Prayer/Isha Time ",
-                    cTime[0] + ":" + cTime[1]
-                )
-                remainingPrayerTime = tools.difTimes(
-                    ishaTime,
-                    currentTime
-                )
-                currentPrayerName.set(application.getString(R.string.text_prayer_isha))
-                true
-            } else {
-                currentPrayerName.set("")
-                remainingPrayerTime = ""
-                Log.i(
-                    "Prayer/Equals Check ",
-                    "False"
-                )
-                false
-            }
-        } catch (e: NumberFormatException) {
-            e.printStackTrace()
             false
         }
     }

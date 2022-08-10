@@ -15,14 +15,14 @@ class Repository(
     private val prayerService: PrayerService? = PrayerService.getInstance()
 
     suspend fun refreshPrayer(todayDate: String): Boolean {
-        val prayer: EntityPrayer? = refreshPrayerFromDB(todayDate)
+        val prayer: EntityPrayer? = getPrayerFromLocalDataSource(todayDate)
         if (prayer?.isValid() == true) {
             Log.e("Data Request", "exists locally in cache")
             return true
         }
-        val result = getPrayerFromNetwork(todayDate)
+        val result = getPrayerFromRemoteDataSource(todayDate)
         if (result?.isSuccessful == true) {
-            savePrayer(result.body()!!.first().toEntity())
+            savePrayerToLocalDataSource(result.body()!!.first().toEntity())
             return true
         } else {
             Log.e("Data Request", result?.message().toString())
@@ -39,20 +39,21 @@ class Repository(
         if (isSettingsExists()) {
             true
         } else {
-            saveSettings(settings)
+            saveSettingsToLocalDataSource(settings)
             false
         }
 
-    fun refreshPrayerFromDB(todayDate: String) = database.prayerDao.findByDate(todayDate)
+    fun getPrayerFromLocalDataSource(todayDate: String) = database.prayerDao.findByDate(todayDate)!!
 
-    fun getSettings(): Settings? = database.settingsDao.settings
+    fun getSettingsFromLocalDataSource(): Settings? = database.settingsDao.settings
 
-    fun saveSettings(settings: Settings) = database.settingsDao.insert(settings)
+    fun saveSettingsToLocalDataSource(settings: Settings) = database.settingsDao.insert(settings)
 
-    private suspend fun getPrayerFromNetwork(todayDate: String) =
+    private suspend fun getPrayerFromRemoteDataSource(todayDate: String) =
         prayerService?.getTodayPrayer(todayDate)
 
     private fun isSettingsExists(): Boolean = database.settingsDao.isExists()
 
-    private fun savePrayer(prayer: EntityPrayer) = database.prayerDao.insert(prayer)
+    private fun savePrayerToLocalDataSource(prayer: EntityPrayer) =
+        database.prayerDao.insert(prayer)
 }

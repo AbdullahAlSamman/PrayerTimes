@@ -74,7 +74,7 @@ class AthanSettingsViewModel(
     fun getSettings() {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                setNotificationInfo(repository.getSettings())
+                setNotificationInfo(repository.getSettingsFromLocalDataSource())
             }
         }
     }
@@ -82,7 +82,7 @@ class AthanSettingsViewModel(
     fun saveSettings() {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                repository.saveSettings(
+                repository.saveSettingsToLocalDataSource(
                     Settings(
                         notification = alarm.get(),
                         notificationType = radioGroupObserver.notificationType.get()!!
