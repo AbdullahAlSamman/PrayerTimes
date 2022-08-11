@@ -5,13 +5,11 @@ import android.content.Context
 import android.content.res.Configuration
 import android.net.ConnectivityManager
 import android.util.Log
-import android.view.View
 import android.view.Window
 import android.view.WindowManager
 import com.gals.prayertimes.DomainPrayer
 import com.gals.prayertimes.EntityPrayer
 import com.gals.prayertimes.R
-import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.ceil
 
@@ -26,24 +24,6 @@ class UtilsManager(private val utilsContext: Context) {
         return false
     }
 
-    fun convertDate(): String {
-        val todayDay = SimpleDateFormat(
-            "dd",
-            Locale.US
-        ).format(Date())
-        val todayMonth = SimpleDateFormat(
-            "MM",
-            Locale.US
-        ).format(Date())
-        val todayYear = SimpleDateFormat(
-            "yyyy",
-            Locale.US
-        ).format(Date())
-        return convert2Decimal(todayDay) + "." +
-                convert2Decimal(todayMonth) + "." +
-                convert2Decimal(todayYear)
-    }
-
     fun setActivityLanguage(lang: String) {
         val res = utilsContext.resources
         val newConfig = Configuration(res.configuration)
@@ -56,23 +36,7 @@ class UtilsManager(private val utilsContext: Context) {
         )
     }
 
-    fun isEqualTime(
-        currentTime: Calendar,
-        nextTime: Calendar
-    ): Boolean {
-        val bigHours = ceil((currentTime.timeInMillis / (1000 * 60 * 60)).toDouble()).toInt()
-        val bigMins = ceil((currentTime.timeInMillis / (1000 * 60) % 60).toDouble()).toInt()
-        val smallHours = ceil((nextTime.timeInMillis / (1000 * 60 * 60)).toDouble()).toInt()
-        val smallMins = ceil((nextTime.timeInMillis / (1000 * 60) % 60).toDouble()).toInt()
-        if (bigHours == smallHours) {
-            if (bigMins == smallMins) {
-                return true
-            }
-        }
-        return false
-    }
-
-    fun difTimes(
+    fun calculateDifferenceBetweenTimes(
         big: Calendar,
         small: Calendar
     ): String {
@@ -95,32 +59,6 @@ class UtilsManager(private val utilsContext: Context) {
             utilsContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val activeNetworkInfo = connectivityManager.activeNetworkInfo
         return activeNetworkInfo != null && activeNetworkInfo.isConnected
-    }
-
-    /**Check right to left layout*/
-    fun isRTL(): Boolean {
-        val config = utilsContext.resources
-            .configuration
-        return if (config.layoutDirection == View.LAYOUT_DIRECTION_RTL) {
-            config.setLayoutDirection(Locale("ar"))
-            utilsContext.resources
-                .updateConfiguration(
-                    config,
-                    utilsContext.resources
-                        .displayMetrics
-                )
-            Log.i(
-                "RTL",
-                "The Language is RTL"
-            )
-            true
-        } else {
-            Log.i(
-                "RTL",
-                "The Language is LTR"
-            )
-            false
-        }
     }
 
     fun changeStatusBarColor(window: Window) {
@@ -162,26 +100,5 @@ class UtilsManager(private val utilsContext: Context) {
                 ${prayer.isha}
                 """.trimIndent()
         )
-    }
-
-    companion object {
-        fun convert2Decimal(number: String): String {
-            try {
-                val chars = CharArray(number.length)
-                for (i in number.indices) {
-                    val ch = number[i]
-                    if (ch.code in 0x0660..0x0669) {
-                        (ch.minus(0x0660 - '0'.code))
-                    } else if (ch.code in 0x06f0..0x06F9) {
-                        (ch.minus(0x06f0 - '0'.code))
-                    }
-                    chars[i] = ch
-                }
-                return String(chars)
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-            return ""
-        }
     }
 }

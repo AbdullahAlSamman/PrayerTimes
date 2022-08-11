@@ -209,61 +209,64 @@ class MainViewModel(
         currentTime = getTimeNow().toCalendar()
         // to update calender instances if the times are updated
         setCalenderPrayersTime()
-        if (currentTime.before(fajerTime)) {
-            remainingPrayerTime = tools.difTimes(
-                fajerTime,
-                currentTime
-            )
-            currentPrayerName.set(application.getString(R.string.text_prayer_fajer))
-            true
-        } else if (currentTime.before(sunriseTime)) {
-            remainingPrayerTime = tools.difTimes(
-                sunriseTime,
-                currentTime
-            )
-            currentPrayerName.set(application.getString(R.string.text_prayer_day_sunrise))
-            true
-        } else if (currentTime.before(duhrTime)) {
-            remainingPrayerTime = tools.difTimes(
-                duhrTime,
-                currentTime
-            )
-            currentPrayerName.set(application.getString(R.string.text_prayer_duhr))
-            true
-        } else if (currentTime.before(asrTime)) {
-            remainingPrayerTime = tools.difTimes(
-                asrTime,
-                currentTime
-            )
-            currentPrayerName.set(application.getString(R.string.text_prayer_asr))
-            true
-        } else if (currentTime.before(sunsetTime)) {
-            remainingPrayerTime = tools.difTimes(
-                sunsetTime,
-                currentTime
-            )
-            currentPrayerName.set(application.getString(R.string.text_prayer_maghrib))
-            true
-        } else if (currentTime.before(ishaTime)) {
-            remainingPrayerTime = tools.difTimes(
-                ishaTime,
-                currentTime
-            )
-            currentPrayerName.set(application.getString(R.string.text_prayer_isha))
-            true
-        } else if (currentTime.before(midNightTime) || currentTime == midNightTime) {
-            remainingPrayerTime = tools.difTimes(
-                midNightTime,
-                currentTime
-            )
-            currentPrayerName.set(application.getString(R.string.text_midnight_time_title))
-            true
-        } else {
-            Log.e(
-                "Calc1",
-                "The value is False"
-            )
-            false
+        when {
+            currentTime.before(fajerTime) -> {
+                remainingPrayerTime = tools.calculateDifferenceBetweenTimes(
+                    fajerTime,
+                    currentTime
+                )
+                currentPrayerName.set(application.getString(R.string.text_prayer_fajer))
+                true
+            }
+            currentTime.before(sunriseTime) -> {
+                remainingPrayerTime = tools.calculateDifferenceBetweenTimes(
+                    sunriseTime,
+                    currentTime
+                )
+                currentPrayerName.set(application.getString(R.string.text_prayer_day_sunrise))
+                true
+            }
+            currentTime.before(duhrTime) -> {
+                remainingPrayerTime = tools.calculateDifferenceBetweenTimes(
+                    duhrTime,
+                    currentTime
+                )
+                currentPrayerName.set(application.getString(R.string.text_prayer_duhr))
+                true
+            }
+            currentTime.before(asrTime) -> {
+                remainingPrayerTime = tools.calculateDifferenceBetweenTimes(
+                    asrTime,
+                    currentTime
+                )
+                currentPrayerName.set(application.getString(R.string.text_prayer_asr))
+                true
+            }
+            currentTime.before(sunsetTime) -> {
+                remainingPrayerTime = tools.calculateDifferenceBetweenTimes(
+                    sunsetTime,
+                    currentTime
+                )
+                currentPrayerName.set(application.getString(R.string.text_prayer_maghrib))
+                true
+            }
+            currentTime.before(ishaTime) -> {
+                remainingPrayerTime = tools.calculateDifferenceBetweenTimes(
+                    ishaTime,
+                    currentTime
+                )
+                currentPrayerName.set(application.getString(R.string.text_prayer_isha))
+                true
+            }
+            currentTime.before(midNightTime) || currentTime == midNightTime -> {
+                remainingPrayerTime = tools.calculateDifferenceBetweenTimes(
+                    midNightTime,
+                    currentTime
+                )
+                currentPrayerName.set(application.getString(R.string.text_midnight_time_title))
+                true
+            }
+            else -> false
         }
     } catch (e: NumberFormatException) {
         e.printStackTrace()
@@ -360,27 +363,19 @@ class MainViewModel(
     /**Update Background pic according to time*/
     private fun updateBackground() {
         if (!isNight()) {
-            if (isRamadan()) {
-                backgroundImage.set(R.drawable.ramadan_day)
-            } else {
-                backgroundImage.set(R.drawable.background_day)
+            when (isRamadan()) {
+                true -> backgroundImage.set(R.drawable.ramadan_day)
+                false -> backgroundImage.set(R.drawable.background_day)
             }
             btnSettingsResource.set(R.drawable.round_settings_black)
-            Log.i(
-                "UI",
-                "Day time"
-            )
+            Log.i("UI", "Day time")
         } else {
-            if (isRamadan()) {
-                backgroundImage.set(R.drawable.ramadan_night)
-            } else {
-                backgroundImage.set(R.drawable.background_night)
+            when (isRamadan()) {
+                true -> backgroundImage.set(R.drawable.ramadan_night)
+                false -> backgroundImage.set(R.drawable.background_night)
             }
             btnSettingsResource.set(R.drawable.round_settings_white)
-            Log.i(
-                "UI",
-                "Night time"
-            )
+            Log.i("UI", "Night time")
         }
     }
 

@@ -31,16 +31,6 @@ fun NetworkPrayer.toEntity(): EntityPrayer = EntityPrayer(
     isha = this.isha
 )
 
-fun getTodayDate(): String = SimpleDateFormat(
-    "dd.MM.yyyy",
-    Locale.US
-).format(Date())
-
-fun getTimeNow(): String = SimpleDateFormat(
-    "HH:mm",
-    Locale.US
-).format(Date())
-
 fun String.toCalendar(): Calendar {
     val calendar: Calendar = Calendar.getInstance()
     val time = this.split(":".toRegex()).toTypedArray()
@@ -54,6 +44,16 @@ fun String.toCalendar(): Calendar {
     )
     return calendar
 }
+
+fun getTodayDate(): String = SimpleDateFormat(
+    "dd.MM.yyyy",
+    Locale.US
+).format(Date())
+
+fun getTimeNow(): String = SimpleDateFormat(
+    "HH:mm",
+    Locale.US
+).format(Date())
 
 fun getSunMonth(month: Int): Int =
     when (month) {
