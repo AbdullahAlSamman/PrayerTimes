@@ -274,21 +274,13 @@ class MainViewModel(
         false
     }
 
-    private fun buildDateTexts(): Boolean {
-        return try {
+    private fun buildDateTexts(): Boolean =
+        try {
             lateinit var sunDateText: String
             lateinit var moonDateText: String
             val calendar = Calendar.getInstance()
-            when (calendar[Calendar.DAY_OF_WEEK]) {
-                Calendar.SATURDAY -> viewDayName.set(application.getString(R.string.text_day_sat))
-                Calendar.SUNDAY -> viewDayName.set(application.getString(R.string.text_day_sun))
-                Calendar.MONDAY -> viewDayName.set(application.getString(R.string.text_day_mon))
-                Calendar.TUESDAY -> viewDayName.set(application.getString(R.string.text_day_tue))
-                Calendar.WEDNESDAY -> viewDayName.set(application.getString(R.string.text_day_web))
-                Calendar.THURSDAY -> viewDayName.set(application.getString(R.string.text_day_thr))
-                Calendar.FRIDAY -> viewDayName.set(application.getString(R.string.text_day_fri))
-                else -> {}
-            }
+            viewDayName.set(application.getString(getDayName(calendar[Calendar.DAY_OF_WEEK])))
+
             val sdate = StringTokenizer(
                 domainPrayer.sDate,
                 "."
@@ -299,38 +291,13 @@ class MainViewModel(
             )
             sunDateText = sdate.nextToken() + " "
             moonDateText = mdate.nextToken() + " "
-            when (sdate.nextToken().toInt()) {
-                1 -> sunDateText += application.getString(R.string.text_sun_month_jan)
-                2 -> sunDateText += application.getString(R.string.text_sun_month_feb)
-                3 -> sunDateText += application.getString(R.string.text_sun_month_mar)
-                4 -> sunDateText += application.getString(R.string.text_sun_month_apr)
-                5 -> sunDateText += application.getString(R.string.text_sun_month_may)
-                6 -> sunDateText += application.getString(R.string.text_sun_month_jun)
-                7 -> sunDateText += application.getString(R.string.text_sun_month_jul)
-                8 -> sunDateText += application.getString(R.string.text_sun_month_aug)
-                9 -> sunDateText += application.getString(R.string.text_sun_month_sep)
-                10 -> sunDateText += application.getString(R.string.text_sun_month_oct)
-                11 -> sunDateText += application.getString(R.string.text_sun_month_nov)
-                12 -> sunDateText += application.getString(R.string.text_sun_month_dec)
-                else -> {}
-            }
-            when (mdate.nextToken().toInt()) {
-                1 -> moonDateText += application.getString(R.string.text_moon_month_muhram)
-                2 -> moonDateText += application.getString(R.string.text_moon_month_safer)
-                3 -> moonDateText += application.getString(R.string.text_moon_month_rabi_aoul)
-                4 -> moonDateText += application.getString(R.string.text_moon_month_rabi_aker)
-                5 -> moonDateText += application.getString(R.string.text_moon_month_gamada_aoul)
-                6 -> moonDateText += application.getString(R.string.text_moon_month_gamada_aker)
-                7 -> moonDateText += application.getString(R.string.text_moon_month_rajb)
-                8 -> moonDateText += application.getString(R.string.text_moon_month_shaban)
-                9 -> moonDateText += application.getString(R.string.text_moon_month_ramadan)
-                10 -> moonDateText += application.getString(R.string.text_moon_month_shual)
-                11 -> moonDateText += application.getString(R.string.text_moon_month_zo_kada)
-                12 -> moonDateText += application.getString(R.string.text_moon_month_zo_haga)
-                else -> {}
-            }
+
+            sunDateText += application.getString(getSunMonth(sdate.nextToken().toInt()))
+            moonDateText += application.getString(getMoonMonth(mdate.nextToken().toInt()))
+
             sunDateText += " " + sdate.nextToken()
             moonDateText += " " + mdate.nextToken()
+
             moonDateBanner.set(moonDateText)
             sunDateBanner.set(sunDateText)
             true
@@ -338,7 +305,6 @@ class MainViewModel(
             e.printStackTrace()
             false
         }
-    }
 
     private fun isDayHasChanged(date: String?): Boolean {
         try {
@@ -364,7 +330,7 @@ class MainViewModel(
                 "."
             )
             mdate.nextToken()
-            if (mdate.nextToken().toInt() == 9) {
+            if (mdate.nextToken().toInt() == MONTH_RAMADAN_NUMBER) {
                 return true
             }
         } catch (e: java.lang.Exception) {
@@ -416,5 +382,9 @@ class MainViewModel(
                 "Night time"
             )
         }
+    }
+
+    companion object {
+        private const val MONTH_RAMADAN_NUMBER = 9
     }
 }
