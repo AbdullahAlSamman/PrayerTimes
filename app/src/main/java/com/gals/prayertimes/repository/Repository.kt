@@ -15,10 +15,12 @@ class Repository(
     private val prayerService: PrayerService? = PrayerService.getInstance()
 
     suspend fun refreshPrayer(todayDate: String): Boolean {
-        val prayer: EntityPrayer = getPrayerFromLocalDataSource(todayDate)
-        if (prayer.isValid()) {
-            Log.e("Data Request", "exists locally in cache")
-            return true
+        val prayer: EntityPrayer? = getPrayerFromLocalDataSource(todayDate)
+        if (prayer != null) {
+            if (prayer.isValid()) {
+                Log.e("Data Request", "exists locally in cache")
+                return true
+            }
         }
         val result = getPrayerFromRemoteDataSource(todayDate)
         if (result?.isSuccessful == true) {
@@ -43,7 +45,8 @@ class Repository(
             false
         }
 
-    fun getPrayerFromLocalDataSource(todayDate: String) = database.prayerDao.findByDate(todayDate)!!
+    fun getPrayerFromLocalDataSource(todayDate: String): EntityPrayer? =
+        database.prayerDao.findByDate(todayDate)
 
     fun getSettingsFromLocalDataSource(): Settings? = database.settingsDao.settings
 

@@ -34,3 +34,22 @@ fun getTodayDate(): String = SimpleDateFormat(
     "dd.MM.yyyy",
     Locale.US
 ).format(Date())
+
+fun getTimeNow(): String = SimpleDateFormat(
+    "HH:mm",
+    Locale.US
+).format(Date())
+
+fun String.toCalendar(): Calendar {
+    val calendar: Calendar = Calendar.getInstance()
+    val time = this.split(":".toRegex()).toTypedArray()
+    calendar.set(
+        Calendar.HOUR_OF_DAY,
+        time[0].trim { it <= ' ' }.toInt()
+    )
+    calendar.set(
+        Calendar.MINUTE,
+        time[1].trim { it <= ' ' }.toInt()
+    )
+    return calendar
+}
