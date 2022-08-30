@@ -13,16 +13,28 @@ import androidx.lifecycle.viewModelScope
 import com.gals.prayertimes.DomainPrayer
 import com.gals.prayertimes.EntityPrayer
 import com.gals.prayertimes.R
+import com.gals.prayertimes.model.TimePrayer
 import com.gals.prayertimes.repository.Repository
 import com.gals.prayertimes.repository.db.AppDB
 import com.gals.prayertimes.repository.db.entities.Prayer.Companion.isValid
-import com.gals.prayertimes.utils.*
+import com.gals.prayertimes.utils.UtilsManager
+import com.gals.prayertimes.utils.getDayName
+import com.gals.prayertimes.utils.getMoonMonth
+import com.gals.prayertimes.utils.getSunMonth
+import com.gals.prayertimes.utils.getTimeNow
+import com.gals.prayertimes.utils.getTodayDate
+import com.gals.prayertimes.utils.toCalendar
+import com.gals.prayertimes.utils.toDomain
 import com.gals.prayertimes.view.Menu
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
+import java.util.StringTokenizer
+import java.util.Timer
+import java.util.TimerTask
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.text.SimpleDateFormat
-import java.util.*
 
 class MainViewModel(
     private val application: Context
@@ -31,15 +43,9 @@ class MainViewModel(
     private val repository: Repository = Repository(
         database = AppDB.getInstance(application)
     )
-    private var sunriseTime: Calendar = Calendar.getInstance()
-    private var midNightTime: Calendar = Calendar.getInstance()
+    private var calendarPrayer: TimePrayer = TimePrayer()
     private var domainPrayer: DomainPrayer = DomainPrayer.EMPTY
     private lateinit var updateUITimer: Timer
-    private lateinit var fajerTime: Calendar
-    private lateinit var duhrTime: Calendar
-    private lateinit var asrTime: Calendar
-    private lateinit var sunsetTime: Calendar
-    private lateinit var ishaTime: Calendar
     private lateinit var currentTime: Calendar
     private lateinit var remainingPrayerTime: String
     var backgroundImage: ObservableInt = ObservableInt()
@@ -148,7 +154,6 @@ class MainViewModel(
                         domainPrayer =
                             repository.getPrayerFromLocalDataSource(getTodayDate())!!.toDomain()
                         if (domainPrayer != DomainPrayer.EMPTY) {
-                            buildDateTexts()
                             updateViewObservableValues(domainPrayer)
                         }
                     }
@@ -178,7 +183,7 @@ class MainViewModel(
                     "Prayer/Current Time ",
                     currentTime.time.toString()
                 )
-                return !(currentTime.before(sunsetTime) && currentTime.after(sunriseTime))
+                return !(currentTime.before(calendarPrayer.maghreb) && currentTime.after(calendarPrayer.sunrise))
             }
         } catch (e: NumberFormatException) {
             e.printStackTrace()
@@ -188,7 +193,7 @@ class MainViewModel(
 
     private fun isNextSunrise(): Boolean = try {
         currentTime = getTodayDate().toCalendar()
-        currentTime.before(sunriseTime) && currentTime.after(fajerTime)
+        currentTime.before(calendarPrayer.sunrise) && currentTime.after(calendarPrayer.fajer)
     } catch (e: NumberFormatException) {
         e.printStackTrace()
         false
@@ -199,7 +204,7 @@ class MainViewModel(
     private fun isNextMidnight(): Boolean =
         try {
             currentTime = getTimeNow().toCalendar()
-            currentTime.before(midNightTime) && currentTime.after(ishaTime)
+            currentTime.before(calendarPrayer.midNight) && currentTime.after(calendarPrayer.isha)
         } catch (e: NumberFormatException) {
             e.printStackTrace()
             false
@@ -210,59 +215,40 @@ class MainViewModel(
         // to update calender instances if the times are updated
         setCalenderPrayersTime()
         when {
-            currentTime.before(fajerTime) -> {
-                remainingPrayerTime = tools.calculateDifferenceBetweenTimes(
-                    fajerTime,
-                    currentTime
-                )
+            currentTime.before(calendarPrayer.fajer) -> {
+                remainingPrayerTime = tools.calculateDifferenceBetweenTimes(calendarPrayer.fajer, currentTime)
                 currentPrayerName.set(application.getString(R.string.text_prayer_fajer))
                 true
             }
-            currentTime.before(sunriseTime) -> {
-                remainingPrayerTime = tools.calculateDifferenceBetweenTimes(
-                    sunriseTime,
-                    currentTime
-                )
+            currentTime.before(calendarPrayer.sunrise) -> {
+                remainingPrayerTime =
+                    tools.calculateDifferenceBetweenTimes(calendarPrayer.sunrise, currentTime)
                 currentPrayerName.set(application.getString(R.string.text_prayer_day_sunrise))
                 true
             }
-            currentTime.before(duhrTime) -> {
-                remainingPrayerTime = tools.calculateDifferenceBetweenTimes(
-                    duhrTime,
-                    currentTime
-                )
+            currentTime.before(calendarPrayer.duhr) -> {
+                remainingPrayerTime = tools.calculateDifferenceBetweenTimes(calendarPrayer.duhr, currentTime)
                 currentPrayerName.set(application.getString(R.string.text_prayer_duhr))
                 true
             }
-            currentTime.before(asrTime) -> {
-                remainingPrayerTime = tools.calculateDifferenceBetweenTimes(
-                    asrTime,
-                    currentTime
-                )
+            currentTime.before(calendarPrayer.asr) -> {
+                remainingPrayerTime = tools.calculateDifferenceBetweenTimes(calendarPrayer.asr, currentTime)
                 currentPrayerName.set(application.getString(R.string.text_prayer_asr))
                 true
             }
-            currentTime.before(sunsetTime) -> {
-                remainingPrayerTime = tools.calculateDifferenceBetweenTimes(
-                    sunsetTime,
-                    currentTime
-                )
+            currentTime.before(calendarPrayer.maghreb) -> {
+                remainingPrayerTime = tools.calculateDifferenceBetweenTimes(calendarPrayer.maghreb, currentTime)
                 currentPrayerName.set(application.getString(R.string.text_prayer_maghrib))
                 true
             }
-            currentTime.before(ishaTime) -> {
-                remainingPrayerTime = tools.calculateDifferenceBetweenTimes(
-                    ishaTime,
-                    currentTime
-                )
+            currentTime.before(calendarPrayer.isha) -> {
+                remainingPrayerTime = tools.calculateDifferenceBetweenTimes(calendarPrayer.isha, currentTime)
                 currentPrayerName.set(application.getString(R.string.text_prayer_isha))
                 true
             }
-            currentTime.before(midNightTime) || currentTime == midNightTime -> {
-                remainingPrayerTime = tools.calculateDifferenceBetweenTimes(
-                    midNightTime,
-                    currentTime
-                )
+            currentTime.before(calendarPrayer.midNight) || currentTime == calendarPrayer.midNight -> {
+                remainingPrayerTime =
+                    tools.calculateDifferenceBetweenTimes(calendarPrayer.midNight, currentTime)
                 currentPrayerName.set(application.getString(R.string.text_midnight_time_title))
                 true
             }
@@ -328,10 +314,7 @@ class MainViewModel(
 
     private fun isRamadan(): Boolean {
         try {
-            val mdate = StringTokenizer(
-                domainPrayer.mDate,
-                "."
-            )
+            val mdate = StringTokenizer(domainPrayer.mDate, ".")
             mdate.nextToken()
             if (mdate.nextToken().toInt() == MONTH_RAMADAN_NUMBER) {
                 return true
@@ -342,23 +325,14 @@ class MainViewModel(
         return false
     }
 
-    private fun setCalenderPrayersTime() {
-        fajerTime = domainPrayer.fajer!!.toCalendar()
-        sunriseTime = domainPrayer.sunrise!!.toCalendar()
-        duhrTime = domainPrayer.duhr!!.toCalendar()
-        asrTime = domainPrayer.asr!!.toCalendar()
-        sunsetTime = domainPrayer.maghrib!!.toCalendar()
-        ishaTime = domainPrayer.isha!!.toCalendar()
-        midNightTime = Calendar.getInstance()
-        midNightTime.set(
-            Calendar.HOUR_OF_DAY,
-            23
-        )
-        midNightTime.set(
-            Calendar.MINUTE,
-            59
-        )
-    }
+    private fun setCalenderPrayersTime(): TimePrayer = TimePrayer(
+        fajer = domainPrayer.fajer!!.toCalendar(),
+        sunrise = domainPrayer.sunrise!!.toCalendar(),
+        duhr = domainPrayer.duhr!!.toCalendar(),
+        asr = domainPrayer.asr!!.toCalendar(),
+        maghreb = domainPrayer.maghrib!!.toCalendar(),
+        isha = domainPrayer.isha!!.toCalendar(),
+    )
 
     /**Update Background pic according to time*/
     private fun updateBackground() {

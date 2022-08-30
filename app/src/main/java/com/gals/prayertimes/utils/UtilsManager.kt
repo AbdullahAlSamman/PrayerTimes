@@ -10,7 +10,8 @@ import android.view.WindowManager
 import com.gals.prayertimes.DomainPrayer
 import com.gals.prayertimes.EntityPrayer
 import com.gals.prayertimes.R
-import java.util.*
+import java.util.Calendar
+import java.util.Locale
 import kotlin.math.ceil
 
 class UtilsManager(private val utilsContext: Context) {

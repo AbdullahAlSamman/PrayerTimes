@@ -5,7 +5,9 @@ import com.gals.prayertimes.EntityPrayer
 import com.gals.prayertimes.R
 import com.gals.prayertimes.repository.network.model.NetworkPrayer
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 
 fun EntityPrayer.toDomain(): DomainPrayer = DomainPrayer(
     this.objectId,
@@ -43,6 +45,12 @@ fun String.toCalendar(): Calendar {
         time[1].trim { it <= ' ' }.toInt()
     )
     return calendar
+}
+
+fun Calendar.setHourMinutes(hours: Int, minutes: Int): Calendar {
+    this.set(Calendar.HOUR_OF_DAY, hours)
+    this.set(Calendar.MINUTE, minutes)
+    return this
 }
 
 fun getTodayDate(): String = SimpleDateFormat(
