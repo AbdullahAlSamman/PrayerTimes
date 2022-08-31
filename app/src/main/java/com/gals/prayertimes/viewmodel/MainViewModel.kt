@@ -168,6 +168,7 @@ class MainViewModel(
         updateNextPrayerInfo(calculation.calculateNextPrayerInfo(currentPrayer))
     }
 
+    /** Build text for dates*/
     private fun buildDateTexts(): Boolean =
         try {
             lateinit var sunDateText: String
@@ -217,30 +218,17 @@ class MainViewModel(
         return true // to trigger an Update when the date is not determined
     }
 
-    private fun isRamadan(): Boolean {
-        try {
-            val mdate = StringTokenizer(domainPrayer.mDate, ".")
-            mdate.nextToken()
-            if (mdate.nextToken().toInt() == MONTH_RAMADAN_NUMBER) {
-                return true
-            }
-        } catch (e: java.lang.Exception) {
-            e.printStackTrace()
-        }
-        return false
-    }
-
     /**Update Background pic according to time*/
     private fun updateBackground() {
         if (!calculation.isNight(currentPrayer)) {
-            when (isRamadan()) {
+            when (calculation.isRamadan(domainPrayer.mDate)) {
                 true -> backgroundImage.set(R.drawable.ramadan_day)
                 false -> backgroundImage.set(R.drawable.background_day)
             }
             btnSettingsResource.set(R.drawable.round_settings_black)
             Log.i("UI", "Day time")
         } else {
-            when (isRamadan()) {
+            when (calculation.isRamadan(domainPrayer.mDate)) {
                 true -> backgroundImage.set(R.drawable.ramadan_night)
                 false -> backgroundImage.set(R.drawable.background_night)
             }
@@ -253,9 +241,5 @@ class MainViewModel(
         nextPrayerTime.set(nextPrayerInfo.nextPrayerTime)
         nextPrayerBanner.set(nextPrayerInfo.nextPrayerBannerText)
         nextPrayerName.set(nextPrayerInfo.nextPrayerNameText)
-    }
-
-    companion object {
-        private const val MONTH_RAMADAN_NUMBER = 9
     }
 }

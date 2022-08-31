@@ -5,6 +5,7 @@ import com.gals.prayertimes.R
 import com.gals.prayertimes.model.TimePrayer
 import com.gals.prayertimes.model.config.NextPrayerInfoConfig
 import java.util.Calendar
+import java.util.StringTokenizer
 import kotlin.math.ceil
 
 class PrayerCalculation(
@@ -20,13 +21,26 @@ class PrayerCalculation(
         isNowBeforeTime(prayer.midNight) && isNowAfterTime(prayer.isha)
 
     fun isNight(prayer: TimePrayer): Boolean =
-        !isNowBeforeTime(prayer.maghreb) && isNowAfterTime(prayer.sunrise)
+        isNowAfterTime(prayer.maghreb) || isNowBeforeTime(prayer.sunrise)
 
     fun isNowBeforeTime(value: Calendar): Boolean =
         getTimeNow().toCalendar().before(value)
 
-    private fun isNowAfterTime(value: Calendar): Boolean =
+    fun isNowAfterTime(value: Calendar): Boolean =
         getTimeNow().toCalendar().after(value)
+
+    fun isRamadan(moonDate: String?): Boolean {
+        try {
+            val mdate = StringTokenizer(moonDate, ".")
+            mdate.nextToken()
+            if (mdate.nextToken().toInt() == MONTH_RAMADAN_NUMBER) {
+                return true
+            }
+        } catch (e: java.lang.Exception) {
+            e.printStackTrace()
+        }
+        return false
+    }
 
     fun calculateNextPrayerInfo(currentPrayer: TimePrayer): NextPrayerInfoConfig {
         val nextPrayerInfoConfig = NextPrayerInfoConfig()
@@ -121,5 +135,9 @@ class PrayerCalculation(
             hours = "0$intHours"
         }
         return "$hours:$minutes"
+    }
+
+    companion object {
+        private const val MONTH_RAMADAN_NUMBER = 9
     }
 }
