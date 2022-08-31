@@ -10,9 +10,7 @@ import android.view.WindowManager
 import com.gals.prayertimes.DomainPrayer
 import com.gals.prayertimes.EntityPrayer
 import com.gals.prayertimes.R
-import java.util.Calendar
 import java.util.Locale
-import kotlin.math.ceil
 
 class UtilsManager(private val utilsContext: Context) {
     fun isServiceRunning(serviceClass: Class<*>): Boolean {
@@ -35,24 +33,6 @@ class UtilsManager(private val utilsContext: Context) {
             newConfig,
             null
         )
-    }
-
-    fun calculateDifferenceBetweenTimes(
-        big: Calendar,
-        small: Calendar
-    ): String {
-        val result = big.timeInMillis - small.timeInMillis
-        val intHours = ceil((result / (1000 * 60 * 60)).toDouble()).toInt()
-        val intMinutes = ceil((result / (1000 * 60) % 60).toDouble()).toInt()
-        var minutes = intMinutes.toString() + ""
-        var hours = intHours.toString() + ""
-        if (intMinutes < 10) {
-            minutes = "0$intMinutes"
-        }
-        if (intHours < 10) {
-            hours = "0$intHours"
-        }
-        return "$hours:$minutes"
     }
 
     fun isNetworkAvailable(): Boolean {

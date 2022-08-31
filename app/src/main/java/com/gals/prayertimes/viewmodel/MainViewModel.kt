@@ -14,17 +14,18 @@ import com.gals.prayertimes.DomainPrayer
 import com.gals.prayertimes.EntityPrayer
 import com.gals.prayertimes.R
 import com.gals.prayertimes.model.TimePrayer
+import com.gals.prayertimes.model.config.NextPrayerInfoConfig
 import com.gals.prayertimes.repository.Repository
 import com.gals.prayertimes.repository.db.AppDB
 import com.gals.prayertimes.repository.db.entities.Prayer.Companion.isValid
+import com.gals.prayertimes.utils.PrayerCalculation
 import com.gals.prayertimes.utils.UtilsManager
 import com.gals.prayertimes.utils.getDayName
 import com.gals.prayertimes.utils.getMoonMonth
 import com.gals.prayertimes.utils.getSunMonth
-import com.gals.prayertimes.utils.getTimeNow
 import com.gals.prayertimes.utils.getTodayDate
-import com.gals.prayertimes.utils.toCalendar
 import com.gals.prayertimes.utils.toDomain
+import com.gals.prayertimes.utils.toTimePrayer
 import com.gals.prayertimes.view.Menu
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -40,21 +41,20 @@ class MainViewModel(
     private val application: Context
 ) : ViewModel() {
     private val tools: UtilsManager = UtilsManager(application)
+    private val calculation: PrayerCalculation = PrayerCalculation(application)
     private val repository: Repository = Repository(
         database = AppDB.getInstance(application)
     )
-    private var calendarPrayer: TimePrayer = TimePrayer()
     private var domainPrayer: DomainPrayer = DomainPrayer.EMPTY
+    private lateinit var currentPrayer: TimePrayer
     private lateinit var updateUITimer: Timer
-    private lateinit var currentTime: Calendar
-    private lateinit var remainingPrayerTime: String
     var backgroundImage: ObservableInt = ObservableInt()
     var btnSettingsResource: ObservableInt = ObservableInt()
     var sunDateBanner: ObservableField<String> = ObservableField()
     var moonDateBanner: ObservableField<String> = ObservableField()
     var nextPrayerTime: ObservableField<String> = ObservableField()
     var nextPrayerBanner: ObservableField<String> = ObservableField()
-    var currentPrayerName: ObservableField<String> = ObservableField()
+    var nextPrayerName: ObservableField<String> = ObservableField()
     var viewDayName: ObservableField<String> = ObservableField()
     var viewFajerTime: ObservableField<String> = ObservableField()
     var viewSunriseTime: ObservableField<String> = ObservableField()
@@ -164,103 +164,8 @@ class MainViewModel(
 
     /**update the time to next prayer*/
     private fun updateRemainingTime() {
-        if (calculateTimeBetweenPrayers()) {
-            if (isNextAPrayer()) {
-                nextPrayerTime.set(remainingPrayerTime)
-                nextPrayerBanner.set(application.getString(R.string.text_remaining_prayer_time))
-            } else {
-                nextPrayerTime.set(remainingPrayerTime)
-                nextPrayerBanner.set(application.getString(R.string.text_remaining_time))
-            }
-        }
-    }
-
-    private fun isNight(): Boolean {
-        try {
-            currentTime = getTodayDate().toCalendar()
-            if (domainPrayer.sunrise != null || domainPrayer.maghrib != null) {
-                Log.i(
-                    "Prayer/Current Time ",
-                    currentTime.time.toString()
-                )
-                return !(currentTime.before(calendarPrayer.maghreb) && currentTime.after(calendarPrayer.sunrise))
-            }
-        } catch (e: NumberFormatException) {
-            e.printStackTrace()
-        }
-        return false
-    }
-
-    private fun isNextSunrise(): Boolean = try {
-        currentTime = getTodayDate().toCalendar()
-        currentTime.before(calendarPrayer.sunrise) && currentTime.after(calendarPrayer.fajer)
-    } catch (e: NumberFormatException) {
-        e.printStackTrace()
-        false
-    }
-
-    private fun isNextAPrayer(): Boolean = !(isNextMidnight() || isNextSunrise())
-
-    private fun isNextMidnight(): Boolean =
-        try {
-            currentTime = getTimeNow().toCalendar()
-            currentTime.before(calendarPrayer.midNight) && currentTime.after(calendarPrayer.isha)
-        } catch (e: NumberFormatException) {
-            e.printStackTrace()
-            false
-        }
-
-    private fun calculateTimeBetweenPrayers(): Boolean = try {
-        currentTime = getTimeNow().toCalendar()
-        // to update calender instances if the times are updated
-        setCalenderPrayersTime()
-        when {
-            currentTime.before(calendarPrayer.fajer) -> {
-                remainingPrayerTime = tools.calculateDifferenceBetweenTimes(calendarPrayer.fajer, currentTime)
-                currentPrayerName.set(application.getString(R.string.text_prayer_fajer))
-                true
-            }
-            currentTime.before(calendarPrayer.sunrise) -> {
-                remainingPrayerTime =
-                    tools.calculateDifferenceBetweenTimes(calendarPrayer.sunrise, currentTime)
-                currentPrayerName.set(application.getString(R.string.text_prayer_day_sunrise))
-                true
-            }
-            currentTime.before(calendarPrayer.duhr) -> {
-                remainingPrayerTime = tools.calculateDifferenceBetweenTimes(calendarPrayer.duhr, currentTime)
-                currentPrayerName.set(application.getString(R.string.text_prayer_duhr))
-                true
-            }
-            currentTime.before(calendarPrayer.asr) -> {
-                remainingPrayerTime = tools.calculateDifferenceBetweenTimes(calendarPrayer.asr, currentTime)
-                currentPrayerName.set(application.getString(R.string.text_prayer_asr))
-                true
-            }
-            currentTime.before(calendarPrayer.maghreb) -> {
-                remainingPrayerTime = tools.calculateDifferenceBetweenTimes(calendarPrayer.maghreb, currentTime)
-                currentPrayerName.set(application.getString(R.string.text_prayer_maghrib))
-                true
-            }
-            currentTime.before(calendarPrayer.isha) -> {
-                remainingPrayerTime = tools.calculateDifferenceBetweenTimes(calendarPrayer.isha, currentTime)
-                currentPrayerName.set(application.getString(R.string.text_prayer_isha))
-                true
-            }
-            currentTime.before(calendarPrayer.midNight) || currentTime == calendarPrayer.midNight -> {
-                remainingPrayerTime =
-                    tools.calculateDifferenceBetweenTimes(calendarPrayer.midNight, currentTime)
-                currentPrayerName.set(application.getString(R.string.text_midnight_time_title))
-                true
-            }
-            else -> false
-        }
-    } catch (e: NumberFormatException) {
-        e.printStackTrace()
-        Log.e(
-            "Calc2",
-            "The value is False"
-        )
-        false
+        currentPrayer = domainPrayer.toTimePrayer()
+        updateNextPrayerInfo(calculation.calculateNextPrayerInfo(currentPrayer))
     }
 
     private fun buildDateTexts(): Boolean =
@@ -325,18 +230,9 @@ class MainViewModel(
         return false
     }
 
-    private fun setCalenderPrayersTime(): TimePrayer = TimePrayer(
-        fajer = domainPrayer.fajer!!.toCalendar(),
-        sunrise = domainPrayer.sunrise!!.toCalendar(),
-        duhr = domainPrayer.duhr!!.toCalendar(),
-        asr = domainPrayer.asr!!.toCalendar(),
-        maghreb = domainPrayer.maghrib!!.toCalendar(),
-        isha = domainPrayer.isha!!.toCalendar(),
-    )
-
     /**Update Background pic according to time*/
     private fun updateBackground() {
-        if (!isNight()) {
+        if (!calculation.isNight(currentPrayer)) {
             when (isRamadan()) {
                 true -> backgroundImage.set(R.drawable.ramadan_day)
                 false -> backgroundImage.set(R.drawable.background_day)
@@ -351,6 +247,12 @@ class MainViewModel(
             btnSettingsResource.set(R.drawable.round_settings_white)
             Log.i("UI", "Night time")
         }
+    }
+
+    private fun updateNextPrayerInfo(nextPrayerInfo: NextPrayerInfoConfig) {
+        nextPrayerTime.set(nextPrayerInfo.nextPrayerTime)
+        nextPrayerBanner.set(nextPrayerInfo.nextPrayerBannerText)
+        nextPrayerName.set(nextPrayerInfo.nextPrayerNameText)
     }
 
     companion object {

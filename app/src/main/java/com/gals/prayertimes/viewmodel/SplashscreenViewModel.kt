@@ -29,11 +29,11 @@ class SplashscreenViewModel(
             withContext(Dispatchers.IO) {
                 refreshSettings()
                 savedSettings = getSettings()
-                launchNotificationService()
                 response = getPrayer()
             }
             withContext(Dispatchers.Main) {
                 if (response) {
+                    launchNotificationService()
                     loading.value = false
                 }
             }
@@ -45,9 +45,9 @@ class SplashscreenViewModel(
             if (savedSettings.notification) {
                 context.startService(Intent(context, NotificationService::class.java))
             }
-        }else{
-            if(!savedSettings.notification){
-                context.stopService(Intent(context,NotificationService::class.java))
+        } else {
+            if (!savedSettings.notification) {
+                context.stopService(Intent(context, NotificationService::class.java))
             }
         }
     }

@@ -3,6 +3,7 @@ package com.gals.prayertimes.utils
 import com.gals.prayertimes.DomainPrayer
 import com.gals.prayertimes.EntityPrayer
 import com.gals.prayertimes.R
+import com.gals.prayertimes.model.TimePrayer
 import com.gals.prayertimes.repository.network.model.NetworkPrayer
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -33,18 +34,21 @@ fun NetworkPrayer.toEntity(): EntityPrayer = EntityPrayer(
     isha = this.isha
 )
 
+fun DomainPrayer.toTimePrayer(): TimePrayer = TimePrayer(
+    fajer = this.fajer!!.toCalendar(),
+    sunrise = this.sunrise!!.toCalendar(),
+    duhr = this.duhr!!.toCalendar(),
+    asr = this.asr!!.toCalendar(),
+    maghreb = this.maghrib!!.toCalendar(),
+    isha = this.isha!!.toCalendar()
+)
+
 fun String.toCalendar(): Calendar {
-    val calendar: Calendar = Calendar.getInstance()
     val time = this.split(":".toRegex()).toTypedArray()
-    calendar.set(
-        Calendar.HOUR_OF_DAY,
-        time[0].trim { it <= ' ' }.toInt()
-    )
-    calendar.set(
-        Calendar.MINUTE,
+    return Calendar.getInstance().setHourMinutes(
+        time[0].trim { it <= ' ' }.toInt(),
         time[1].trim { it <= ' ' }.toInt()
     )
-    return calendar
 }
 
 fun Calendar.setHourMinutes(hours: Int, minutes: Int): Calendar {
