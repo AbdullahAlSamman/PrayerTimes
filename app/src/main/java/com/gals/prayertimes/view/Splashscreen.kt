@@ -20,7 +20,7 @@ class Splashscreen : AppCompatActivity() {
     private lateinit var viewModelFactory: SplashscreenViewModelFactory
     lateinit var tools: UtilsManager
 
-    //TODO: handle exceptions well.
+    //TODO: handle exceptions well and handle no network situation.
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splashscreen)

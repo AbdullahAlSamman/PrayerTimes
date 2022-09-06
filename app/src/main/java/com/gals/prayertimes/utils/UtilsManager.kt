@@ -4,12 +4,11 @@ import android.app.ActivityManager
 import android.content.Context
 import android.content.res.Configuration
 import android.net.ConnectivityManager
-import android.util.Log
+import android.net.Uri
 import android.view.Window
 import android.view.WindowManager
-import com.gals.prayertimes.DomainPrayer
-import com.gals.prayertimes.EntityPrayer
 import com.gals.prayertimes.R
+import com.gals.prayertimes.model.NotificationType
 import java.util.Locale
 
 class UtilsManager(private val utilsContext: Context) {
@@ -48,38 +47,14 @@ class UtilsManager(private val utilsContext: Context) {
             .getColor(R.color.background_color_time_isha)
     }
 
-    fun printTest(prayer: EntityPrayer) {
-        Log.i(
-            "Prayer/info",
-            """
-                ${prayer.objectId}
-                ${prayer.sDate}
-                ${prayer.mDate}
-                ${prayer.fajer}
-                ${prayer.sunrise}
-                ${prayer.duhr}
-                ${prayer.asr}
-                ${prayer.maghrib}
-                ${prayer.isha}
-                
-                """.trimIndent()
-        )
-    }
+    fun getSoundUri(notificationType: NotificationType): Uri =
+        when (notificationType) {
+            NotificationType.FULL -> Uri.parse(URI_DEFAULT_PATH + R.raw.fullathan)
+            NotificationType.HALF -> Uri.parse(URI_DEFAULT_PATH + R.raw.halfathan)
+            else -> Uri.EMPTY
+        }
 
-    fun printTest(prayer: DomainPrayer) {
-        Log.i(
-            "Prayer/info",
-            """
-                ${prayer.objectId}
-                ${prayer.sDate}
-                ${prayer.mDate}
-                ${prayer.fajer}
-                ${prayer.sunrise}
-                ${prayer.duhr}
-                ${prayer.asr}
-                ${prayer.maghrib}
-                ${prayer.isha}
-                """.trimIndent()
-        )
+    companion object {
+        private const val URI_DEFAULT_PATH = "android.resource://com.gals.prayertimes/"
     }
 }

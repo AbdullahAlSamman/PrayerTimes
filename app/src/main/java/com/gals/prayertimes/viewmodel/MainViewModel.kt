@@ -32,7 +32,6 @@ import java.util.Calendar
 import java.util.Locale
 import java.util.StringTokenizer
 import java.util.Timer
-import java.util.TimerTask
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -47,6 +46,7 @@ class MainViewModel(
     )
     private var domainPrayer: DomainPrayer = DomainPrayer.EMPTY
     private lateinit var currentPrayer: TimePrayer
+    private lateinit var timerHandler: Handler
     private lateinit var updateUITimer: Timer
     var backgroundImage: ObservableInt = ObservableInt()
     var btnSettingsResource: ObservableInt = ObservableInt()
@@ -62,6 +62,10 @@ class MainViewModel(
     var viewAsrTime: ObservableField<String> = ObservableField()
     var viewMaghribTime: ObservableField<String> = ObservableField()
     var viewIshaTime: ObservableField<String> = ObservableField()
+
+    init {
+        timerHandler = Handler(Looper.getMainLooper())
+    }
 
     fun navigateToSettings() {
         application.startActivity(
@@ -112,26 +116,13 @@ class MainViewModel(
     }
 
     /**Timer to update the ui*/
-    private fun startDateUpdate(time: Int = 25000) {
-        /**TODO:Not right to create a time handler everytime memory usage*/
-        val handler = Handler(Looper.myLooper()!!)
-        val timerTask: TimerTask = object : TimerTask() {
+    private fun startDateUpdate(time: Long = 25000) {
+        timerHandler.post(object : Runnable {
             override fun run() {
-                handler.post {
-                    try {
-                        updateDateUIObservables()
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                    }
-                }
+                updateDateUIObservables()
+                timerHandler.postDelayed(this, time)
             }
-        }
-        updateUITimer = Timer()
-        updateUITimer.schedule(
-            timerTask,
-            0,
-            time.toLong()
-        )
+        })
     }
 
     private fun updateViewObservableValues(prayer: DomainPrayer) {

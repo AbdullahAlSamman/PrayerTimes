@@ -9,7 +9,7 @@ import java.util.StringTokenizer
 import kotlin.math.ceil
 
 class PrayerCalculation(
-    private val application: Context
+    private val applicationContext: Context
 ) {
     fun isNextAPrayer(prayer: TimePrayer): Boolean =
         !(isNextMidnight(prayer) || isNextSunrise(prayer))
@@ -29,6 +29,11 @@ class PrayerCalculation(
     fun isNowAfterTime(value: Calendar): Boolean =
         getTimeNow().toCalendar().after(value)
 
+    fun isNowEqualsTime(value: Calendar): Boolean =
+        getTimeNow().toCalendar().get(Calendar.MINUTE) == value.get(Calendar.MINUTE) - 1
+                && getTimeNow().toCalendar()
+            .get(Calendar.HOUR_OF_DAY) == value.get(Calendar.HOUR_OF_DAY)
+
     fun isRamadan(moonDate: String?): Boolean {
         try {
             val mdate = StringTokenizer(moonDate, ".")
@@ -42,6 +47,19 @@ class PrayerCalculation(
         return false
     }
 
+    fun calculateNextPrayer(currentPrayer: TimePrayer): Calendar =
+        when {
+            isNowBeforeTime(currentPrayer.fajer) -> currentPrayer.fajer
+            isNowBeforeTime(currentPrayer.sunrise) -> currentPrayer.sunrise
+            isNowBeforeTime(currentPrayer.duhr) -> currentPrayer.duhr
+            isNowBeforeTime(currentPrayer.asr) -> currentPrayer.asr
+            isNowBeforeTime(currentPrayer.maghreb) -> currentPrayer.maghreb
+            isNowBeforeTime(currentPrayer.isha) -> currentPrayer.isha
+            isNowBeforeTime(currentPrayer.midNight) || getTimeNow().toCalendar() == currentPrayer.midNight ->
+                currentPrayer.midNight
+            else -> Calendar.getInstance()
+        }
+
     fun calculateNextPrayerInfo(currentPrayer: TimePrayer): NextPrayerInfoConfig {
         val nextPrayerInfoConfig = NextPrayerInfoConfig()
         when {
@@ -52,7 +70,7 @@ class PrayerCalculation(
                         getTimeNow().toCalendar()
                     )
                 nextPrayerInfoConfig.nextPrayerNameText =
-                    application.getString(R.string.text_prayer_fajer)
+                    applicationContext.getString(R.string.text_prayer_fajer)
             }
             isNowBeforeTime(currentPrayer.sunrise) -> {
                 nextPrayerInfoConfig.nextPrayerTime =
@@ -61,7 +79,7 @@ class PrayerCalculation(
                         getTimeNow().toCalendar()
                     )
                 nextPrayerInfoConfig.nextPrayerNameText =
-                    application.getString(R.string.text_prayer_day_sunrise)
+                    applicationContext.getString(R.string.text_prayer_day_sunrise)
             }
             isNowBeforeTime(currentPrayer.duhr) -> {
                 nextPrayerInfoConfig.nextPrayerTime =
@@ -70,7 +88,7 @@ class PrayerCalculation(
                         getTimeNow().toCalendar()
                     )
                 nextPrayerInfoConfig.nextPrayerNameText =
-                    application.getString(R.string.text_prayer_duhr)
+                    applicationContext.getString(R.string.text_prayer_duhr)
             }
             isNowBeforeTime(currentPrayer.asr) -> {
                 nextPrayerInfoConfig.nextPrayerTime =
@@ -79,7 +97,7 @@ class PrayerCalculation(
                         getTimeNow().toCalendar()
                     )
                 nextPrayerInfoConfig.nextPrayerNameText =
-                    application.getString(R.string.text_prayer_asr)
+                    applicationContext.getString(R.string.text_prayer_asr)
             }
             isNowBeforeTime(currentPrayer.maghreb) -> {
                 nextPrayerInfoConfig.nextPrayerTime =
@@ -88,7 +106,7 @@ class PrayerCalculation(
                         getTimeNow().toCalendar()
                     )
                 nextPrayerInfoConfig.nextPrayerNameText =
-                    application.getString(R.string.text_prayer_maghrib)
+                    applicationContext.getString(R.string.text_prayer_maghrib)
             }
             isNowBeforeTime(currentPrayer.isha) -> {
                 nextPrayerInfoConfig.nextPrayerTime =
@@ -97,7 +115,7 @@ class PrayerCalculation(
                         getTimeNow().toCalendar()
                     )
                 nextPrayerInfoConfig.nextPrayerNameText =
-                    application.getString(R.string.text_prayer_isha)
+                    applicationContext.getString(R.string.text_prayer_isha)
             }
             isNowBeforeTime(currentPrayer.midNight) || getTimeNow().toCalendar() == currentPrayer.midNight -> {
                 nextPrayerInfoConfig.nextPrayerTime =
@@ -106,15 +124,15 @@ class PrayerCalculation(
                         getTimeNow().toCalendar()
                     )
                 nextPrayerInfoConfig.nextPrayerNameText =
-                    application.getString(R.string.text_midnight_time_title)
+                    applicationContext.getString(R.string.text_midnight_time_title)
             }
         }
         if (isNextAPrayer(currentPrayer)) {
             nextPrayerInfoConfig.nextPrayerBannerText =
-                application.getString(R.string.text_remaining_prayer_time)
+                applicationContext.getString(R.string.text_remaining_prayer_time)
         } else {
             nextPrayerInfoConfig.nextPrayerBannerText =
-                application.getString(R.string.text_remaining_time)
+                applicationContext.getString(R.string.text_remaining_time)
         }
         return nextPrayerInfoConfig
     }

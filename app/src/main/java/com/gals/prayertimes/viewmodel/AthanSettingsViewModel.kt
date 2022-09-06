@@ -4,12 +4,10 @@ import android.content.Context
 import android.content.Intent
 import android.media.AudioAttributes
 import android.media.MediaPlayer
-import android.net.Uri
 import android.util.Log
 import androidx.databinding.ObservableBoolean
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.gals.prayertimes.R
 import com.gals.prayertimes.model.NotificationType
 import com.gals.prayertimes.repository.Repository
 import com.gals.prayertimes.repository.db.entities.Settings
@@ -108,7 +106,7 @@ class AthanSettingsViewModel(
 
     fun startNotificationService() {
         if (alarm.get()) {
-            context.startService(Intent(context, NotificationService::class.java))
+            restartService()
         } else {
             if (tools.isServiceRunning(NotificationService::class.java)) {
                 context.stopService(Intent(context, NotificationService::class.java))
@@ -134,7 +132,7 @@ class AthanSettingsViewModel(
         musicPlayer.reset()
         musicPlayer.setDataSource(
             context,
-            getMediaPlayerAsset(notificationType)
+            tools.getSoundUri(notificationType)
         )
         musicPlayer.prepare()
     }
@@ -142,6 +140,11 @@ class AthanSettingsViewModel(
     private fun startMediaPlayer() {
         musicPlayer.start()
         isPlaying.set(true)
+    }
+
+    private fun restartService() {
+        context.stopService(Intent(context, NotificationService::class.java))
+        context.startService(Intent(context, NotificationService::class.java))
     }
 
     private fun setNotificationInfo(settings: Settings?) {
@@ -154,11 +157,4 @@ class AthanSettingsViewModel(
             NotificationType.SILENT.value -> radioGroupObserver.silentAthan = true
         }
     }
-
-    private fun getMediaPlayerAsset(notificationType: NotificationType): Uri =
-        when (notificationType) {
-            NotificationType.FULL -> Uri.parse("android.resource://com.gals.prayertimes/" + R.raw.fullathan)
-            NotificationType.HALF -> Uri.parse("android.resource://com.gals.prayertimes/" + R.raw.halfathan)
-            else -> Uri.parse("android.resource://com.gals.prayertimes/" + R.raw.fullathan)
-        }
 }
