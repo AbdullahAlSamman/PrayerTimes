@@ -74,15 +74,13 @@ class NotificationService : Service() {
             PendingIntent.getActivity(this, 0, notificationIntent, 0)
         }
 
-        startForeground(
-            1,
-            buildNotification(
-                pendingIntent = pendingIntent,
-                notificationType = settings.notificationType,
-                config = config,
-                isAlarmTime = isAlarmTime
-            )
+        val notification = buildNotification(
+            pendingIntent = pendingIntent,
+            notificationType = settings.notificationType,
+            config = config,
+            isAlarmTime = isAlarmTime
         )
+        startForeground(1, notification)
     }
 
     private fun configure() {
@@ -120,15 +118,20 @@ class NotificationService : Service() {
                 val config = calculation.calculateNextPrayerInfo(prayer.toTimePrayer())
                 val nextPrayer = calculation.calculateNextPrayer(prayer.toTimePrayer())
                 val isAlarmTime = calculation.isNowEqualsTime(nextPrayer)
-                Log.i("Alarm Time?", isAlarmTime.toString())
-                showNotification(
-                    config = config,
-                    isAlarmTime = isAlarmTime
-                )
-                timerHandler.postDelayed(
-                    this,
-                    if (isAlarmTime) NOTIFICATION_UPDATE_LONG else NOTIFICATION_UPDATE_SHORT
-                )
+                Log.i("Alarm Time", isAlarmTime.toString())
+                if (isAlarmTime) {
+                    timerHandler.postDelayed(this, NOTIFICATION_UPDATE_LONG)
+                    showNotification(
+                        config = config,
+                        isAlarmTime = isAlarmTime
+                    )
+                } else {
+                    timerHandler.postDelayed(this, NOTIFICATION_UPDATE_SHORT)
+                    showNotification(
+                        config = config,
+                        isAlarmTime = isAlarmTime
+                    )
+                }
             }
         })
     }

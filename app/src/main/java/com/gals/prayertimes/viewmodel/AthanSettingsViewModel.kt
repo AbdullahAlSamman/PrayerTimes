@@ -25,6 +25,7 @@ class AthanSettingsViewModel(
     private val context: Context
 ) : ViewModel() {
     private lateinit var musicPlayer: MediaPlayer
+    private lateinit var currentNotificationType: String
     private val mediaJob = Job()
     private val mediaScope = CoroutineScope(Dispatchers.Main + mediaJob)
     private val tools = UtilsManager(context)
@@ -106,7 +107,11 @@ class AthanSettingsViewModel(
 
     fun startNotificationService() {
         if (alarm.get()) {
-            restartService()
+            if (currentNotificationType == radioGroupObserver.notificationType.get()) {
+                return
+            } else {
+                restartService()
+            }
         } else {
             if (tools.isServiceRunning(NotificationService::class.java)) {
                 context.stopService(Intent(context, NotificationService::class.java))
@@ -150,6 +155,7 @@ class AthanSettingsViewModel(
     private fun setNotificationInfo(settings: Settings?) {
         alarm.set(settings?.notification == true)
         radioGroupObserver.notificationType.set(settings?.notificationType)
+        currentNotificationType = settings?.notificationType.toString()
         when (settings?.notificationType) {
             NotificationType.FULL.value -> radioGroupObserver.fullAthan = true
             NotificationType.HALF.value -> radioGroupObserver.halfAthan = true
