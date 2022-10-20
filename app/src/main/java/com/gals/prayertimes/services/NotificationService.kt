@@ -119,19 +119,14 @@ class NotificationService : Service() {
                 val nextPrayer = calculation.calculateNextPrayer(prayer.toTimePrayer())
                 val isAlarmTime = calculation.isNowEqualsTime(nextPrayer)
                 Log.i("Alarm Time", isAlarmTime.toString())
-                if (isAlarmTime) {
-                    timerHandler.postDelayed(this, NOTIFICATION_UPDATE_LONG)
-                    showNotification(
-                        config = config,
-                        isAlarmTime = isAlarmTime
-                    )
-                } else {
-                    timerHandler.postDelayed(this, NOTIFICATION_UPDATE_SHORT)
-                    showNotification(
-                        config = config,
-                        isAlarmTime = isAlarmTime
-                    )
-                }
+                timerHandler.postDelayed(
+                    this,
+                    if (isAlarmTime) NOTIFICATION_UPDATE_LONG else NOTIFICATION_UPDATE_SHORT
+                )
+                showNotification(
+                    config = config,
+                    isAlarmTime = isAlarmTime
+                )
             }
         })
     }
