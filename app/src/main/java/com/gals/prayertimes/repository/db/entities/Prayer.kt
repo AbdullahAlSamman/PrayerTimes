@@ -31,6 +31,6 @@ data class Prayer(
             )
         }
 
-        fun Prayer.isValid(): Boolean = this.objectId != null && this.sDate != null
+        fun Prayer.isValid(): Boolean = this.objectId != "" && this.sDate != ""
     }
 }

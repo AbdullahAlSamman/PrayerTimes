@@ -47,7 +47,7 @@
             <TextView
                 android:id="@+id/next_prayer_text"
                 style="@style/MainNextPrayerTextStyle"
-                android:text="@{viewModel.currentPrayerName}"
+                android:text="@{viewModel.nextPrayerName}"
                 tools:text="@string/text_isha" />
 
             <TextView

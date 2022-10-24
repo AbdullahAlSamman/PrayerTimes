@@ -1,63 +1,309 @@
 package com.gals.prayertimes.services
 
-import android.app.*
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.app.Service
 import android.content.Intent
+import android.media.AudioAttributes
+import android.media.RingtoneManager
+import android.net.Uri
+import android.os.Build
+import android.os.Handler
 import android.os.IBinder
+import android.os.Looper
 import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
+import androidx.lifecycle.MutableLiveData
+import com.gals.prayertimes.DomainPrayer
 import com.gals.prayertimes.R
+import com.gals.prayertimes.model.NotificationType
+import com.gals.prayertimes.model.config.NextPrayerInfoConfig
+import com.gals.prayertimes.repository.Repository
+import com.gals.prayertimes.repository.db.AppDB
+import com.gals.prayertimes.repository.db.entities.Settings
+import com.gals.prayertimes.utils.PrayerCalculation
+import com.gals.prayertimes.utils.UtilsManager
+import com.gals.prayertimes.utils.getTodayDate
+import com.gals.prayertimes.utils.toDomain
+import com.gals.prayertimes.utils.toTimePrayer
 import com.gals.prayertimes.view.MainActivity
+import java.util.Timer
+import kotlin.concurrent.schedule
+import kotlin.random.Random
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.Runnable
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class NotificationService : Service() {
-    private lateinit var notification: Notification
-    private lateinit var notificationView: RemoteViews
+    private val backgroundJob = Job()
+    private val backgroundScope = CoroutineScope(Dispatchers.Main + backgroundJob)
+    private val loading = MutableLiveData<Boolean>()
+    private lateinit var repository: Repository
+    private lateinit var calculation: PrayerCalculation
+    private lateinit var timerHandler: Handler
+    private lateinit var tools: UtilsManager
+    private lateinit var prayer: DomainPrayer
+    private lateinit var settings: Settings
 
     override fun onBind(intent: Intent?): IBinder? {
         return null
     }
 
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        notificationView =
-            RemoteViews(applicationContext.packageName, R.layout.notification_forground_service)
-        showNotification()
-        return START_NOT_STICKY
+    override fun onCreate() {
+        super.onCreate()
+        configure()
+        loadPrayerData()
+        timerHandler = Handler(Looper.getMainLooper())
     }
 
-    private fun showNotification() {
-        createNotificationChannel()
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        return START_STICKY
+    }
 
-        val notificationIntent = Intent(this, MainActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
-        }
+    private fun showPermanentNotification(
+        config: NextPrayerInfoConfig,
+        pendingIntent: PendingIntent
+    ) {
+        val notificationChannel = buildNotificationChannel(
+            isAlarmTime = false,
+            channelName = NOTIFICATION_CHANNEL_PERMANENT_NAME,
+            channelID = NOTIFICATION_CHANNEL_PERMANENT_ID
+        )
 
-        val pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0)
+        val notification = NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_PERMANENT_ID)
+            .setSmallIcon(R.drawable.ic_haya_notification)
+            .setStyle(NotificationCompat.DecoratedCustomViewStyle())
+            .setCustomContentView(buildPermanentNotificationBannerInfo(config))
+            .setContentIntent(pendingIntent)
+            .setShowWhen(false)
+            .build()
 
-        notification =
-            NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_haya_notification)
-                .setCustomContentView(notificationView)
-                .setContentIntent(pendingIntent)
-                .build()
-        /**
-         * .setSound(Uri)
-         * */
+        createNotificationChannel(notificationChannel)
 
         startForeground(1, notification)
     }
 
-    private fun createNotificationChannel() {
-        val serviceChannel = NotificationChannel(
-            NOTIFICATION_CHANNEL_ID,
-            NOTIFICATION_CHANNEL_SETTINGS,
-            NotificationManager.IMPORTANCE_NONE
-        )
-
-        val manager = getSystemService(NotificationManager::class.java)
-        manager?.createNotificationChannel(serviceChannel)
+    private fun showAlarmNotification(config: NextPrayerInfoConfig, pendingIntent: PendingIntent) {
+        Timer().schedule(NOTIFICATION_UPDATE_LONG) {
+            val notification = buildNotification(
+                pendingIntent = pendingIntent,
+                notificationType = settings.notificationType,
+                config = config
+            )
+            with(NotificationManagerCompat.from(applicationContext)) {
+                notify(Random.nextInt(0, Int.MAX_VALUE), notification)
+            }
+        }
     }
 
+    private fun configure() {
+        tools = UtilsManager(applicationContext)
+        repository = Repository(
+            database = AppDB.getInstance(applicationContext)
+        )
+        calculation = PrayerCalculation(applicationContext)
+    }
+
+    private fun createNotificationChannel(notificationChannel: NotificationChannel) {
+        val manager = getSystemService(NotificationManager::class.java)
+        manager?.createNotificationChannel(notificationChannel)
+    }
+
+    private fun loadPrayerData() {
+        backgroundScope.launch {
+            loading.postValue(true)
+            withContext(Dispatchers.IO) {
+                prayer = repository.getPrayerFromLocalDataSource(getTodayDate())!!.toDomain()
+                settings = repository.getSettingsFromLocalDataSource()!!
+            }
+            withContext(Dispatchers.Main) {
+                if (prayer != DomainPrayer.EMPTY) {
+                    startUpdates()
+                    loading.value = false
+                }
+            }
+        }
+    }
+
+    private fun startUpdates() {
+        timerHandler.post(object : Runnable {
+            override fun run() {
+                val config = calculation.calculateNextPrayerInfo(prayer.toTimePrayer())
+                val nextPrayer = calculation.calculateNextPrayer(prayer.toTimePrayer())
+                val isAlarmTime = calculation.isNowEqualsTime(nextPrayer)
+                val pendingIntent = createNotificationPendingIntent()
+                timerHandler.postDelayed(
+                    this,
+                    if (isAlarmTime && !config.isSunrise) NOTIFICATION_UPDATE_LONG else NOTIFICATION_UPDATE_SHORT
+                )
+                /**TODO:
+                 * add sunrise notification to settings
+                 * */
+                showPermanentNotification(config, pendingIntent)
+                if (isAlarmTime && !config.isSunrise) {
+                    showAlarmNotification(config, pendingIntent)
+                }
+            }
+        })
+    }
+
+    private fun buildAlarmNotificationBannerInfo(config: NextPrayerInfoConfig): RemoteViews {
+        val notificationView =
+            RemoteViews(
+                applicationContext.packageName,
+                R.layout.notification_service_alarm_remote_view
+            )
+        notificationView.setTextViewText(
+            R.id.notification_alarm_next_prayer_text,
+            config.nextPrayerNameText
+        )
+        return notificationView
+    }
+
+    private fun buildPermanentNotificationBannerInfo(config: NextPrayerInfoConfig): RemoteViews {
+        val notificationView =
+            RemoteViews(
+                applicationContext.packageName,
+                R.layout.notification_service_permanent_remote_view
+            )
+        notificationView.setTextViewText(
+            R.id.notification_permanent_next_prayer_banner_text,
+            config.nextPrayerBannerText
+        )
+        notificationView.setTextViewText(
+            R.id.notification_permanent_next_prayer_text,
+            config.nextPrayerNameText
+        )
+        notificationView.setTextViewText(
+            R.id.notification_permanent_next_prayer_time,
+            config.nextPrayerTime
+        )
+        return notificationView
+    }
+
+    private fun buildNotification(
+        pendingIntent: PendingIntent,
+        config: NextPrayerInfoConfig,
+        notificationType: String
+    ) =
+        when (notificationType) {
+            NotificationType.SILENT.value -> createNotification(
+                pendingIntent = pendingIntent,
+                channelID = NOTIFICATION_CHANNEL_SILENT_ID,
+                soundUri = Uri.EMPTY,
+                config = config
+            )
+            NotificationType.TONE.value -> createNotification(
+                pendingIntent = pendingIntent,
+                channelID = NOTIFICATION_CHANNEL_TONE_ID,
+                soundUri = defaultSystemRingtone,
+                config = config
+            )
+            NotificationType.HALF.value -> createNotification(
+                pendingIntent = pendingIntent,
+                channelID = NOTIFICATION_CHANNEL_HALF_ID,
+                soundUri = tools.getSoundUri(NotificationType.HALF),
+                config = config
+            )
+            NotificationType.FULL.value -> createNotification(
+                pendingIntent = pendingIntent,
+                channelID = NOTIFICATION_CHANNEL_FULL_ID,
+                soundUri = tools.getSoundUri(NotificationType.FULL),
+                config = config
+            )
+            else -> createNotification(
+                pendingIntent = pendingIntent,
+                channelID = NOTIFICATION_CHANNEL_SILENT_ID,
+                soundUri = Uri.EMPTY,
+                config = config
+            )
+        }
+
+    private fun createNotification(
+        pendingIntent: PendingIntent,
+        config: NextPrayerInfoConfig,
+        channelID: String,
+        soundUri: Uri,
+    ): Notification {
+        val notificationChannel = buildNotificationChannel(
+            isAlarmTime = true,
+            channelName = NOTIFICATION_CHANNEL_ALARM_NAME,
+            channelID = channelID
+        )
+        notificationChannel.setSound(
+            soundUri,
+            AudioAttributes.Builder()
+                .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                .setUsage(AudioAttributes.USAGE_ALARM)
+                .build()
+        )
+        createNotificationChannel(notificationChannel)
+        return createNotificationWithSound(pendingIntent, config, channelID, soundUri)
+    }
+
+    private fun buildNotificationChannel(
+        isAlarmTime: Boolean,
+        channelName: String,
+        channelID: String
+    ): NotificationChannel =
+        NotificationChannel(
+            channelID,
+            channelName,
+            if (isAlarmTime) NotificationManager.IMPORTANCE_HIGH else NotificationManager.IMPORTANCE_LOW
+        )
+
+    private fun createNotificationWithSound(
+        pendingIntent: PendingIntent,
+        config: NextPrayerInfoConfig,
+        channelID: String,
+        soundUri: Uri
+    ): Notification =
+        NotificationCompat.Builder(this, channelID)
+            .setSmallIcon(R.drawable.ic_haya_notification)
+            .setStyle(NotificationCompat.DecoratedCustomViewStyle())
+            .setCustomContentView(buildAlarmNotificationBannerInfo(config))
+            .setContentIntent(pendingIntent)
+            .setSound(soundUri)
+            .setAutoCancel(true)
+            .build()
+
+    private fun createNotificationPendingIntent(): PendingIntent {
+        val notificationIntent =
+            Intent(applicationContext, MainActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
+            }
+
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            PendingIntent.getActivity(
+                applicationContext,
+                0,
+                notificationIntent,
+                PendingIntent.FLAG_IMMUTABLE
+            )
+        } else {
+            PendingIntent.getActivity(applicationContext, 0, notificationIntent, 0)
+        }
+    }
+
+    private val defaultSystemRingtone =
+        RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
+
     companion object {
-        private const val NOTIFICATION_CHANNEL_ID = "athan_notification_channel"
-        private const val NOTIFICATION_CHANNEL_SETTINGS = "Athan Notification"
+        private const val NOTIFICATION_CHANNEL_PERMANENT_ID = "athan_notification_channel_permanent"
+        private const val NOTIFICATION_CHANNEL_SILENT_ID = "athan_notification_channel_silent"
+        private const val NOTIFICATION_CHANNEL_TONE_ID = "athan_notification_channel_tone"
+        private const val NOTIFICATION_CHANNEL_HALF_ID = "athan_notification_channel_half"
+        private const val NOTIFICATION_CHANNEL_FULL_ID = "athan_notification_channel_full"
+        private const val NOTIFICATION_CHANNEL_ALARM_NAME = "Athan Alarm"
+        private const val NOTIFICATION_CHANNEL_PERMANENT_NAME = "Prayer time"
+        private const val NOTIFICATION_UPDATE_LONG: Long = 60000
+        private const val NOTIFICATION_UPDATE_MEDIUM: Long = 30000
+        private const val NOTIFICATION_UPDATE_SHORT: Long = 20000
     }
 }

@@ -4,25 +4,28 @@ import android.content.Context
 import android.content.Intent
 import android.media.AudioAttributes
 import android.media.MediaPlayer
-import android.net.Uri
 import android.util.Log
 import androidx.databinding.ObservableBoolean
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.gals.prayertimes.R
 import com.gals.prayertimes.model.NotificationType
 import com.gals.prayertimes.repository.Repository
 import com.gals.prayertimes.repository.db.entities.Settings
 import com.gals.prayertimes.services.NotificationService
 import com.gals.prayertimes.utils.UtilsManager
 import com.gals.prayertimes.viewmodel.observer.RadioGroupObserver
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class AthanSettingsViewModel(
     private val repository: Repository,
     private val context: Context
 ) : ViewModel() {
     private lateinit var musicPlayer: MediaPlayer
+    private lateinit var currentNotificationType: String
     private val mediaJob = Job()
     private val mediaScope = CoroutineScope(Dispatchers.Main + mediaJob)
     private val tools = UtilsManager(context)
@@ -104,7 +107,11 @@ class AthanSettingsViewModel(
 
     fun startNotificationService() {
         if (alarm.get()) {
-            context.startService(Intent(context, NotificationService::class.java))
+            if (currentNotificationType == radioGroupObserver.notificationType.get()) {
+                return
+            } else {
+                restartService()
+            }
         } else {
             if (tools.isServiceRunning(NotificationService::class.java)) {
                 context.stopService(Intent(context, NotificationService::class.java))
@@ -130,7 +137,7 @@ class AthanSettingsViewModel(
         musicPlayer.reset()
         musicPlayer.setDataSource(
             context,
-            getMediaPlayerAsset(notificationType)
+            tools.getSoundUri(notificationType)
         )
         musicPlayer.prepare()
     }
@@ -140,9 +147,15 @@ class AthanSettingsViewModel(
         isPlaying.set(true)
     }
 
+    private fun restartService() {
+        context.stopService(Intent(context, NotificationService::class.java))
+        context.startService(Intent(context, NotificationService::class.java))
+    }
+
     private fun setNotificationInfo(settings: Settings?) {
         alarm.set(settings?.notification == true)
         radioGroupObserver.notificationType.set(settings?.notificationType)
+        currentNotificationType = settings?.notificationType.toString()
         when (settings?.notificationType) {
             NotificationType.FULL.value -> radioGroupObserver.fullAthan = true
             NotificationType.HALF.value -> radioGroupObserver.halfAthan = true
@@ -150,11 +163,4 @@ class AthanSettingsViewModel(
             NotificationType.SILENT.value -> radioGroupObserver.silentAthan = true
         }
     }
-
-    private fun getMediaPlayerAsset(notificationType: NotificationType): Uri =
-        when (notificationType) {
-            NotificationType.FULL -> Uri.parse("android.resource://com.gals.prayertimes/" + R.raw.fullathan)
-            NotificationType.HALF -> Uri.parse("android.resource://com.gals.prayertimes/" + R.raw.halfathan)
-            else -> Uri.parse("android.resource://com.gals.prayertimes/" + R.raw.fullathan)
-        }
 }
