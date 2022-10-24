@@ -49,16 +49,21 @@ dependencies {
     val retrofitVersion = "2.9.0"
     val coroutinesVersion = "1.6.1"
     val moshiVersion = "1.13.0"
+    val okHttpVersion = "4.9.3"
+    val appCompatVersion = "1.4.2"
+    val recyclerViewVersion = "1.2.1"
+    val constraintLayoutViewVersion = "2.1.4"
+    val jUnitVersion = "4.13.2"
 
 
-    implementation("androidx.appcompat:appcompat:1.4.2")
-    implementation("androidx.recyclerview:recyclerview:1.2.1")
-    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
+    implementation("androidx.appcompat:appcompat:$appCompatVersion")
+    implementation("androidx.recyclerview:recyclerview:$recyclerViewVersion")
+    implementation("androidx.constraintlayout:constraintlayout:$constraintLayoutViewVersion")
 
     implementation("androidx.lifecycle:lifecycle-extensions:$lifecycleVersion")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleViewModelVersion")
 
-    implementation("com.squareup.okhttp3:okhttp:4.9.3")
+    implementation("com.squareup.okhttp3:okhttp:$okHttpVersion")
     implementation("com.squareup.retrofit2:converter-gson:$retrofitVersion")
     implementation("com.squareup.retrofit2:retrofit:$retrofitVersion")
 
@@ -72,5 +77,5 @@ dependencies {
     kapt("androidx.room:room-compiler:$roomVersion")
     annotationProcessor("androidx.room:room-compiler:$roomVersion")
 
-    testImplementation("junit:junit:4.13.2")
+    testImplementation("junit:junit:$jUnitVersion")
 }

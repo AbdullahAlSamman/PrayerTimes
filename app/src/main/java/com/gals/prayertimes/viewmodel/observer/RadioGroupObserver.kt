@@ -5,7 +5,6 @@ import androidx.databinding.Bindable
 import androidx.databinding.ObservableField
 import com.gals.prayertimes.BR
 import com.gals.prayertimes.model.NotificationType
-import com.gals.prayertimes.repository.db.entities.Settings
 
 class RadioGroupObserver : BaseObservable() {
     var notificationType: ObservableField<String> = ObservableField()

@@ -3,6 +3,7 @@ package com.gals.prayertimes.viewmodel
 import android.content.Context
 import android.content.Intent
 import android.os.Handler
+import android.os.Looper
 import android.text.format.DateUtils
 import android.util.Log
 import androidx.databinding.ObservableField
@@ -12,51 +13,48 @@ import androidx.lifecycle.viewModelScope
 import com.gals.prayertimes.DomainPrayer
 import com.gals.prayertimes.EntityPrayer
 import com.gals.prayertimes.R
+import com.gals.prayertimes.model.TimePrayer
+import com.gals.prayertimes.model.config.NextPrayerInfoConfig
 import com.gals.prayertimes.repository.Repository
 import com.gals.prayertimes.repository.db.AppDB
+import com.gals.prayertimes.repository.db.entities.Prayer.Companion.isValid
+import com.gals.prayertimes.utils.PrayerCalculation
 import com.gals.prayertimes.utils.UtilsManager
+import com.gals.prayertimes.utils.getDayName
+import com.gals.prayertimes.utils.getMoonMonth
+import com.gals.prayertimes.utils.getSunMonth
 import com.gals.prayertimes.utils.getTodayDate
 import com.gals.prayertimes.utils.toDomain
+import com.gals.prayertimes.utils.toTimePrayer
 import com.gals.prayertimes.view.Menu
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
+import java.util.StringTokenizer
+import java.util.Timer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.text.SimpleDateFormat
-import java.util.*
 
 class MainViewModel(
     private val application: Context
 ) : ViewModel() {
     private val tools: UtilsManager = UtilsManager(application)
+    private val calculation: PrayerCalculation = PrayerCalculation(application)
     private val repository: Repository = Repository(
         database = AppDB.getInstance(application)
     )
-    private var sunriseTime: Calendar = Calendar.getInstance()
-    private var midNightTime: Calendar = Calendar.getInstance()
+    private var domainPrayer: DomainPrayer = DomainPrayer.EMPTY
+    private lateinit var currentPrayer: TimePrayer
+    private lateinit var timerHandler: Handler
     private lateinit var updateUITimer: Timer
-    private lateinit var remainingPrayerTime: String
-    private lateinit var fajerTime: Calendar
-    private lateinit var duhrTime: Calendar
-    private lateinit var asrTime: Calendar
-    private lateinit var sunsetTime: Calendar
-    private lateinit var ishaTime: Calendar
-    private lateinit var currentTime: Calendar
-    private lateinit var ssTime: Array<String>
-    private lateinit var frTime: Array<String>
-    private lateinit var srTime: Array<String>
-    private lateinit var duTime: Array<String>
-    private lateinit var asTime: Array<String>
-    private lateinit var isTime: Array<String>
-    private lateinit var cTime: Array<String>
-    var domainPrayer: DomainPrayer = DomainPrayer.EMPTY
     var backgroundImage: ObservableInt = ObservableInt()
     var btnSettingsResource: ObservableInt = ObservableInt()
     var sunDateBanner: ObservableField<String> = ObservableField()
     var moonDateBanner: ObservableField<String> = ObservableField()
     var nextPrayerTime: ObservableField<String> = ObservableField()
-    var nextPrayerText: ObservableField<String> = ObservableField()
     var nextPrayerBanner: ObservableField<String> = ObservableField()
-    var currentPrayerName: ObservableField<String> = ObservableField()
+    var nextPrayerName: ObservableField<String> = ObservableField()
     var viewDayName: ObservableField<String> = ObservableField()
     var viewFajerTime: ObservableField<String> = ObservableField()
     var viewSunriseTime: ObservableField<String> = ObservableField()
@@ -65,15 +63,8 @@ class MainViewModel(
     var viewMaghribTime: ObservableField<String> = ObservableField()
     var viewIshaTime: ObservableField<String> = ObservableField()
 
-    fun updateViewObservableValues(prayer: DomainPrayer) {
-        domainPrayer = prayer
-        viewFajerTime.set(prayer.fajer)
-        viewSunriseTime.set(prayer.sunrise)
-        viewDuhrTime.set(prayer.duhr)
-        viewAsrTime.set(prayer.asr)
-        viewMaghribTime.set(prayer.maghrib)
-        viewIshaTime.set(prayer.isha)
-        buildDateTexts()
+    init {
+        timerHandler = Handler(Looper.getMainLooper())
     }
 
     fun navigateToSettings() {
@@ -86,65 +77,63 @@ class MainViewModel(
     }
 
     fun getPrayer() {
-        var prayer: EntityPrayer
+        var prayer: EntityPrayer?
         var waiting = false
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 prayer = repository.getPrayerFromLocalDataSource(getTodayDate())
-                waiting = true
+                if (prayer != null) {
+                    waiting = prayer!!.isValid()
+                }
             }
             withContext(Dispatchers.Main) {
                 if (waiting) {
-                    updateViewObservableValues(prayer.toDomain())
+                    updateViewObservableValues(prayer!!.toDomain())
                     startDateUpdate()
                 }
             }
         }
     }
 
-    /**Timer to update the ui*/
-    internal fun startDateUpdate(time: Int = 25000) {
-        /**TODO:Not right to create a time handler everytime memory usage*/
-        val handler = Handler()
-        val timerTask: TimerTask = object : TimerTask() {
-            override fun run() {
-                handler.post {
-                    try {
-                        updateDateUIObservables()
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                    }
-                }
-            }
-        }
-        updateUITimer = Timer()
-        updateUITimer.schedule(
-            timerTask,
-            0,
-            time.toLong()
+    /**Set data on the UI Elements*/
+    internal fun updateDateUIObservables() = try {
+        Log.i(
+            "isChangeTheDayTest",
+            "" + isDayHasChanged(domainPrayer.sDate)
         )
+        if (isDayHasChanged(domainPrayer.sDate)) {
+            updatePrayers()
+        }
+        buildDateTexts()
+        updateRemainingTime()
+        updateBackground()
+    } catch (e: Exception) {
+        Log.i(
+            "Data Update UI",
+            "there is no data at all"
+        )
+        e.printStackTrace()
     }
 
-    /**Set data on the UI Elements*/
-    internal fun updateDateUIObservables() {
-        try {
-            Log.i(
-                "isChangeTheDayTest",
-                "" + isDayHasChanged(domainPrayer.sDate)
-            )
-            if (isDayHasChanged(domainPrayer.sDate)) {
-                updatePrayers()
+    /**Timer to update the ui*/
+    private fun startDateUpdate(time: Long = 25000) {
+        timerHandler.post(object : Runnable {
+            override fun run() {
+                updateDateUIObservables()
+                timerHandler.postDelayed(this, time)
             }
-            buildDateTexts()
-            updateRemainingTime()
-            updateBackground()
-        } catch (e: Exception) {
-            Log.i(
-                "Data Update UI",
-                "there is no data at all"
-            )
-            e.printStackTrace()
-        }
+        })
+    }
+
+    private fun updateViewObservableValues(prayer: DomainPrayer) {
+        domainPrayer = prayer
+        viewFajerTime.set(prayer.fajer)
+        viewSunriseTime.set(prayer.sunrise)
+        viewDuhrTime.set(prayer.duhr)
+        viewAsrTime.set(prayer.asr)
+        viewMaghribTime.set(prayer.maghrib)
+        viewIshaTime.set(prayer.isha)
+        buildDateTexts()
     }
 
     private fun updatePrayers() {
@@ -154,9 +143,10 @@ class MainViewModel(
                 withContext(Dispatchers.IO) {
                     if (repository.refreshPrayer(getTodayDate())) {
                         domainPrayer =
-                            repository.getPrayerFromLocalDataSource(getTodayDate()).toDomain()
-                        buildDateTexts()
-                        updateViewObservableValues(domainPrayer)
+                            repository.getPrayerFromLocalDataSource(getTodayDate())!!.toDomain()
+                        if (domainPrayer != DomainPrayer.EMPTY) {
+                            updateViewObservableValues(domainPrayer)
+                        }
                     }
                 }
             }
@@ -165,196 +155,18 @@ class MainViewModel(
 
     /**update the time to next prayer*/
     private fun updateRemainingTime() {
-        if (calculateTimeBetweenPrayers()) {
-            if (isNextAPrayer()) {
-                nextPrayerTime.set(remainingPrayerTime)
-                nextPrayerText.set(currentPrayerName.toString())
-                nextPrayerBanner.set(application.getString(R.string.text_remaining_prayer_time))
-            } else {
-                nextPrayerTime.set(remainingPrayerTime)
-                nextPrayerText.set(currentPrayerName.toString())
-                nextPrayerBanner.set(application.getString(R.string.text_remaining_time))
-            }
-        }
+        currentPrayer = domainPrayer.toTimePrayer()
+        updateNextPrayerInfo(calculation.calculateNextPrayerInfo(currentPrayer))
     }
 
-    private fun isNight(): Boolean {
+    /** Build text for dates*/
+    private fun buildDateTexts(): Boolean =
         try {
-            currentTime = Calendar.getInstance()
-            if (domainPrayer.sunrise != null || domainPrayer.maghrib != null) {
-                cTime = SimpleDateFormat(
-                    "HH:mm",
-                    Locale.US
-                ).format(Date())
-                    .split(":".toRegex()).toTypedArray()
-                currentTime.set(
-                    Calendar.HOUR_OF_DAY,
-                    cTime[0].trim { it <= ' ' }.toInt()
-                )
-                currentTime.set(
-                    Calendar.MINUTE,
-                    cTime[1].trim { it <= ' ' }.toInt()
-                )
-                Log.i(
-                    "Prayer/Current Time ",
-                    cTime[0] + ":" + cTime[1]
-                )
-                return !(currentTime.before(sunsetTime) && currentTime.after(sunriseTime))
-            }
-        } catch (e: NumberFormatException) {
-            e.printStackTrace()
-        }
-        return false
-    }
-
-    private fun isNextSunrise(): Boolean {
-        try {
-            currentTime = Calendar.getInstance()
-            cTime = SimpleDateFormat(
-                "HH:mm",
-                Locale.US
-            ).format(Date())
-                .split(":".toRegex()).toTypedArray()
-            currentTime.set(
-                Calendar.HOUR_OF_DAY,
-                cTime[0].trim { it <= ' ' }.toInt()
-            )
-            currentTime.set(
-                Calendar.MINUTE,
-                cTime[1].trim { it <= ' ' }.toInt()
-            )
-            return currentTime.before(sunriseTime) && currentTime.after(fajerTime)
-        } catch (e: NumberFormatException) {
-            e.printStackTrace()
-            return false
-        }
-    }
-
-    private fun isNextAPrayer(): Boolean = !(isNextMidnight() || isNextSunrise())
-
-    private fun isNextMidnight(): Boolean {
-        try {
-            currentTime = Calendar.getInstance()
-            cTime = SimpleDateFormat(
-                "HH:mm",
-                Locale.US
-            ).format(Date())
-                .split(":".toRegex()).toTypedArray()
-            currentTime.set(
-                Calendar.HOUR_OF_DAY,
-                cTime[0].trim { it <= ' ' }.toInt()
-            )
-            currentTime.set(
-                Calendar.MINUTE,
-                cTime[1].trim { it <= ' ' }.toInt()
-            )
-        } catch (e: NumberFormatException) {
-            e.printStackTrace()
-            return false
-        }
-        return currentTime.before(midNightTime) && currentTime.after(ishaTime)
-    }
-
-    private fun calculateTimeBetweenPrayers(): Boolean {
-        return try {
-            currentTime = Calendar.getInstance()
-            cTime = SimpleDateFormat(
-                "HH:mm",
-                Locale.US
-            ).format(Date())
-                .split(":".toRegex()).toTypedArray()
-            currentTime.set(
-                Calendar.HOUR_OF_DAY,
-                cTime[0].trim { it <= ' ' }.toInt()
-            )
-            currentTime.set(
-                Calendar.MINUTE,
-                cTime[1].trim { it <= ' ' }.toInt()
-            )
-
-            // to update calender instances if the times are updated
-            setCalenderPrayersTime()
-            if (currentTime.before(fajerTime)) {
-                remainingPrayerTime = tools.difTimes(
-                    fajerTime,
-                    currentTime
-                )
-                currentPrayerName.set(application.getString(R.string.text_prayer_fajer))
-                true
-            } else if (currentTime.before(sunriseTime)) {
-                remainingPrayerTime = tools.difTimes(
-                    sunriseTime,
-                    currentTime
-                )
-                currentPrayerName.set(application.getString(R.string.text_prayer_day_sunrise))
-                true
-            } else if (currentTime.before(duhrTime)) {
-                remainingPrayerTime = tools.difTimes(
-                    duhrTime,
-                    currentTime
-                )
-                currentPrayerName.set(application.getString(R.string.text_prayer_duhr))
-                true
-            } else if (currentTime.before(asrTime)) {
-                remainingPrayerTime = tools.difTimes(
-                    asrTime,
-                    currentTime
-                )
-                currentPrayerName.set(application.getString(R.string.text_prayer_asr))
-                true
-            } else if (currentTime.before(sunsetTime)) {
-                remainingPrayerTime = tools.difTimes(
-                    sunsetTime,
-                    currentTime
-                )
-                currentPrayerName.set(application.getString(R.string.text_prayer_maghrib))
-                true
-            } else if (currentTime.before(ishaTime)) {
-                remainingPrayerTime = tools.difTimes(
-                    ishaTime,
-                    currentTime
-                )
-                currentPrayerName.set(application.getString(R.string.text_prayer_isha))
-                true
-            } else if (currentTime.before(midNightTime) || currentTime == midNightTime) {
-                remainingPrayerTime = tools.difTimes(
-                    midNightTime,
-                    currentTime
-                )
-                currentPrayerName.set(application.getString(R.string.text_midnight_time_title))
-                true
-            } else {
-                Log.e(
-                    "Calc1",
-                    "The value is False"
-                )
-                false
-            }
-        } catch (e: NumberFormatException) {
-            e.printStackTrace()
-            Log.e(
-                "Calc2",
-                "The value is False"
-            )
-            false
-        }
-    }
-
-    private fun buildDateTexts(): Boolean {
-        return try {
-            lateinit var ssdate: String
-            lateinit var mmdate: String
+            lateinit var sunDateText: String
+            lateinit var moonDateText: String
             val calendar = Calendar.getInstance()
-            when (calendar[Calendar.DAY_OF_WEEK]) {
-                Calendar.SATURDAY -> viewDayName.set(application.getString(R.string.text_day_sat))
-                Calendar.SUNDAY -> viewDayName.set(application.getString(R.string.text_day_sun))
-                Calendar.MONDAY -> viewDayName.set(application.getString(R.string.text_day_mon))
-                Calendar.TUESDAY -> viewDayName.set(application.getString(R.string.text_day_tue))
-                Calendar.WEDNESDAY -> viewDayName.set(application.getString(R.string.text_day_web))
-                Calendar.THURSDAY -> viewDayName.set(application.getString(R.string.text_day_thr))
-                Calendar.FRIDAY -> viewDayName.set(application.getString(R.string.text_day_fri))
-                else -> {}
-            }
+            viewDayName.set(application.getString(getDayName(calendar[Calendar.DAY_OF_WEEK])))
+
             val sdate = StringTokenizer(
                 domainPrayer.sDate,
                 "."
@@ -363,48 +175,22 @@ class MainViewModel(
                 domainPrayer.mDate,
                 "."
             )
-            ssdate = sdate.nextToken() + " "
-            mmdate = mdate.nextToken() + " "
-            when (sdate.nextToken().toInt()) {
-                1 -> ssdate += application.getString(R.string.text_sun_month_jan)
-                2 -> ssdate += application.getString(R.string.text_sun_month_feb)
-                3 -> ssdate += application.getString(R.string.text_sun_month_mar)
-                4 -> ssdate += application.getString(R.string.text_sun_month_apr)
-                5 -> ssdate += application.getString(R.string.text_sun_month_may)
-                6 -> ssdate += application.getString(R.string.text_sun_month_jun)
-                7 -> ssdate += application.getString(R.string.text_sun_month_jul)
-                8 -> ssdate += application.getString(R.string.text_sun_month_aug)
-                9 -> ssdate += application.getString(R.string.text_sun_month_sep)
-                10 -> ssdate += application.getString(R.string.text_sun_month_oct)
-                11 -> ssdate += application.getString(R.string.text_sun_month_nov)
-                12 -> ssdate += application.getString(R.string.text_sun_month_dec)
-                else -> {}
-            }
-            when (mdate.nextToken().toInt()) {
-                1 -> mmdate += application.getString(R.string.text_moon_month_muhram)
-                2 -> mmdate += application.getString(R.string.text_moon_month_safer)
-                3 -> mmdate += application.getString(R.string.text_moon_month_rabi_aoul)
-                4 -> mmdate += application.getString(R.string.text_moon_month_rabi_aker)
-                5 -> mmdate += application.getString(R.string.text_moon_month_gamada_aoul)
-                6 -> mmdate += application.getString(R.string.text_moon_month_gamada_aker)
-                7 -> mmdate += application.getString(R.string.text_moon_month_rajb)
-                8 -> mmdate += application.getString(R.string.text_moon_month_shaban)
-                9 -> mmdate += application.getString(R.string.text_moon_month_ramadan)
-                10 -> mmdate += application.getString(R.string.text_moon_month_shual)
-                11 -> mmdate += application.getString(R.string.text_moon_month_zo_kada)
-                12 -> mmdate += application.getString(R.string.text_moon_month_zo_haga)
-                else -> {}
-            }
-            ssdate += " " + sdate.nextToken()
-            mmdate += " " + mdate.nextToken()
-            moonDateBanner.set(mmdate)
-            sunDateBanner.set(ssdate)
+            sunDateText = sdate.nextToken() + " "
+            moonDateText = mdate.nextToken() + " "
+
+            sunDateText += application.getString(getSunMonth(sdate.nextToken().toInt()))
+            moonDateText += application.getString(getMoonMonth(mdate.nextToken().toInt()))
+
+            sunDateText += " " + sdate.nextToken()
+            moonDateText += " " + mdate.nextToken()
+
+            moonDateBanner.set(moonDateText)
+            sunDateBanner.set(sunDateText)
             true
         } catch (e: java.lang.Exception) {
             e.printStackTrace()
             false
         }
-    }
 
     private fun isDayHasChanged(date: String?): Boolean {
         try {
@@ -423,118 +209,28 @@ class MainViewModel(
         return true // to trigger an Update when the date is not determined
     }
 
-    private fun isRamadan(): Boolean {
-        try {
-            val mdate = StringTokenizer(
-                domainPrayer.mDate,
-                "."
-            )
-            mdate.nextToken()
-            if (mdate.nextToken().toInt() == 9) {
-                return true
-            }
-        } catch (e: java.lang.Exception) {
-            e.printStackTrace()
-        }
-        return false
-    }
-
-    private fun setCalenderPrayersTime() {
-        fajerTime = Calendar.getInstance()
-        sunriseTime = Calendar.getInstance()
-        duhrTime = Calendar.getInstance()
-        asrTime = Calendar.getInstance()
-        sunsetTime = Calendar.getInstance()
-        ishaTime = Calendar.getInstance()
-        midNightTime = Calendar.getInstance()
-        ssTime = domainPrayer.maghrib!!.split(":".toRegex()).toTypedArray()
-        frTime = domainPrayer.fajer!!.split(":".toRegex()).toTypedArray()
-        srTime = domainPrayer.sunrise!!.split(":".toRegex()).toTypedArray()
-        duTime = domainPrayer.duhr!!.split(":".toRegex()).toTypedArray()
-        asTime = domainPrayer.asr!!.split(":".toRegex()).toTypedArray()
-        isTime = domainPrayer.isha!!.split(":".toRegex()).toTypedArray()
-        fajerTime.set(
-            Calendar.HOUR_OF_DAY,
-            frTime[0].trim { it <= ' ' }.toInt()
-        )
-        fajerTime.set(
-            Calendar.MINUTE,
-            frTime[1].trim { it <= ' ' }.toInt()
-        )
-        sunriseTime.set(
-            Calendar.HOUR_OF_DAY,
-            srTime[0].trim { it <= ' ' }.toInt()
-        )
-        sunriseTime.set(
-            Calendar.MINUTE,
-            srTime[1].trim { it <= ' ' }.toInt()
-        )
-        duhrTime.set(
-            Calendar.HOUR_OF_DAY,
-            duTime[0].trim { it <= ' ' }.toInt()
-        )
-        duhrTime.set(
-            Calendar.MINUTE,
-            duTime[1].trim { it <= ' ' }.toInt()
-        )
-        asrTime.set(
-            Calendar.HOUR_OF_DAY,
-            asTime[0].trim { it <= ' ' }.toInt()
-        )
-        asrTime.set(
-            Calendar.MINUTE,
-            asTime[1].trim { it <= ' ' }.toInt()
-        )
-        sunsetTime.set(
-            Calendar.HOUR_OF_DAY,
-            ssTime[0].trim { it <= ' ' }.toInt()
-        )
-        sunsetTime.set(
-            Calendar.MINUTE,
-            ssTime[1].trim { it <= ' ' }.toInt()
-        )
-        ishaTime.set(
-            Calendar.HOUR_OF_DAY,
-            isTime[0].trim { it <= ' ' }.toInt()
-        )
-        ishaTime.set(
-            Calendar.MINUTE,
-            isTime[1].trim { it <= ' ' }.toInt()
-        )
-        midNightTime.set(
-            Calendar.HOUR_OF_DAY,
-            23
-        )
-        midNightTime.set(
-            Calendar.MINUTE,
-            59
-        )
-    }
-
     /**Update Background pic according to time*/
     private fun updateBackground() {
-        if (!isNight()) {
-            if (isRamadan()) {
-                backgroundImage.set(R.drawable.ramadan_day)
-            } else {
-                backgroundImage.set(R.drawable.background_day)
+        if (!calculation.isNight(currentPrayer)) {
+            when (calculation.isRamadan(domainPrayer.mDate)) {
+                true -> backgroundImage.set(R.drawable.ramadan_day)
+                false -> backgroundImage.set(R.drawable.background_day)
             }
             btnSettingsResource.set(R.drawable.round_settings_black)
-            Log.i(
-                "UI",
-                "Day time"
-            )
+            Log.i("UI", "Day time")
         } else {
-            if (isRamadan()) {
-                backgroundImage.set(R.drawable.ramadan_night)
-            } else {
-                backgroundImage.set(R.drawable.background_night)
+            when (calculation.isRamadan(domainPrayer.mDate)) {
+                true -> backgroundImage.set(R.drawable.ramadan_night)
+                false -> backgroundImage.set(R.drawable.background_night)
             }
             btnSettingsResource.set(R.drawable.round_settings_white)
-            Log.i(
-                "UI",
-                "Night time"
-            )
+            Log.i("UI", "Night time")
         }
+    }
+
+    private fun updateNextPrayerInfo(nextPrayerInfo: NextPrayerInfoConfig) {
+        nextPrayerTime.set(nextPrayerInfo.nextPrayerTime)
+        nextPrayerBanner.set(nextPrayerInfo.nextPrayerBannerText)
+        nextPrayerName.set(nextPrayerInfo.nextPrayerNameText)
     }
 }
