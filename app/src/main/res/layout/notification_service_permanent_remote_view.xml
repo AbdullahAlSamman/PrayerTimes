@@ -15,7 +15,7 @@
         android:layoutDirection="rtl">
 
         <TextView
-            android:id="@+id/notification_next_prayer_banner_text"
+            android:id="@+id/notification_permanent_next_prayer_banner_text"
             style="@style/TextDarkStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -23,7 +23,7 @@
             android:text="@string/text_remaining_prayer_time" />
 
         <TextView
-            android:id="@+id/notification_next_prayer_text"
+            android:id="@+id/notification_permanent_next_prayer_text"
             style="@style/TextDarkStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -32,7 +32,7 @@
             tools:text="@string/text_isha" />
 
         <TextView
-            android:id="@+id/notification_next_prayer_time"
+            android:id="@+id/notification_permanent_next_prayer_time"
             style="@style/TextDarkStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
