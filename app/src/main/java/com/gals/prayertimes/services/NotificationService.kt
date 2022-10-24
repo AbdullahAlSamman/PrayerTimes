@@ -138,28 +138,15 @@ class NotificationService : Service() {
                 val config = calculation.calculateNextPrayerInfo(prayer.toTimePrayer())
                 val nextPrayer = calculation.calculateNextPrayer(prayer.toTimePrayer())
                 val isAlarmTime = calculation.isNowEqualsTime(nextPrayer)
-                val notificationIntent =
-                    Intent(applicationContext, MainActivity::class.java).apply {
-                        flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
-                    }
-
-                val pendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                    PendingIntent.getActivity(
-                        applicationContext,
-                        0,
-                        notificationIntent,
-                        PendingIntent.FLAG_IMMUTABLE
-                    )
-                } else {
-                    PendingIntent.getActivity(applicationContext, 0, notificationIntent, 0)
-                }
-
-                Log.i("Alarm Time", isAlarmTime.toString())
-
-
-                timerHandler.postDelayed(this, NOTIFICATION_UPDATE_SHORT)
+                val pendingIntent = createNotificationPendingIntent()
 
                 showPermanentNotification(config, pendingIntent)
+                Log.i("Alarm Time", isAlarmTime.toString())
+                timerHandler.postDelayed(
+                    this,
+                    if (isAlarmTime) NOTIFICATION_UPDATE_LONG else NOTIFICATION_UPDATE_SHORT
+                )
+
                 if (isAlarmTime) {
                     showAlarmNotification(config, pendingIntent)
                 }
@@ -287,6 +274,24 @@ class NotificationService : Service() {
             .setAutoCancel(true)
             .build()
 
+    private fun createNotificationPendingIntent(): PendingIntent {
+        val notificationIntent =
+            Intent(applicationContext, MainActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
+            }
+
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            PendingIntent.getActivity(
+                applicationContext,
+                0,
+                notificationIntent,
+                PendingIntent.FLAG_IMMUTABLE
+            )
+        } else {
+            PendingIntent.getActivity(applicationContext, 0, notificationIntent, 0)
+        }
+    }
+
     private val defaultSystemRingtone =
         RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
 
@@ -298,7 +303,8 @@ class NotificationService : Service() {
         private const val NOTIFICATION_CHANNEL_FULL_ID = "athan_notification_channel_full"
         private const val NOTIFICATION_CHANNEL_ALARM_NAME = "Athan Alarm"
         private const val NOTIFICATION_CHANNEL_PERMANENT_NAME = "Prayer time"
-        private const val NOTIFICATION_UPDATE_LONG: Long = 90000
+        private const val NOTIFICATION_UPDATE_LONG: Long = 60000
+        private const val NOTIFICATION_UPDATE_MEDIUM: Long = 30000
         private const val NOTIFICATION_UPDATE_SHORT: Long = 20000
     }
 }
