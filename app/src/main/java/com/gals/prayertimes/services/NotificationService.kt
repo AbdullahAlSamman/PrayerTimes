@@ -13,7 +13,6 @@ import android.os.Build
 import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
-import android.util.Log
 import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -31,6 +30,8 @@ import com.gals.prayertimes.utils.getTodayDate
 import com.gals.prayertimes.utils.toDomain
 import com.gals.prayertimes.utils.toTimePrayer
 import com.gals.prayertimes.view.MainActivity
+import java.util.Timer
+import kotlin.concurrent.schedule
 import kotlin.random.Random
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -49,10 +50,6 @@ class NotificationService : Service() {
     private lateinit var tools: UtilsManager
     private lateinit var prayer: DomainPrayer
     private lateinit var settings: Settings
-
-    /**
-     * TODO: try create a separated notification with sound just for alarm time
-     * */
 
     override fun onBind(intent: Intent?): IBinder? {
         return null
@@ -93,13 +90,15 @@ class NotificationService : Service() {
     }
 
     private fun showAlarmNotification(config: NextPrayerInfoConfig, pendingIntent: PendingIntent) {
-        val notification = buildNotification(
-            pendingIntent = pendingIntent,
-            notificationType = settings.notificationType,
-            config = config
-        )
-        with(NotificationManagerCompat.from(this)) {
-            notify(Random.nextInt(0, Int.MAX_VALUE), notification)
+        Timer().schedule(NOTIFICATION_UPDATE_LONG) {
+            val notification = buildNotification(
+                pendingIntent = pendingIntent,
+                notificationType = settings.notificationType,
+                config = config
+            )
+            with(NotificationManagerCompat.from(applicationContext)) {
+                notify(Random.nextInt(0, Int.MAX_VALUE), notification)
+            }
         }
     }
 
@@ -139,15 +138,15 @@ class NotificationService : Service() {
                 val nextPrayer = calculation.calculateNextPrayer(prayer.toTimePrayer())
                 val isAlarmTime = calculation.isNowEqualsTime(nextPrayer)
                 val pendingIntent = createNotificationPendingIntent()
-
-                showPermanentNotification(config, pendingIntent)
-                Log.i("Alarm Time", isAlarmTime.toString())
                 timerHandler.postDelayed(
                     this,
-                    if (isAlarmTime) NOTIFICATION_UPDATE_LONG else NOTIFICATION_UPDATE_SHORT
+                    if (isAlarmTime && !config.isSunrise) NOTIFICATION_UPDATE_LONG else NOTIFICATION_UPDATE_SHORT
                 )
-
-                if (isAlarmTime) {
+                /**TODO:
+                 * add sunrise notification to settings
+                 * */
+                showPermanentNotification(config, pendingIntent)
+                if (isAlarmTime && !config.isSunrise) {
                     showAlarmNotification(config, pendingIntent)
                 }
             }
@@ -174,7 +173,7 @@ class NotificationService : Service() {
                 R.layout.notification_service_permanent_remote_view
             )
         notificationView.setTextViewText(
-            R.id.notification_permanent_next_prayer_text,
+            R.id.notification_permanent_next_prayer_banner_text,
             config.nextPrayerBannerText
         )
         notificationView.setTextViewText(

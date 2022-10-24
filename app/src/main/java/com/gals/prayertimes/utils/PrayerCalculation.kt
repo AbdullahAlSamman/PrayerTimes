@@ -80,6 +80,7 @@ class PrayerCalculation(
                     )
                 nextPrayerInfoConfig.nextPrayerNameText =
                     applicationContext.getString(R.string.text_prayer_day_sunrise)
+                nextPrayerInfoConfig.isSunrise = true
             }
             isNowBeforeTime(currentPrayer.duhr) -> {
                 nextPrayerInfoConfig.nextPrayerTime =
