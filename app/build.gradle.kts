@@ -15,9 +15,9 @@ android {
         applicationId = "com.gals.prayertimes"
         minSdk = 26
         targetSdk = 31
-        versionName = "0.9.6"
+        versionName = "0.9.7"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        versionCode = 16
+        versionCode = 17
     }
     buildTypes {
         release {
