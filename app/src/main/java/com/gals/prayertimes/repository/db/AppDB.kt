@@ -10,7 +10,7 @@ import com.gals.prayertimes.repository.db.entities.Settings
 
 @Database(
     entities = [Prayer::class, Settings::class],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 @TypeConverters(Converters::class)
