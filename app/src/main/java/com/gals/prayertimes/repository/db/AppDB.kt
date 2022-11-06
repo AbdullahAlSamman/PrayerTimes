@@ -1,6 +1,7 @@
 package com.gals.prayertimes.repository.db
 
 import android.content.Context
+import androidx.room.AutoMigration
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
@@ -11,7 +12,10 @@ import com.gals.prayertimes.repository.db.entities.Settings
 @Database(
     entities = [Prayer::class, Settings::class],
     version = 2,
-    exportSchema = false
+    exportSchema = true,
+    autoMigrations = [
+        AutoMigration(from = 1, to = 2)
+    ]
 )
 @TypeConverters(Converters::class)
 abstract class AppDB : RoomDatabase() {

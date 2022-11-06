@@ -12,7 +12,9 @@ data class Settings(
     @ColumnInfo(defaultValue = "false")
     var notification: Boolean,
     @ColumnInfo(defaultValue = "silent")
-    var notificationType: String
+    var notificationType: String,
+    @ColumnInfo(defaultValue = "false")
+    var sunriseNotification : Boolean = false
 ) {
     companion object {
         val EMPTY: Settings by lazy {
