@@ -146,7 +146,7 @@ class NotificationService : Service() {
                  * add sunrise notification to settings
                  * */
                 showPermanentNotification(config, pendingIntent)
-                if (isAlarmTime && !config.isSunrise) {
+                if (isAlarmTime && !config.isSunrise && !config.isMidnight) {
                     showAlarmNotification(config, pendingIntent)
                 }
             }

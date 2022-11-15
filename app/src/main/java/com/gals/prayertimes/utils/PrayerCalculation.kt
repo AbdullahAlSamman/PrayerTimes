@@ -124,6 +124,7 @@ class PrayerCalculation(
                         currentPrayer.midNight,
                         getTimeNow().toCalendar()
                     )
+                nextPrayerInfoConfig.isMidnight = true
                 nextPrayerInfoConfig.nextPrayerNameText =
                     applicationContext.getString(R.string.text_midnight_time_title)
             }
