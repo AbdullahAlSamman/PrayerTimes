@@ -4,7 +4,7 @@ import com.gals.prayertimes.DomainPrayer
 import com.gals.prayertimes.EntityPrayer
 import com.gals.prayertimes.R
 import com.gals.prayertimes.model.TimePrayer
-import com.gals.prayertimes.repository.network.model.NetworkPrayer
+import com.gals.prayertimes.repository.remotedatasource.model.NetworkPrayer
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date

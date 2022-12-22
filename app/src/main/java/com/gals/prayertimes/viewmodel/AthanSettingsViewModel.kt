@@ -10,7 +10,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gals.prayertimes.model.NotificationType
 import com.gals.prayertimes.repository.Repository
-import com.gals.prayertimes.repository.db.entities.Settings
+import com.gals.prayertimes.repository.localdatasource.entities.Settings
 import com.gals.prayertimes.services.NotificationService
 import com.gals.prayertimes.utils.UtilsManager
 import com.gals.prayertimes.viewmodel.observer.RadioGroupObserver
@@ -77,7 +77,7 @@ class AthanSettingsViewModel(
     fun getSettings() {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                setNotificationInfo(repository.getSettingsFromLocalDataSource())
+                setNotificationInfo(repository.getSettings())
             }
         }
     }
@@ -85,7 +85,7 @@ class AthanSettingsViewModel(
     fun saveSettings() {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                repository.saveSettingsToLocalDataSource(
+                repository.saveSettings(
                     Settings(
                         notification = alarm.get(),
                         notificationType = radioGroupObserver.notificationType.get()!!

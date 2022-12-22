@@ -1,4 +1,4 @@
-package com.gals.prayertimes.repository.db.entities
+package com.gals.prayertimes.repository.localdatasource.entities
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

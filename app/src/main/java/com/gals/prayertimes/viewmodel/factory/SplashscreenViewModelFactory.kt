@@ -5,14 +5,19 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.gals.prayertimes.repository.Repository
 import com.gals.prayertimes.viewmodel.SplashscreenViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
 
-class SplashscreenViewModelFactory(
-    private val repository: Repository,
-    private val context : Context
+class SplashscreenViewModelFactory @Inject constructor(
+    @ApplicationContext private val context: Context,
+    private val repository: Repository
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(SplashscreenViewModel::class.java)) {
-            return SplashscreenViewModel(repository,context) as T
+            return SplashscreenViewModel(
+                context = context,
+                repository = repository
+            ) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

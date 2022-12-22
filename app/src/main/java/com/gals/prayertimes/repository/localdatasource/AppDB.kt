@@ -1,4 +1,4 @@
-package com.gals.prayertimes.repository.db
+package com.gals.prayertimes.repository.localdatasource
 
 import android.content.Context
 import androidx.room.AutoMigration
@@ -6,8 +6,8 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.gals.prayertimes.repository.db.entities.Prayer
-import com.gals.prayertimes.repository.db.entities.Settings
+import com.gals.prayertimes.repository.localdatasource.entities.Prayer
+import com.gals.prayertimes.repository.localdatasource.entities.Settings
 
 @Database(
     entities = [Prayer::class, Settings::class],
@@ -36,7 +36,7 @@ abstract class AppDB : RoomDatabase() {
     abstract val settingsDao: SettingsDao
 
     companion object {
-        private const val DB_NAME = "prayers-db"
+        const val DB_NAME = "prayers-db"
         private var instance: AppDB? = null
 
         /**

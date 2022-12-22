@@ -1,24 +1,27 @@
 package com.gals.prayertimes.view
 
-import android.annotation.SuppressLint
+ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.gals.prayertimes.R
-import com.gals.prayertimes.repository.Repository
-import com.gals.prayertimes.repository.db.AppDB
 import com.gals.prayertimes.utils.UtilsManager
 import com.gals.prayertimes.viewmodel.SplashscreenViewModel
 import com.gals.prayertimes.viewmodel.factory.SplashscreenViewModelFactory
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @SuppressLint("CustomSplashScreen")
+@AndroidEntryPoint
 class Splashscreen : AppCompatActivity() {
     private lateinit var toMain: Intent
     private lateinit var viewModel: SplashscreenViewModel
-    private lateinit var viewModelFactory: SplashscreenViewModelFactory
     lateinit var tools: UtilsManager
+
+    @Inject
+    lateinit var viewModelFactory: SplashscreenViewModelFactory
 
     //TODO: handle exceptions well and handle no network situation.
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,10 +40,6 @@ class Splashscreen : AppCompatActivity() {
     }
 
     private fun configureMVVM() {
-        viewModelFactory = SplashscreenViewModelFactory(
-            repository = Repository(AppDB.getInstance(this)),
-            context = this
-        )
         viewModel = ViewModelProvider(
             this,
             viewModelFactory

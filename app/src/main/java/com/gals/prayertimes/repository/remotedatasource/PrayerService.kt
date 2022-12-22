@@ -1,6 +1,6 @@
-package com.gals.prayertimes.repository.network
+package com.gals.prayertimes.repository.remotedatasource
 
-import com.gals.prayertimes.repository.network.model.NetworkPrayer
+import com.gals.prayertimes.repository.remotedatasource.model.NetworkPrayer
 import okhttp3.OkHttpClient
 import retrofit2.Response
 import retrofit2.Retrofit

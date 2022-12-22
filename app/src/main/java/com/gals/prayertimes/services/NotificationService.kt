@@ -22,15 +22,17 @@ import com.gals.prayertimes.R
 import com.gals.prayertimes.model.NotificationType
 import com.gals.prayertimes.model.config.NextPrayerInfoConfig
 import com.gals.prayertimes.repository.Repository
-import com.gals.prayertimes.repository.db.AppDB
-import com.gals.prayertimes.repository.db.entities.Settings
+import com.gals.prayertimes.repository.localdatasource.AppDB
+import com.gals.prayertimes.repository.localdatasource.entities.Settings
 import com.gals.prayertimes.utils.PrayerCalculation
 import com.gals.prayertimes.utils.UtilsManager
 import com.gals.prayertimes.utils.getTodayDate
 import com.gals.prayertimes.utils.toDomain
 import com.gals.prayertimes.utils.toTimePrayer
 import com.gals.prayertimes.view.MainActivity
+import dagger.hilt.android.AndroidEntryPoint
 import java.util.Timer
+import javax.inject.Inject
 import kotlin.concurrent.schedule
 import kotlin.random.Random
 import kotlinx.coroutines.CoroutineScope
@@ -40,11 +42,15 @@ import kotlinx.coroutines.Runnable
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+@AndroidEntryPoint
 class NotificationService : Service() {
+    @Inject
+    lateinit var repository: Repository
+
     private val backgroundJob = Job()
     private val backgroundScope = CoroutineScope(Dispatchers.Main + backgroundJob)
     private val loading = MutableLiveData<Boolean>()
-    private lateinit var repository: Repository
+
     private lateinit var calculation: PrayerCalculation
     private lateinit var timerHandler: Handler
     private lateinit var tools: UtilsManager
@@ -104,9 +110,6 @@ class NotificationService : Service() {
 
     private fun configure() {
         tools = UtilsManager(applicationContext)
-        repository = Repository(
-            database = AppDB.getInstance(applicationContext)
-        )
         calculation = PrayerCalculation(applicationContext)
     }
 
@@ -120,7 +123,7 @@ class NotificationService : Service() {
             loading.postValue(true)
             withContext(Dispatchers.IO) {
                 prayer = repository.getPrayerFromLocalDataSource(getTodayDate())!!.toDomain()
-                settings = repository.getSettingsFromLocalDataSource()!!
+                settings = repository.getSettings()!!
             }
             withContext(Dispatchers.Main) {
                 if (prayer != DomainPrayer.EMPTY) {

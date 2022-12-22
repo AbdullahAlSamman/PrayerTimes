@@ -16,8 +16,7 @@ import com.gals.prayertimes.R
 import com.gals.prayertimes.model.TimePrayer
 import com.gals.prayertimes.model.config.NextPrayerInfoConfig
 import com.gals.prayertimes.repository.Repository
-import com.gals.prayertimes.repository.db.AppDB
-import com.gals.prayertimes.repository.db.entities.Prayer.Companion.isValid
+import com.gals.prayertimes.repository.localdatasource.entities.Prayer.Companion.isValid
 import com.gals.prayertimes.utils.PrayerCalculation
 import com.gals.prayertimes.utils.UtilsManager
 import com.gals.prayertimes.utils.getDayName
@@ -27,27 +26,30 @@ import com.gals.prayertimes.utils.getTodayDate
 import com.gals.prayertimes.utils.toDomain
 import com.gals.prayertimes.utils.toTimePrayer
 import com.gals.prayertimes.view.Menu
+import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
+import dagger.hilt.android.scopes.ViewModelScoped
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 import java.util.StringTokenizer
 import java.util.Timer
+import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class MainViewModel(
-    private val application: Context
+@HiltViewModel
+class MainViewModel @Inject constructor(
+    @ApplicationContext val application: Context,
+    private val repository: Repository
 ) : ViewModel() {
     private val tools: UtilsManager = UtilsManager(application)
     private val calculation: PrayerCalculation = PrayerCalculation(application)
-    private val repository: Repository = Repository(
-        database = AppDB.getInstance(application)
-    )
+
     private var domainPrayer: DomainPrayer = DomainPrayer.EMPTY
     private lateinit var currentPrayer: TimePrayer
     private lateinit var timerHandler: Handler
-    private lateinit var updateUITimer: Timer
     var backgroundImage: ObservableInt = ObservableInt()
     var btnSettingsResource: ObservableInt = ObservableInt()
     var sunDateBanner: ObservableField<String> = ObservableField()

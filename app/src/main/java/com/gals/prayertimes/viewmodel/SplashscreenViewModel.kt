@@ -6,18 +6,23 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gals.prayertimes.repository.Repository
-import com.gals.prayertimes.repository.db.entities.Settings
+import com.gals.prayertimes.repository.localdatasource.entities.Settings
 import com.gals.prayertimes.services.NotificationService
 import com.gals.prayertimes.utils.UtilsManager
 import com.gals.prayertimes.utils.getTodayDate
+import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class SplashscreenViewModel(
-    private val repository: Repository,
-    private val context: Context
+@HiltViewModel
+class SplashscreenViewModel @Inject constructor(
+    @ApplicationContext val context: Context,
+    private val repository: Repository
 ) : ViewModel() {
+
     private val tools: UtilsManager = UtilsManager(context)
     val loading = MutableLiveData<Boolean>()
     var savedSettings: Settings = Settings.EMPTY
@@ -54,7 +59,7 @@ class SplashscreenViewModel(
 
     private fun refreshSettings() = repository.refreshSettings()
 
-    private fun getSettings() = repository.getSettingsFromLocalDataSource()!!
+    private fun getSettings() = repository.getSettings()!!
 
     private suspend fun getPrayer(): Boolean = repository.refreshPrayer(getTodayDate())
 }
