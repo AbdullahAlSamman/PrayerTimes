@@ -11,12 +11,17 @@ import androidx.lifecycle.ViewModelProvider
 import com.gals.prayertimes.databinding.FragmentPrivacyPolicyBinding
 import com.gals.prayertimes.viewmodel.PrivacyPolicyViewModel
 import com.gals.prayertimes.viewmodel.factory.PrivacyPolicyViewModelFactory
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class PrivacyPolicyFragment : Fragment() {
     private lateinit var viewModel: PrivacyPolicyViewModel
-    private lateinit var viewModelFactory: PrivacyPolicyViewModelFactory
     private lateinit var binding: FragmentPrivacyPolicyBinding
     private lateinit var mListener: OnFragmentInteractionListener
+
+    @Inject
+    lateinit var viewModelFactory: PrivacyPolicyViewModelFactory
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -53,7 +58,6 @@ class PrivacyPolicyFragment : Fragment() {
     }
 
     private fun configureMVVM() {
-        viewModelFactory = PrivacyPolicyViewModelFactory()
         viewModel = ViewModelProvider(
             this,
             viewModelFactory
