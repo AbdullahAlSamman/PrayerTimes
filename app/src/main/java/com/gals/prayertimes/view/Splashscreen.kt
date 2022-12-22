@@ -18,17 +18,16 @@ import javax.inject.Inject
 class Splashscreen : AppCompatActivity() {
     private lateinit var toMain: Intent
     private lateinit var viewModel: SplashscreenViewModel
-    lateinit var tools: UtilsManager
-
     @Inject
     lateinit var viewModelFactory: SplashscreenViewModelFactory
+
+    @Inject
+    lateinit var tools: UtilsManager
 
     //TODO: handle exceptions well and handle no network situation.
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splashscreen)
-
-        tools = UtilsManager(baseContext)
 
         configureMVVM()
         configureLoading()

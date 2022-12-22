@@ -20,10 +20,10 @@ import kotlinx.coroutines.withContext
 @HiltViewModel
 class SplashscreenViewModel @Inject constructor(
     @ApplicationContext val context: Context,
-    private val repository: Repository
+    private val repository: Repository,
+    private val tools: UtilsManager
 ) : ViewModel() {
 
-    private val tools: UtilsManager = UtilsManager(context)
     val loading = MutableLiveData<Boolean>()
     var savedSettings: Settings = Settings.EMPTY
 

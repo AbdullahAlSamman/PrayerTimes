@@ -16,19 +16,18 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private lateinit var viewModel: MainViewModel
-
+    private lateinit var binding: ActivityMainBinding
+    lateinit var db: AppDB
+    var prayer: EntityPrayer = EntityPrayer.EMPTY
     @Inject
     lateinit var viewModelFactory: MainViewModelFactory
 
-    private lateinit var binding: ActivityMainBinding
-    lateinit var db: AppDB
+    @Inject
     lateinit var tools: UtilsManager
-    var prayer: EntityPrayer = EntityPrayer.EMPTY
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         //TODO: Internet warning
-        configureTools()
         configureDataBinding()
         configureMVVM()
         configureUI()
@@ -61,8 +60,4 @@ class MainActivity : AppCompatActivity() {
         tools.setActivityLanguage("en")
     }
 
-    private fun configureTools() {
-        tools = UtilsManager(baseContext)
-        db = getInstance(baseContext)
-    }
 }

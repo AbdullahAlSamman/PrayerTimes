@@ -14,21 +14,25 @@ import com.gals.prayertimes.repository.localdatasource.entities.Settings
 import com.gals.prayertimes.services.NotificationService
 import com.gals.prayertimes.utils.UtilsManager
 import com.gals.prayertimes.viewmodel.observer.RadioGroupObserver
+import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class AthanSettingsViewModel(
+@HiltViewModel
+class AthanSettingsViewModel @Inject constructor(
+    @ApplicationContext private val context: Context,
     private val repository: Repository,
-    private val context: Context
+    private val tools: UtilsManager
 ) : ViewModel() {
     private lateinit var musicPlayer: MediaPlayer
     private lateinit var currentNotificationType: String
     private val mediaJob = Job()
     private val mediaScope = CoroutineScope(Dispatchers.Main + mediaJob)
-    private val tools = UtilsManager(context)
     val radioGroupObserver = RadioGroupObserver()
     val alarm: ObservableBoolean = ObservableBoolean(false)
     val isPlaying: ObservableBoolean = ObservableBoolean(false)

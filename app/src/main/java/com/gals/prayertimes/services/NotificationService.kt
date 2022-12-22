@@ -44,18 +44,21 @@ import kotlinx.coroutines.withContext
 
 @AndroidEntryPoint
 class NotificationService : Service() {
+    private val backgroundJob = Job()
+
+    private val backgroundScope = CoroutineScope(Dispatchers.Main + backgroundJob)
+    private val loading = MutableLiveData<Boolean>()
+    private lateinit var calculation: PrayerCalculation
+
+    private lateinit var timerHandler: Handler
+    private lateinit var prayer: DomainPrayer
+    private lateinit var settings: Settings
+
     @Inject
     lateinit var repository: Repository
 
-    private val backgroundJob = Job()
-    private val backgroundScope = CoroutineScope(Dispatchers.Main + backgroundJob)
-    private val loading = MutableLiveData<Boolean>()
-
-    private lateinit var calculation: PrayerCalculation
-    private lateinit var timerHandler: Handler
-    private lateinit var tools: UtilsManager
-    private lateinit var prayer: DomainPrayer
-    private lateinit var settings: Settings
+    @Inject
+    lateinit var tools: UtilsManager
 
     override fun onBind(intent: Intent?): IBinder? {
         return null
@@ -109,7 +112,6 @@ class NotificationService : Service() {
     }
 
     private fun configure() {
-        tools = UtilsManager(applicationContext)
         calculation = PrayerCalculation(applicationContext)
     }
 

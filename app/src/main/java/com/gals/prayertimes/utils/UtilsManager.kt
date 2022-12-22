@@ -9,9 +9,13 @@ import android.view.Window
 import android.view.WindowManager
 import com.gals.prayertimes.R
 import com.gals.prayertimes.model.NotificationType
+import dagger.hilt.android.qualifiers.ApplicationContext
 import java.util.Locale
+import javax.inject.Inject
 
-class UtilsManager(private val utilsContext: Context) {
+class UtilsManager @Inject constructor(
+    @ApplicationContext private val utilsContext: Context
+) {
     fun isServiceRunning(serviceClass: Class<*>): Boolean {
         val manager = utilsContext.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
         for (service in manager.getRunningServices(Int.MAX_VALUE)) {

@@ -10,25 +10,31 @@ import com.gals.prayertimes.adapter.SettingsMenuContent.SettingsMenuItem
 import com.gals.prayertimes.utils.UtilsManager
 import com.gals.prayertimes.view.MenuItemFragment.OnListFragmentInteractionListener
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class Menu : AppCompatActivity(), AthanSettingsFragment.OnFragmentInteractionListener,
     OnListFragmentInteractionListener, PrivacyPolicyFragment.OnFragmentInteractionListener {
-    var tools: UtilsManager? = null
+
+    @Inject
+    lateinit var tools: UtilsManager
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_menu)
-        tools = UtilsManager(applicationContext)
+
         val actionBar: ActionBar? = supportActionBar
         actionBar!!.setDisplayHomeAsUpEnabled(true)
         actionBar.setIcon(R.drawable.mysalay)
         val menuSettings = MenuItemFragment()
+
         supportFragmentManager.beginTransaction().replace(
             R.id.fragmentContainer,
             menuSettings
         ).commit()
-        tools!!.setActivityLanguage("en")
-        tools!!.changeStatusBarColor(window)
+
+        tools.setActivityLanguage("en")
+        tools.changeStatusBarColor(window)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

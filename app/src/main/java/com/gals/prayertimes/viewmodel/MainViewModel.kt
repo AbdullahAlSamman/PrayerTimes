@@ -44,7 +44,9 @@ class MainViewModel @Inject constructor(
     @ApplicationContext val application: Context,
     private val repository: Repository
 ) : ViewModel() {
-    private val tools: UtilsManager = UtilsManager(application)
+    @Inject
+    lateinit var tools: UtilsManager
+
     private val calculation: PrayerCalculation = PrayerCalculation(application)
 
     private var domainPrayer: DomainPrayer = DomainPrayer.EMPTY
