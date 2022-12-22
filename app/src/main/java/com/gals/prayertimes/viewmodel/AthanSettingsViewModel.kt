@@ -1,7 +1,6 @@
 package com.gals.prayertimes.viewmodel
 
 import android.content.Context
-import android.content.Intent
 import android.media.AudioAttributes
 import android.media.MediaPlayer
 import android.util.Log
@@ -109,16 +108,16 @@ class AthanSettingsViewModel @Inject constructor(
         }
     }
 
-    fun startNotificationService() {
+    fun startNotificationService(serviceClass: Class<*>) {
         if (alarm.get()) {
             if (currentNotificationType == radioGroupObserver.notificationType.get()) {
                 return
             } else {
-                restartService()
+                tools.restartService(serviceClass)
             }
         } else {
-            if (tools.isServiceRunning(NotificationService::class.java)) {
-                context.stopService(Intent(context, NotificationService::class.java))
+            if (tools.isServiceRunning(serviceClass)) {
+                tools.stopService(serviceClass)
             }
         }
     }
@@ -152,8 +151,8 @@ class AthanSettingsViewModel @Inject constructor(
     }
 
     private fun restartService() {
-        context.stopService(Intent(context, NotificationService::class.java))
-        context.startService(Intent(context, NotificationService::class.java))
+        tools.stopService(NotificationService::class.java)
+        tools.startService(NotificationService::class.java)
     }
 
     private fun setNotificationInfo(settings: Settings?) {

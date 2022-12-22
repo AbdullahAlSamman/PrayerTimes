@@ -19,7 +19,6 @@ import kotlinx.coroutines.withContext
 
 @HiltViewModel
 class SplashscreenViewModel @Inject constructor(
-    @ApplicationContext val context: Context,
     private val repository: Repository,
     private val tools: UtilsManager
 ) : ViewModel() {
@@ -32,8 +31,8 @@ class SplashscreenViewModel @Inject constructor(
             loading.postValue(true)
             var response: Boolean
             withContext(Dispatchers.IO) {
-                refreshSettings()
-                savedSettings = getSettings()
+                repository.refreshSettings()
+                savedSettings = repository.getSettings()!!
                 response = getPrayer()
             }
             withContext(Dispatchers.Main) {
@@ -48,18 +47,14 @@ class SplashscreenViewModel @Inject constructor(
     private fun launchNotificationService() {
         if (!tools.isServiceRunning(NotificationService::class.java)) {
             if (savedSettings.notification) {
-                context.startService(Intent(context, NotificationService::class.java))
+                tools.startService(NotificationService::class.java)
             }
         } else {
             if (!savedSettings.notification) {
-                context.stopService(Intent(context, NotificationService::class.java))
+                tools.stopService(NotificationService::class.java)
             }
         }
     }
-
-    private fun refreshSettings() = repository.refreshSettings()
-
-    private fun getSettings() = repository.getSettings()!!
 
     private suspend fun getPrayer(): Boolean = repository.refreshPrayer(getTodayDate())
 }

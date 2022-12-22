@@ -8,6 +8,4 @@ typealias DomainPrayer = Prayer
 typealias EntityPrayer = com.gals.prayertimes.repository.localdatasource.entities.Prayer
 
 @HiltAndroidApp
-class App : Application() {
-    lateinit var prayer: Prayer
-}
+class App : Application()

@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.gals.prayertimes.databinding.FragmentSettingsBinding
+import com.gals.prayertimes.services.NotificationService
 import com.gals.prayertimes.viewmodel.AthanSettingsViewModel
 import com.gals.prayertimes.viewmodel.factory.AthanSettingsViewModelFactory
 import dagger.hilt.android.AndroidEntryPoint
@@ -60,7 +61,7 @@ class AthanSettingsFragment : Fragment() {
         try {
             viewModel.saveSettings()
             viewModel.stopMediaPlayer()
-            viewModel.startNotificationService()
+            viewModel.startNotificationService(NotificationService::class.java)
         } catch (e: Exception) {
             e.printStackTrace()
         }
