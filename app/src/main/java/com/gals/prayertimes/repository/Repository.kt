@@ -8,14 +8,14 @@ import com.gals.prayertimes.repository.localdatasource.LocalDataSource
 import com.gals.prayertimes.repository.localdatasource.entities.Prayer.Companion.isValid
 import com.gals.prayertimes.repository.localdatasource.entities.Settings
 import com.gals.prayertimes.repository.remotedatasource.PrayerService
+import com.gals.prayertimes.repository.remotedatasource.RemoteDataSource
 import com.gals.prayertimes.utils.toEntity
 import javax.inject.Inject
 
 class Repository @Inject constructor(
-   private val localDataSource: LocalDataSource
+   private val localDataSource: LocalDataSource,
+   private val remoteDataSource: RemoteDataSource
 ) {
-
-    private val prayerService: PrayerService? = PrayerService.getInstance()
 
     suspend fun refreshPrayer(todayDate: String): Boolean {
         val prayer: EntityPrayer? = localDataSource.getPrayer(todayDate)
@@ -25,12 +25,12 @@ class Repository @Inject constructor(
                 return true
             }
         }
-        val result = getPrayerFromRemoteDataSource(todayDate)
-        if (result?.isSuccessful == true) {
+        val result = remoteDataSource.getPrayer(todayDate)
+        if (result.isSuccessful) {
             localDataSource.insertPrayers(result.body()!!.first().toEntity())
             return true
         } else {
-            Log.e("Data Request", result?.message().toString())
+            Log.e("Data Request", result.message().toString())
         }
         return false
     }
@@ -54,8 +54,5 @@ class Repository @Inject constructor(
     fun getSettings(): Settings? = localDataSource.getSettings()
 
     fun saveSettings(settings: Settings) = localDataSource.insertSettings(settings)
-
-    private suspend fun getPrayerFromRemoteDataSource(todayDate: String) =
-        prayerService?.getTodayPrayer(todayDate)
 
 }
