@@ -75,9 +75,4 @@ class AthanSettingsFragment : Fragment() {
     interface OnFragmentInteractionListener {
         fun onFragmentInteraction(uri: Uri?)
     }
-
-    companion object {
-        fun newInstance(): AthanSettingsFragment =
-            AthanSettingsFragment()
-    }
 }

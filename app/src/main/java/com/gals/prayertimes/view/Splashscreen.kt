@@ -18,6 +18,7 @@ import javax.inject.Inject
 class Splashscreen : AppCompatActivity() {
     private lateinit var toMain: Intent
     private lateinit var viewModel: SplashscreenViewModel
+
     @Inject
     lateinit var viewModelFactory: SplashscreenViewModelFactory
 

@@ -10,7 +10,6 @@ import androidx.lifecycle.viewModelScope
 import com.gals.prayertimes.model.NotificationType
 import com.gals.prayertimes.repository.Repository
 import com.gals.prayertimes.repository.localdatasource.entities.Settings
-import com.gals.prayertimes.services.NotificationService
 import com.gals.prayertimes.utils.UtilsManager
 import com.gals.prayertimes.viewmodel.observer.RadioGroupObserver
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -148,11 +147,6 @@ class AthanSettingsViewModel @Inject constructor(
     private fun startMediaPlayer() {
         musicPlayer.start()
         isPlaying.set(true)
-    }
-
-    private fun restartService() {
-        tools.stopService(NotificationService::class.java)
-        tools.startService(NotificationService::class.java)
     }
 
     private fun setNotificationInfo(settings: Settings?) {

@@ -66,12 +66,4 @@ class PrivacyPolicyFragment : Fragment() {
         binding.viewModel = viewModel
     }
 
-    companion object {
-        fun newInstance(): PrivacyPolicyFragment {
-            val fragment = PrivacyPolicyFragment()
-            val args = Bundle()
-            fragment.arguments = args
-            return fragment
-        }
-    }
 }

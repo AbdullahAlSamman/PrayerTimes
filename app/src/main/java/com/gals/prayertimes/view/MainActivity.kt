@@ -5,8 +5,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.gals.prayertimes.EntityPrayer
 import com.gals.prayertimes.databinding.ActivityMainBinding
-import com.gals.prayertimes.repository.localdatasource.AppDB
-import com.gals.prayertimes.repository.localdatasource.AppDB.Companion.getInstance
 import com.gals.prayertimes.utils.UtilsManager
 import com.gals.prayertimes.viewmodel.MainViewModel
 import com.gals.prayertimes.viewmodel.factory.MainViewModelFactory
@@ -17,8 +15,8 @@ import javax.inject.Inject
 class MainActivity : AppCompatActivity() {
     private lateinit var viewModel: MainViewModel
     private lateinit var binding: ActivityMainBinding
-    lateinit var db: AppDB
     var prayer: EntityPrayer = EntityPrayer.EMPTY
+
     @Inject
     lateinit var viewModelFactory: MainViewModelFactory
 
