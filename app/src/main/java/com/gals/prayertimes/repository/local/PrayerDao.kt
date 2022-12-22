@@ -1,4 +1,4 @@
-package com.gals.prayertimes.repository.localdatasource
+package com.gals.prayertimes.repository.local
 
 import androidx.room.Dao
 import androidx.room.Insert

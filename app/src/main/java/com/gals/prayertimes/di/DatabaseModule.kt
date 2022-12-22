@@ -2,9 +2,9 @@ package com.gals.prayertimes.di
 
 import android.content.Context
 import androidx.room.Room
-import com.gals.prayertimes.repository.localdatasource.AppDB
-import com.gals.prayertimes.repository.localdatasource.PrayerDao
-import com.gals.prayertimes.repository.localdatasource.SettingsDao
+import com.gals.prayertimes.repository.local.AppDB
+import com.gals.prayertimes.repository.local.PrayerDao
+import com.gals.prayertimes.repository.local.SettingsDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -16,7 +16,7 @@ import dagger.hilt.components.SingletonComponent
 object DatabaseModule {
 
     @Provides
-    fun providePrayerDao(appDB: AppDB) : PrayerDao =
+    fun providePrayerDao(appDB: AppDB): PrayerDao =
         appDB.prayerDao
 
     @Provides

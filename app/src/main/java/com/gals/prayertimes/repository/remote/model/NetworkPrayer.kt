@@ -1,4 +1,4 @@
-package com.gals.prayertimes.repository.remotedatasource.model
+package com.gals.prayertimes.repository.remote.model
 
 import com.google.gson.annotations.SerializedName
 

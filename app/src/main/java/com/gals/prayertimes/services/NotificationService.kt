@@ -22,7 +22,7 @@ import com.gals.prayertimes.R
 import com.gals.prayertimes.model.NotificationType
 import com.gals.prayertimes.model.config.NextPrayerInfoConfig
 import com.gals.prayertimes.repository.Repository
-import com.gals.prayertimes.repository.localdatasource.entities.Settings
+import com.gals.prayertimes.repository.local.entities.Settings
 import com.gals.prayertimes.utils.PrayerCalculation
 import com.gals.prayertimes.utils.UtilsManager
 import com.gals.prayertimes.utils.getTodayDate
@@ -120,7 +120,7 @@ class NotificationService : Service() {
         backgroundScope.launch {
             loading.postValue(true)
             withContext(Dispatchers.IO) {
-                prayer = repository.getPrayerFromLocalDataSource(getTodayDate())!!.toDomain()
+                prayer = repository.getPrayer(getTodayDate())!!.toDomain()
                 settings = repository.getSettings()!!
             }
             withContext(Dispatchers.Main) {

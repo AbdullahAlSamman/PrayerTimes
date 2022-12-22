@@ -1,17 +1,14 @@
 package com.gals.prayertimes.viewmodel
 
-import android.content.Context
-import android.content.Intent
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gals.prayertimes.repository.Repository
-import com.gals.prayertimes.repository.localdatasource.entities.Settings
+import com.gals.prayertimes.repository.local.entities.Settings
 import com.gals.prayertimes.services.NotificationService
 import com.gals.prayertimes.utils.UtilsManager
 import com.gals.prayertimes.utils.getTodayDate
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

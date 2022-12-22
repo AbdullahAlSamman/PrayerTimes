@@ -1,4 +1,4 @@
-package com.gals.prayertimes.repository.remotedatasource
+package com.gals.prayertimes.repository.remote
 
 import javax.inject.Inject
 

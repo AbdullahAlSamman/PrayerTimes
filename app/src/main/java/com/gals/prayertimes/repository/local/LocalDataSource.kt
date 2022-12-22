@@ -1,7 +1,7 @@
-package com.gals.prayertimes.repository.localdatasource
+package com.gals.prayertimes.repository.local
 
 import com.gals.prayertimes.EntityPrayer
-import com.gals.prayertimes.repository.localdatasource.entities.Settings
+import com.gals.prayertimes.repository.local.entities.Settings
 import javax.inject.Inject
 
 class LocalDataSource @Inject constructor(

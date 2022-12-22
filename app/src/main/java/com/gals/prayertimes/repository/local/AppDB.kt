@@ -1,4 +1,4 @@
-package com.gals.prayertimes.repository.localdatasource
+package com.gals.prayertimes.repository.local
 
 import android.content.Context
 import androidx.room.AutoMigration
@@ -6,8 +6,8 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.gals.prayertimes.repository.localdatasource.entities.Prayer
-import com.gals.prayertimes.repository.localdatasource.entities.Settings
+import com.gals.prayertimes.repository.local.entities.Prayer
+import com.gals.prayertimes.repository.local.entities.Settings
 
 @Database(
     entities = [Prayer::class, Settings::class],

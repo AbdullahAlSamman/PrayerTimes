@@ -1,6 +1,6 @@
 package com.gals.prayertimes.di
 
-import com.gals.prayertimes.repository.remotedatasource.PrayerService
+import com.gals.prayertimes.repository.remote.PrayerService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

@@ -10,8 +10,6 @@ import android.view.Window
 import android.view.WindowManager
 import com.gals.prayertimes.R
 import com.gals.prayertimes.model.NotificationType
-import com.gals.prayertimes.services.NotificationService
-import com.gals.prayertimes.view.Menu
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.util.Locale
 import javax.inject.Inject

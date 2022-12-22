@@ -15,7 +15,7 @@ import com.gals.prayertimes.R
 import com.gals.prayertimes.model.TimePrayer
 import com.gals.prayertimes.model.config.NextPrayerInfoConfig
 import com.gals.prayertimes.repository.Repository
-import com.gals.prayertimes.repository.localdatasource.entities.Prayer.Companion.isValid
+import com.gals.prayertimes.repository.local.entities.Prayer.Companion.isValid
 import com.gals.prayertimes.utils.PrayerCalculation
 import com.gals.prayertimes.utils.ResourceProvider
 import com.gals.prayertimes.utils.UtilsManager
@@ -74,7 +74,7 @@ class MainViewModel @Inject constructor(
         var waiting = false
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                prayer = repository.getPrayerFromLocalDataSource(getTodayDate())
+                prayer = repository.getPrayer(getTodayDate())
                 if (prayer != null) {
                     waiting = prayer!!.isValid()
                 }
@@ -136,7 +136,7 @@ class MainViewModel @Inject constructor(
                 withContext(Dispatchers.IO) {
                     if (repository.refreshPrayer(getTodayDate())) {
                         domainPrayer =
-                            repository.getPrayerFromLocalDataSource(getTodayDate())!!.toDomain()
+                            repository.getPrayer(getTodayDate())!!.toDomain()
                         if (domainPrayer != DomainPrayer.EMPTY) {
                             updateViewObservableValues(domainPrayer)
                         }

@@ -3,12 +3,10 @@ package com.gals.prayertimes.repository
 import android.util.Log
 import com.gals.prayertimes.EntityPrayer
 import com.gals.prayertimes.model.NotificationType
-import com.gals.prayertimes.repository.localdatasource.AppDB
-import com.gals.prayertimes.repository.localdatasource.LocalDataSource
-import com.gals.prayertimes.repository.localdatasource.entities.Prayer.Companion.isValid
-import com.gals.prayertimes.repository.localdatasource.entities.Settings
-import com.gals.prayertimes.repository.remotedatasource.PrayerService
-import com.gals.prayertimes.repository.remotedatasource.RemoteDataSource
+import com.gals.prayertimes.repository.local.LocalDataSource
+import com.gals.prayertimes.repository.local.entities.Prayer.Companion.isValid
+import com.gals.prayertimes.repository.local.entities.Settings
+import com.gals.prayertimes.repository.remote.RemoteDataSource
 import com.gals.prayertimes.utils.toEntity
 import javax.inject.Inject
 
@@ -48,7 +46,7 @@ class Repository @Inject constructor(
             false
         }
 
-    fun getPrayerFromLocalDataSource(todayDate: String): EntityPrayer? =
+    fun getPrayer(todayDate: String): EntityPrayer? =
         localDataSource.getPrayer(todayDate)
 
     fun getSettings(): Settings? = localDataSource.getSettings()
