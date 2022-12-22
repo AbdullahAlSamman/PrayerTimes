@@ -11,6 +11,7 @@ import android.view.WindowManager
 import com.gals.prayertimes.R
 import com.gals.prayertimes.model.NotificationType
 import com.gals.prayertimes.services.NotificationService
+import com.gals.prayertimes.view.Menu
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.util.Locale
 import javax.inject.Inject
@@ -18,6 +19,15 @@ import javax.inject.Inject
 class UtilsManager @Inject constructor(
     @ApplicationContext private val context: Context
 ) {
+    fun startActivity(serviceClass: Class<*>, intentFlag: Int){
+        context.startActivity(
+            Intent(
+                context,
+                serviceClass
+            ).setFlags(intentFlag)
+        )
+    }
+
     fun startService(serviceClass: Class<*>){
         context.startService(Intent(context, serviceClass))
     }

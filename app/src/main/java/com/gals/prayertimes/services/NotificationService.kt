@@ -22,7 +22,6 @@ import com.gals.prayertimes.R
 import com.gals.prayertimes.model.NotificationType
 import com.gals.prayertimes.model.config.NextPrayerInfoConfig
 import com.gals.prayertimes.repository.Repository
-import com.gals.prayertimes.repository.localdatasource.AppDB
 import com.gals.prayertimes.repository.localdatasource.entities.Settings
 import com.gals.prayertimes.utils.PrayerCalculation
 import com.gals.prayertimes.utils.UtilsManager
@@ -48,9 +47,8 @@ class NotificationService : Service() {
 
     private val backgroundScope = CoroutineScope(Dispatchers.Main + backgroundJob)
     private val loading = MutableLiveData<Boolean>()
-    private lateinit var calculation: PrayerCalculation
-
     private lateinit var timerHandler: Handler
+
     private lateinit var prayer: DomainPrayer
     private lateinit var settings: Settings
 
@@ -60,13 +58,15 @@ class NotificationService : Service() {
     @Inject
     lateinit var tools: UtilsManager
 
+    @Inject
+    lateinit var calculation: PrayerCalculation
+
     override fun onBind(intent: Intent?): IBinder? {
         return null
     }
 
     override fun onCreate() {
         super.onCreate()
-        configure()
         loadPrayerData()
         timerHandler = Handler(Looper.getMainLooper())
     }
@@ -109,10 +109,6 @@ class NotificationService : Service() {
                 notify(Random.nextInt(0, Int.MAX_VALUE), notification)
             }
         }
-    }
-
-    private fun configure() {
-        calculation = PrayerCalculation(applicationContext)
     }
 
     private fun createNotificationChannel(notificationChannel: NotificationChannel) {

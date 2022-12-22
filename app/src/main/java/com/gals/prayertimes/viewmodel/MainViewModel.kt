@@ -1,6 +1,5 @@
 package com.gals.prayertimes.viewmodel
 
-import android.content.Context
 import android.content.Intent
 import android.os.Handler
 import android.os.Looper
@@ -18,6 +17,7 @@ import com.gals.prayertimes.model.config.NextPrayerInfoConfig
 import com.gals.prayertimes.repository.Repository
 import com.gals.prayertimes.repository.localdatasource.entities.Prayer.Companion.isValid
 import com.gals.prayertimes.utils.PrayerCalculation
+import com.gals.prayertimes.utils.ResourceProvider
 import com.gals.prayertimes.utils.UtilsManager
 import com.gals.prayertimes.utils.getDayName
 import com.gals.prayertimes.utils.getMoonMonth
@@ -27,13 +27,10 @@ import com.gals.prayertimes.utils.toDomain
 import com.gals.prayertimes.utils.toTimePrayer
 import com.gals.prayertimes.view.Menu
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
-import dagger.hilt.android.scopes.ViewModelScoped
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 import java.util.StringTokenizer
-import java.util.Timer
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -41,14 +38,11 @@ import kotlinx.coroutines.withContext
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    @ApplicationContext val application: Context,
-    private val repository: Repository
+    private val tools : UtilsManager,
+    private val repository: Repository,
+    private val resourceProvider: ResourceProvider,
+    private val calculation: PrayerCalculation
 ) : ViewModel() {
-    @Inject
-    lateinit var tools: UtilsManager
-
-    private val calculation: PrayerCalculation = PrayerCalculation(application)
-
     private var domainPrayer: DomainPrayer = DomainPrayer.EMPTY
     private lateinit var currentPrayer: TimePrayer
     private lateinit var timerHandler: Handler
@@ -72,12 +66,7 @@ class MainViewModel @Inject constructor(
     }
 
     fun navigateToSettings() {
-        application.startActivity(
-            Intent(
-                application,
-                Menu::class.java
-            ).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        )
+        tools.startActivity(Menu::class.java,Intent.FLAG_ACTIVITY_NEW_TASK)
     }
 
     fun getPrayer() {
@@ -169,7 +158,7 @@ class MainViewModel @Inject constructor(
             lateinit var sunDateText: String
             lateinit var moonDateText: String
             val calendar = Calendar.getInstance()
-            viewDayName.set(application.getString(getDayName(calendar[Calendar.DAY_OF_WEEK])))
+            viewDayName.set(resourceProvider.getString(getDayName(calendar[Calendar.DAY_OF_WEEK])))
 
             val sdate = StringTokenizer(
                 domainPrayer.sDate,
@@ -182,8 +171,8 @@ class MainViewModel @Inject constructor(
             sunDateText = sdate.nextToken() + " "
             moonDateText = mdate.nextToken() + " "
 
-            sunDateText += application.getString(getSunMonth(sdate.nextToken().toInt()))
-            moonDateText += application.getString(getMoonMonth(mdate.nextToken().toInt()))
+            sunDateText += resourceProvider.getString(getSunMonth(sdate.nextToken().toInt()))
+            moonDateText += resourceProvider.getString(getMoonMonth(mdate.nextToken().toInt()))
 
             sunDateText += " " + sdate.nextToken()
             moonDateText += " " + mdate.nextToken()

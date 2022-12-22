@@ -1,15 +1,15 @@
 package com.gals.prayertimes.utils
 
-import android.content.Context
 import com.gals.prayertimes.R
 import com.gals.prayertimes.model.TimePrayer
 import com.gals.prayertimes.model.config.NextPrayerInfoConfig
 import java.util.Calendar
 import java.util.StringTokenizer
+import javax.inject.Inject
 import kotlin.math.ceil
 
-class PrayerCalculation(
-    private val applicationContext: Context
+class PrayerCalculation @Inject constructor(
+    private val resourceProvider: ResourceProvider
 ) {
     fun isNextAPrayer(prayer: TimePrayer): Boolean =
         !(isNextMidnight(prayer) || isNextSunrise(prayer))
@@ -70,7 +70,7 @@ class PrayerCalculation(
                         getTimeNow().toCalendar()
                     )
                 nextPrayerInfoConfig.nextPrayerNameText =
-                    applicationContext.getString(R.string.text_prayer_fajer)
+                    resourceProvider.getString(R.string.text_prayer_fajer)
             }
             isNowBeforeTime(currentPrayer.sunrise) -> {
                 nextPrayerInfoConfig.nextPrayerTime =
@@ -79,7 +79,7 @@ class PrayerCalculation(
                         getTimeNow().toCalendar()
                     )
                 nextPrayerInfoConfig.nextPrayerNameText =
-                    applicationContext.getString(R.string.text_prayer_day_sunrise)
+                    resourceProvider.getString(R.string.text_prayer_day_sunrise)
                 nextPrayerInfoConfig.isSunrise = true
             }
             isNowBeforeTime(currentPrayer.duhr) -> {
@@ -89,7 +89,7 @@ class PrayerCalculation(
                         getTimeNow().toCalendar()
                     )
                 nextPrayerInfoConfig.nextPrayerNameText =
-                    applicationContext.getString(R.string.text_prayer_duhr)
+                    resourceProvider.getString(R.string.text_prayer_duhr)
             }
             isNowBeforeTime(currentPrayer.asr) -> {
                 nextPrayerInfoConfig.nextPrayerTime =
@@ -98,7 +98,7 @@ class PrayerCalculation(
                         getTimeNow().toCalendar()
                     )
                 nextPrayerInfoConfig.nextPrayerNameText =
-                    applicationContext.getString(R.string.text_prayer_asr)
+                    resourceProvider.getString(R.string.text_prayer_asr)
             }
             isNowBeforeTime(currentPrayer.maghreb) -> {
                 nextPrayerInfoConfig.nextPrayerTime =
@@ -107,7 +107,7 @@ class PrayerCalculation(
                         getTimeNow().toCalendar()
                     )
                 nextPrayerInfoConfig.nextPrayerNameText =
-                    applicationContext.getString(R.string.text_prayer_maghrib)
+                    resourceProvider.getString(R.string.text_prayer_maghrib)
             }
             isNowBeforeTime(currentPrayer.isha) -> {
                 nextPrayerInfoConfig.nextPrayerTime =
@@ -116,7 +116,7 @@ class PrayerCalculation(
                         getTimeNow().toCalendar()
                     )
                 nextPrayerInfoConfig.nextPrayerNameText =
-                    applicationContext.getString(R.string.text_prayer_isha)
+                    resourceProvider.getString(R.string.text_prayer_isha)
             }
             isNowBeforeTime(currentPrayer.midNight) || getTimeNow().toCalendar() == currentPrayer.midNight -> {
                 nextPrayerInfoConfig.nextPrayerTime =
@@ -126,15 +126,15 @@ class PrayerCalculation(
                     )
                 nextPrayerInfoConfig.isMidnight = true
                 nextPrayerInfoConfig.nextPrayerNameText =
-                    applicationContext.getString(R.string.text_midnight_time_title)
+                    resourceProvider.getString(R.string.text_midnight_time_title)
             }
         }
         if (isNextAPrayer(currentPrayer)) {
             nextPrayerInfoConfig.nextPrayerBannerText =
-                applicationContext.getString(R.string.text_remaining_prayer_time)
+                resourceProvider.getString(R.string.text_remaining_prayer_time)
         } else {
             nextPrayerInfoConfig.nextPrayerBannerText =
-                applicationContext.getString(R.string.text_remaining_time)
+                resourceProvider.getString(R.string.text_remaining_time)
         }
         return nextPrayerInfoConfig
     }
