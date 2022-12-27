@@ -18,8 +18,11 @@ interface PrayerDao {
      * @param arg0 the today date
      * @return the prayer
      */
-    @Query("SELECT * FROM prayers WHERE sDate LIKE :arg0  LIMIT 1")
-    fun findByDate(arg0: String?): EntityPrayer?
+    @Query("SELECT * FROM prayers WHERE sDate LIKE :todayDate  LIMIT 1")
+    fun findByDate(todayDate: String?): EntityPrayer?
+
+    @Query("SELECT EXISTS(SELECT * FROM prayers WHERE sDate LIKE :todayDate  LIMIT 1) ")
+    fun isExists(todayDate: String?): Boolean
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(prayer: EntityPrayer?)

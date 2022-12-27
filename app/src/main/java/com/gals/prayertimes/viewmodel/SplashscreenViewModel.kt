@@ -30,7 +30,7 @@ class SplashscreenViewModel @Inject constructor(
             withContext(Dispatchers.IO) {
                 repository.refreshSettings()
                 savedSettings = repository.getSettings()!!
-                response = getPrayer()
+                response = repository.refreshPrayer(getTodayDate())
             }
             withContext(Dispatchers.Main) {
                 if (response) {
@@ -52,6 +52,4 @@ class SplashscreenViewModel @Inject constructor(
             }
         }
     }
-
-    private suspend fun getPrayer(): Boolean = repository.refreshPrayer(getTodayDate())
 }

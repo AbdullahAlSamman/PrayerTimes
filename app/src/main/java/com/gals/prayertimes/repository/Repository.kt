@@ -16,19 +16,16 @@ class Repository @Inject constructor(
 ) {
 
     suspend fun refreshPrayer(todayDate: String): Boolean {
-        val prayer: EntityPrayer? = localDataSource.getPrayer(todayDate)
-        if (prayer != null) {
-            if (prayer.isValid()) {
-                Log.e("Data Request", "exists locally in cache")
-                return true
-            }
+        if(localDataSource.isTodayPrayerExists(todayDate)){
+            Log.e("Remote Data Request", "exists locally in cache")
+            return true
         }
         val result = remoteDataSource.getPrayer(todayDate)
         if (result.isSuccessful) {
             localDataSource.insertPrayers(result.body()!!.first().toEntity())
             return true
         } else {
-            Log.e("Data Request", result.message().toString())
+            Log.e("Remote Data Request", result.message().toString())
         }
         return false
     }

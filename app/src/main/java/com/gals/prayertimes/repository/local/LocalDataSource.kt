@@ -17,6 +17,9 @@ class LocalDataSource @Inject constructor(
     fun isSettingsExists(): Boolean =
         settingsDao.isExists()
 
+    fun isTodayPrayerExists(todayDate: String): Boolean =
+        prayerDao.isExists(todayDate)
+
     fun getPrayer(todayDate: String): EntityPrayer? =
         prayerDao.findByDate(todayDate)
 
