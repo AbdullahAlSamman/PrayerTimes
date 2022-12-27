@@ -4,19 +4,18 @@ import android.util.Log
 import com.gals.prayertimes.EntityPrayer
 import com.gals.prayertimes.model.NotificationType
 import com.gals.prayertimes.repository.local.LocalDataSource
-import com.gals.prayertimes.repository.local.entities.Prayer.Companion.isValid
 import com.gals.prayertimes.repository.local.entities.Settings
 import com.gals.prayertimes.repository.remote.RemoteDataSource
 import com.gals.prayertimes.utils.toEntity
 import javax.inject.Inject
 
 class Repository @Inject constructor(
-   private val localDataSource: LocalDataSource,
-   private val remoteDataSource: RemoteDataSource
+    private val localDataSource: LocalDataSource,
+    private val remoteDataSource: RemoteDataSource
 ) {
 
     suspend fun refreshPrayer(todayDate: String): Boolean {
-        if(localDataSource.isTodayPrayerExists(todayDate)){
+        if (localDataSource.isTodayPrayerExists(todayDate)) {
             Log.e("Remote Data Request", "exists locally in cache")
             return true
         }
