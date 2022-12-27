@@ -1,4 +1,4 @@
-package com.gals.prayertimes.repository.db.entities
+package com.gals.prayertimes.repository.local.entities
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
@@ -14,7 +14,7 @@ data class Settings(
     @ColumnInfo(defaultValue = "silent")
     var notificationType: String,
     @ColumnInfo(defaultValue = "false")
-    var sunriseNotification : Boolean = false
+    var sunriseNotification: Boolean = false
 ) {
     companion object {
         val EMPTY: Settings by lazy {

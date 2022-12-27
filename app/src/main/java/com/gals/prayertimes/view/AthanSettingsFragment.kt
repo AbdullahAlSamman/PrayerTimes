@@ -9,14 +9,18 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.gals.prayertimes.databinding.FragmentSettingsBinding
-import com.gals.prayertimes.repository.Repository
-import com.gals.prayertimes.repository.db.AppDB.Companion.getInstance
+import com.gals.prayertimes.services.NotificationService
 import com.gals.prayertimes.viewmodel.AthanSettingsViewModel
 import com.gals.prayertimes.viewmodel.factory.AthanSettingsViewModelFactory
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class AthanSettingsFragment : Fragment() {
+    @Inject
+    lateinit var viewModelFactory: AthanSettingsViewModelFactory
+
     private lateinit var viewModel: AthanSettingsViewModel
-    private lateinit var viewModelFactory: AthanSettingsViewModelFactory
     private lateinit var binding: FragmentSettingsBinding
     private var mListener: OnFragmentInteractionListener? = null
 
@@ -25,11 +29,6 @@ class AthanSettingsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        viewModelFactory = AthanSettingsViewModelFactory(
-            Repository(getInstance(requireContext())),
-            requireContext()
-        )
-
         viewModel = ViewModelProvider(
             this,
             viewModelFactory
@@ -62,7 +61,7 @@ class AthanSettingsFragment : Fragment() {
         try {
             viewModel.saveSettings()
             viewModel.stopMediaPlayer()
-            viewModel.startNotificationService()
+            viewModel.startNotificationService(NotificationService::class.java)
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -75,10 +74,5 @@ class AthanSettingsFragment : Fragment() {
 
     interface OnFragmentInteractionListener {
         fun onFragmentInteraction(uri: Uri?)
-    }
-
-    companion object {
-        fun newInstance(): AthanSettingsFragment =
-            AthanSettingsFragment()
     }
 }

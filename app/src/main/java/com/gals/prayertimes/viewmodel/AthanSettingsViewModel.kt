@@ -1,7 +1,6 @@
 package com.gals.prayertimes.viewmodel
 
 import android.content.Context
-import android.content.Intent
 import android.media.AudioAttributes
 import android.media.MediaPlayer
 import android.util.Log
@@ -10,25 +9,28 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gals.prayertimes.model.NotificationType
 import com.gals.prayertimes.repository.Repository
-import com.gals.prayertimes.repository.db.entities.Settings
-import com.gals.prayertimes.services.NotificationService
+import com.gals.prayertimes.repository.local.entities.Settings
 import com.gals.prayertimes.utils.UtilsManager
 import com.gals.prayertimes.viewmodel.observer.RadioGroupObserver
+import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class AthanSettingsViewModel(
+@HiltViewModel
+class AthanSettingsViewModel @Inject constructor(
+    @ApplicationContext private val context: Context,
     private val repository: Repository,
-    private val context: Context
+    private val tools: UtilsManager
 ) : ViewModel() {
     private lateinit var musicPlayer: MediaPlayer
     private lateinit var currentNotificationType: String
     private val mediaJob = Job()
     private val mediaScope = CoroutineScope(Dispatchers.Main + mediaJob)
-    private val tools = UtilsManager(context)
     val radioGroupObserver = RadioGroupObserver()
     val alarm: ObservableBoolean = ObservableBoolean(false)
     val isPlaying: ObservableBoolean = ObservableBoolean(false)
@@ -77,7 +79,7 @@ class AthanSettingsViewModel(
     fun getSettings() {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                setNotificationInfo(repository.getSettingsFromLocalDataSource())
+                setNotificationInfo(repository.getSettings())
             }
         }
     }
@@ -85,7 +87,7 @@ class AthanSettingsViewModel(
     fun saveSettings() {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                repository.saveSettingsToLocalDataSource(
+                repository.saveSettings(
                     Settings(
                         notification = alarm.get(),
                         notificationType = radioGroupObserver.notificationType.get()!!
@@ -105,16 +107,16 @@ class AthanSettingsViewModel(
         }
     }
 
-    fun startNotificationService() {
+    fun startNotificationService(serviceClass: Class<*>) {
         if (alarm.get()) {
             if (currentNotificationType == radioGroupObserver.notificationType.get()) {
                 return
             } else {
-                restartService()
+                tools.restartService(serviceClass)
             }
         } else {
-            if (tools.isServiceRunning(NotificationService::class.java)) {
-                context.stopService(Intent(context, NotificationService::class.java))
+            if (tools.isServiceRunning(serviceClass)) {
+                tools.stopService(serviceClass)
             }
         }
     }
@@ -145,11 +147,6 @@ class AthanSettingsViewModel(
     private fun startMediaPlayer() {
         musicPlayer.start()
         isPlaying.set(true)
-    }
-
-    private fun restartService() {
-        context.stopService(Intent(context, NotificationService::class.java))
-        context.startService(Intent(context, NotificationService::class.java))
     }
 
     private fun setNotificationInfo(settings: Settings?) {

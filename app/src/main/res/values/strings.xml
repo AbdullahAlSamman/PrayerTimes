@@ -70,4 +70,5 @@
     <string name="notification_channel_Id">athan_channel</string>
     <string name="notification_channel_settings">Athan Notification</string>
     <string name="notification_channel_description">Athan Settings</string>
+    <string name="asset_url_privacy_policy">file:///android_asset/privacy_policy.html</string>
 </resources>

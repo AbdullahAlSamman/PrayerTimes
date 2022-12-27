@@ -3,31 +3,28 @@ package com.gals.prayertimes.repository
 import android.util.Log
 import com.gals.prayertimes.EntityPrayer
 import com.gals.prayertimes.model.NotificationType
-import com.gals.prayertimes.repository.db.AppDB
-import com.gals.prayertimes.repository.db.entities.Prayer.Companion.isValid
-import com.gals.prayertimes.repository.db.entities.Settings
-import com.gals.prayertimes.repository.network.PrayerService
+import com.gals.prayertimes.repository.local.LocalDataSource
+import com.gals.prayertimes.repository.local.entities.Settings
+import com.gals.prayertimes.repository.remote.RemoteDataSource
 import com.gals.prayertimes.utils.toEntity
+import javax.inject.Inject
 
-class Repository(
-    private val database: AppDB
+class Repository @Inject constructor(
+    private val localDataSource: LocalDataSource,
+    private val remoteDataSource: RemoteDataSource
 ) {
-    private val prayerService: PrayerService? = PrayerService.getInstance()
 
     suspend fun refreshPrayer(todayDate: String): Boolean {
-        val prayer: EntityPrayer? = getPrayerFromLocalDataSource(todayDate)
-        if (prayer != null) {
-            if (prayer.isValid()) {
-                Log.e("Data Request", "exists locally in cache")
-                return true
-            }
+        if (localDataSource.isTodayPrayerExists(todayDate)) {
+            Log.e("Remote Data Request", "exists locally in cache")
+            return true
         }
-        val result = getPrayerFromRemoteDataSource(todayDate)
-        if (result?.isSuccessful == true) {
-            savePrayerToLocalDataSource(result.body()!!.first().toEntity())
+        val result = remoteDataSource.getPrayer(todayDate)
+        if (result.isSuccessful) {
+            localDataSource.insertPrayers(result.body()!!.first().toEntity())
             return true
         } else {
-            Log.e("Data Request", result?.message().toString())
+            Log.e("Remote Data Request", result.message().toString())
         }
         return false
     }
@@ -38,25 +35,18 @@ class Repository(
             notificationType = NotificationType.SILENT.value
         )
     ): Boolean =
-        if (isSettingsExists()) {
+        if (localDataSource.isSettingsExists()) {
             true
         } else {
-            saveSettingsToLocalDataSource(settings)
+            localDataSource.insertSettings(settings)
             false
         }
 
-    fun getPrayerFromLocalDataSource(todayDate: String): EntityPrayer? =
-        database.prayerDao.findByDate(todayDate)
+    fun getPrayer(todayDate: String): EntityPrayer? =
+        localDataSource.getPrayer(todayDate)
 
-    fun getSettingsFromLocalDataSource(): Settings? = database.settingsDao.settings
+    fun getSettings(): Settings? = localDataSource.getSettings()
 
-    fun saveSettingsToLocalDataSource(settings: Settings) = database.settingsDao.insert(settings)
+    fun saveSettings(settings: Settings) = localDataSource.insertSettings(settings)
 
-    private suspend fun getPrayerFromRemoteDataSource(todayDate: String) =
-        prayerService?.getTodayPrayer(todayDate)
-
-    private fun isSettingsExists(): Boolean = database.settingsDao.isExists()
-
-    private fun savePrayerToLocalDataSource(prayer: EntityPrayer) =
-        database.prayerDao.insert(prayer)
 }

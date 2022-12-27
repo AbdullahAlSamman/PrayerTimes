@@ -5,24 +5,27 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.gals.prayertimes.EntityPrayer
 import com.gals.prayertimes.databinding.ActivityMainBinding
-import com.gals.prayertimes.repository.db.AppDB
-import com.gals.prayertimes.repository.db.AppDB.Companion.getInstance
 import com.gals.prayertimes.utils.UtilsManager
 import com.gals.prayertimes.viewmodel.MainViewModel
 import com.gals.prayertimes.viewmodel.factory.MainViewModelFactory
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private lateinit var viewModel: MainViewModel
-    private lateinit var viewModelFactory: MainViewModelFactory
     private lateinit var binding: ActivityMainBinding
-    lateinit var db: AppDB
-    lateinit var tools: UtilsManager
     var prayer: EntityPrayer = EntityPrayer.EMPTY
+
+    @Inject
+    lateinit var viewModelFactory: MainViewModelFactory
+
+    @Inject
+    lateinit var tools: UtilsManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         //TODO: Internet warning
-        configureTools()
         configureDataBinding()
         configureMVVM()
         configureUI()
@@ -36,9 +39,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun configureMVVM() {
-        viewModelFactory = MainViewModelFactory(
-            application = this.applicationContext
-        )
         viewModel = ViewModelProvider(
             this,
             viewModelFactory
@@ -58,8 +58,4 @@ class MainActivity : AppCompatActivity() {
         tools.setActivityLanguage("en")
     }
 
-    private fun configureTools() {
-        tools = UtilsManager(baseContext)
-        db = getInstance(baseContext)
-    }
 }

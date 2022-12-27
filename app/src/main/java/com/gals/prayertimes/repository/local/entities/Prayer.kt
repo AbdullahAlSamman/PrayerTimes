@@ -1,4 +1,4 @@
-package com.gals.prayertimes.repository.db.entities
+package com.gals.prayertimes.repository.local.entities
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

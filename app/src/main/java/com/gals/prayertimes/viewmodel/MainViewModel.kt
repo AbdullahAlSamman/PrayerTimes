@@ -1,6 +1,5 @@
 package com.gals.prayertimes.viewmodel
 
-import android.content.Context
 import android.content.Intent
 import android.os.Handler
 import android.os.Looper
@@ -16,9 +15,9 @@ import com.gals.prayertimes.R
 import com.gals.prayertimes.model.TimePrayer
 import com.gals.prayertimes.model.config.NextPrayerInfoConfig
 import com.gals.prayertimes.repository.Repository
-import com.gals.prayertimes.repository.db.AppDB
-import com.gals.prayertimes.repository.db.entities.Prayer.Companion.isValid
+import com.gals.prayertimes.repository.local.entities.Prayer.Companion.isValid
 import com.gals.prayertimes.utils.PrayerCalculation
+import com.gals.prayertimes.utils.ResourceProvider
 import com.gals.prayertimes.utils.UtilsManager
 import com.gals.prayertimes.utils.getDayName
 import com.gals.prayertimes.utils.getMoonMonth
@@ -27,27 +26,26 @@ import com.gals.prayertimes.utils.getTodayDate
 import com.gals.prayertimes.utils.toDomain
 import com.gals.prayertimes.utils.toTimePrayer
 import com.gals.prayertimes.view.Menu
+import dagger.hilt.android.lifecycle.HiltViewModel
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 import java.util.StringTokenizer
-import java.util.Timer
+import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class MainViewModel(
-    private val application: Context
+@HiltViewModel
+class MainViewModel @Inject constructor(
+    private val tools : UtilsManager,
+    private val repository: Repository,
+    private val resourceProvider: ResourceProvider,
+    private val calculation: PrayerCalculation
 ) : ViewModel() {
-    private val tools: UtilsManager = UtilsManager(application)
-    private val calculation: PrayerCalculation = PrayerCalculation(application)
-    private val repository: Repository = Repository(
-        database = AppDB.getInstance(application)
-    )
     private var domainPrayer: DomainPrayer = DomainPrayer.EMPTY
     private lateinit var currentPrayer: TimePrayer
     private lateinit var timerHandler: Handler
-    private lateinit var updateUITimer: Timer
     var backgroundImage: ObservableInt = ObservableInt()
     var btnSettingsResource: ObservableInt = ObservableInt()
     var sunDateBanner: ObservableField<String> = ObservableField()
@@ -68,12 +66,7 @@ class MainViewModel(
     }
 
     fun navigateToSettings() {
-        application.startActivity(
-            Intent(
-                application,
-                Menu::class.java
-            ).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        )
+        tools.startActivity(Menu::class.java,Intent.FLAG_ACTIVITY_NEW_TASK)
     }
 
     fun getPrayer() {
@@ -81,7 +74,7 @@ class MainViewModel(
         var waiting = false
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                prayer = repository.getPrayerFromLocalDataSource(getTodayDate())
+                prayer = repository.getPrayer(getTodayDate())
                 if (prayer != null) {
                     waiting = prayer!!.isValid()
                 }
@@ -143,7 +136,7 @@ class MainViewModel(
                 withContext(Dispatchers.IO) {
                     if (repository.refreshPrayer(getTodayDate())) {
                         domainPrayer =
-                            repository.getPrayerFromLocalDataSource(getTodayDate())!!.toDomain()
+                            repository.getPrayer(getTodayDate())!!.toDomain()
                         if (domainPrayer != DomainPrayer.EMPTY) {
                             updateViewObservableValues(domainPrayer)
                         }
@@ -165,7 +158,7 @@ class MainViewModel(
             lateinit var sunDateText: String
             lateinit var moonDateText: String
             val calendar = Calendar.getInstance()
-            viewDayName.set(application.getString(getDayName(calendar[Calendar.DAY_OF_WEEK])))
+            viewDayName.set(resourceProvider.getString(getDayName(calendar[Calendar.DAY_OF_WEEK])))
 
             val sdate = StringTokenizer(
                 domainPrayer.sDate,
@@ -178,8 +171,8 @@ class MainViewModel(
             sunDateText = sdate.nextToken() + " "
             moonDateText = mdate.nextToken() + " "
 
-            sunDateText += application.getString(getSunMonth(sdate.nextToken().toInt()))
-            moonDateText += application.getString(getMoonMonth(mdate.nextToken().toInt()))
+            sunDateText += resourceProvider.getString(getSunMonth(sdate.nextToken().toInt()))
+            moonDateText += resourceProvider.getString(getMoonMonth(mdate.nextToken().toInt()))
 
             sunDateText += " " + sdate.nextToken()
             moonDateText += " " + mdate.nextToken()

@@ -1,8 +1,14 @@
 package com.gals.prayertimes.viewmodel
 
 import androidx.lifecycle.ViewModel
+import com.gals.prayertimes.R
+import com.gals.prayertimes.utils.ResourceProvider
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class PrivacyPolicyViewModel : ViewModel() {
-    /**TODO:get resource provider through dagger,hilt, or koin*/
-    val url: String = "file:///android_asset/privacy_policy.html"
+@HiltViewModel
+class PrivacyPolicyViewModel @Inject constructor(
+    resourceProvider: ResourceProvider
+) : ViewModel() {
+    val url: String = resourceProvider.getString(R.string.asset_url_privacy_policy)
 }

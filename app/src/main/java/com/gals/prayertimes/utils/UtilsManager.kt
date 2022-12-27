@@ -2,6 +2,7 @@ package com.gals.prayertimes.utils
 
 import android.app.ActivityManager
 import android.content.Context
+import android.content.Intent
 import android.content.res.Configuration
 import android.net.ConnectivityManager
 import android.net.Uri
@@ -9,11 +10,37 @@ import android.view.Window
 import android.view.WindowManager
 import com.gals.prayertimes.R
 import com.gals.prayertimes.model.NotificationType
+import dagger.hilt.android.qualifiers.ApplicationContext
 import java.util.Locale
+import javax.inject.Inject
 
-class UtilsManager(private val utilsContext: Context) {
+class UtilsManager @Inject constructor(
+    @ApplicationContext private val context: Context
+) {
+    fun startActivity(serviceClass: Class<*>, intentFlag: Int){
+        context.startActivity(
+            Intent(
+                context,
+                serviceClass
+            ).setFlags(intentFlag)
+        )
+    }
+
+    fun startService(serviceClass: Class<*>){
+        context.startService(Intent(context, serviceClass))
+    }
+
+    fun stopService(serviceClass: Class<*>){
+        context.stopService(Intent(context, serviceClass))
+    }
+
+    fun restartService(serviceClass: Class<*>){
+        stopService(serviceClass)
+        startService(serviceClass)
+    }
+
     fun isServiceRunning(serviceClass: Class<*>): Boolean {
-        val manager = utilsContext.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+        val manager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
         for (service in manager.getRunningServices(Int.MAX_VALUE)) {
             if (serviceClass.name == service.service.className) {
                 return true
@@ -23,7 +50,7 @@ class UtilsManager(private val utilsContext: Context) {
     }
 
     fun setActivityLanguage(lang: String) {
-        val res = utilsContext.resources
+        val res = context.resources
         val newConfig = Configuration(res.configuration)
         val locale = Locale(lang)
         newConfig.setLocale(locale)
@@ -36,14 +63,14 @@ class UtilsManager(private val utilsContext: Context) {
 
     fun isNetworkAvailable(): Boolean {
         val connectivityManager =
-            utilsContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val activeNetworkInfo = connectivityManager.activeNetworkInfo
         return activeNetworkInfo != null && activeNetworkInfo.isConnected
     }
 
     fun changeStatusBarColor(window: Window) {
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-        window.statusBarColor = utilsContext.resources
+        window.statusBarColor = context.resources
             .getColor(R.color.background_color_time_isha)
     }
 

@@ -53,6 +53,7 @@ class MenuItemFragment : Fragment() {
             )
         )
 
+        /*TODO: see a modern alternative*/
         /**Set the adapter*/
         if (view is RecyclerView) {
             val context = view.getContext()
@@ -156,15 +157,5 @@ class MenuItemFragment : Fragment() {
 
     companion object {
         private const val ARG_COLUMN_COUNT = "column-count"
-        fun newInstance(columnCount: Int): MenuItemFragment {
-            val fragment = MenuItemFragment()
-            val args = Bundle()
-            args.putInt(
-                ARG_COLUMN_COUNT,
-                columnCount
-            )
-            fragment.arguments = args
-            return fragment
-        }
     }
 }

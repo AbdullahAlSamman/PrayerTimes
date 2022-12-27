@@ -2,6 +2,7 @@ plugins {
     id("com.android.application")
     id("kotlin-android")
     id("kotlin-kapt")
+    id("com.google.dagger.hilt.android")
 }
 
 android {
@@ -9,12 +10,12 @@ android {
         create("release") {
         }
     }
-    compileSdk = 31
+    compileSdk = 33
     buildToolsVersion = "31.0.0"
     defaultConfig {
         applicationId = "com.gals.prayertimes"
         minSdk = 26
-        targetSdk = 31
+        targetSdk = 33
         versionName = "0.9.8.1"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         versionCode = 19
@@ -58,6 +59,7 @@ android {
         val recyclerViewVersion = "1.2.1"
         val constraintLayoutViewVersion = "2.1.4"
         val jUnitVersion = "4.13.2"
+        val hiltVersion = "2.44"
 
 
         implementation("androidx.appcompat:appcompat:$appCompatVersion")
@@ -77,10 +79,22 @@ android {
 
         implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion")
 
+        implementation("com.google.dagger:hilt-android:$hiltVersion")
+        kapt("com.google.dagger:hilt-android-compiler:$hiltVersion")
+
         implementation("androidx.room:room-runtime:$roomVersion")
         kapt("androidx.room:room-compiler:$roomVersion")
         annotationProcessor("androidx.room:room-compiler:$roomVersion")
 
         testImplementation("junit:junit:$jUnitVersion")
+    }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+
+    kapt {
+        correctErrorTypes = true
     }
 }
