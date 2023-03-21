@@ -1,15 +1,15 @@
 package com.gals.prayertimes.repository.local
 
 import com.gals.prayertimes.repository.local.entities.PrayerEntity
-import com.gals.prayertimes.repository.local.entities.Settings
+import com.gals.prayertimes.repository.local.entities.SettingsEntity
 import javax.inject.Inject
 
 class LocalDataSource @Inject constructor(
     private val prayerDao: PrayerDao,
     private val settingsDao: SettingsDao
 ) {
-    fun insertSettings(settings: Settings) =
-        settingsDao.insert(settings)
+    fun insertSettings(settingsEntity: SettingsEntity) =
+        settingsDao.insert(settingsEntity)
 
     fun insertPrayers(prayer: PrayerEntity) =
         prayerDao.insert(prayer)
@@ -23,6 +23,6 @@ class LocalDataSource @Inject constructor(
     fun getPrayer(todayDate: String): PrayerEntity? =
         prayerDao.findByDate(todayDate)
 
-    fun getSettings(): Settings? =
-        settingsDao.settings
+    fun getSettings(): SettingsEntity? =
+        settingsDao.settingsEntity
 }

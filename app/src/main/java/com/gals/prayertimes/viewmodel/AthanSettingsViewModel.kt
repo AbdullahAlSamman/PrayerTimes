@@ -9,7 +9,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gals.prayertimes.model.NotificationType
 import com.gals.prayertimes.repository.Repository
-import com.gals.prayertimes.repository.local.entities.Settings
+import com.gals.prayertimes.repository.local.entities.SettingsEntity
 import com.gals.prayertimes.utils.UtilsManager
 import com.gals.prayertimes.viewmodel.observer.RadioGroupObserver
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -88,7 +88,7 @@ class AthanSettingsViewModel @Inject constructor(
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 repository.saveSettings(
-                    Settings(
+                    SettingsEntity(
                         notification = alarm.get(),
                         notificationType = radioGroupObserver.notificationType.get()!!
                     )
@@ -149,11 +149,11 @@ class AthanSettingsViewModel @Inject constructor(
         isPlaying.set(true)
     }
 
-    private fun setNotificationInfo(settings: Settings?) {
-        alarm.set(settings?.notification == true)
-        radioGroupObserver.notificationType.set(settings?.notificationType)
-        currentNotificationType = settings?.notificationType.toString()
-        when (settings?.notificationType) {
+    private fun setNotificationInfo(settingsEntity: SettingsEntity?) {
+        alarm.set(settingsEntity?.notification == true)
+        radioGroupObserver.notificationType.set(settingsEntity?.notificationType)
+        currentNotificationType = settingsEntity?.notificationType.toString()
+        when (settingsEntity?.notificationType) {
             NotificationType.FULL.value -> radioGroupObserver.fullAthan = true
             NotificationType.HALF.value -> radioGroupObserver.halfAthan = true
             NotificationType.TONE.value -> radioGroupObserver.toneAthan = true

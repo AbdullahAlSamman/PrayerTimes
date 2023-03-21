@@ -4,7 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gals.prayertimes.repository.Repository
-import com.gals.prayertimes.repository.local.entities.Settings
+import com.gals.prayertimes.repository.local.entities.SettingsEntity
 import com.gals.prayertimes.services.NotificationService
 import com.gals.prayertimes.utils.UtilsManager
 import com.gals.prayertimes.utils.getTodayDate
@@ -21,7 +21,7 @@ class SplashscreenViewModel @Inject constructor(
 ) : ViewModel() {
 
     val loading = MutableLiveData<Boolean>()
-    var savedSettings: Settings = Settings.EMPTY
+    var savedSettingsEntity: SettingsEntity = SettingsEntity.EMPTY
 
     fun prepareApp() {
         viewModelScope.launch {
@@ -29,7 +29,7 @@ class SplashscreenViewModel @Inject constructor(
             var response: Boolean
             withContext(Dispatchers.IO) {
                 repository.refreshSettings()
-                savedSettings = repository.getSettings()!!
+                savedSettingsEntity = repository.getSettings()!!
                 response = repository.refreshPrayer(getTodayDate())
             }
             withContext(Dispatchers.Main) {
@@ -43,11 +43,11 @@ class SplashscreenViewModel @Inject constructor(
 
     private fun launchNotificationService() {
         if (!tools.isServiceRunning(NotificationService::class.java)) {
-            if (savedSettings.notification) {
+            if (savedSettingsEntity.notification) {
                 tools.startService(NotificationService::class.java)
             }
         } else {
-            if (!savedSettings.notification) {
+            if (!savedSettingsEntity.notification) {
                 tools.stopService(NotificationService::class.java)
             }
         }
