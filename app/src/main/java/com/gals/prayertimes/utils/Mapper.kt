@@ -1,16 +1,16 @@
 package com.gals.prayertimes.utils
 
-import com.gals.prayertimes.DomainPrayer
-import com.gals.prayertimes.EntityPrayer
 import com.gals.prayertimes.R
+import com.gals.prayertimes.model.DomainPrayer
 import com.gals.prayertimes.model.TimePrayer
-import com.gals.prayertimes.repository.remote.model.NetworkPrayer
+import com.gals.prayertimes.repository.local.entities.PrayerEntity
+import com.gals.prayertimes.repository.remote.model.PrayerResponse
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
-fun EntityPrayer.toDomain(): DomainPrayer = DomainPrayer(
+fun PrayerEntity.toDomain(): DomainPrayer = DomainPrayer(
     this.objectId,
     this.sDate,
     this.mDate,
@@ -22,7 +22,7 @@ fun EntityPrayer.toDomain(): DomainPrayer = DomainPrayer(
     this.isha
 )
 
-fun NetworkPrayer.toEntity(): EntityPrayer = EntityPrayer(
+fun PrayerResponse.toEntity(): PrayerEntity = PrayerEntity(
     objectId = this.objectId,
     sDate = this.sDate,
     mDate = this.mDate,

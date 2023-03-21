@@ -3,7 +3,7 @@ package com.gals.prayertimes.repository.remote.model
 import com.google.gson.annotations.SerializedName
 
 
-data class NetworkPrayer(
+data class PrayerResponse(
     @SerializedName("id")
     val objectId: String,
     @SerializedName("sDate")
@@ -27,3 +27,31 @@ data class NetworkPrayer(
     @SerializedName("updated_at")
     val updateAt: String
 )
+
+data class PrayersResponse(
+    @SerializedName("sDate") val sDate: String,
+    @SerializedName("mDate") val mDate: String,
+    @SerializedName("prayers") val prayers: List<SinglePrayer>
+)
+
+data class SinglePrayer(
+    val name: PrayerType,
+    val time: String
+)
+
+enum class PrayerType(val value: String){
+    FAJER("fajer"),
+    SUNRISE("sunrise"),
+    DUHR("duhr"),
+    ASR("asr"),
+    MAGHRIB("maghrib"),
+    ISHA("isha"),
+    UNKNOWN("unknown");
+
+    companion object{
+        infix fun fromValue(value: String): PrayerType {
+            val map = PrayerType.values().associateBy { it.value }
+            return map[value] ?: UNKNOWN
+        }
+    }
+}

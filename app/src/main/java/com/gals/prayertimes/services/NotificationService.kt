@@ -17,8 +17,8 @@ import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.MutableLiveData
-import com.gals.prayertimes.DomainPrayer
 import com.gals.prayertimes.R
+import com.gals.prayertimes.model.DomainPrayer
 import com.gals.prayertimes.model.NotificationType
 import com.gals.prayertimes.model.config.NextPrayerInfoConfig
 import com.gals.prayertimes.repository.Repository

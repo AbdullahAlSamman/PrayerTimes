@@ -4,7 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "prayers")
-data class Prayer(
+data class PrayerEntity(
     @PrimaryKey val objectId: String,
     val sDate: String,
     val mDate: String,
@@ -17,8 +17,8 @@ data class Prayer(
 ) {
 
     companion object {
-        val EMPTY: Prayer by lazy {
-            Prayer(
+        val EMPTY: PrayerEntity by lazy {
+            PrayerEntity(
                 objectId = "",
                 sDate = "",
                 mDate = "",
@@ -31,6 +31,6 @@ data class Prayer(
             )
         }
 
-        fun Prayer.isValid(): Boolean = this.objectId != "" && this.sDate != ""
+        fun PrayerEntity.isValid(): Boolean = this.objectId != "" && this.sDate != ""
     }
 }

@@ -1,6 +1,6 @@
 package com.gals.prayertimes.repository.local
 
-import com.gals.prayertimes.EntityPrayer
+import com.gals.prayertimes.repository.local.entities.PrayerEntity
 import com.gals.prayertimes.repository.local.entities.Settings
 import javax.inject.Inject
 
@@ -11,7 +11,7 @@ class LocalDataSource @Inject constructor(
     fun insertSettings(settings: Settings) =
         settingsDao.insert(settings)
 
-    fun insertPrayers(prayer: EntityPrayer) =
+    fun insertPrayers(prayer: PrayerEntity) =
         prayerDao.insert(prayer)
 
     fun isSettingsExists(): Boolean =
@@ -20,7 +20,7 @@ class LocalDataSource @Inject constructor(
     fun isTodayPrayerExists(todayDate: String): Boolean =
         prayerDao.isExists(todayDate)
 
-    fun getPrayer(todayDate: String): EntityPrayer? =
+    fun getPrayer(todayDate: String): PrayerEntity? =
         prayerDao.findByDate(todayDate)
 
     fun getSettings(): Settings? =
