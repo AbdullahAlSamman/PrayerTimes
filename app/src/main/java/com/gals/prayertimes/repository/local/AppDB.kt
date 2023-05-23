@@ -6,11 +6,11 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.gals.prayertimes.repository.local.entities.Prayer
-import com.gals.prayertimes.repository.local.entities.Settings
+import com.gals.prayertimes.repository.local.entities.PrayerEntity
+import com.gals.prayertimes.repository.local.entities.SettingsEntity
 
 @Database(
-    entities = [Prayer::class, Settings::class],
+    entities = [PrayerEntity::class, SettingsEntity::class],
     version = 2,
     exportSchema = true,
     autoMigrations = [

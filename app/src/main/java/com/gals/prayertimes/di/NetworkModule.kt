@@ -1,6 +1,10 @@
 package com.gals.prayertimes.di
 
 import com.gals.prayertimes.repository.remote.PrayerService
+import com.gals.prayertimes.repository.remote.PrayerTypeAdapter
+import com.gals.prayertimes.repository.remote.model.PrayersResponse
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -22,22 +26,24 @@ object NetworkModule {
             .connectTimeout(20, TimeUnit.SECONDS)
             .readTimeout(30, TimeUnit.SECONDS)
 
+    @Provides
+    fun provideGsonFactory(): Gson =
+        GsonBuilder().registerTypeAdapter(PrayersResponse::class.java, PrayerTypeAdapter()).create()
 
     @Provides
     fun provideRetrofitBuilder(
-        httpClient: OkHttpClient.Builder
+        httpClient: OkHttpClient.Builder,
+        gsonFactory: Gson
     ): Retrofit =
         Retrofit.Builder()
             .baseUrl(BASE_URL)
             .client(httpClient.build())
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create(gsonFactory))
             .build()
-
 
     @Provides
     fun providePrayerService(
         retrofit: Retrofit
     ): PrayerService =
         retrofit.create(PrayerService::class.java)
-
 }

@@ -9,13 +9,13 @@ import androidx.databinding.ObservableField
 import androidx.databinding.ObservableInt
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.gals.prayertimes.DomainPrayer
-import com.gals.prayertimes.EntityPrayer
 import com.gals.prayertimes.R
+import com.gals.prayertimes.model.DomainPrayer
 import com.gals.prayertimes.model.TimePrayer
 import com.gals.prayertimes.model.config.NextPrayerInfoConfig
 import com.gals.prayertimes.repository.Repository
-import com.gals.prayertimes.repository.local.entities.Prayer.Companion.isValid
+import com.gals.prayertimes.repository.local.entities.PrayerEntity
+import com.gals.prayertimes.repository.local.entities.PrayerEntity.Companion.isValid
 import com.gals.prayertimes.utils.PrayerCalculation
 import com.gals.prayertimes.utils.ResourceProvider
 import com.gals.prayertimes.utils.UtilsManager
@@ -70,7 +70,7 @@ class MainViewModel @Inject constructor(
     }
 
     fun getPrayer() {
-        var prayer: EntityPrayer?
+        var prayer: PrayerEntity?
         var waiting = false
         viewModelScope.launch {
             withContext(Dispatchers.IO) {

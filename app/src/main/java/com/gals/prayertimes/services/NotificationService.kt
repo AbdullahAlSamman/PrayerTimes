@@ -17,12 +17,12 @@ import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.MutableLiveData
-import com.gals.prayertimes.DomainPrayer
 import com.gals.prayertimes.R
+import com.gals.prayertimes.model.DomainPrayer
 import com.gals.prayertimes.model.NotificationType
 import com.gals.prayertimes.model.config.NextPrayerInfoConfig
 import com.gals.prayertimes.repository.Repository
-import com.gals.prayertimes.repository.local.entities.Settings
+import com.gals.prayertimes.repository.local.entities.SettingsEntity
 import com.gals.prayertimes.utils.PrayerCalculation
 import com.gals.prayertimes.utils.UtilsManager
 import com.gals.prayertimes.utils.getTodayDate
@@ -50,7 +50,7 @@ class NotificationService : Service() {
     private lateinit var timerHandler: Handler
 
     private lateinit var prayer: DomainPrayer
-    private lateinit var settings: Settings
+    private lateinit var settingsEntity: SettingsEntity
 
     @Inject
     lateinit var repository: Repository
@@ -102,7 +102,7 @@ class NotificationService : Service() {
         Timer().schedule(NOTIFICATION_UPDATE_LONG) {
             val notification = buildNotification(
                 pendingIntent = pendingIntent,
-                notificationType = settings.notificationType,
+                notificationType = settingsEntity.notificationType,
                 config = config
             )
             with(NotificationManagerCompat.from(applicationContext)) {
@@ -121,7 +121,7 @@ class NotificationService : Service() {
             loading.postValue(true)
             withContext(Dispatchers.IO) {
                 prayer = repository.getPrayer(getTodayDate())!!.toDomain()
-                settings = repository.getSettings()!!
+                settingsEntity = repository.getSettings()!!
             }
             withContext(Dispatchers.Main) {
                 if (prayer != DomainPrayer.EMPTY) {

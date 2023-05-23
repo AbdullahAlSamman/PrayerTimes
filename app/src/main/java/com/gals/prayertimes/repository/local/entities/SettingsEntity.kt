@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 import com.gals.prayertimes.model.NotificationType
 
 @Entity(tableName = "settings")
-data class Settings(
+data class SettingsEntity(
     @PrimaryKey
     var id: Int = 1,
     @ColumnInfo(defaultValue = "false")
@@ -17,8 +17,8 @@ data class Settings(
     var sunriseNotification: Boolean = false
 ) {
     companion object {
-        val EMPTY: Settings by lazy {
-            Settings(
+        val EMPTY: SettingsEntity by lazy {
+            SettingsEntity(
                 notification = false,
                 notificationType = NotificationType.SILENT.value
             )
