@@ -8,4 +8,7 @@ class RemoteDataSource @Inject constructor(
 
     suspend fun getPrayer(todayDate: String) =
         prayerService.getTodayPrayer(todayDate)
+
+    suspend fun getPrayers(todayDate: String) =
+        prayerService.getTodayPrayers(todayDate)
 }

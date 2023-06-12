@@ -1,6 +1,6 @@
 package com.gals.prayertimes.model
 
-data class Prayer(
+data class DomainPrayer(
     var objectId: String?,
     var sDate: String?,
     var mDate: String?,
@@ -13,8 +13,8 @@ data class Prayer(
 ) {
 
     companion object {
-        val EMPTY: Prayer by lazy {
-            Prayer(
+        val EMPTY: DomainPrayer by lazy {
+            DomainPrayer(
                 objectId = "",
                 sDate = "",
                 mDate = "",

@@ -1,10 +1,10 @@
 package com.gals.prayertimes.repository
 
 import android.util.Log
-import com.gals.prayertimes.EntityPrayer
 import com.gals.prayertimes.model.NotificationType
 import com.gals.prayertimes.repository.local.LocalDataSource
-import com.gals.prayertimes.repository.local.entities.Settings
+import com.gals.prayertimes.repository.local.entities.PrayerEntity
+import com.gals.prayertimes.repository.local.entities.SettingsEntity
 import com.gals.prayertimes.repository.remote.RemoteDataSource
 import com.gals.prayertimes.utils.toEntity
 import javax.inject.Inject
@@ -30,7 +30,7 @@ class Repository @Inject constructor(
     }
 
     fun refreshSettings(
-        settings: Settings = Settings(
+        settingsEntity: SettingsEntity = SettingsEntity(
             notification = false,
             notificationType = NotificationType.SILENT.value
         )
@@ -38,15 +38,15 @@ class Repository @Inject constructor(
         if (localDataSource.isSettingsExists()) {
             true
         } else {
-            localDataSource.insertSettings(settings)
+            localDataSource.insertSettings(settingsEntity)
             false
         }
 
-    fun getPrayer(todayDate: String): EntityPrayer? =
+    fun getPrayer(todayDate: String): PrayerEntity? =
         localDataSource.getPrayer(todayDate)
 
-    fun getSettings(): Settings? = localDataSource.getSettings()
+    fun getSettings(): SettingsEntity? = localDataSource.getSettings()
 
-    fun saveSettings(settings: Settings) = localDataSource.insertSettings(settings)
+    fun saveSettings(settingsEntity: SettingsEntity) = localDataSource.insertSettings(settingsEntity)
 
 }
