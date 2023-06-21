@@ -15,7 +15,6 @@ import com.gals.prayertimes.model.TimePrayer
 import com.gals.prayertimes.model.config.NextPrayerInfoConfig
 import com.gals.prayertimes.repository.Repository
 import com.gals.prayertimes.repository.local.entities.PrayerEntity
-import com.gals.prayertimes.repository.local.entities.PrayerEntity.Companion.isValid
 import com.gals.prayertimes.utils.PrayerCalculation
 import com.gals.prayertimes.utils.ResourceProvider
 import com.gals.prayertimes.utils.UtilsManager
@@ -27,18 +26,16 @@ import com.gals.prayertimes.utils.toDomain
 import com.gals.prayertimes.utils.toTimePrayer
 import com.gals.prayertimes.view.Menu
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 import java.util.StringTokenizer
 import javax.inject.Inject
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val tools : UtilsManager,
+    private val tools: UtilsManager,
     private val repository: Repository,
     private val resourceProvider: ResourceProvider,
     private val calculation: PrayerCalculation
@@ -66,27 +63,20 @@ class MainViewModel @Inject constructor(
     }
 
     fun navigateToSettings() {
-        tools.startActivity(Menu::class.java,Intent.FLAG_ACTIVITY_NEW_TASK)
+        tools.startActivity(Menu::class.java, Intent.FLAG_ACTIVITY_NEW_TASK)
     }
 
     fun getPrayer() {
         var prayer: PrayerEntity?
-        var waiting = false
         viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                prayer = repository.getPrayer(getTodayDate())
-                if (prayer != null) {
-                    waiting = prayer!!.isValid()
-                }
-            }
-            withContext(Dispatchers.Main) {
-                if (waiting) {
-                    updateViewObservableValues(prayer!!.toDomain())
-                    startDateUpdate()
-                }
+            prayer = repository.getPrayer(getTodayDate())
+            if (prayer != null) {
+                updateViewObservableValues(prayer!!.toDomain())
+                startDateUpdate()
             }
         }
     }
+
 
     /**Set data on the UI Elements*/
     internal fun updateDateUIObservables() = try {
@@ -133,13 +123,10 @@ class MainViewModel @Inject constructor(
         /** update the data from server if the date is changed*/
         if (tools.isNetworkAvailable()) {
             viewModelScope.launch {
-                withContext(Dispatchers.IO) {
-                    if (repository.refreshPrayer(getTodayDate())) {
-                        domainPrayer =
-                            repository.getPrayer(getTodayDate())!!.toDomain()
-                        if (domainPrayer != DomainPrayer.EMPTY) {
-                            updateViewObservableValues(domainPrayer)
-                        }
+                if (repository.refreshPrayer(getTodayDate())) {
+                    domainPrayer = repository.getPrayer(getTodayDate())!!.toDomain()
+                    if (domainPrayer != DomainPrayer.EMPTY) {
+                        updateViewObservableValues(domainPrayer)
                     }
                 }
             }

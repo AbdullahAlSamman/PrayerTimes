@@ -30,16 +30,15 @@ import com.gals.prayertimes.utils.toDomain
 import com.gals.prayertimes.utils.toTimePrayer
 import com.gals.prayertimes.view.MainActivity
 import dagger.hilt.android.AndroidEntryPoint
-import java.util.Timer
-import javax.inject.Inject
-import kotlin.concurrent.schedule
-import kotlin.random.Random
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.Runnable
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import java.util.Timer
+import javax.inject.Inject
+import kotlin.concurrent.schedule
+import kotlin.random.Random
 
 @AndroidEntryPoint
 class NotificationService : Service() {
@@ -119,15 +118,11 @@ class NotificationService : Service() {
     private fun loadPrayerData() {
         backgroundScope.launch {
             loading.postValue(true)
-            withContext(Dispatchers.IO) {
-                prayer = repository.getPrayer(getTodayDate())!!.toDomain()
-                settingsEntity = repository.getSettings()!!
-            }
-            withContext(Dispatchers.Main) {
-                if (prayer != DomainPrayer.EMPTY) {
-                    startUpdates()
-                    loading.value = false
-                }
+            prayer = repository.getPrayer(getTodayDate())!!.toDomain()
+            settingsEntity = repository.getSettings()!!
+            if (prayer != DomainPrayer.EMPTY) {
+                startUpdates()
+                loading.value = false
             }
         }
     }
@@ -200,24 +195,28 @@ class NotificationService : Service() {
                 soundUri = Uri.EMPTY,
                 config = config
             )
+
             NotificationType.TONE.value -> createNotification(
                 pendingIntent = pendingIntent,
                 channelID = NOTIFICATION_CHANNEL_TONE_ID,
                 soundUri = defaultSystemRingtone,
                 config = config
             )
+
             NotificationType.HALF.value -> createNotification(
                 pendingIntent = pendingIntent,
                 channelID = NOTIFICATION_CHANNEL_HALF_ID,
                 soundUri = tools.getSoundUri(NotificationType.HALF),
                 config = config
             )
+
             NotificationType.FULL.value -> createNotification(
                 pendingIntent = pendingIntent,
                 channelID = NOTIFICATION_CHANNEL_FULL_ID,
                 soundUri = tools.getSoundUri(NotificationType.FULL),
                 config = config
             )
+
             else -> createNotification(
                 pendingIntent = pendingIntent,
                 channelID = NOTIFICATION_CHANNEL_SILENT_ID,
