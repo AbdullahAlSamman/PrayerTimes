@@ -14,12 +14,12 @@ import com.gals.prayertimes.utils.UtilsManager
 import com.gals.prayertimes.viewmodel.observer.RadioGroupObserver
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
-import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
 @HiltViewModel
 class AthanSettingsViewModel @Inject constructor(
@@ -78,22 +78,18 @@ class AthanSettingsViewModel @Inject constructor(
 
     fun getSettings() {
         viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                setNotificationInfo(repository.getSettings())
-            }
+            setNotificationInfo(repository.getSettings())
         }
     }
 
     fun saveSettings() {
         viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                repository.saveSettings(
-                    SettingsEntity(
-                        notification = alarm.get(),
-                        notificationType = radioGroupObserver.notificationType.get()!!
-                    )
+            repository.saveSettings(
+                SettingsEntity(
+                    notification = alarm.get(),
+                    notificationType = radioGroupObserver.notificationType.get()!!
                 )
-            }
+            )
         }
     }
 

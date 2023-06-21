@@ -9,45 +9,34 @@ import com.gals.prayertimes.services.NotificationService
 import com.gals.prayertimes.utils.UtilsManager
 import com.gals.prayertimes.utils.getTodayDate
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
 @HiltViewModel
 class SplashscreenViewModel @Inject constructor(
     private val repository: Repository,
     private val tools: UtilsManager
 ) : ViewModel() {
-
     val loading = MutableLiveData<Boolean>()
-    var savedSettingsEntity: SettingsEntity = SettingsEntity.EMPTY
 
     fun prepareApp() {
         viewModelScope.launch {
             loading.postValue(true)
-            var response: Boolean
-            withContext(Dispatchers.IO) {
-                repository.refreshSettings()
-                savedSettingsEntity = repository.getSettings()!!
-                response = repository.refreshPrayer(getTodayDate())
-            }
-            withContext(Dispatchers.Main) {
-                if (response) {
-                    launchNotificationService()
-                    loading.value = false
-                }
+            repository.refreshSettings()
+            if (repository.refreshPrayer(getTodayDate())) {
+                launchNotificationService(repository.getSettings()!!)
+                loading.value = false
             }
         }
     }
 
-    private fun launchNotificationService() {
+    private fun launchNotificationService(settingsEntity: SettingsEntity) {
         if (!tools.isServiceRunning(NotificationService::class.java)) {
-            if (savedSettingsEntity.notification) {
+            if (settingsEntity.notification) {
                 tools.startService(NotificationService::class.java)
             }
         } else {
-            if (!savedSettingsEntity.notification) {
+            if (!settingsEntity.notification) {
                 tools.stopService(NotificationService::class.java)
             }
         }

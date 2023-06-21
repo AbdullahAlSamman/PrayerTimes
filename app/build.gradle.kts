@@ -83,6 +83,7 @@ android {
         kapt("com.google.dagger:hilt-android-compiler:$hiltVersion")
 
         implementation("androidx.room:room-runtime:$roomVersion")
+        implementation("androidx.room:room-ktx:$roomVersion")
         kapt("androidx.room:room-compiler:$roomVersion")
         annotationProcessor("androidx.room:room-compiler:$roomVersion")
 
