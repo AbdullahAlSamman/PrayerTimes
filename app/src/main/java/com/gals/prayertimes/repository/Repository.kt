@@ -29,7 +29,7 @@ class Repository @Inject constructor(
         return false
     }
 
-    fun refreshSettings(
+    suspend fun refreshSettings(
         settingsEntity: SettingsEntity = SettingsEntity(
             notification = false,
             notificationType = NotificationType.SILENT.value
@@ -42,11 +42,12 @@ class Repository @Inject constructor(
             false
         }
 
-    fun getPrayer(todayDate: String): PrayerEntity? =
+    suspend fun getPrayer(todayDate: String): PrayerEntity? =
         localDataSource.getPrayer(todayDate)
 
-    fun getSettings(): SettingsEntity? = localDataSource.getSettings()
+    suspend fun getSettings(): SettingsEntity? = localDataSource.getSettings()
 
-    fun saveSettings(settingsEntity: SettingsEntity) = localDataSource.insertSettings(settingsEntity)
+    suspend fun saveSettings(settingsEntity: SettingsEntity) =
+        localDataSource.insertSettings(settingsEntity)
 
 }
