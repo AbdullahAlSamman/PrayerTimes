@@ -12,6 +12,6 @@ interface PrayerService {
     suspend fun getTodayPrayer(@Path("today_date") date: String): Response<List<PrayerResponse>>
 
     @GET("api/prayer/nested/{today_date}")
-    suspend fun getTodayPrayers(@Path("today_date") date: String) : Response<PrayersResponse>
+    suspend fun getTodayPrayers(@Path("today_date") date: String): Response<PrayersResponse>
 
 }

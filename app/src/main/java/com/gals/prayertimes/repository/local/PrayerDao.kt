@@ -8,22 +8,33 @@ import com.gals.prayertimes.repository.local.entities.PrayerEntity
 
 /**
  * The interface Prayer dao.
- * defines all the queries as function with sql query to retrive or insert or delete data from data base the implementation with be generated in compile time form Room Library.
+ * defines all the queries as function with sql query to retrieve or insert or delete data from data base the implementation with be generated in compile time form Room Library.
  */
 @Dao
 interface PrayerDao {
     /**
      * Find times of a certain date.
      *
-     * @param arg0 the today date
-     * @return the prayer
+     * @param todayDate as string with "dd.MM.YYYY" formatted
+     * @return a prayer entity
      */
     @Query("SELECT * FROM prayers WHERE sDate LIKE :todayDate  LIMIT 1")
-    fun findByDate(todayDate: String?): PrayerEntity?
+    suspend fun findByDate(todayDate: String?): PrayerEntity?
 
+    /**
+     * Check if the prayers for today already saved into db
+     *
+     * @param todayDate as string with "dd.MM.YYYY" formatted
+     * @return a Boolean value
+     * */
     @Query("SELECT EXISTS(SELECT * FROM prayers WHERE sDate LIKE :todayDate  LIMIT 1) ")
-    fun isExists(todayDate: String?): Boolean
+    suspend fun isExists(todayDate: String?): Boolean
 
+    /**
+     * Insert prayers into database
+     *
+     * @param prayer as prayer entity object
+     **/
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(prayer: PrayerEntity?)
+    suspend fun insert(prayer: PrayerEntity?)
 }

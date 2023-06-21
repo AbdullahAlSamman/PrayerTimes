@@ -8,21 +8,21 @@ class LocalDataSource @Inject constructor(
     private val prayerDao: PrayerDao,
     private val settingsDao: SettingsDao
 ) {
-    fun insertSettings(settingsEntity: SettingsEntity) =
+    suspend fun insertSettings(settingsEntity: SettingsEntity) =
         settingsDao.insert(settingsEntity)
 
-    fun insertPrayers(prayer: PrayerEntity) =
+    suspend fun insertPrayers(prayer: PrayerEntity) =
         prayerDao.insert(prayer)
 
-    fun isSettingsExists(): Boolean =
+    suspend fun isSettingsExists(): Boolean =
         settingsDao.isExists()
 
-    fun isTodayPrayerExists(todayDate: String): Boolean =
+    suspend fun isTodayPrayerExists(todayDate: String): Boolean =
         prayerDao.isExists(todayDate)
 
-    fun getPrayer(todayDate: String): PrayerEntity? =
+    suspend fun getPrayer(todayDate: String): PrayerEntity? =
         prayerDao.findByDate(todayDate)
 
-    fun getSettings(): SettingsEntity? =
-        settingsDao.settingsEntity
+    suspend fun getSettings(): SettingsEntity? =
+        settingsDao.settingsEntity()
 }
