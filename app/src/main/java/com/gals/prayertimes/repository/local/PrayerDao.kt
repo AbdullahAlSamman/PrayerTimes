@@ -19,7 +19,7 @@ interface PrayerDao {
      * @return a prayer entity
      */
     @Query("SELECT * FROM prayers WHERE sDate LIKE :todayDate  LIMIT 1")
-    suspend fun findByDate(todayDate: String?): PrayerEntity?
+    suspend fun findByDate(todayDate: String): PrayerEntity
 
     /**
      * Check if the prayers for today already saved into db
@@ -28,7 +28,7 @@ interface PrayerDao {
      * @return a Boolean value
      * */
     @Query("SELECT EXISTS(SELECT * FROM prayers WHERE sDate LIKE :todayDate  LIMIT 1) ")
-    suspend fun isExists(todayDate: String?): Boolean
+    suspend fun isExists(todayDate: String): Boolean
 
     /**
      * Insert prayers into database
@@ -36,5 +36,5 @@ interface PrayerDao {
      * @param prayer as prayer entity object
      **/
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(prayer: PrayerEntity?)
+    suspend fun insert(prayer: PrayerEntity)
 }

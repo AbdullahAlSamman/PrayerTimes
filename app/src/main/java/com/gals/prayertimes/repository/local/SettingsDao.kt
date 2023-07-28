@@ -19,7 +19,7 @@ interface SettingsDao {
      * @return settings entity
      */
     @Query("SELECT * FROM settings LIMIT 1")
-    suspend fun settingsEntity(): SettingsEntity?
+    suspend fun settingsEntity(): SettingsEntity
 
     /**
      * Update settings into db.
@@ -27,7 +27,7 @@ interface SettingsDao {
      * @param settingsEntity
      */
     @Update(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun update(settingsEntity: SettingsEntity?)
+    suspend fun update(settingsEntity: SettingsEntity)
 
     /**
      * Insert settings into db.
@@ -35,7 +35,7 @@ interface SettingsDao {
      * @param settingsEntity
      */
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(settingsEntity: SettingsEntity?)
+    suspend fun insert(settingsEntity: SettingsEntity)
 
     /**
      * Check if the table has rows

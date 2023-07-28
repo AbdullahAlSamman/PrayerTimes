@@ -13,8 +13,12 @@
     <string name="test_sun_date"> 3 آيار 2018م</string>
     <string name="test_moon_date">23 صفر 1439 هـ</string>
     <string name="test_day">الإثنين</string>
-    <string name="text_check_internet">يرجى التحقق من اتصال الانترنيت لتحديث أوقات الصلاة</string>
+    <string name="text_error_check_internet">يرجى التحقق من اتصال الانترنيت لتحديث أوقات الصلاة</string>
+    <string name="text_error_server_down">حدث خطأ ما يرجى المحاولة لاحقاً</string>
+    <string name="text_error_retry_button">أعد المحاولة لاحقاً</string>
     <string name="text_date_separator">/</string>
+    <string name="text_moon_month_footer">هـ</string>
+    <string name="text_sun_month_footer">م</string>
     <string name="text_moon_month_muhram">محرم</string>
     <string name="text_moon_month_safer">صفر</string>
     <string name="text_moon_month_rabi_aoul">ربيع الأول</string>
@@ -55,15 +59,19 @@
     <string name="text_prayer_isha">العشاء</string>
     <string name="text_now_prayer_time">حان الأن وقت صلاة</string>
     <string name="text_now_time_sunrise">حان الأن وقت الشروق</string>
-    <string name="text_alarm_settings">التنبيه لأوقات الصلاة</string>
+    <string name="text_settings_notifiaction">التنبيه لأوقات الصلاة</string>
     <string name="text_alarm_full_athan">الأذان كاملاً</string>
     <string name="text_alarm_half_athan">تكبيرة الأذان</string>
     <string name="text_alarm_tone">نغمة تنبيه</string>
     <string name="text_alarm_silent">صامت (إشعار فقط)</string>
     <string name="text_settings_title">الإعدادات</string>
+    <string name="text_settings_switch_title">إشعارات الصلاة</string>
     <string name="text_midnight_time_title">لمنتصف الليل</string>
     <string name="text_settings_privacy_policy">سياسة الخصوصية</string>
     <string name="text_settings_about_us">حول التطبيق</string>
+    <string name="content_descriptor_settings_icon">settings icon</string>
+    <string name="content_descriptor_background">Background with moon or sun</string>
+    <string name="content_descriptor_back_arrow">back to menu</string>
     <string name="sunrise_notification_channel_settings">Sunrise Notification</string>
     <string name="sunrise_notification_channel_id">notification_channel</string>
     <string name="sunrise_notifications_channel_description">Sunrise Settings</string>
@@ -71,4 +79,5 @@
     <string name="notification_channel_settings">Athan Notification</string>
     <string name="notification_channel_description">Athan Settings</string>
     <string name="asset_url_privacy_policy">file:///android_asset/privacy_policy.html</string>
+    <string name="title_activity_main">MainActivity</string>
 </resources>
