@@ -1,6 +1,6 @@
 package com.gals.prayertimes.repository.remote
 
-import com.gals.prayertimes.repository.remote.model.PrayerType
+import com.gals.prayertimes.repository.remote.model.PrayerName
 import com.gals.prayertimes.repository.remote.model.PrayersResponse
 import com.gals.prayertimes.repository.remote.model.SinglePrayer
 import com.google.gson.JsonDeserializationContext
@@ -24,7 +24,7 @@ class PrayerTypeAdapter : JsonDeserializer<PrayersResponse> {
         listKeys?.forEach { key ->
             prayers.add(
                 SinglePrayer(
-                    name = PrayerType.fromValue(key),
+                    name = PrayerName.fromValue(key),
                     time = jsonElementToString(list, key)
                 )
             )

@@ -5,32 +5,13 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "prayers")
 data class PrayerEntity(
-    @PrimaryKey val objectId: String,
-    val sDate: String,
-    val mDate: String,
-    val fajer: String,
-    val sunrise: String,
-    val duhr: String,
-    val asr: String,
-    val maghrib: String,
-    val isha: String
-) {
-
-    companion object {
-        val EMPTY: PrayerEntity by lazy {
-            PrayerEntity(
-                objectId = "",
-                sDate = "",
-                mDate = "",
-                fajer = "",
-                sunrise = "",
-                duhr = "",
-                asr = "",
-                maghrib = "",
-                isha = ""
-            )
-        }
-
-        fun PrayerEntity.isValid(): Boolean = this.objectId != "" && this.sDate != ""
-    }
-}
+    @PrimaryKey val objectId: String = "",
+    val sDate: String = "",
+    val mDate: String = "",
+    var fajer: String = "",
+    var sunrise: String = "",
+    var duhr: String = "",
+    var asr: String = "",
+    var maghrib: String = "",
+    var isha: String = ""
+)
