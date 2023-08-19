@@ -14,7 +14,7 @@ android {
         }
     }
     compileSdk = 33
-    buildToolsVersion = "33.0.0"
+    buildToolsVersion = "33.0.1"
     defaultConfig {
         applicationId = "com.gals.prayertimes"
         minSdk = 26
@@ -106,7 +106,7 @@ android {
         //Room
         implementation("androidx.room:room-runtime:$roomVersion")
         implementation("androidx.room:room-ktx:$roomVersion")
-        ksp("androidx.room:room-compiler:$roomVersion")
+        kapt("androidx.room:room-compiler:$roomVersion")
         annotationProcessor("androidx.room:room-compiler:$roomVersion")
 
         //Compose
@@ -145,7 +145,7 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion = "1.4.4"
     }
-    packagingOptions {
+    packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }

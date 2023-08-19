@@ -27,7 +27,7 @@ internal fun ErrorScreen(message: String, retry: () -> Unit) {
             style = PrayerTypography.headlineSmall
         )
         ElevatedButton(onClick = { retry() }) {
-            Icon(imageVector = Icons.Outlined.Refresh, contentDescription = "refresh button")
+            Icon(imageVector = Icons.Outlined.Refresh, contentDescription = stringResource(id = R.string.text_error_retry_button))
             Text(text = stringResource(id = R.string.text_error_retry_button))
         }
     }
