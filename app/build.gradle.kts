@@ -19,9 +19,9 @@ android {
         applicationId = "com.gals.prayertimes"
         minSdk = 26
         targetSdk = 33
-        versionName = "1.0.1"
+        versionName = "1.0.2"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        versionCode = 21
+        versionCode = 22
         vectorDrawables {
             useSupportLibrary = true
         }
