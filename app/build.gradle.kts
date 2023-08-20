@@ -19,9 +19,9 @@ android {
         applicationId = "com.gals.prayertimes"
         minSdk = 26
         targetSdk = 33
-        versionName = "1.0.0"
+        versionName = "1.0.1"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        versionCode = 20
+        versionCode = 21
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -35,13 +35,13 @@ android {
         }
         buildTypes {
             release {
-                isMinifyEnabled = true
-                isShrinkResources = true
+                isMinifyEnabled = false
+                isShrinkResources = false
                 proguardFiles(
                     getDefaultProguardFile("proguard-android.txt"),
                     "proguard-rules.pro"
                 )
-                isDebuggable = false
+                isDebuggable = true
                 isJniDebuggable = false
             }
         }

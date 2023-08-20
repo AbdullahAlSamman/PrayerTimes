@@ -287,7 +287,7 @@ class NotificationService : Service() {
                 PendingIntent.FLAG_IMMUTABLE
             )
         } else {
-            PendingIntent.getActivity(applicationContext, 0, notificationIntent, 0)
+            PendingIntent.getActivity(applicationContext, 0, notificationIntent, PendingIntent.FLAG_IMMUTABLE)
         }
     }
 
