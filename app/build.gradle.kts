@@ -41,7 +41,7 @@ android {
                     getDefaultProguardFile("proguard-android.txt"),
                     "proguard-rules.pro"
                 )
-                isDebuggable = true
+                isDebuggable = false
                 isJniDebuggable = false
             }
         }
