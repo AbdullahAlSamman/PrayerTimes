@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.dp
 import com.gals.prayertimes.R
 import com.gals.prayertimes.ui.theme.LightTextStyle
 import com.gals.prayertimes.ui.theme.colorBackgroundViewDate
+import com.gals.prayertimes.utils.nonScaledSp
 
 @Composable
 fun PrayerDateBar(
@@ -23,7 +24,7 @@ fun PrayerDateBar(
     moonDate: String,
     sunDate: String,
     textAlign: TextAlign = TextAlign.Center,
-    textStyle: TextStyle = LightTextStyle,
+    textStyle: TextStyle = LightTextStyle.copy(fontSize = 20.nonScaledSp),
     textTopPadding: Dp = 2.dp,
     textBottomPadding: Dp = 2.dp
 ) {

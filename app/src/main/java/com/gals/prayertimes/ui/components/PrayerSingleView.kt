@@ -14,6 +14,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import com.gals.prayertimes.repository.remote.model.SinglePrayer
 import com.gals.prayertimes.ui.theme.DarkTextStyle
+import com.gals.prayertimes.utils.nonScaledSp
 import com.gals.prayertimes.utils.prayerColorMapper
 import com.gals.prayertimes.utils.prayerNameMapper
 
@@ -22,7 +23,7 @@ import com.gals.prayertimes.utils.prayerNameMapper
 fun PrayerSingleView(
     modifier: Modifier = Modifier,
     prayer: SinglePrayer,
-    textStyle: TextStyle = DarkTextStyle
+    textStyle: TextStyle = DarkTextStyle.copy(fontSize = 20.nonScaledSp)
 ) {
     Column(
         modifier = modifier

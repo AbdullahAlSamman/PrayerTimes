@@ -14,20 +14,20 @@ import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.gals.prayertimes.R
 import com.gals.prayertimes.model.config.NextPrayerConfig
 import com.gals.prayertimes.ui.components.constraint.PrayerHeaderConstraint
 import com.gals.prayertimes.ui.theme.LightTextStyle
 import com.gals.prayertimes.utils.getImage
+import com.gals.prayertimes.utils.nonScaledSp
 
 @Composable
 fun PrayerHeader(
     isRamadan: Boolean = false,
     config: NextPrayerConfig,
     onSettingsClicked: () -> Unit,
-    textStyle: TextStyle = LightTextStyle
+    textStyle: TextStyle = LightTextStyle.copy(fontSize = 20.nonScaledSp )
 ) { /*TODO: consider tablet sizes*/
     ConstraintLayout(constraintSet = PrayerHeaderConstraint.header) {
         Image(
@@ -38,16 +38,16 @@ fun PrayerHeader(
             contentDescription = stringResource(id = R.string.content_descriptor_background),
             contentScale = ContentScale.FillWidth
         )
-//        Icon(
-//            modifier = Modifier
-//                .layoutId("settingsButton")
-//                .clickable {
-//                    onSettingsClicked()
-//                },
-//            tint = (if (isSystemInDarkTheme()) Color.White else Color.Black),
-//            painter = painterResource(id = R.drawable.icon_rounded_setting),
-//            contentDescription = stringResource(id = R.string.content_descriptor_settings_icon)
-//        )
+        Icon(
+            modifier = Modifier
+                .layoutId("settingsButton")
+                .clickable {
+                    onSettingsClicked()
+                },
+            tint = (if (isSystemInDarkTheme()) Color.White else Color.Black),
+            painter = painterResource(id = R.drawable.icon_rounded_setting),
+            contentDescription = stringResource(id = R.string.content_descriptor_settings_icon)
+        )
         ConstraintLayout(
             modifier = Modifier.layoutId("prayerRemainingText"),
             constraintSet = PrayerHeaderConstraint.row
@@ -66,7 +66,7 @@ fun PrayerHeader(
         Text(
             modifier = Modifier.layoutId("prayerRemainingTime"),
             text = config.nextPrayerTime,
-            style = textStyle.copy(fontSize = 22.sp)
+            style = textStyle.copy(fontSize = 22.nonScaledSp)
         )
     }
 }
