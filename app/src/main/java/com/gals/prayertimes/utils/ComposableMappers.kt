@@ -11,7 +11,6 @@ import com.gals.prayertimes.R
 import com.gals.prayertimes.model.NotificationType
 import com.gals.prayertimes.repository.remote.model.PrayerName
 import com.gals.prayertimes.repository.remote.model.SinglePrayer
-import com.gals.prayertimes.ui.theme.PrayerTimesTheme
 import com.gals.prayertimes.ui.theme.colorBackgroundAsr
 import com.gals.prayertimes.ui.theme.colorBackgroundDuhr
 import com.gals.prayertimes.ui.theme.colorBackgroundFajer

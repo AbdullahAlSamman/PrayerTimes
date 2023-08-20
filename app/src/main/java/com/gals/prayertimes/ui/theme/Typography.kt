@@ -9,28 +9,28 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.gals.prayertimes.R
 
-private val Arial = FontFamily(
+private val ArialFontFamily = FontFamily(
     Font(R.font.arial)
 )
 
 val PrayerTypography = Typography(
     headlineMedium = TextStyle(
-        fontFamily = Arial,
+        fontFamily = ArialFontFamily,
         fontWeight = FontWeight.W400,
         fontSize = 22.sp
     ),
     headlineSmall = TextStyle(
-        fontFamily = Arial,
+        fontFamily = ArialFontFamily,
         fontWeight = FontWeight.W400,
         fontSize = 20.sp
     ),
     titleLarge = TextStyle(
-        fontFamily = Arial,
+        fontFamily = ArialFontFamily,
         fontWeight = FontWeight.W400,
         fontSize = 18.sp
     ),
     titleMedium = TextStyle(
-        fontFamily = Arial,
+        fontFamily = ArialFontFamily,
         fontWeight = FontWeight.W400,
         fontSize = 16.sp
     )
@@ -38,14 +38,14 @@ val PrayerTypography = Typography(
 
 val LightTextStyle = TextStyle(
     color = Color.White,
-    fontFamily = Arial,
+    fontFamily = ArialFontFamily,
     fontSize = 20.sp,
     fontWeight = FontWeight.W400
 )
 
 val DarkTextStyle = TextStyle(
     color = Color.Black,
-    fontFamily = Arial,
+    fontFamily = ArialFontFamily,
     fontSize = 20.sp,
     fontWeight = FontWeight.W400
 )
