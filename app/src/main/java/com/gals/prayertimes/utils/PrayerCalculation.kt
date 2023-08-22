@@ -2,8 +2,8 @@ package com.gals.prayertimes.utils
 
 import android.text.format.DateUtils
 import com.gals.prayertimes.R
+import com.gals.prayertimes.model.NextPrayerConfig
 import com.gals.prayertimes.model.TimePrayer
-import com.gals.prayertimes.model.config.NextPrayerConfig
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -13,27 +13,11 @@ import kotlin.math.ceil
 
 class PrayerCalculation @Inject constructor(
     private val resourceProvider: ResourceProvider
-) { //TODO: think over exception handling
+) {
     fun isNowEqualsTime(value: Calendar): Boolean =
         getTimeNow().toCalendar().get(Calendar.MINUTE) == value.get(Calendar.MINUTE) - 1
                 && getTimeNow().toCalendar()
             .get(Calendar.HOUR_OF_DAY) == value.get(Calendar.HOUR_OF_DAY)
-
-    fun isNight(prayer: TimePrayer): Boolean =
-        isNowAfterTime(prayer.maghreb) || isNowBeforeTime(prayer.sunrise)
-
-    fun isRamadan(moonDate: String?): Boolean {
-        try {
-            val date = StringTokenizer(moonDate, ".")
-            date.nextToken()
-            if (date.nextToken().toInt() == MONTH_RAMADAN_NUMBER) {
-                return true
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-        return false
-    }
 
     /**Checks if the date changed at midnight*/
     fun isDayChanged(date: String?): Boolean {
@@ -67,8 +51,9 @@ class PrayerCalculation @Inject constructor(
             else -> Calendar.getInstance()
         }
 
-    fun calculateNextPrayerInfo(currentPrayer: TimePrayer): NextPrayerConfig {
+    fun calculateNextPrayerInfo(currentPrayer: TimePrayer, moonDate: String?): NextPrayerConfig {
         val nextPrayerConfig = NextPrayerConfig(
+            isRamadan = isRamadan(moonDate),
             isNight = isNight(currentPrayer),
             isPrayer = isNextAPrayer(currentPrayer)
         )
@@ -165,6 +150,22 @@ class PrayerCalculation @Inject constructor(
         }
         return nextPrayerConfig
     }
+
+    private fun isRamadan(moonDate: String?): Boolean {
+        try {
+            val date = StringTokenizer(moonDate, ".")
+            date.nextToken()
+            if (date.nextToken().toInt() == MONTH_RAMADAN_NUMBER) {
+                return true
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return false
+    }
+
+    private fun isNight(prayer: TimePrayer): Boolean =
+        isNowAfterTime(prayer.maghreb) || isNowBeforeTime(prayer.sunrise)
 
     private fun isNextAPrayer(prayer: TimePrayer): Boolean =
         !(isNextMidnight(prayer) || isNextSunrise(prayer))

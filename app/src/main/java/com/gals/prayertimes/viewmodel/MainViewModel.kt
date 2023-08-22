@@ -4,11 +4,12 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gals.prayertimes.R
-import com.gals.prayertimes.model.Prayer
 import com.gals.prayertimes.model.ConnectivityException
+import com.gals.prayertimes.model.DateConfig
+import com.gals.prayertimes.model.Prayer
+import com.gals.prayertimes.model.UiDate
+import com.gals.prayertimes.model.UiNextPrayer
 import com.gals.prayertimes.model.UiState
-import com.gals.prayertimes.model.config.DateConfig
-import com.gals.prayertimes.model.config.NextPrayerConfig
 import com.gals.prayertimes.repository.Repository
 import com.gals.prayertimes.utils.Formatter
 import com.gals.prayertimes.utils.PrayerCalculation
@@ -17,6 +18,8 @@ import com.gals.prayertimes.utils.getDayName
 import com.gals.prayertimes.utils.getTodayDate
 import com.gals.prayertimes.utils.toPrayer
 import com.gals.prayertimes.utils.toTimePrayer
+import com.gals.prayertimes.utils.toUiDate
+import com.gals.prayertimes.utils.toUiNextPrayer
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -43,19 +46,17 @@ class MainViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
     private val _uiPrayers = MutableStateFlow(Prayer())
-    private val _uiNextPrayer = MutableStateFlow(NextPrayerConfig())
-    private val _uiDateInfo = MutableStateFlow(DateConfig())
-    private val _uiIsRamadan = MutableStateFlow(false)
+    private val _uiNextPrayer = MutableStateFlow(UiNextPrayer())
+    private val _uiDate = MutableStateFlow(UiDate())
 
     val uiState: StateFlow<UiState> = _uiState
     val uiPrayers: StateFlow<Prayer> = _uiPrayers.asStateFlow()
-    val uiNextPrayer: StateFlow<NextPrayerConfig> = _uiNextPrayer.asStateFlow()
-    val uiDateInfo: StateFlow<DateConfig> = _uiDateInfo.asStateFlow()
-    val uiIsRamadan: StateFlow<Boolean> = _uiIsRamadan.asStateFlow()
+    val nextPrayer: StateFlow<UiNextPrayer> = _uiNextPrayer.asStateFlow()
+    val uiDate: StateFlow<UiDate> = _uiDate.asStateFlow()
 
     init {
         startLoading()
-        startTicks(delay = 25_000, initialDelay = 5_000)
+        startTicks()
             .onEach {
                 updateScreenFlows()
             }.launchIn(viewModelScope)
@@ -78,38 +79,36 @@ class MainViewModel @Inject constructor(
         }
 
         updatePrayersFlow()
-        updateRamadanFlow()
         updateNextPrayerFlow()
         updateDateFlow()
     } catch (e: Exception) {
         Log.i(
             "Flow updates",
-            e.message.toString()
+            "error: ${e.message.toString()}"
         )
         _uiState.update { UiState.Error(resourceProvider.getString(R.string.text_error_server_down)) }
     }
 
     /**update the time to next prayer*/
     private fun updateNextPrayerFlow() {
-        _uiNextPrayer.update { calculation.calculateNextPrayerInfo(todayPrayers.toTimePrayer()) }
+        _uiNextPrayer.update {
+            calculation.calculateNextPrayerInfo(
+                currentPrayer = todayPrayers.toTimePrayer(),
+                moonDate = todayPrayers.mDate
+            ).toUiNextPrayer()
+        }
     }
 
     /** Build text for dates*/
     private fun updateDateFlow() {
         val calendar = Calendar.getInstance()
-        _uiDateInfo.update {
+        _uiDate.update {
             DateConfig(
                 dayName = resourceProvider.getString(getDayName(calendar[Calendar.DAY_OF_WEEK])),
                 moonDate = formatter.formatDateText(todayPrayers.mDate, false),
                 sunDate = formatter.formatDateText(todayPrayers.sDate, true)
-            )
+            ).toUiDate()
         }
-    }
-
-
-    /**Update ramadan boolean flow*/
-    private fun updateRamadanFlow() {
-        _uiIsRamadan.update { calculation.isRamadan(todayPrayers.mDate) }
     }
 
     /**Update prayers flow*/
@@ -118,13 +117,14 @@ class MainViewModel @Inject constructor(
     }
 
     /**Timer to update the ui*/
-    private fun startTicks(delay: Long, initialDelay: Long = 0) = flow {
-        delay(initialDelay)
-        while (true) {
-            emit(Unit)
-            delay(delay)
+    private fun startTicks(delay: Long = TICKS_DELAY, initialDelay: Long = TICKS_INITIAL_DELAY) =
+        flow {
+            delay(initialDelay)
+            while (true) {
+                emit(Unit)
+                delay(delay)
+            }
         }
-    }
 
     /**Method to initial loading flow*/
     private fun startLoading() {
@@ -141,7 +141,7 @@ class MainViewModel @Inject constructor(
                         }
                     }
                 }
-                .map {prayer->
+                .map { prayer ->
                     prayer.toPrayer()
                 }
                 .collect { prayers ->
@@ -156,5 +156,7 @@ class MainViewModel @Inject constructor(
 
     companion object {
         const val STRING_DATE_SEPARATOR = "."
+        const val TICKS_INITIAL_DELAY: Long = 5_000
+        const val TICKS_DELAY: Long = 25_000
     }
 }

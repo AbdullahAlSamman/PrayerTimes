@@ -18,9 +18,9 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.MutableLiveData
 import com.gals.prayertimes.R
+import com.gals.prayertimes.model.NextPrayerConfig
 import com.gals.prayertimes.model.NotificationType
 import com.gals.prayertimes.model.Prayer
-import com.gals.prayertimes.model.config.NextPrayerConfig
 import com.gals.prayertimes.repository.Repository
 import com.gals.prayertimes.repository.local.entities.SettingsEntity
 import com.gals.prayertimes.utils.PrayerCalculation
@@ -130,7 +130,7 @@ class NotificationService : Service() {
     private fun startUpdates() {
         timerHandler.post(object : Runnable {
             override fun run() {
-                val config = calculation.calculateNextPrayerInfo(prayer.toTimePrayer())
+                val config = calculation.calculateNextPrayerInfo(prayer.toTimePrayer(), prayer.mDate)
                 val nextPrayer = calculation.calculateNextPrayer(prayer.toTimePrayer())
                 val isAlarmTime = calculation.isNowEqualsTime(nextPrayer)
                 val pendingIntent = createNotificationPendingIntent()

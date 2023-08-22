@@ -1,8 +1,13 @@
 package com.gals.prayertimes.utils
 
+import androidx.compose.ui.graphics.Color
 import com.gals.prayertimes.R
+import com.gals.prayertimes.model.DateConfig
+import com.gals.prayertimes.model.NextPrayerConfig
 import com.gals.prayertimes.model.Prayer
 import com.gals.prayertimes.model.TimePrayer
+import com.gals.prayertimes.model.UiDate
+import com.gals.prayertimes.model.UiNextPrayer
 import com.gals.prayertimes.repository.local.entities.PrayerEntity
 import com.gals.prayertimes.repository.remote.model.PrayerName
 import com.gals.prayertimes.repository.remote.model.PrayersResponse
@@ -129,3 +134,26 @@ fun getDayName(day: Int): Int =
         Calendar.FRIDAY -> R.string.text_day_fri
         else -> 0
     }
+
+fun getImage(isNight: Boolean, isRamadan: Boolean): Int =
+    if (isRamadan) {
+        if (isNight) R.drawable.ramadan_night else R.drawable.ramadan_day
+    } else {
+        if (isNight) R.drawable.background_night else R.drawable.background_day
+    }
+
+fun NextPrayerConfig.toUiNextPrayer(): UiNextPrayer =
+    UiNextPrayer(
+        backgroundImage = getImage(isNight, isRamadan),
+        settingsIconTint = if (isNight) Color.White else Color.Black,
+        nextPrayerName = nextPrayerName,
+        nextPrayerTime = nextPrayerTime,
+        nextPrayerBanner = nextPrayerBanner
+    )
+
+fun DateConfig.toUiDate(): UiDate =
+    UiDate(
+        dayName = dayName,
+        moonDate = moonDate,
+        sunDate = sunDate
+    )

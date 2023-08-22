@@ -28,9 +28,8 @@ fun PrayerScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val uiPrayers by viewModel.uiPrayers.collectAsState()
-    val uiNextPrayer by viewModel.uiNextPrayer.collectAsState()
-    val uiDateInfo by viewModel.uiDateInfo.collectAsState()
-    val uiIsRamadan by viewModel.uiIsRamadan.collectAsState()
+    val uiNextPrayer by viewModel.nextPrayer.collectAsState()
+    val uiDate by viewModel.uiDate.collectAsState()
 
     Scaffold { innerPadding ->
         CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
@@ -51,14 +50,13 @@ fun PrayerScreen(
 
                     is UiState.Success -> {
                         PrayerHeader(
-                            isRamadan = uiIsRamadan,
                             config = uiNextPrayer,
                             onSettingsClicked = onSettingsClicked
                         )
                         PrayerDateBar(
-                            day = uiDateInfo.dayName,
-                            moonDate = uiDateInfo.moonDate,
-                            sunDate = uiDateInfo.sunDate
+                            day = uiDate.dayName,
+                            moonDate = uiDate.moonDate,
+                            sunDate = uiDate.sunDate
                         )
                         LazyVerticalGrid(
                             columns = GridCells.Fixed(6),

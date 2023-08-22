@@ -16,16 +16,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.gals.prayertimes.R
-import com.gals.prayertimes.model.config.NextPrayerConfig
+import com.gals.prayertimes.model.UiNextPrayer
 import com.gals.prayertimes.ui.components.constraint.PrayerHeaderConstraint
 import com.gals.prayertimes.ui.theme.LightTextStyle
-import com.gals.prayertimes.utils.getImage
 import com.gals.prayertimes.utils.nonScaledSp
 
 @Composable
 fun PrayerHeader(
-    isRamadan: Boolean = false,
-    config: NextPrayerConfig,
+    config: UiNextPrayer,
     onSettingsClicked: () -> Unit,
     textStyle: TextStyle = LightTextStyle.copy(fontSize = 20.nonScaledSp )
 ) { /*TODO: consider tablet sizes*/
@@ -34,7 +32,7 @@ fun PrayerHeader(
             modifier = Modifier
                 .fillMaxWidth()
                 .layoutId("backgroundImage"),
-            painter = getImage(isNight = config.isNight, isRamadan = isRamadan),
+            painter = painterResource(id = config.backgroundImage),
             contentDescription = stringResource(id = R.string.content_descriptor_background),
             contentScale = ContentScale.FillWidth
         )
