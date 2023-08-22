@@ -84,7 +84,7 @@ class MainViewModel @Inject constructor(
     } catch (e: Exception) {
         Log.i(
             "Flow updates",
-            e.message.toString()
+            "error: ${e.message.toString()}"
         )
         _uiState.update { UiState.Error(resourceProvider.getString(R.string.text_error_server_down)) }
     }
