@@ -57,19 +57,13 @@ android {
     }
 
     dependencies {
-        val coroutinesVersion = "1.6.4"
         val jUnitVersion = "4.13.2"
         val hiltVersion = "2.47"
         val hiltComposeNav = "1.0.0"
         val composeVersion = "1.4.3"
-        val composeNavVersion = "2.6.0"
-        val composeMaterial3 = "1.1.1"
-        val composeActivity = "1.7.2"
-        val composeAccompanist = "0.30.1"
-        val composeConstraintLayoutVersion = "1.0.1"
 
 
-        //layouts
+        //lifecycle
         implementation(libs.androidx.appcompat)
 
         //Retrofit
@@ -79,36 +73,24 @@ android {
         //Coroutines
         implementation(libs.kotlinx.coroutines)
 
-        //Hilt
-        implementation("com.google.dagger:hilt-android:$hiltVersion")
-        implementation("androidx.hilt:hilt-navigation-compose:$hiltComposeNav")
-        kapt("com.google.dagger:hilt-android-compiler:$hiltVersion")
-
         //Room
         implementation(libs.bundles.androidx.room)
         kapt(libs.androidx.room.compiler)
         annotationProcessor(libs.androidx.room.compiler)
 
         //Compose
-        implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
-        implementation("androidx.activity:activity-compose:$composeActivity")
-        implementation("androidx.compose.ui:ui:$composeVersion")
-        implementation("androidx.compose.ui:ui-tooling-preview:$composeVersion")
-        implementation("androidx.compose.material3:material3:$composeMaterial3")
-        implementation("com.google.accompanist:accompanist-systemuicontroller:$composeAccompanist")
-        implementation("com.google.accompanist:accompanist-webview:$composeAccompanist")
-        debugImplementation("androidx.compose.ui:ui-tooling:$composeVersion")
-        debugImplementation("androidx.compose.ui:ui-test-manifest:$composeVersion")
-
-        //Compose navigation
-        implementation("androidx.navigation:navigation-compose:$composeNavVersion")
-
-        //Compose constraint layout
-        implementation("androidx.constraintlayout:constraintlayout-compose:$composeConstraintLayoutVersion")
+        implementation(libs.bundles.androidx.compose)
+        implementation(libs.bundles.androidx.accompainst)
+        debugImplementation(libs.bundles.androidx.compose.tooling)
 
         //Test
         testImplementation("junit:junit:$jUnitVersion")
         androidTestImplementation("androidx.compose.ui:ui-test-junit4:$composeVersion")
+
+        //Hilt
+        implementation("com.google.dagger:hilt-android:$hiltVersion")
+        implementation("androidx.hilt:hilt-navigation-compose:$hiltComposeNav")
+        kapt("com.google.dagger:hilt-android-compiler:$hiltVersion")
     }
 
     compileOptions {

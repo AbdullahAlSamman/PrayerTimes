@@ -3,6 +3,8 @@ room = "2.5.2"
 retrofit = "2.9.0"
 moshi = "1.14.0"
 hilt = "2.47"
+compose = "1.4.0"
+accompanist = "0.30.1"
 
 [libraries]
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version = "1.6.1" }
@@ -10,6 +12,19 @@ androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version
 androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
 androidx-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
 androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
+
+androidx-compose-ui = { group = "androidx.compose.ui", name = "ui", version.ref = "compose" }
+androidx-compose-ui-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview", version.ref = "compose" }
+androidx-compose-ui-material3 = { group = "androidx.compose.material3", name = "material3", version = "1.1.1" }
+androidx-compose-navigation = { group = "androidx.navigation", name = "navigation-compose", version = "2.6.0" }
+androidx-compose-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout-compose", version = "1.0.1" }
+
+
+androidx-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling", version.ref = "compose" }
+androidx-compose-ui-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest", version.ref = "compose" }
+
+androidx-accompanist-systemuicontrol = { group = "com.google.accompanist", name = "accompanist-systemuicontroller", version.ref = "accompanist" }
+androidx-accompanist-webview = { group = "com.google.accompanist", name = "accompanist-webview", version.ref = "accompanist" }
 
 kotlinx-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version = "1.6.4" }
 
@@ -27,6 +42,24 @@ androidx-hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 androidx-room = [
     "androidx-room-runtime",
     "androidx-room-ktx"
+]
+
+androidx-compose = [
+    "androidx-compose-ui",
+    "androidx-compose-ui-preview",
+    "androidx-compose-ui-material3",
+    "androidx-compose-navigation",
+    "androidx-compose-constraintlayout"
+]
+
+androidx-compose-tooling = [
+    "androidx-compose-ui-tooling",
+    "androidx-compose-ui-manifest"
+]
+
+androidx-accompainst = [
+    "androidx-accompanist-systemuicontrol",
+    "androidx-accompanist-webview"
 ]
 
 retrofit = [
