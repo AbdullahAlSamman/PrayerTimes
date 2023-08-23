@@ -57,16 +57,7 @@ android {
     }
 
     dependencies {
-        val roomVersion = "2.5.2"
-        val lifecycleVersion = "2.2.0"
-        val lifecycleViewModelVersion = "2.6.1"
-        val retrofitVersion = "2.9.0"
         val coroutinesVersion = "1.6.4"
-        val moshiVersion = "1.14.0"
-        val okHttpVersion = "4.10.0"
-        val appCompatVersion = "1.6.1"
-        val recyclerViewVersion = "1.3.0"
-        val constraintLayoutViewVersion = "2.1.4"
         val jUnitVersion = "4.13.2"
         val hiltVersion = "2.47"
         val hiltComposeNav = "1.0.0"
@@ -78,25 +69,15 @@ android {
         val composeConstraintLayoutVersion = "1.0.1"
 
 
-        //Lifecycle
-        implementation("androidx.appcompat:appcompat:$appCompatVersion")
-        implementation("androidx.recyclerview:recyclerview:$recyclerViewVersion")
-        implementation("androidx.constraintlayout:constraintlayout:$constraintLayoutViewVersion")
-
-        implementation("androidx.lifecycle:lifecycle-extensions:$lifecycleVersion")
-        implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleViewModelVersion")
+        //layouts
+        implementation(libs.androidx.appcompat)
 
         //Retrofit
-        implementation("com.squareup.okhttp3:okhttp:$okHttpVersion")
-        implementation("com.squareup.retrofit2:converter-gson:$retrofitVersion")
-        implementation("com.squareup.retrofit2:retrofit:$retrofitVersion")
-
-        implementation("com.squareup.moshi:moshi:$moshiVersion")
-        implementation("com.squareup.moshi:moshi-kotlin:$moshiVersion")
-        ksp("com.squareup.moshi:moshi-kotlin-codegen:$moshiVersion")
+        implementation(libs.bundles.retrofit)
+        ksp(libs.retrofit.moshi.kotlin.codegen)
 
         //Coroutines
-        implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion")
+        implementation(libs.kotlinx.coroutines)
 
         //Hilt
         implementation("com.google.dagger:hilt-android:$hiltVersion")
@@ -104,10 +85,9 @@ android {
         kapt("com.google.dagger:hilt-android-compiler:$hiltVersion")
 
         //Room
-        implementation("androidx.room:room-runtime:$roomVersion")
-        implementation("androidx.room:room-ktx:$roomVersion")
-        kapt("androidx.room:room-compiler:$roomVersion")
-        annotationProcessor("androidx.room:room-compiler:$roomVersion")
+        implementation(libs.bundles.androidx.room)
+        kapt(libs.androidx.room.compiler)
+        annotationProcessor(libs.androidx.room.compiler)
 
         //Compose
         implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")

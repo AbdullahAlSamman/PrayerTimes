@@ -1,0 +1,37 @@
+[versions]
+room = "2.5.2"
+retrofit = "2.9.0"
+moshi = "1.14.0"
+hilt = "2.47"
+
+[libraries]
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version = "1.6.1" }
+
+androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
+androidx-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
+androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
+
+kotlinx-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version = "1.6.4" }
+
+retrofit-okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version = "4.11.0" }
+retrofit-convertor-gson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofit" }
+retrofit-lib = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
+retrofit-moshi-kotlin = { group = "com.squareup.moshi", name = "moshi", version.ref = "moshi" }
+retrofit-moshi-kotlin-codegen = { group = "com.squareup.moshi", name = "moshi-kotlin-codegen", version.ref = "moshi" }
+
+[plugins]
+androidx-hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
+
+
+[bundles]
+androidx-room = [
+    "androidx-room-runtime",
+    "androidx-room-ktx"
+]
+
+retrofit = [
+    "retrofit-okhttp",
+    "retrofit-convertor-gson",
+    "retrofit-lib",
+    "retrofit-moshi-kotlin"
+]
