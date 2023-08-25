@@ -1,18 +1,13 @@
-@file:Suppress("UnstableApiUsage")
-
 plugins {
+    id("com.google.dagger.hilt.android")
     id("com.android.application")
+    id("com.google.devtools.ksp")
     id("kotlin-android")
     id("kotlin-kapt")
-    id("com.google.dagger.hilt.android")
-    id("com.google.devtools.ksp")
 }
 
 android {
-    signingConfigs {
-        create("release") {
-        }
-    }
+    namespace = "com.gals.prayertimes"
     compileSdk = 33
     buildToolsVersion = "33.0.1"
     defaultConfig {
@@ -20,19 +15,13 @@ android {
         minSdk = 26
         targetSdk = 33
         versionName = "1.0.2"
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         versionCode = 22
-        vectorDrawables {
-            useSupportLibrary = true
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        buildFeatures {
+            compose = true
         }
-        javaCompileOptions {
-            annotationProcessorOptions {
-                arguments += mapOf("room.schemaLocation" to "$projectDir/schemas")
-            }
-        }
-        ksp {
-            arg("room.schemaLocation", "$projectDir/schemas")
-        }
+
         buildTypes {
             release {
                 isMinifyEnabled = false
@@ -45,25 +34,53 @@ android {
                 isJniDebuggable = false
             }
         }
+
         dependenciesInfo {
             includeInApk = true
         }
 
-        buildFeatures {
-            viewBinding = true
-            dataBinding = true
-            compose = true
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments += mapOf("room.schemaLocation" to "$projectDir/schemas")
+            }
+        }
+
+        ksp {
+            arg("room.schemaLocation", "$projectDir/schemas")
         }
     }
 
+    signingConfigs {
+        create("release") {}
+    }
+
+    kotlinOptions {
+        jvmTarget = "17"
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.4.4"
+    }
+    packaging {
+        resources {
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+        }
+    }
+
+    kapt {
+        correctErrorTypes = false
+    }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+
     dependencies {
-        val jUnitVersion = "4.13.2"
         val hiltVersion = "2.47"
         val hiltComposeNav = "1.0.0"
-        val composeVersion = "1.4.3"
 
-
-        //lifecycle
+        //Appcompat
         implementation(libs.androidx.appcompat)
 
         //Retrofit
@@ -75,7 +92,7 @@ android {
 
         //Room
         implementation(libs.bundles.androidx.room)
-        kapt(libs.androidx.room.compiler)
+        ksp(libs.androidx.room.compiler)
         annotationProcessor(libs.androidx.room.compiler)
 
         //Compose
@@ -84,38 +101,12 @@ android {
         debugImplementation(libs.bundles.androidx.compose.tooling)
 
         //Test
-        testImplementation("junit:junit:$jUnitVersion")
-        androidTestImplementation("androidx.compose.ui:ui-test-junit4:$composeVersion")
+        androidTestImplementation(libs.androidx.compose.junit4.test)
+        testImplementation(libs.junit.test)
 
         //Hilt
         implementation("com.google.dagger:hilt-android:$hiltVersion")
         implementation("androidx.hilt:hilt-navigation-compose:$hiltComposeNav")
         kapt("com.google.dagger:hilt-android-compiler:$hiltVersion")
-    }
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-
-    kotlinOptions {
-        jvmTarget = "17"
-    }
-    buildFeatures {
-        compose = true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.4.4"
-    }
-    packaging {
-        resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
-        }
-    }
-
-    namespace = "com.gals.prayertimes"
-
-    kapt {
-        correctErrorTypes = false
     }
 }
