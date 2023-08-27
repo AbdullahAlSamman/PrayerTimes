@@ -92,7 +92,7 @@ android {
 
         //Room
         implementation(libs.bundles.androidx.room)
-        ksp(libs.androidx.room.compiler)
+        kapt(libs.androidx.room.compiler)
         annotationProcessor(libs.androidx.room.compiler)
 
         //Compose
