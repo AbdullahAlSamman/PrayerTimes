@@ -1,7 +1,6 @@
 plugins {
     id("com.google.dagger.hilt.android")
     id("com.android.application")
-    id("com.google.devtools.ksp")
     id("kotlin-android")
     id("kotlin-kapt")
 }
@@ -44,10 +43,6 @@ android {
                 arguments += mapOf("room.schemaLocation" to "$projectDir/schemas")
             }
         }
-
-        ksp {
-            arg("room.schemaLocation", "$projectDir/schemas")
-        }
     }
 
     signingConfigs {
@@ -85,7 +80,7 @@ android {
 
         //Retrofit
         implementation(libs.bundles.retrofit)
-        ksp(libs.retrofit.moshi.kotlin.codegen)
+        kapt(libs.retrofit.moshi.kotlin.codegen)
 
         //Coroutines
         implementation(libs.kotlinx.coroutines)
