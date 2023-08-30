@@ -13,12 +13,19 @@ android {
         applicationId = "com.gals.prayertimes"
         minSdk = 26
         targetSdk = 33
-        versionName = "1.0.2"
-        versionCode = 22
+        versionName = "1.0.3"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-
-        buildFeatures {
-            compose = true
+        versionCode = 23
+        vectorDrawables {
+            useSupportLibrary = true
+        }
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments += mapOf("room.schemaLocation" to "$projectDir/schemas")
+            }
+        }
+        ksp {
+            arg("room.schemaLocation", "$projectDir/schemas")
         }
 
         buildTypes {
