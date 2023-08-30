@@ -14,19 +14,8 @@ android {
         minSdk = 26
         targetSdk = 33
         versionName = "1.0.3"
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         versionCode = 23
-        vectorDrawables {
-            useSupportLibrary = true
-        }
-        javaCompileOptions {
-            annotationProcessorOptions {
-                arguments += mapOf("room.schemaLocation" to "$projectDir/schemas")
-            }
-        }
-        ksp {
-            arg("room.schemaLocation", "$projectDir/schemas")
-        }
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         buildTypes {
             release {
@@ -39,6 +28,10 @@ android {
                 isDebuggable = false
                 isJniDebuggable = false
             }
+        }
+
+        buildFeatures{
+            compose = true
         }
 
         dependenciesInfo {
