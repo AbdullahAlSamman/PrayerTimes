@@ -28,38 +28,32 @@ fun PrayerDateBar(
     textTopPadding: Dp = 2.dp,
     textBottomPadding: Dp = 2.dp
 ) {
+    val textModifier = modifier.padding(top = textTopPadding, bottom = textBottomPadding)
     Row(
         modifier = modifier
             .fillMaxWidth()
             .background(color = colorBackgroundViewDate)
     ) {
         Text(
-            modifier = modifier
-                .weight(1f)
-                .padding(top = textTopPadding, bottom = textBottomPadding),
+            modifier = textModifier.weight(1f),
             text = day,
             textAlign = textAlign,
             style = textStyle
         )
         Text(
-            modifier = modifier
-                .weight(2f)
-                .padding(top = textTopPadding, bottom = textBottomPadding),
+            modifier = textModifier.weight(2f),
             text = sunDate,
             textAlign = textAlign,
             style = textStyle
         )
         Text(
-            modifier = modifier
-                .padding(top = textTopPadding, bottom = textBottomPadding),
+            modifier = textModifier,
             text = stringResource(id = R.string.text_date_separator),
             textAlign = textAlign,
             style = textStyle
         )
         Text(
-            modifier = modifier
-                .weight(2f)
-                .padding(top = textTopPadding, bottom = textBottomPadding),
+            modifier = textModifier.weight(2f),
             text = moonDate,
             textAlign = textAlign,
             style = textStyle
