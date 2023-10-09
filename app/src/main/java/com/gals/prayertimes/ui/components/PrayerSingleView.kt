@@ -29,7 +29,7 @@ fun PrayerSingleView(
         modifier = modifier
             .height(120.dp)
             .fillMaxWidth()
-            .padding(start = 2.dp, end = 2.dp, top = 8.dp)
+            .padding(start = 2.dp, end = 2.dp)
             .background(
                 color = prayerColorMapper(prayer = prayer),
                 shape = MaterialTheme.shapes.small
