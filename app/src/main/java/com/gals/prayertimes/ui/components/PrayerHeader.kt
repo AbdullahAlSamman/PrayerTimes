@@ -36,7 +36,7 @@ fun PrayerHeader(
             contentDescription = stringResource(id = R.string.content_descriptor_background),
             contentScale = ContentScale.FillWidth
         )
-        Icon(
+/*        Icon(
             modifier = Modifier
                 .layoutId("settingsButton")
                 .clickable {
@@ -45,7 +45,7 @@ fun PrayerHeader(
             tint = (if (isSystemInDarkTheme()) Color.White else Color.Black),
             painter = painterResource(id = R.drawable.icon_rounded_setting),
             contentDescription = stringResource(id = R.string.content_descriptor_settings_icon)
-        )
+        )*/
         ConstraintLayout(
             modifier = Modifier.layoutId("prayerRemainingText"),
             constraintSet = PrayerHeaderConstraint.row
