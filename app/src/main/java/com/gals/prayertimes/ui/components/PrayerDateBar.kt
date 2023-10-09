@@ -31,7 +31,6 @@ fun PrayerDateBar(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(top = 4.dp)
             .background(color = colorBackgroundViewDate)
     ) {
         Text(
