@@ -6,14 +6,15 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.gals.prayertimes.repository.remote.model.SinglePrayer
 import com.gals.prayertimes.ui.theme.DarkTextStyle
+import com.gals.prayertimes.utils.DynamicSizedText
 import com.gals.prayertimes.utils.nonScaledSp
 import com.gals.prayertimes.utils.prayerColorMapper
 import com.gals.prayertimes.utils.prayerNameMapper
@@ -36,11 +37,17 @@ fun PrayerSingleView(
             ),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(
+        DynamicSizedText(
             text = prayerNameMapper(prayerName = prayer.name),
             modifier = modifier.padding(top = 5.dp),
-            style = textStyle
+            style = textStyle,
+            textAlign = TextAlign.Center
         )
-        Text(text = prayer.time, modifier = modifier.padding(top = 20.dp), style = textStyle)
+        DynamicSizedText(
+            text = prayer.time,
+            modifier = modifier.padding(top = 20.dp),
+            style = textStyle,
+            textAlign = TextAlign.Center
+        )
     }
 }
