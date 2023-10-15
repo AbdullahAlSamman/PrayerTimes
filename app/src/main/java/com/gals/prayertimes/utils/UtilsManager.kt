@@ -17,24 +17,15 @@ import javax.inject.Inject
 class UtilsManager @Inject constructor(
     @ApplicationContext private val context: Context
 ) {
-    fun startActivity(serviceClass: Class<*>, intentFlag: Int){
-        context.startActivity(
-            Intent(
-                context,
-                serviceClass
-            ).setFlags(intentFlag)
-        )
-    }
-
-    fun startService(serviceClass: Class<*>){
+    fun startService(serviceClass: Class<*>) {
         context.startService(Intent(context, serviceClass))
     }
 
-    fun stopService(serviceClass: Class<*>){
+    fun stopService(serviceClass: Class<*>) {
         context.stopService(Intent(context, serviceClass))
     }
 
-    fun restartService(serviceClass: Class<*>){
+    fun restartService(serviceClass: Class<*>) {
         stopService(serviceClass)
         startService(serviceClass)
     }
@@ -49,29 +40,11 @@ class UtilsManager @Inject constructor(
         return false
     }
 
-    fun setActivityLanguage(lang: String) {
-        val res = context.resources
-        val newConfig = Configuration(res.configuration)
-        val locale = Locale(lang)
-        newConfig.setLocale(locale)
-        newConfig.setLayoutDirection(locale)
-        res.updateConfiguration(
-            newConfig,
-            null
-        )
-    }
-
     fun isNetworkAvailable(): Boolean {
         val connectivityManager =
             context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val activeNetworkInfo = connectivityManager.activeNetworkInfo
         return activeNetworkInfo != null && activeNetworkInfo.isConnected
-    }
-
-    fun changeStatusBarColor(window: Window) {
-        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-        window.statusBarColor = context.resources
-            .getColor(R.color.background_color_time_isha)
     }
 
     fun getSoundUri(notificationType: NotificationType): Uri =

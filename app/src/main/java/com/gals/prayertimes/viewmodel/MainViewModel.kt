@@ -1,216 +1,162 @@
 package com.gals.prayertimes.viewmodel
 
-import android.content.Intent
-import android.os.Handler
-import android.os.Looper
-import android.text.format.DateUtils
 import android.util.Log
-import androidx.databinding.ObservableField
-import androidx.databinding.ObservableInt
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gals.prayertimes.R
-import com.gals.prayertimes.model.DomainPrayer
-import com.gals.prayertimes.model.TimePrayer
-import com.gals.prayertimes.model.config.NextPrayerInfoConfig
+import com.gals.prayertimes.model.ConnectivityException
+import com.gals.prayertimes.model.DateConfig
+import com.gals.prayertimes.model.Prayer
+import com.gals.prayertimes.model.UiDate
+import com.gals.prayertimes.model.UiNextPrayer
+import com.gals.prayertimes.model.UiState
 import com.gals.prayertimes.repository.Repository
-import com.gals.prayertimes.repository.local.entities.PrayerEntity
+import com.gals.prayertimes.utils.Formatter
 import com.gals.prayertimes.utils.PrayerCalculation
 import com.gals.prayertimes.utils.ResourceProvider
-import com.gals.prayertimes.utils.UtilsManager
 import com.gals.prayertimes.utils.getDayName
-import com.gals.prayertimes.utils.getMoonMonth
-import com.gals.prayertimes.utils.getSunMonth
 import com.gals.prayertimes.utils.getTodayDate
-import com.gals.prayertimes.utils.toDomain
+import com.gals.prayertimes.utils.toPrayer
 import com.gals.prayertimes.utils.toTimePrayer
-import com.gals.prayertimes.view.Menu
+import com.gals.prayertimes.utils.toUiDate
+import com.gals.prayertimes.utils.toUiNextPrayer
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
 import java.util.Calendar
-import java.util.Locale
-import java.util.StringTokenizer
 import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val tools: UtilsManager,
     private val repository: Repository,
     private val resourceProvider: ResourceProvider,
-    private val calculation: PrayerCalculation
+    private val calculation: PrayerCalculation,
+    private val formatter: Formatter
 ) : ViewModel() {
-    private var domainPrayer: DomainPrayer = DomainPrayer.EMPTY
-    private lateinit var currentPrayer: TimePrayer
-    private lateinit var timerHandler: Handler
-    var backgroundImage: ObservableInt = ObservableInt()
-    var btnSettingsResource: ObservableInt = ObservableInt()
-    var sunDateBanner: ObservableField<String> = ObservableField()
-    var moonDateBanner: ObservableField<String> = ObservableField()
-    var nextPrayerTime: ObservableField<String> = ObservableField()
-    var nextPrayerBanner: ObservableField<String> = ObservableField()
-    var nextPrayerName: ObservableField<String> = ObservableField()
-    var viewDayName: ObservableField<String> = ObservableField()
-    var viewFajerTime: ObservableField<String> = ObservableField()
-    var viewSunriseTime: ObservableField<String> = ObservableField()
-    var viewDuhrTime: ObservableField<String> = ObservableField()
-    var viewAsrTime: ObservableField<String> = ObservableField()
-    var viewMaghribTime: ObservableField<String> = ObservableField()
-    var viewIshaTime: ObservableField<String> = ObservableField()
+    private var todayPrayers = Prayer()
+
+    private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
+    private val _uiPrayers = MutableStateFlow(Prayer())
+    private val _uiNextPrayer = MutableStateFlow(UiNextPrayer())
+    private val _uiDate = MutableStateFlow(UiDate())
+
+    val uiState: StateFlow<UiState> = _uiState
+    val uiPrayers: StateFlow<Prayer> = _uiPrayers.asStateFlow()
+    val nextPrayer: StateFlow<UiNextPrayer> = _uiNextPrayer.asStateFlow()
+    val uiDate: StateFlow<UiDate> = _uiDate.asStateFlow()
 
     init {
-        timerHandler = Handler(Looper.getMainLooper())
+        startLoading()
+        startTicks()
+            .onEach {
+                updateScreenFlows()
+            }.launchIn(viewModelScope)
     }
 
-    fun navigateToSettings() {
-        tools.startActivity(Menu::class.java, Intent.FLAG_ACTIVITY_NEW_TASK)
+    /**retry method to call from ui*/
+    fun retryRequest() {
+        startLoading()
     }
 
-    fun getPrayer() {
-        var prayer: PrayerEntity?
-        viewModelScope.launch {
-            prayer = repository.getPrayer(getTodayDate())
-            if (prayer != null) {
-                updateViewObservableValues(prayer!!.toDomain())
-                startDateUpdate()
-            }
-        }
-    }
-
-
-    /**Set data on the UI Elements*/
-    internal fun updateDateUIObservables() = try {
+    /**update all flows related to ui*/
+    private fun updateScreenFlows() = try {
         Log.i(
-            "isChangeTheDayTest",
-            "" + isDayHasChanged(domainPrayer.sDate)
+            "isDayChanged",
+            "" + calculation.isDayChanged(todayPrayers.sDate)
         )
-        if (isDayHasChanged(domainPrayer.sDate)) {
-            updatePrayers()
+
+        if (calculation.isDayChanged(todayPrayers.sDate)) {
+            startLoading()
         }
-        buildDateTexts()
-        updateRemainingTime()
-        updateBackground()
+
+        updatePrayersFlow()
+        updateNextPrayerFlow()
+        updateDateFlow()
     } catch (e: Exception) {
         Log.i(
-            "Data Update UI",
-            "there is no data at all"
+            "Flow updates",
+            "error: ${e.message.toString()}"
         )
-        e.printStackTrace()
-    }
-
-    /**Timer to update the ui*/
-    private fun startDateUpdate(time: Long = 25000) {
-        timerHandler.post(object : Runnable {
-            override fun run() {
-                updateDateUIObservables()
-                timerHandler.postDelayed(this, time)
-            }
-        })
-    }
-
-    private fun updateViewObservableValues(prayer: DomainPrayer) {
-        domainPrayer = prayer
-        viewFajerTime.set(prayer.fajer)
-        viewSunriseTime.set(prayer.sunrise)
-        viewDuhrTime.set(prayer.duhr)
-        viewAsrTime.set(prayer.asr)
-        viewMaghribTime.set(prayer.maghrib)
-        viewIshaTime.set(prayer.isha)
-        buildDateTexts()
-    }
-
-    private fun updatePrayers() {
-        /** update the data from server if the date is changed*/
-        if (tools.isNetworkAvailable()) {
-            viewModelScope.launch {
-                if (repository.refreshPrayer(getTodayDate())) {
-                    domainPrayer = repository.getPrayer(getTodayDate())!!.toDomain()
-                    if (domainPrayer != DomainPrayer.EMPTY) {
-                        updateViewObservableValues(domainPrayer)
-                    }
-                }
-            }
-        }
+        _uiState.update { UiState.Error(resourceProvider.getString(R.string.text_error_server_down)) }
     }
 
     /**update the time to next prayer*/
-    private fun updateRemainingTime() {
-        currentPrayer = domainPrayer.toTimePrayer()
-        updateNextPrayerInfo(calculation.calculateNextPrayerInfo(currentPrayer))
+    private fun updateNextPrayerFlow() {
+        _uiNextPrayer.update {
+            calculation.calculateNextPrayerInfo(
+                currentPrayer = todayPrayers.toTimePrayer(),
+                moonDate = todayPrayers.mDate
+            ).toUiNextPrayer()
+        }
     }
 
     /** Build text for dates*/
-    private fun buildDateTexts(): Boolean =
-        try {
-            lateinit var sunDateText: String
-            lateinit var moonDateText: String
-            val calendar = Calendar.getInstance()
-            viewDayName.set(resourceProvider.getString(getDayName(calendar[Calendar.DAY_OF_WEEK])))
-
-            val sdate = StringTokenizer(
-                domainPrayer.sDate,
-                "."
-            )
-            val mdate = StringTokenizer(
-                domainPrayer.mDate,
-                "."
-            )
-            sunDateText = sdate.nextToken() + " "
-            moonDateText = mdate.nextToken() + " "
-
-            sunDateText += resourceProvider.getString(getSunMonth(sdate.nextToken().toInt()))
-            moonDateText += resourceProvider.getString(getMoonMonth(mdate.nextToken().toInt()))
-
-            sunDateText += " " + sdate.nextToken()
-            moonDateText += " " + mdate.nextToken()
-
-            moonDateBanner.set(moonDateText)
-            sunDateBanner.set(sunDateText)
-            true
-        } catch (e: java.lang.Exception) {
-            e.printStackTrace()
-            false
-        }
-
-    private fun isDayHasChanged(date: String?): Boolean {
-        try {
-            val currentDate = date?.let {
-                SimpleDateFormat(
-                    "dd.MM.yyyy",
-                    Locale.US
-                ).parse(it)
-            }
-            if (currentDate != null) {
-                return DateUtils.isToday(currentDate.time + DateUtils.DAY_IN_MILLIS)
-            }
-        } catch (e: java.lang.Exception) {
-            e.printStackTrace()
-        }
-        return true // to trigger an Update when the date is not determined
-    }
-
-    /**Update Background pic according to time*/
-    private fun updateBackground() {
-        if (!calculation.isNight(currentPrayer)) {
-            when (calculation.isRamadan(domainPrayer.mDate)) {
-                true -> backgroundImage.set(R.drawable.ramadan_day)
-                false -> backgroundImage.set(R.drawable.background_day)
-            }
-            btnSettingsResource.set(R.drawable.round_settings_black)
-            Log.i("UI", "Day time")
-        } else {
-            when (calculation.isRamadan(domainPrayer.mDate)) {
-                true -> backgroundImage.set(R.drawable.ramadan_night)
-                false -> backgroundImage.set(R.drawable.background_night)
-            }
-            btnSettingsResource.set(R.drawable.round_settings_white)
-            Log.i("UI", "Night time")
+    private fun updateDateFlow() {
+        val calendar = Calendar.getInstance()
+        _uiDate.update {
+            DateConfig(
+                dayName = resourceProvider.getString(getDayName(calendar[Calendar.DAY_OF_WEEK])),
+                moonDate = formatter.formatDateText(todayPrayers.mDate, false),
+                sunDate = formatter.formatDateText(todayPrayers.sDate, true)
+            ).toUiDate()
         }
     }
 
-    private fun updateNextPrayerInfo(nextPrayerInfo: NextPrayerInfoConfig) {
-        nextPrayerTime.set(nextPrayerInfo.nextPrayerTime)
-        nextPrayerBanner.set(nextPrayerInfo.nextPrayerBannerText)
-        nextPrayerName.set(nextPrayerInfo.nextPrayerNameText)
+    /**Update prayers flow*/
+    private fun updatePrayersFlow() {
+        _uiPrayers.update { todayPrayers }
+    }
+
+    /**Timer to update the ui*/
+    private fun startTicks(delay: Long = TICKS_DELAY, initialDelay: Long = TICKS_INITIAL_DELAY) =
+        flow {
+            delay(initialDelay)
+            while (true) {
+                emit(Unit)
+                delay(delay)
+            }
+        }
+
+    /**Method to initial loading flow*/
+    private fun startLoading() {
+        viewModelScope.launch {
+            repository.fetchComposePrayer(getTodayDate())
+                .catch { cause ->
+                    when (cause) {
+                        is ConnectivityException -> {
+                            _uiState.update { UiState.Error(resourceProvider.getString(R.string.text_error_check_internet)) }
+                        }
+
+                        else -> {
+                            _uiState.update { UiState.Error(resourceProvider.getString(R.string.text_error_server_down)) }
+                        }
+                    }
+                }
+                .map { prayer ->
+                    prayer.toPrayer()
+                }
+                .collect { prayers ->
+                    prayers.let { composePrayers ->
+                        todayPrayers = composePrayers
+                        updateScreenFlows()
+                        _uiState.update { UiState.Success }
+                    }
+                }
+        }
+    }
+
+    companion object {
+        const val STRING_DATE_SEPARATOR = "."
+        const val TICKS_INITIAL_DELAY: Long = 5_000
+        const val TICKS_DELAY: Long = 25_000
     }
 }

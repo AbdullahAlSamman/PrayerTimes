@@ -33,13 +33,11 @@ data class PrayersResponse(
     @SerializedName("mDate") val mDate: String,
     @SerializedName("prayers") val prayers: List<SinglePrayer>
 )
-
 data class SinglePrayer(
-    val name: PrayerType,
+    val name: PrayerName,
     val time: String
 )
-
-enum class PrayerType(val value: String){
+enum class PrayerName(val value: String){
     FAJER("fajer"),
     SUNRISE("sunrise"),
     DUHR("duhr"),
@@ -49,8 +47,8 @@ enum class PrayerType(val value: String){
     UNKNOWN("unknown");
 
     companion object{
-        infix fun fromValue(value: String): PrayerType {
-            val map = PrayerType.values().associateBy { it.value }
+        infix fun fromValue(value: String): PrayerName {
+            val map = PrayerName.values().associateBy { it.value }
             return map[value] ?: UNKNOWN
         }
     }
