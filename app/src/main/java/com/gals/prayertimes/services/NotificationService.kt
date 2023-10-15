@@ -18,15 +18,15 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.MutableLiveData
 import com.gals.prayertimes.R
-import com.gals.prayertimes.model.DomainPrayer
+import com.gals.prayertimes.model.NextPrayerConfig
 import com.gals.prayertimes.model.NotificationType
-import com.gals.prayertimes.model.config.NextPrayerInfoConfig
+import com.gals.prayertimes.model.Prayer
 import com.gals.prayertimes.repository.Repository
 import com.gals.prayertimes.repository.local.entities.SettingsEntity
 import com.gals.prayertimes.utils.PrayerCalculation
 import com.gals.prayertimes.utils.UtilsManager
 import com.gals.prayertimes.utils.getTodayDate
-import com.gals.prayertimes.utils.toDomain
+import com.gals.prayertimes.utils.toPrayer
 import com.gals.prayertimes.utils.toTimePrayer
 import com.gals.prayertimes.view.MainActivity
 import dagger.hilt.android.AndroidEntryPoint
@@ -48,7 +48,7 @@ class NotificationService : Service() {
     private val loading = MutableLiveData<Boolean>()
     private lateinit var timerHandler: Handler
 
-    private lateinit var prayer: DomainPrayer
+    private lateinit var prayer: Prayer
     private lateinit var settingsEntity: SettingsEntity
 
     @Inject
@@ -75,7 +75,7 @@ class NotificationService : Service() {
     }
 
     private fun showPermanentNotification(
-        config: NextPrayerInfoConfig,
+        config: NextPrayerConfig,
         pendingIntent: PendingIntent
     ) {
         val notificationChannel = buildNotificationChannel(
@@ -97,7 +97,7 @@ class NotificationService : Service() {
         startForeground(1, notification)
     }
 
-    private fun showAlarmNotification(config: NextPrayerInfoConfig, pendingIntent: PendingIntent) {
+    private fun showAlarmNotification(config: NextPrayerConfig, pendingIntent: PendingIntent) {
         Timer().schedule(NOTIFICATION_UPDATE_LONG) {
             val notification = buildNotification(
                 pendingIntent = pendingIntent,
@@ -118,9 +118,9 @@ class NotificationService : Service() {
     private fun loadPrayerData() {
         backgroundScope.launch {
             loading.postValue(true)
-            prayer = repository.getPrayer(getTodayDate())!!.toDomain()
-            settingsEntity = repository.getSettings()!!
-            if (prayer != DomainPrayer.EMPTY) {
+            prayer = repository.getPrayer(getTodayDate()).toPrayer()
+            settingsEntity = repository.getSettings()
+            if (prayer != Prayer()) {
                 startUpdates()
                 loading.value = false
             }
@@ -130,26 +130,26 @@ class NotificationService : Service() {
     private fun startUpdates() {
         timerHandler.post(object : Runnable {
             override fun run() {
-                val config = calculation.calculateNextPrayerInfo(prayer.toTimePrayer())
+                val config = calculation.calculateNextPrayerInfo(prayer.toTimePrayer(), prayer.mDate)
                 val nextPrayer = calculation.calculateNextPrayer(prayer.toTimePrayer())
                 val isAlarmTime = calculation.isNowEqualsTime(nextPrayer)
                 val pendingIntent = createNotificationPendingIntent()
                 timerHandler.postDelayed(
                     this,
-                    if (isAlarmTime && !config.isSunrise) NOTIFICATION_UPDATE_LONG else NOTIFICATION_UPDATE_SHORT
+                    if (isAlarmTime && !config.isPrayer) NOTIFICATION_UPDATE_LONG else NOTIFICATION_UPDATE_SHORT
                 )
                 /**TODO:
                  * add sunrise notification to settings
                  * */
                 showPermanentNotification(config, pendingIntent)
-                if (isAlarmTime && !config.isSunrise && !config.isMidnight) {
+                if (isAlarmTime && !config.isPrayer && !config.isNight) {
                     showAlarmNotification(config, pendingIntent)
                 }
             }
         })
     }
 
-    private fun buildAlarmNotificationBannerInfo(config: NextPrayerInfoConfig): RemoteViews {
+    private fun buildAlarmNotificationBannerInfo(config: NextPrayerConfig): RemoteViews {
         val notificationView =
             RemoteViews(
                 applicationContext.packageName,
@@ -157,12 +157,12 @@ class NotificationService : Service() {
             )
         notificationView.setTextViewText(
             R.id.notification_alarm_next_prayer_text,
-            config.nextPrayerNameText
+            config.nextPrayerName
         )
         return notificationView
     }
 
-    private fun buildPermanentNotificationBannerInfo(config: NextPrayerInfoConfig): RemoteViews {
+    private fun buildPermanentNotificationBannerInfo(config: NextPrayerConfig): RemoteViews {
         val notificationView =
             RemoteViews(
                 applicationContext.packageName,
@@ -170,11 +170,11 @@ class NotificationService : Service() {
             )
         notificationView.setTextViewText(
             R.id.notification_permanent_next_prayer_banner_text,
-            config.nextPrayerBannerText
+            config.nextPrayerBanner
         )
         notificationView.setTextViewText(
             R.id.notification_permanent_next_prayer_text,
-            config.nextPrayerNameText
+            config.nextPrayerName
         )
         notificationView.setTextViewText(
             R.id.notification_permanent_next_prayer_time,
@@ -185,7 +185,7 @@ class NotificationService : Service() {
 
     private fun buildNotification(
         pendingIntent: PendingIntent,
-        config: NextPrayerInfoConfig,
+        config: NextPrayerConfig,
         notificationType: String
     ) =
         when (notificationType) {
@@ -227,7 +227,7 @@ class NotificationService : Service() {
 
     private fun createNotification(
         pendingIntent: PendingIntent,
-        config: NextPrayerInfoConfig,
+        config: NextPrayerConfig,
         channelID: String,
         soundUri: Uri,
     ): Notification {
@@ -260,7 +260,7 @@ class NotificationService : Service() {
 
     private fun createNotificationWithSound(
         pendingIntent: PendingIntent,
-        config: NextPrayerInfoConfig,
+        config: NextPrayerConfig,
         channelID: String,
         soundUri: Uri
     ): Notification =
@@ -287,7 +287,7 @@ class NotificationService : Service() {
                 PendingIntent.FLAG_IMMUTABLE
             )
         } else {
-            PendingIntent.getActivity(applicationContext, 0, notificationIntent, 0)
+            PendingIntent.getActivity(applicationContext, 0, notificationIntent, PendingIntent.FLAG_IMMUTABLE)
         }
     }
 

@@ -20,9 +20,9 @@ class LocalDataSource @Inject constructor(
     suspend fun isTodayPrayerExists(todayDate: String): Boolean =
         prayerDao.isExists(todayDate)
 
-    suspend fun getPrayer(todayDate: String): PrayerEntity? =
+    suspend fun getPrayers(todayDate: String): PrayerEntity =
         prayerDao.findByDate(todayDate)
 
-    suspend fun getSettings(): SettingsEntity? =
+    suspend fun getSettings(): SettingsEntity =
         settingsDao.settingsEntity()
 }

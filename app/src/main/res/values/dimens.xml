@@ -1,17 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="text_margin">@dimen/spacing_16</dimen>
     <dimen name="text_font_size_medium">20dp</dimen>
     <dimen name="text_font_size_small">16dp</dimen>
-    <dimen name="text_font_size_large">22dp</dimen>
-    <dimen name="margin_start_end_between_prayer">2dp</dimen>
-    <dimen name="margin_top_cell_prayer">@dimen/spacing_8</dimen>
-    <dimen name="margin_top_cell_prayer_text">5dp</dimen>
-    <dimen name="margin_bottom_cell_prayer_text">20dp</dimen>
-    <dimen name="margin_image_button_settings">12dp</dimen>
-    <dimen name="layout_width_cell_prayer">@dimen/spacing_0</dimen>
-    <dimen name="layout_height_cell_prayer">120dp</dimen>
-    <dimen name="layout_width_height_image_button_settings">50dp</dimen>
     <dimen name="spacing_0">0dp</dimen>
     <dimen name="spacing_2">2dp</dimen>
     <dimen name="spacing_4">4dp</dimen>

@@ -1,61 +1,42 @@
 package com.gals.prayertimes.view
 
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
-import com.gals.prayertimes.databinding.ActivityMainBinding
-import com.gals.prayertimes.repository.local.entities.PrayerEntity
-import com.gals.prayertimes.utils.UtilsManager
-import com.gals.prayertimes.viewmodel.MainViewModel
-import com.gals.prayertimes.viewmodel.factory.MainViewModelFactory
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.runtime.SideEffect
+import androidx.compose.ui.Modifier
+import androidx.navigation.compose.rememberNavController
+import com.gals.prayertimes.navigation.PrayerTimesNavHost
+import com.gals.prayertimes.ui.theme.PrayerTimesTheme
+import com.gals.prayertimes.utils.getStatusBarColors
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity() {
-    private lateinit var viewModel: MainViewModel
-    private lateinit var binding: ActivityMainBinding
-    var prayer: PrayerEntity = PrayerEntity.EMPTY
-
-    @Inject
-    lateinit var viewModelFactory: MainViewModelFactory
-
-    @Inject
-    lateinit var tools: UtilsManager
-
+class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //TODO: Internet warning
-        configureDataBinding()
-        configureMVVM()
-        configureUI()
-
-        viewModel.getPrayer()
+        setContent {
+            PrayerTimesTheme {
+                val navController = rememberNavController()
+                val systemUiController = rememberSystemUiController()
+                val statusBarSettings = getStatusBarColors()
+                SideEffect {
+                    systemUiController.setStatusBarColor(
+                        color = statusBarSettings.first,
+                        darkIcons = statusBarSettings.second
+                    )
+                }
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
+                ) {
+                    PrayerTimesNavHost(navController = navController, modifier = Modifier)
+                }
+            }
+        }
     }
-
-    override fun onResume() {
-        super.onResume()
-        viewModel.updateDateUIObservables()
-    }
-
-    private fun configureMVVM() {
-        viewModel = ViewModelProvider(
-            this,
-            viewModelFactory
-        )[MainViewModel::class.java]
-
-        binding.viewModel = viewModel
-    }
-
-    private fun configureDataBinding() {
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-        binding.lifecycleOwner = this
-    }
-
-    private fun configureUI() {
-        tools.changeStatusBarColor(window)
-        tools.setActivityLanguage("en")
-    }
-
 }
