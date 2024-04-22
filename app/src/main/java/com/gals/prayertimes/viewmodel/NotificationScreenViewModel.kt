@@ -26,8 +26,8 @@ class NotificationScreenViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             val settings = repository.getSettings()
-            _uiSelectedRadio.update { settings?.notificationType.toString() }
-            _uiSwitchState.update { settings?.notification == true }
+            _uiSelectedRadio.update { settings.notificationType }
+            _uiSwitchState.update { settings.notification }
         }
     }
 
