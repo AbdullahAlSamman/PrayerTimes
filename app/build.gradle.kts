@@ -7,12 +7,11 @@ plugins {
 
 android {
     namespace = "com.gals.prayertimes"
-    compileSdk = 33
-    buildToolsVersion = "33.0.1"
+    compileSdk = 34
     defaultConfig {
         applicationId = "com.gals.prayertimes"
         minSdk = 26
-        targetSdk = 33
+        targetSdk = 34
         versionName = "1.0.4"
         versionCode = 24
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -54,7 +53,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.4.4"
+        kotlinCompilerExtensionVersion = "1.5.12"
     }
     packaging {
         resources {
@@ -72,8 +71,8 @@ android {
     }
 
     dependencies {
-        val hiltVersion = "2.47"
-        val hiltComposeNav = "1.0.0"
+        val hiltVersion = "2.49"
+        val hiltComposeNav = "1.2.0"
 
         //Appcompat
         implementation(libs.androidx.appcompat)
