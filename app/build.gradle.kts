@@ -71,7 +71,7 @@ android {
     }
 
     dependencies {
-        val hiltVersion = "2.49"
+        val hiltVersion = "2.50"
         val hiltComposeNav = "1.2.0"
 
         //Appcompat
