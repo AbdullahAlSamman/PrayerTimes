@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1029199481246",
+    "project_id": "prayer-times-android-16a4f",
+    "storage_bucket": "prayer-times-android-16a4f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1029199481246:android:711e103bbcea5305d1ae8f",
+        "android_client_info": {
+          "package_name": "com.gals.prayertimes"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDg6A8B-fp_r0saNgy1Cp9-JkMvsPUfjU4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
