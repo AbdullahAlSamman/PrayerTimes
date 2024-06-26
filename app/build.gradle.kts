@@ -1,5 +1,6 @@
 plugins {
     id("com.google.dagger.hilt.android")
+    id("com.google.gms.google-services")
     id("com.android.application")
     id("kotlin-android")
     id("kotlin-kapt")
@@ -29,7 +30,7 @@ android {
             }
         }
 
-        buildFeatures{
+        buildFeatures {
             compose = true
         }
 
@@ -94,13 +95,17 @@ android {
         implementation(libs.bundles.androidx.accompainst)
         debugImplementation(libs.bundles.androidx.compose.tooling)
 
-        //Test
-        androidTestImplementation(libs.androidx.compose.junit4.test)
-        testImplementation(libs.junit.test)
-
         //Hilt
         implementation("com.google.dagger:hilt-android:$hiltVersion")
         implementation("androidx.hilt:hilt-navigation-compose:$hiltComposeNav")
         kapt("com.google.dagger:hilt-android-compiler:$hiltVersion")
+
+        //Firebase
+        implementation(platform(libs.firebase.bom))
+        implementation(libs.bundles.firebase)
+
+        //Test
+        androidTestImplementation(libs.androidx.compose.junit4.test)
+        testImplementation(libs.junit.test)
     }
 }

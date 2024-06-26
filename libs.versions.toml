@@ -7,6 +7,7 @@ compose_material = "1.2.1"
 compose_navigation = "2.7.7"
 compose_constraint_layout = "1.0.1"
 accompanist = "0.32.0"
+firebase-bom = "33.1.1"
 
 [libraries]
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version = "1.7.0" }
@@ -37,6 +38,9 @@ retrofit-moshi-kotlin-codegen = { group = "com.squareup.moshi", name = "moshi-ko
 
 junit-test = { group = "junit", name = "junit", version = "4.13.2" }
 androidx-compose-junit4-test = { group = "androidx.compose.ui", name = "ui-test-junit4", version.ref = "compose" }
+
+firebase-bom = {group = "com.google.firebase", name = "firebase-bom", version.ref = "firebase-bom"}
+firebase-config = { group = "com.google.firebase", name = "firebase-config"}
 
 
 [plugins]
@@ -70,4 +74,8 @@ retrofit = [
     "retrofit-convertor-gson",
     "retrofit-lib",
     "retrofit-moshi-kotlin"
+]
+
+firebase = [
+    "firebase-config"
 ]
