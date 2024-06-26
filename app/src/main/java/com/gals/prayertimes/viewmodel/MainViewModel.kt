@@ -71,7 +71,7 @@ class MainViewModel @Inject constructor(
     private fun updateScreenFlows() = try {
         Log.i(
             "isDayChanged",
-            "" + calculation.isDayChanged(todayPrayers.sDate)
+            "${calculation.isDayChanged(todayPrayers.sDate)}"
         )
 
         if (calculation.isDayChanged(todayPrayers.sDate)) {
