@@ -29,7 +29,7 @@ android {
             }
         }
 
-        buildFeatures{
+        buildFeatures {
             compose = true
         }
 
@@ -97,6 +97,8 @@ android {
         //Test
         androidTestImplementation(libs.androidx.compose.junit4.test)
         testImplementation(libs.junit.test)
+        testImplementation(libs.jupiter.test)
+        testImplementation(libs.mockk.test)
 
         //Hilt
         implementation("com.google.dagger:hilt-android:$hiltVersion")
