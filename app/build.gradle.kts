@@ -71,7 +71,7 @@ android {
     }
 
     dependencies {
-        val hiltVersion = "2.49"
+        val hiltVersion = "2.50"
         val hiltComposeNav = "1.2.0"
 
         //Appcompat
@@ -95,10 +95,7 @@ android {
         debugImplementation(libs.bundles.androidx.compose.tooling)
 
         //Test
-        androidTestImplementation(libs.androidx.compose.junit4.test)
-        testImplementation(libs.junit.test)
-        testImplementation(libs.jupiter.test)
-        testImplementation(libs.mockk.test)
+        testImplementation(libs.bundles.unit.test)
 
         //Hilt
         implementation("com.google.dagger:hilt-android:$hiltVersion")

@@ -9,6 +9,8 @@ compose_constraint_layout = "1.0.1"
 accompanist = "0.32.0"
 jupiter = "5.10.1"
 mockk = "1.13.11"
+turbine = "1.1.0"
+kotlin-coroutines = "1.8.0"
 
 [libraries]
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version = "1.7.0" }
@@ -19,7 +21,7 @@ androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = 
 
 androidx-compose-ui = { group = "androidx.compose.ui", name = "ui", version.ref = "compose" }
 androidx-compose-ui-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview", version.ref = "compose" }
-androidx-compose-ui-material3 = { group = "androidx.compose.material3", name = "material3", version.ref =  "compose_material" }
+androidx-compose-ui-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "compose_material" }
 androidx-compose-navigation = { group = "androidx.navigation", name = "navigation-compose", version.ref = "compose_navigation" }
 androidx-compose-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout-compose", version.ref = "compose_constraint_layout" }
 
@@ -29,7 +31,7 @@ androidx-compose-ui-manifest = { group = "androidx.compose.ui", name = "ui-test-
 androidx-accompanist-systemuicontrol = { group = "com.google.accompanist", name = "accompanist-systemuicontroller", version.ref = "accompanist" }
 androidx-accompanist-webview = { group = "com.google.accompanist", name = "accompanist-webview", version.ref = "accompanist" }
 
-kotlinx-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version = "1.8.0" }
+kotlinx-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "kotlin-coroutines" }
 
 retrofit-okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version = "4.12.0" }
 retrofit-convertor-gson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofit" }
@@ -37,10 +39,12 @@ retrofit-lib = { group = "com.squareup.retrofit2", name = "retrofit", version.re
 retrofit-moshi-kotlin = { group = "com.squareup.moshi", name = "moshi", version.ref = "moshi" }
 retrofit-moshi-kotlin-codegen = { group = "com.squareup.moshi", name = "moshi-kotlin-codegen", version.ref = "moshi" }
 
-junit-test = { group = "junit", name = "junit", version = "4.13.2" }
 androidx-compose-junit4-test = { group = "androidx.compose.ui", name = "ui-test-junit4", version.ref = "compose" }
-jupiter-test = { group = "org.junit.jupiter", name = "junit-jupiter-api", version.ref="jupiter"}
-mockk-test = {group= "io.mockk", name = "mockk", version.ref= "mockk"}
+junit-test = { group = "junit", name = "junit", version = "4.13.2" }
+jupiter-test = { group = "org.junit.jupiter", name = "junit-jupiter-api", version.ref = "jupiter" }
+mockk-test = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
+turbine-test = { group = "app.cash.turbine", name = "turbine", version.ref = "turbine" }
+coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlin-coroutines" }
 
 [plugins]
 
@@ -75,8 +79,10 @@ retrofit = [
     "retrofit-moshi-kotlin"
 ]
 
-test = [
+unit-test = [
     "junit-test",
-    "androidx-compose-junit4-test",
-    "jupiter-test"
+    "jupiter-test",
+    "mockk-test",
+    "turbine-test",
+    "coroutines-test"
 ]
