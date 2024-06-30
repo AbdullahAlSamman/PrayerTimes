@@ -16,6 +16,7 @@ import io.mockk.mockk
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
@@ -30,52 +31,59 @@ class MainViewModelTest {
     private val mockCalculation = mockk<PrayerCalculation>()
     private val mockScreenUpdater = mockk<TestScreenUpdater>()
 
+    @Before
+    fun setup() {
+        coEvery {
+            mockScreenUpdater.startTicks(any(), any())
+        } returns flowOf(Unit)
+
+        every {
+            mockResourceProvider.getString(any())
+        } returns "any_string"
+
+        every {
+            mockFormatter.formatDateText(any(), any())
+        } returns "date_string"
+
+        coEvery {
+            mockRepository.fetchComposePrayer(any())
+        } coAnswers {
+            flowOf(
+                PrayerEntity(
+                    objectId = "id",
+                    sDate = "01.02.2023",
+                    mDate = "01.03.1443",
+                    fajer = "04:00",
+                    sunrise = "06:00",
+                    duhr = "13:00",
+                    asr = "16:00",
+                    maghrib = "20:00",
+                    isha = "22:00"
+                )
+            )
+        }
+
+        every {
+            mockFormatter.formatDateText(any(), any())
+        } returns "date_string"
+
+        every { mockCalculation.isDayChanged(any()) } returns false
+
+        every {
+            mockCalculation.calculateNextPrayerInfo(
+                any(),
+                any()
+            )
+        } returns NextPrayerConfig(
+            nextPrayerBanner = "asr",
+            nextPrayerName = "Asr",
+            nextPrayerTime = "16:00"
+        )
+    }
+
     @Test
     fun `Given valid request from be, when view model start loading, then show success result`() =
         runTest {
-            coEvery {
-                mockRepository.fetchComposePrayer(any())
-            } coAnswers {
-                flowOf(
-                    PrayerEntity(
-                        objectId = "id",
-                        sDate = "01.02.2023",
-                        mDate = "01.03.1443",
-                        fajer = "04:00",
-                        sunrise = "06:00",
-                        duhr = "13:00",
-                        asr = "16:00",
-                        maghrib = "20:00",
-                        isha = "22:00"
-                    )
-                )
-            }
-
-            coEvery {
-                mockScreenUpdater.startTicks(any(), any())
-            } returns flowOf(Unit)
-
-            every {
-                mockResourceProvider.getString(any())
-            } returns "any_string"
-
-            every {
-                mockFormatter.formatDateText(any(), any())
-            } returns "date_string"
-
-            every { mockCalculation.isDayChanged(any()) } returns false
-
-            every {
-                mockCalculation.calculateNextPrayerInfo(
-                    any(),
-                    any()
-                )
-            } returns NextPrayerConfig(
-                nextPrayerBanner = "asr",
-                nextPrayerName = "Asr",
-                nextPrayerTime = "16:00"
-            )
-
             val viewModel = createViewModel()
 
             viewModel.uiState.test {

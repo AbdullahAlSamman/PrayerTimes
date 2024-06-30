@@ -11,6 +11,8 @@ import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 
+
+/*TODO: use injection to replace hard coded dispatchers in app*/
 @Module
 @InstallIn(SingletonComponent::class)
 object DispatchersModule {
@@ -30,5 +32,4 @@ object DispatchersModule {
     @TestDispatcher
     @Provides
     fun provideTestDispatcher(): CoroutineDispatcher = Dispatchers.Unconfined
-
 }
