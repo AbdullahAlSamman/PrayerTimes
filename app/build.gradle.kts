@@ -29,13 +29,9 @@ android {
             }
         }
 
-        buildFeatures {
-            compose = true
-        }
+        buildFeatures { compose = true }
 
-        dependenciesInfo {
-            includeInApk = true
-        }
+        dependenciesInfo { includeInApk = true }
 
         javaCompileOptions {
             annotationProcessorOptions {
@@ -44,30 +40,27 @@ android {
         }
     }
 
-    signingConfigs {
-        create("release") {}
-    }
+    signingConfigs { create("release") {} }
 
-    kotlinOptions {
-        jvmTarget = "17"
-    }
+    kotlinOptions { jvmTarget = "17" }
 
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.12"
-    }
+    composeOptions { kotlinCompilerExtensionVersion = "1.5.12" }
+
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
 
-    kapt {
-        correctErrorTypes = false
-    }
+    kapt { correctErrorTypes = false }
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
+    }
+
+    testOptions{
+        unitTests.isReturnDefaultValues = true
     }
 
     dependencies {
