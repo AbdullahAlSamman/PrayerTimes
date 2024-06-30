@@ -8,12 +8,12 @@ import com.gals.prayertimes.repository.local.entities.PrayerEntity
 import com.gals.prayertimes.utils.Formatter
 import com.gals.prayertimes.utils.PrayerCalculation
 import com.gals.prayertimes.utils.ResourceProvider
+import com.gals.prayertimes.utils.TestScreenUpdater
 import com.gals.prayertimes.viewmodel.utils.TestDispatcherRule
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import junit.framework.TestCase.assertEquals
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
@@ -28,6 +28,7 @@ class MainViewModelTest {
     private val mockResourceProvider = mockk<ResourceProvider>()
     private val mockFormatter = mockk<Formatter>()
     private val mockCalculation = mockk<PrayerCalculation>()
+    private val mockScreenUpdater = mockk<TestScreenUpdater>()
 
     @Test
     fun `Given valid request from be, when view model start loading, then show success result`() =
@@ -49,6 +50,10 @@ class MainViewModelTest {
                     )
                 )
             }
+
+            coEvery {
+                mockScreenUpdater.startTicks(any(), any())
+            } returns flowOf(Unit)
 
             every {
                 mockResourceProvider.getString(any())
@@ -82,6 +87,7 @@ class MainViewModelTest {
         repository = mockRepository,
         resourceProvider = mockResourceProvider,
         formatter = mockFormatter,
-        calculation = mockCalculation
+        calculation = mockCalculation,
+        screenUpdater = mockScreenUpdater
     )
 }
