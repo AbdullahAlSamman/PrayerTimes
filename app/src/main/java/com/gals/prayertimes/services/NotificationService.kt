@@ -1,5 +1,6 @@
 package com.gals.prayertimes.services
 
+import android.annotation.SuppressLint
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -97,6 +98,7 @@ class NotificationService : Service() {
         startForeground(1, notification)
     }
 
+    @SuppressLint("MissingPermission")
     private fun showAlarmNotification(config: NextPrayerConfig, pendingIntent: PendingIntent) {
         Timer().schedule(NOTIFICATION_UPDATE_LONG) {
             val notification = buildNotification(
