@@ -1,7 +1,7 @@
 package com.gals.prayertimes.viewmodel
 
 import app.cash.turbine.test
-import com.gals.prayertimes.model.NextPrayerConfig
+import com.gals.prayertimes.model.ConnectivityException
 import com.gals.prayertimes.model.UiState
 import com.gals.prayertimes.repository.Repository
 import com.gals.prayertimes.repository.local.entities.PrayerEntity
@@ -10,10 +10,13 @@ import com.gals.prayertimes.utils.PrayerCalculation
 import com.gals.prayertimes.utils.ResourceProvider
 import com.gals.prayertimes.utils.TestScreenUpdater
 import com.gals.prayertimes.viewmodel.utils.TestDispatcherRule
+import com.gals.prayertimes.viewmodel.utils.testNextPrayerConfig
+import com.gals.prayertimes.viewmodel.utils.testPrayerEntity
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import junit.framework.TestCase.assertEquals
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
@@ -33,6 +36,8 @@ class MainViewModelTest {
 
     @Before
     fun setup() {
+        setNetworkRequest(testPrayerEntity) {}
+
         coEvery {
             mockScreenUpdater.startTicks(any(), any())
         } returns flowOf(Unit)
@@ -45,24 +50,6 @@ class MainViewModelTest {
             mockFormatter.formatDateText(any(), any())
         } returns "date_string"
 
-        coEvery {
-            mockRepository.fetchComposePrayer(any())
-        } coAnswers {
-            flowOf(
-                PrayerEntity(
-                    objectId = "id",
-                    sDate = "01.02.2023",
-                    mDate = "01.03.1443",
-                    fajer = "04:00",
-                    sunrise = "06:00",
-                    duhr = "13:00",
-                    asr = "16:00",
-                    maghrib = "20:00",
-                    isha = "22:00"
-                )
-            )
-        }
-
         every {
             mockFormatter.formatDateText(any(), any())
         } returns "date_string"
@@ -74,11 +61,7 @@ class MainViewModelTest {
                 any(),
                 any()
             )
-        } returns NextPrayerConfig(
-            nextPrayerBanner = "asr",
-            nextPrayerName = "Asr",
-            nextPrayerTime = "16:00"
-        )
+        } returns testNextPrayerConfig
     }
 
     @Test
@@ -90,6 +73,32 @@ class MainViewModelTest {
                 assertEquals(UiState.Success, awaitItem())
             }
         }
+
+    @Test
+    fun `Given request is ongoing, when start loading, then should show loading screen`() =
+        runTest {
+            setNetworkRequest(prayerEntity = testPrayerEntity) {
+                delay(5)
+            }
+
+            val viewModel = createViewModel()
+
+            viewModel.uiState.test {
+                assertEquals(UiState.Loading, awaitItem())
+            }
+        }
+
+    //TODO: test error cases
+    //TODO: test retry method
+
+    private fun setNetworkRequest(prayerEntity: PrayerEntity, block: suspend () -> Unit) {
+        coEvery {
+            mockRepository.fetchComposePrayer(any())
+        } coAnswers {
+            block()
+            flowOf(prayerEntity)
+        }
+    }
 
     private fun createViewModel() = MainViewModel(
         repository = mockRepository,

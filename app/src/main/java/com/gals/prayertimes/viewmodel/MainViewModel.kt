@@ -7,6 +7,7 @@ import com.gals.prayertimes.R
 import com.gals.prayertimes.model.ViewModelScreenUpdater
 import com.gals.prayertimes.model.ConnectivityException
 import com.gals.prayertimes.model.DateConfig
+import com.gals.prayertimes.model.NetworkException
 import com.gals.prayertimes.model.Prayer
 import com.gals.prayertimes.model.UiDate
 import com.gals.prayertimes.model.UiNextPrayer
@@ -127,7 +128,7 @@ class MainViewModel @Inject constructor(
                             _uiState.update { UiState.Error(resourceProvider.getString(R.string.text_error_check_internet)) }
                         }
 
-                        else -> {
+                        is NetworkException -> {
                             _uiState.update { UiState.Error(resourceProvider.getString(R.string.text_error_server_down)) }
                         }
                     }
