@@ -31,7 +31,7 @@ android {
 
         buildFeatures { compose = true }
 
-        dependenciesInfo { includeInApk = true }
+        dependenciesInfo { includeInApk = false }
 
         javaCompileOptions {
             annotationProcessorOptions {
