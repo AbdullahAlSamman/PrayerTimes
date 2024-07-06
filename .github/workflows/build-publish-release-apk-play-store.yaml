@@ -1,4 +1,0 @@
-# TODO write actions to generate apk and upload to store
-#name: Create release apk
-#run-name: create release apk started by ${{ github.actor }}
-#on: []
