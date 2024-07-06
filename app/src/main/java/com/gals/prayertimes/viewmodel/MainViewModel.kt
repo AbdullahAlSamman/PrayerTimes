@@ -4,8 +4,10 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gals.prayertimes.R
+import com.gals.prayertimes.model.ViewModelScreenUpdater
 import com.gals.prayertimes.model.ConnectivityException
 import com.gals.prayertimes.model.DateConfig
+import com.gals.prayertimes.model.NetworkException
 import com.gals.prayertimes.model.Prayer
 import com.gals.prayertimes.model.UiDate
 import com.gals.prayertimes.model.UiNextPrayer
@@ -14,6 +16,7 @@ import com.gals.prayertimes.repository.Repository
 import com.gals.prayertimes.utils.Formatter
 import com.gals.prayertimes.utils.PrayerCalculation
 import com.gals.prayertimes.utils.ResourceProvider
+import com.gals.prayertimes.utils.ScreenUpdater
 import com.gals.prayertimes.utils.getDayName
 import com.gals.prayertimes.utils.getTodayDate
 import com.gals.prayertimes.utils.toPrayer
@@ -21,12 +24,10 @@ import com.gals.prayertimes.utils.toTimePrayer
 import com.gals.prayertimes.utils.toUiDate
 import com.gals.prayertimes.utils.toUiNextPrayer
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
@@ -37,6 +38,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
+    @ViewModelScreenUpdater private val screenUpdater: ScreenUpdater,
     private val repository: Repository,
     private val resourceProvider: ResourceProvider,
     private val calculation: PrayerCalculation,
@@ -56,9 +58,9 @@ class MainViewModel @Inject constructor(
 
     init {
         startLoading()
-        startTicks()
+        screenUpdater.startTicks(delay = TICKS_DELAY, initialDelay = TICKS_INITIAL_DELAY)
             .onEach {
-                updateScreenFlows()
+                updateScreenStates()
             }.launchIn(viewModelScope)
     }
 
@@ -68,19 +70,19 @@ class MainViewModel @Inject constructor(
     }
 
     /**update all flows related to ui*/
-    private fun updateScreenFlows() = try {
+    private fun updateScreenStates() = try {
         Log.i(
             "isDayChanged",
-            "" + calculation.isDayChanged(todayPrayers.sDate)
+            "${calculation.isDayChanged(todayPrayers.sDate)}"
         )
 
         if (calculation.isDayChanged(todayPrayers.sDate)) {
             startLoading()
         }
 
-        updatePrayersFlow()
-        updateNextPrayerFlow()
-        updateDateFlow()
+        updatePrayersState()
+        updateNextPrayerState()
+        updateDateState()
     } catch (e: Exception) {
         Log.i(
             "Flow updates",
@@ -90,7 +92,7 @@ class MainViewModel @Inject constructor(
     }
 
     /**update the time to next prayer*/
-    private fun updateNextPrayerFlow() {
+    private fun updateNextPrayerState() {
         _uiNextPrayer.update {
             calculation.calculateNextPrayerInfo(
                 currentPrayer = todayPrayers.toTimePrayer(),
@@ -100,7 +102,7 @@ class MainViewModel @Inject constructor(
     }
 
     /** Build text for dates*/
-    private fun updateDateFlow() {
+    private fun updateDateState() {
         val calendar = Calendar.getInstance()
         _uiDate.update {
             DateConfig(
@@ -112,19 +114,9 @@ class MainViewModel @Inject constructor(
     }
 
     /**Update prayers flow*/
-    private fun updatePrayersFlow() {
+    private fun updatePrayersState() {
         _uiPrayers.update { todayPrayers }
     }
-
-    /**Timer to update the ui*/
-    private fun startTicks(delay: Long = TICKS_DELAY, initialDelay: Long = TICKS_INITIAL_DELAY) =
-        flow {
-            delay(initialDelay)
-            while (true) {
-                emit(Unit)
-                delay(delay)
-            }
-        }
 
     /**Method to initial loading flow*/
     private fun startLoading() {
@@ -136,7 +128,7 @@ class MainViewModel @Inject constructor(
                             _uiState.update { UiState.Error(resourceProvider.getString(R.string.text_error_check_internet)) }
                         }
 
-                        else -> {
+                        is NetworkException -> {
                             _uiState.update { UiState.Error(resourceProvider.getString(R.string.text_error_server_down)) }
                         }
                     }
@@ -147,7 +139,7 @@ class MainViewModel @Inject constructor(
                 .collect { prayers ->
                     prayers.let { composePrayers ->
                         todayPrayers = composePrayers
-                        updateScreenFlows()
+                        updateScreenStates()
                         _uiState.update { UiState.Success }
                     }
                 }
