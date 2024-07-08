@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.gals.prayertimes.repository.remote.model.PrayerName
 import com.gals.prayertimes.repository.remote.model.SinglePrayer
 import com.gals.prayertimes.ui.theme.DarkTextStyle
 import com.gals.prayertimes.utils.DynamicSizedText
@@ -23,7 +24,7 @@ import com.gals.prayertimes.utils.prayerNameMapper
 @Composable
 fun PrayerSingleView(
     modifier: Modifier = Modifier,
-    prayer: SinglePrayer,
+    prayer: Map.Entry<PrayerName, String>,
     textStyle: TextStyle = DarkTextStyle.copy(fontSize = 20.nonScaledSp)
 ) {
     Column(
@@ -32,19 +33,19 @@ fun PrayerSingleView(
             .fillMaxWidth()
             .padding(start = 2.dp, end = 2.dp)
             .background(
-                color = prayerColorMapper(prayer = prayer),
+                color = prayerColorMapper(prayer = prayer.key),
                 shape = MaterialTheme.shapes.small
             ),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         DynamicSizedText(
-            text = prayerNameMapper(prayerName = prayer.name),
+            text = prayerNameMapper(prayerName = prayer.key),
             modifier = modifier.padding(top = 5.dp),
             style = textStyle,
             textAlign = TextAlign.Center
         )
         DynamicSizedText(
-            text = prayer.time,
+            text = prayer.value,
             modifier = modifier.padding(top = 20.dp),
             style = textStyle,
             textAlign = TextAlign.Center

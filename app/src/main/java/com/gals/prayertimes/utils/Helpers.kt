@@ -23,8 +23,8 @@ val Int.nonScaledSp
     get() = (this / LocalDensity.current.fontScale).sp
 
 @Composable
-fun prayerColorMapper(prayer: SinglePrayer): Color =
-    when (prayer.name) {
+fun prayerColorMapper(prayer: PrayerName): Color =
+    when (prayer) {
         PrayerName.FAJER -> colorBackgroundFajer
         PrayerName.SUNRISE -> colorBackgroundSunrise
         PrayerName.DUHR -> colorBackgroundDuhr

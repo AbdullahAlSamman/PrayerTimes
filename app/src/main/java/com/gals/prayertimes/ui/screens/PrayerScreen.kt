@@ -30,9 +30,7 @@ fun PrayerScreen(
     onSettingsClicked: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    val uiPrayers by viewModel.uiPrayers.collectAsState()
     val uiNextPrayer by viewModel.nextPrayer.collectAsState()
-    val uiDate by viewModel.uiDate.collectAsState()
 
     Scaffold { innerPadding ->
         CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
@@ -44,7 +42,7 @@ fun PrayerScreen(
                 when (uiState) {
                     is UiState.Error -> {
                         val state = uiState as UiState.Error
-                        ErrorScreen(message = state.message, retry = viewModel::retryRequest)
+                        ErrorScreen(message = state.message, retry = viewModel::reload)
                     }
 
                     is UiState.Loading -> {
@@ -52,6 +50,7 @@ fun PrayerScreen(
                     }
 
                     is UiState.Success -> {
+                        val state = uiState as UiState.Success
                         PrayerHeader(
                             config = uiNextPrayer,
                             onSettingsClicked = onSettingsClicked
@@ -60,9 +59,9 @@ fun PrayerScreen(
                         Spacer(modifier = Modifier.height(4.dp))
 
                         PrayerDateBar(
-                            day = uiDate.dayName,
-                            moonDate = uiDate.moonDate,
-                            sunDate = uiDate.sunDate
+                            day = state.prayer.uiDate.dayName,
+                            moonDate = state.prayer.uiDate.moonDate,
+                            sunDate = state.prayer.uiDate.sunDate
                         )
 
                         Spacer(modifier = Modifier.height(8.dp))
@@ -73,11 +72,10 @@ fun PrayerScreen(
                             contentPadding = innerPadding,
                             userScrollEnabled = false,
                             content = {
-                                items(uiPrayers.prayers.size) { index ->
-                                    val item = uiPrayers.prayers[index]
-                                    PrayerSingleView(
-                                        prayer = item
-                                    )
+                                state.prayer.prayers.forEach { prayer ->
+                                    item {
+                                        PrayerSingleView(prayer = prayer)
+                                    }
                                 }
                             }
                         )

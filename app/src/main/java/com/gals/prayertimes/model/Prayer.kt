@@ -1,13 +1,15 @@
 package com.gals.prayertimes.model
 
-import com.gals.prayertimes.repository.remote.model.SinglePrayer
+import androidx.compose.runtime.Immutable
+import com.gals.prayertimes.repository.remote.model.PrayerName
 import com.gals.prayertimes.utils.setHoursMinutes
 import java.util.Calendar
 
+
+@Immutable
 data class Prayer(
-    var sDate: String = "",
-    var mDate: String = "",
-    var prayers: List<SinglePrayer> = emptyList()
+    var uiDate: UiDate = UiDate(),
+    var prayers: Map<PrayerName, String> = emptyMap()
 )
 
 data class TimePrayer(
@@ -15,7 +17,7 @@ data class TimePrayer(
     var sunrise: Calendar = Calendar.getInstance(),
     var duhr: Calendar = Calendar.getInstance(),
     var asr: Calendar = Calendar.getInstance(),
-    var maghreb: Calendar = Calendar.getInstance(),
+    var maghrib: Calendar = Calendar.getInstance(),
     var isha: Calendar = Calendar.getInstance(),
     val midNight: Calendar = Calendar.getInstance().setHoursMinutes(23, 59)
 )
