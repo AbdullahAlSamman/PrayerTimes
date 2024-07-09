@@ -58,8 +58,7 @@ class MainViewModel @Inject constructor(
 
     /**retry method to call from ui*/
     fun reload() {
-        _uiState.update { UiState.Loading }
-        startLoading()
+        startLoading(showLoadingScreen = true)
     }
 
     /**update all flows related to ui*/
@@ -80,6 +79,7 @@ class MainViewModel @Inject constructor(
             "Flow updates",
             "error: ${e.message.toString()}"
         )
+        //TODO: not handled correctly show should check for exception type
         _uiState.update { UiState.Error(resourceProvider.getString(R.string.text_error_server_down)) }
     }
 
@@ -94,7 +94,10 @@ class MainViewModel @Inject constructor(
     }
 
     /**Method to initial loading flow*/
-    private fun startLoading() {
+    private fun startLoading(showLoadingScreen: Boolean = false) {
+        if (showLoadingScreen) {
+            _uiState.update { UiState.Loading }
+        }
         viewModelScope.launch {
             repository.fetchComposePrayer(getTodayDate())
                 .catch { cause ->
