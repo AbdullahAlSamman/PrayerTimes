@@ -1,8 +1,7 @@
 name: Run quality checks
 on:
   pull_request:
-    types:
-      - opened
+    types: [opened, closed]
     branches:
       - develop
 jobs:
