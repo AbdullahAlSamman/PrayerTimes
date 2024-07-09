@@ -3,6 +3,7 @@ package com.gals.prayertimes.repository
 import android.util.Log
 import com.gals.prayertimes.model.ConnectivityException
 import com.gals.prayertimes.model.NetworkException
+import com.gals.prayertimes.model.NotificationType
 import com.gals.prayertimes.repository.local.LocalDataSource
 import com.gals.prayertimes.repository.local.entities.PrayerEntity
 import com.gals.prayertimes.repository.local.entities.SettingsEntity
@@ -46,7 +47,17 @@ class Repository @Inject constructor(
     suspend fun getPrayer(todayDate: String): PrayerEntity =
         localDataSource.getPrayers(todayDate)
 
-    suspend fun getSettings(): SettingsEntity = localDataSource.getSettings()
+    suspend fun getSettings(): SettingsEntity =
+        if (localDataSource.isSettingsExists()) {
+            localDataSource.getSettings()
+        } else {
+            val settings = SettingsEntity(
+                notificationType = NotificationType.SILENT.value,
+                notification = false
+            )
+            localDataSource.insertSettings(settings)
+            settings
+        }
 
     suspend fun saveSettings(settingsEntity: SettingsEntity) =
         localDataSource.insertSettings(settingsEntity)
