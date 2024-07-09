@@ -3,12 +3,6 @@ package com.gals.prayertimes.model
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 
-data class DateConfig(
-    var dayName : String = "",
-    var moonDate : String = "",
-    var sunDate : String = ""
-)
-
 data class NextPrayerConfig(
     var isRamadan: Boolean = false,
     var isPrayer: Boolean = false,

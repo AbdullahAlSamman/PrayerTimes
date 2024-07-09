@@ -1,7 +1,14 @@
 package com.gals.prayertimes.viewmodel.utils
 
 import com.gals.prayertimes.model.NextPrayerConfig
+import com.gals.prayertimes.model.Prayer
+import com.gals.prayertimes.model.UiDate
 import com.gals.prayertimes.repository.local.entities.PrayerEntity
+import com.gals.prayertimes.repository.remote.model.PrayerName
+
+const val errorMessage = "errorMessage"
+const val anyString = "anyString"
+const val dateString = "dateString"
 
 val testPrayerEntity = PrayerEntity(
     objectId = "id",
@@ -19,4 +26,20 @@ val testNextPrayerConfig = NextPrayerConfig(
     nextPrayerBanner = "asr",
     nextPrayerName = "Asr",
     nextPrayerTime = "16:00"
+)
+
+val testPrayer = Prayer(
+    uiDate = UiDate(
+        dayName = anyString,
+        moonDate = dateString,
+        sunDate = dateString
+    ),
+    prayers = mapOf(
+        PrayerName.FAJER to "04:00",
+        PrayerName.SUNRISE to "06:00",
+        PrayerName.DUHR to "13:00",
+        PrayerName.ASR to "16:00",
+        PrayerName.MAGHRIB to "20:00",
+        PrayerName.ISHA to "22:00"
+    )
 )

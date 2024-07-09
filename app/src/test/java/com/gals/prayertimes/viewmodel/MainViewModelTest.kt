@@ -1,7 +1,6 @@
 package com.gals.prayertimes.viewmodel
 
 import app.cash.turbine.test
-import com.gals.prayertimes.model.ConnectivityException
 import com.gals.prayertimes.model.UiState
 import com.gals.prayertimes.repository.Repository
 import com.gals.prayertimes.repository.local.entities.PrayerEntity
@@ -10,7 +9,10 @@ import com.gals.prayertimes.utils.PrayerCalculation
 import com.gals.prayertimes.utils.ResourceProvider
 import com.gals.prayertimes.utils.TestScreenUpdater
 import com.gals.prayertimes.viewmodel.utils.TestDispatcherRule
+import com.gals.prayertimes.viewmodel.utils.anyString
+import com.gals.prayertimes.viewmodel.utils.dateString
 import com.gals.prayertimes.viewmodel.utils.testNextPrayerConfig
+import com.gals.prayertimes.viewmodel.utils.testPrayer
 import com.gals.prayertimes.viewmodel.utils.testPrayerEntity
 import io.mockk.coEvery
 import io.mockk.every
@@ -37,22 +39,15 @@ class MainViewModelTest {
     @Before
     fun setup() {
         setNetworkRequest(testPrayerEntity) {}
+        setResourceProviderMessage(anyString)
 
         coEvery {
             mockScreenUpdater.startTicks(any(), any())
         } returns flowOf(Unit)
 
         every {
-            mockResourceProvider.getString(any())
-        } returns "any_string"
-
-        every {
             mockFormatter.formatDateText(any(), any())
-        } returns "date_string"
-
-        every {
-            mockFormatter.formatDateText(any(), any())
-        } returns "date_string"
+        } returns dateString
 
         every { mockCalculation.isDayChanged(any()) } returns false
 
@@ -70,21 +65,21 @@ class MainViewModelTest {
             val viewModel = createViewModel()
 
             viewModel.uiState.test {
-                assertEquals(UiState.Success, awaitItem())
+                assertEquals(UiState.Success(testPrayer), awaitItem())
             }
         }
 
     @Test
-    fun `Given request is ongoing, when start loading, then should show loading screen`() =
+    fun `Given request failed, when start loading, then error state with error message`() =
         runTest {
             setNetworkRequest(prayerEntity = testPrayerEntity) {
-                delay(5)
+                delay(2)
             }
 
             val viewModel = createViewModel()
 
             viewModel.uiState.test {
-                assertEquals(UiState.Loading, awaitItem())
+                assertEquals(UiState.Error(anyString), awaitItem())
             }
         }
 
@@ -98,6 +93,12 @@ class MainViewModelTest {
             block()
             flowOf(prayerEntity)
         }
+    }
+
+    private fun setResourceProviderMessage(message: String) {
+        every {
+            mockResourceProvider.getString(any())
+        } returns message
     }
 
     private fun createViewModel() = MainViewModel(
