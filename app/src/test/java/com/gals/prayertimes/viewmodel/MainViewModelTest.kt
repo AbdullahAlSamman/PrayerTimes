@@ -71,7 +71,7 @@ class MainViewModelTest {
         }
 
     @Test
-    fun `Given request is ongoing, when start loading, then loading state is still on going`() =
+    fun `Given request is ongoing, when start loading, then loading state is set then success state`() =
         runTest {
             setNetworkRequest(prayerEntity = testPrayerEntity) {
                 delay(5)
@@ -81,7 +81,7 @@ class MainViewModelTest {
 
             viewModel.uiState.test {
                 assertEquals(UiState.Loading, awaitItem())
-                cancelAndIgnoreRemainingEvents()
+                assertEquals(UiState.Success(testPrayer), awaitItem())
             }
         }
 
