@@ -42,7 +42,7 @@ class MainViewModelTest {
         setResourceProviderMessage(anyString)
 
         coEvery {
-            mockScreenUpdater.startTicks(any(), any())
+            mockScreenUpdater.startTicks(any())
         } returns flowOf(Unit)
 
         every {
@@ -70,16 +70,16 @@ class MainViewModelTest {
         }
 
     @Test
-    fun `Given request failed, when start loading, then error state with error message`() =
+    fun `Given request is ongoing, when start loading, then loading state is still on going`() =
         runTest {
             setNetworkRequest(prayerEntity = testPrayerEntity) {
-                delay(2)
+                delay(5)
             }
 
             val viewModel = createViewModel()
 
             viewModel.uiState.test {
-                assertEquals(UiState.Error(anyString), awaitItem())
+                assertEquals(UiState.Loading, awaitItem())
             }
         }
 

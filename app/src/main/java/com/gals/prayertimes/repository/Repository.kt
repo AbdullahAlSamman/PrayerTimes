@@ -22,7 +22,7 @@ class Repository @Inject constructor(
 
     suspend fun fetchComposePrayer(todayDate: String): Flow<PrayerEntity> = flow {
         if (localDataSource.isTodayPrayerExists(todayDate)) {
-            Log.e("Local Data Request", "exists locally in cache")
+            Log.i("ngz_local_data_request", "exists locally in cache")
             emit(localDataSource.getPrayers(todayDate))
             return@flow
         }
@@ -30,16 +30,16 @@ class Repository @Inject constructor(
             val result = remoteDataSource.getPrayers(todayDate)
             if (result.isSuccessful) {
                 result.body()?.let { response ->
-                    Log.e("Remote Data Request", "Success: ${result.message()}")
+                    Log.i("ngz_remote_data_request", "Success: ${result.message()}")
                     localDataSource.insertPrayers(response.toEntity())
                     emit(response.toEntity())
                 }
             } else {
-                Log.e("Remote Data Request", "Network error: ${result.message()}")
+                Log.e("ngz_remote_data_request", "Network error: ${result.message()}")
                 throw NetworkException("${result.code()}: ${result.message()}")
             }
         } else {
-            Log.e("Remote Data Request", "Connectivity: No Internet")
+            Log.e("ngz_remote_data_request", "Connectivity: No Internet")
             throw ConnectivityException("No Internet")
         }
     }
