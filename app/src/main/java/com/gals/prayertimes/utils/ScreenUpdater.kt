@@ -1,15 +1,22 @@
 package com.gals.prayertimes.utils
 
 import android.util.Log
+import com.gals.prayertimes.model.DefaultDispatcher
+import com.gals.prayertimes.model.TestDispatcher
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
+import javax.inject.Inject
 
 interface ScreenUpdater {
     fun startTicks(delay: Long): Flow<Unit>
 }
 
-class VMScreenUpdater : ScreenUpdater {
+class VMScreenUpdater @Inject constructor(
+    @DefaultDispatcher private val dispatcher: CoroutineDispatcher
+) : ScreenUpdater {
     override fun startTicks(delay: Long): Flow<Unit> =
         flow {
             while (true) {
@@ -17,11 +24,13 @@ class VMScreenUpdater : ScreenUpdater {
                 emit(Unit)
                 delay(delay)
             }
-        }
+        }.flowOn(dispatcher)
 }
 
-class TestScreenUpdater : ScreenUpdater {
-    override fun startTicks(delay: Long): Flow<Unit> = flow {
+class TestScreenUpdater @Inject constructor(
+    @TestDispatcher private val dispatcher: CoroutineDispatcher
+) : ScreenUpdater {
+    override fun startTicks(delay: Long): Flow<Unit> = flow<Unit> {
         delay(5)
-    }
+    }.flowOn(dispatcher)
 }

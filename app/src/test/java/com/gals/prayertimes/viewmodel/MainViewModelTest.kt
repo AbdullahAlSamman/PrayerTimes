@@ -18,6 +18,7 @@ import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import junit.framework.TestCase.assertEquals
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
@@ -80,6 +81,7 @@ class MainViewModelTest {
 
             viewModel.uiState.test {
                 assertEquals(UiState.Loading, awaitItem())
+                cancelAndIgnoreRemainingEvents()
             }
         }
 
@@ -102,10 +104,11 @@ class MainViewModelTest {
     }
 
     private fun createViewModel() = MainViewModel(
+        dispatcher = Dispatchers.Unconfined,
+        screenUpdater = mockScreenUpdater,
         repository = mockRepository,
         resourceProvider = mockResourceProvider,
         formatter = mockFormatter,
-        calculation = mockCalculation,
-        screenUpdater = mockScreenUpdater
+        calculation = mockCalculation
     )
 }

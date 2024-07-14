@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gals.prayertimes.R
 import com.gals.prayertimes.model.ConnectivityException
+import com.gals.prayertimes.model.DefaultDispatcher
 import com.gals.prayertimes.model.NetworkException
 import com.gals.prayertimes.model.UiNextPrayer
 import com.gals.prayertimes.model.UiState
@@ -20,6 +21,7 @@ import com.gals.prayertimes.utils.toPrayer
 import com.gals.prayertimes.utils.toTimePrayer
 import com.gals.prayertimes.utils.toUiNextPrayer
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -33,6 +35,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
+    @DefaultDispatcher private val dispatcher: CoroutineDispatcher,
     @ViewModelScreenUpdater private val screenUpdater: ScreenUpdater,
     private val repository: Repository,
     private val resourceProvider: ResourceProvider,
@@ -48,7 +51,7 @@ class MainViewModel @Inject constructor(
     val nextPrayer: StateFlow<UiNextPrayer> = _uiNextPrayer.asStateFlow()
 
     init {
-        startLoading()
+        startLoading(dispatcher = dispatcher)
     }
 
     fun startUiTicks() {
@@ -60,7 +63,7 @@ class MainViewModel @Inject constructor(
 
     /**retry method to call from ui*/
     fun reload() {
-        startLoading(showLoadingScreen = true)
+        startLoading(showLoadingScreen = true, dispatcher = dispatcher)
     }
 
     /**update all flows related to ui*/
@@ -71,7 +74,7 @@ class MainViewModel @Inject constructor(
         )
 
         if (calculation.isDayChanged(todayPrayers.sDate)) {
-            startLoading()
+            startLoading(dispatcher = dispatcher)
         }
 
         updateNextPrayerState()
@@ -93,11 +96,11 @@ class MainViewModel @Inject constructor(
     }
 
     /**Method to initial loading flow*/
-    private fun startLoading(showLoadingScreen: Boolean = false) {
+    private fun startLoading(showLoadingScreen: Boolean = false, dispatcher: CoroutineDispatcher) {
         if (showLoadingScreen) {
             _uiState.update { UiState.Loading }
         }
-        viewModelScope.launch {
+        viewModelScope.launch(context = dispatcher) {
             repository.fetchComposePrayer(getTodayDate())
                 .catch { cause ->
                     when (cause) {
