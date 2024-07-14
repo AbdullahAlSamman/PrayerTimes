@@ -49,8 +49,10 @@ class MainViewModel @Inject constructor(
 
     init {
         startLoading()
-        //TODO: Ticks starts on screen loaded successfully using launched effect
-        screenUpdater.startTicks(delay = TICKS_DELAY, initialDelay = TICKS_INITIAL_DELAY)
+    }
+
+    fun startUiTicks() {
+        screenUpdater.startTicks(delay = TICKS_DELAY)
             .onEach {
                 updateScreenStates()
             }.launchIn(viewModelScope)
@@ -64,7 +66,7 @@ class MainViewModel @Inject constructor(
     /**update all flows related to ui*/
     private fun updateScreenStates() = try {
         Log.i(
-            "isDayChanged",
+            "ngz_is_day_changed",
             "${calculation.isDayChanged(todayPrayers.sDate)}"
         )
 
@@ -75,10 +77,7 @@ class MainViewModel @Inject constructor(
         updateNextPrayerState()
 
     } catch (e: Exception) {
-        Log.i(
-            "Flow updates",
-            "error: ${e.message.toString()}"
-        )
+        Log.e("ngz_flow_updates", "error: ${e.message.toString()}")
         //TODO: not handled correctly show should check for exception type
         _uiState.update { UiState.Error(resourceProvider.getString(R.string.text_error_server_down)) }
     }
@@ -126,7 +125,6 @@ class MainViewModel @Inject constructor(
 
     companion object {
         const val STRING_DATE_SEPARATOR = "."
-        const val TICKS_INITIAL_DELAY: Long = 5_000
         const val TICKS_DELAY: Long = 25_000
     }
 }
