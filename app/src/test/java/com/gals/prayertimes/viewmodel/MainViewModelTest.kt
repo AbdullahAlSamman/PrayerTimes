@@ -74,7 +74,7 @@ class MainViewModelTest {
     fun `Given request is ongoing, when start loading, then loading state is set then success state`() =
         runTest {
             setNetworkRequest(prayerEntity = testPrayerEntity) {
-                delay(5)
+                delay(1)
             }
 
             val viewModel = createViewModel()
@@ -104,7 +104,7 @@ class MainViewModelTest {
     }
 
     private fun createViewModel() = MainViewModel(
-        dispatcher = Dispatchers.Unconfined,
+        dispatcher = Dispatchers.Main,
         screenUpdater = mockScreenUpdater,
         repository = mockRepository,
         resourceProvider = mockResourceProvider,
