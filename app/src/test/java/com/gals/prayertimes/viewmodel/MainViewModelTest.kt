@@ -18,6 +18,7 @@ import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import junit.framework.TestCase.assertEquals
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
@@ -70,16 +71,17 @@ class MainViewModelTest {
         }
 
     @Test
-    fun `Given request is ongoing, when start loading, then loading state is still on going`() =
+    fun `Given request is ongoing, when start loading, then loading state is set then success state`() =
         runTest {
             setNetworkRequest(prayerEntity = testPrayerEntity) {
-                delay(5)
+                delay(1)
             }
 
             val viewModel = createViewModel()
 
             viewModel.uiState.test {
                 assertEquals(UiState.Loading, awaitItem())
+                assertEquals(UiState.Success(testPrayer), awaitItem())
             }
         }
 
@@ -102,10 +104,11 @@ class MainViewModelTest {
     }
 
     private fun createViewModel() = MainViewModel(
+        dispatcher = Dispatchers.Main,
+        screenUpdater = mockScreenUpdater,
         repository = mockRepository,
         resourceProvider = mockResourceProvider,
         formatter = mockFormatter,
-        calculation = mockCalculation,
-        screenUpdater = mockScreenUpdater
+        calculation = mockCalculation
     )
 }

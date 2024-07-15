@@ -7,11 +7,11 @@ plugins {
 
 android {
     namespace = "com.gals.prayertimes"
-    compileSdk = 35
+    compileSdk = 34
     defaultConfig {
         applicationId = "com.gals.prayertimes"
         minSdk = 26
-        targetSdk = 35
+        targetSdk = 34
         versionName = "1.0.4"
         versionCode = 24
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
