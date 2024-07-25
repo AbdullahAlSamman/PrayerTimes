@@ -1,13 +1,6 @@
 package com.gals.prayertimes.ui.screens
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -17,12 +10,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.LayoutDirection
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.gals.prayertimes.model.UiState
-import com.gals.prayertimes.ui.components.PrayerDateBar
-import com.gals.prayertimes.ui.components.PrayerHeader
-import com.gals.prayertimes.ui.components.PrayerSingleView
+import com.gals.prayertimes.utils.isTabletInLandscape
 import com.gals.prayertimes.viewmodel.MainViewModel
 
 @Composable
@@ -35,55 +25,40 @@ fun PrayerScreen(
 
     Scaffold { innerPadding ->
         CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(innerPadding)
-            ) {
-                LaunchedEffect(uiState) {
-                    if (uiState is UiState.Success) {
-                        viewModel.startUiTicks()
-                    }
+
+            LaunchedEffect(uiState) {
+                if (uiState is UiState.Success) {
+                    viewModel.startUiTicks()
                 }
-                when (uiState) {
-                    is UiState.Error -> {
-                        val state = uiState as UiState.Error
-                        ErrorScreen(message = state.message, retry = viewModel::reload)
-                    }
+            }
+            when (uiState) {
+                is UiState.Error -> {
+                    val state = uiState as UiState.Error
+                    ErrorScreen(message = state.message, retry = viewModel::reload)
+                }
 
-                    is UiState.Loading -> {
-                        LoadingScreen(modifier = Modifier.fillMaxSize())
-                    }
+                is UiState.Loading -> {
+                    LoadingScreen(modifier = Modifier.fillMaxSize())
+                }
 
-                    is UiState.Success -> {
-                        val state = uiState as UiState.Success
-                        PrayerHeader(
-                            config = uiNextPrayer,
+                is UiState.Success -> {
+                    val state = uiState as UiState.Success
+
+                    if (isTabletInLandscape()) {
+                        PrayerTabletScreen(
+                            innerPadding = innerPadding,
+                            prayers = state.prayer.prayers,
+                            uiNextPrayer = uiNextPrayer,
+                            uiDate = state.prayer.uiDate,
                             onSettingsClicked = onSettingsClicked
                         )
-
-                        Spacer(modifier = Modifier.height(4.dp))
-
-                        PrayerDateBar(
-                            day = state.prayer.uiDate.dayName,
-                            moonDate = state.prayer.uiDate.moonDate,
-                            sunDate = state.prayer.uiDate.sunDate
-                        )
-
-                        Spacer(modifier = Modifier.height(8.dp))
-
-                        LazyVerticalGrid(
-                            columns = GridCells.Fixed(6),
-                            modifier = Modifier.fillMaxSize(),
-                            contentPadding = innerPadding,
-                            userScrollEnabled = false,
-                            content = {
-                                state.prayer.prayers.forEach { prayer ->
-                                    item {
-                                        PrayerSingleView(prayer = prayer)
-                                    }
-                                }
-                            }
+                    } else {
+                        PrayerCompactScreen(
+                            innerPadding = innerPadding,
+                            prayers = state.prayer.prayers,
+                            uiNextPrayer = uiNextPrayer,
+                            uiDate = state.prayer.uiDate,
+                            onSettingsClicked = onSettingsClicked
                         )
                     }
                 }

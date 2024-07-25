@@ -11,6 +11,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 
+@Composable
+fun isTabletInLandscape(): Boolean = isTablet() && isLandscape()
+
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @Composable
 fun isTablet(): Boolean = when (windowWidthSizeClass()) {

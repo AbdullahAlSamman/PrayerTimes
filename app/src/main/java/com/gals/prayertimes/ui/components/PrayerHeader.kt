@@ -20,6 +20,7 @@ import com.gals.prayertimes.model.UiNextPrayer
 import com.gals.prayertimes.ui.components.constraint.PrayerHeaderConstraint
 import com.gals.prayertimes.ui.theme.LightTextStyle
 import com.gals.prayertimes.utils.DynamicSizedText
+import com.gals.prayertimes.utils.isTabletInLandscape
 import com.gals.prayertimes.utils.nonScaledSp
 
 @Composable
@@ -27,11 +28,11 @@ fun PrayerHeader(
     config: UiNextPrayer,
     onSettingsClicked: () -> Unit,
     textStyle: TextStyle = LightTextStyle.copy(fontSize = 20.nonScaledSp)
-) { /*TODO: consider tablet sizes*/
+) {
+    val imageModifier = if(isTabletInLandscape()) Modifier else Modifier.fillMaxWidth()
     ConstraintLayout(constraintSet = PrayerHeaderConstraint.header) {
         Image(
-            modifier = Modifier
-                .fillMaxWidth()
+            modifier = imageModifier
                 .layoutId("backgroundImage"),
             painter = painterResource(id = config.backgroundImage),
             contentDescription = stringResource(id = R.string.content_descriptor_background),
