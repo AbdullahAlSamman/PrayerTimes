@@ -27,9 +27,7 @@ fun PrayerDateBar(
     textStyle: TextStyle = if (isTablet()) {
         LightTextStyle.copy(fontSize = 36.nonScaledSp)
     } else {
-        LightTextStyle.copy(
-            fontSize = 20.nonScaledSp
-        )
+        LightTextStyle.copy(fontSize = 20.nonScaledSp)
     },
     textTopPadding: Dp = 2.dp,
     textBottomPadding: Dp = 2.dp

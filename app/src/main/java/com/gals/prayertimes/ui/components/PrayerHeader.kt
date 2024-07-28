@@ -63,12 +63,11 @@ fun PrayerHeader(
             contentDescription = stringResource(id = R.string.content_descriptor_settings_icon)
         )
 
-        val textConfigPadding = if(isTablet()) 32.dp else 16.dp
         Column(
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .padding(
-                    bottom = textConfigPadding,
+                    bottom = if (isTablet()) 32.dp else 16.dp,
                     end = 48.dp
                 ),
             horizontalAlignment = Alignment.CenterHorizontally,
