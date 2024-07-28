@@ -2,6 +2,8 @@ package com.gals.prayertimes.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -13,9 +15,11 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.gals.prayertimes.repository.remote.model.PrayerName
-import com.gals.prayertimes.repository.remote.model.SinglePrayer
 import com.gals.prayertimes.ui.theme.DarkTextStyle
 import com.gals.prayertimes.utils.DynamicSizedText
+import com.gals.prayertimes.utils.isPhoneInLandscape
+import com.gals.prayertimes.utils.isTablet
+import com.gals.prayertimes.utils.isTabletInPortrait
 import com.gals.prayertimes.utils.nonScaledSp
 import com.gals.prayertimes.utils.prayerColorMapper
 import com.gals.prayertimes.utils.prayerNameMapper
@@ -25,11 +29,15 @@ import com.gals.prayertimes.utils.prayerNameMapper
 fun PrayerSingleView(
     modifier: Modifier = Modifier,
     prayer: Map.Entry<PrayerName, String>,
-    textStyle: TextStyle = DarkTextStyle.copy(fontSize = 20.nonScaledSp)
+    textStyle: TextStyle = if (isTablet()) {
+        DarkTextStyle.copy(fontSize = 32.nonScaledSp)
+    } else {
+        DarkTextStyle.copy(fontSize = 20.nonScaledSp)
+    }
 ) {
     Column(
         modifier = modifier
-            .height(120.dp)
+            .defaultMinSize(minHeight = if(isTabletInPortrait()) 160.dp else 120.dp)
             .fillMaxWidth()
             .padding(start = 2.dp, end = 2.dp)
             .background(
@@ -38,15 +46,18 @@ fun PrayerSingleView(
             ),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        Spacer(modifier = Modifier.height(if (isPhoneInLandscape()) 5.dp else 15.dp))
+
         DynamicSizedText(
             text = prayerNameMapper(prayerName = prayer.key),
-            modifier = modifier.padding(top = 5.dp),
             style = textStyle,
             textAlign = TextAlign.Center
         )
+
+        Spacer(modifier = Modifier.height(if (isPhoneInLandscape()) 7.dp else 20.dp))
+
         DynamicSizedText(
             text = prayer.value,
-            modifier = modifier.padding(top = 20.dp),
             style = textStyle,
             textAlign = TextAlign.Center
         )
