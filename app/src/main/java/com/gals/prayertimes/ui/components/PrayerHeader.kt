@@ -1,46 +1,60 @@
 package com.gals.prayertimes.ui.components
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
-import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.compose.ui.unit.dp
 import com.gals.prayertimes.R
 import com.gals.prayertimes.model.UiNextPrayer
-import com.gals.prayertimes.ui.components.constraint.PrayerHeaderConstraint
 import com.gals.prayertimes.ui.theme.LightTextStyle
 import com.gals.prayertimes.utils.DynamicSizedText
-import com.gals.prayertimes.utils.isTabletInLandscape
+import com.gals.prayertimes.utils.isTablet
 import com.gals.prayertimes.utils.nonScaledSp
 
 @Composable
 fun PrayerHeader(
+    modifier: Modifier = Modifier,
     config: UiNextPrayer,
-    onSettingsClicked: () -> Unit,
-    textStyle: TextStyle = LightTextStyle.copy(fontSize = 20.nonScaledSp)
+    textStyle: TextStyle = if (isTablet()) {
+        LightTextStyle.copy(fontSize = 36.nonScaledSp)
+    } else {
+        LightTextStyle.copy(fontSize = 20.nonScaledSp)
+    },
+    imageScale: ContentScale,
+    onSettingsClicked: () -> Unit
 ) {
-    val imageModifier = if(isTabletInLandscape()) Modifier else Modifier.fillMaxWidth()
-    ConstraintLayout(constraintSet = PrayerHeaderConstraint.header) {
-        Image(
-            modifier = imageModifier
-                .layoutId("backgroundImage"),
-            painter = painterResource(id = config.backgroundImage),
-            contentDescription = stringResource(id = R.string.content_descriptor_background),
-            contentScale = ContentScale.FillWidth
-        )
+    Box(
+        modifier = modifier
+            .paint(
+                painterResource(id = config.backgroundImage),
+                contentScale = imageScale
+            )
+    ) {
+        val iconPadding = if (isTablet()) 32.dp else 16.dp
         Icon(
             modifier = Modifier
-                .layoutId("settingsButton")
+                .size(if (isTablet()) 80.dp else 48.dp)
+                .align(Alignment.TopStart)
+                .padding(
+                    top = iconPadding,
+                    start = iconPadding
+                )
                 .clickable {
                     onSettingsClicked()
                 },
@@ -48,28 +62,38 @@ fun PrayerHeader(
             painter = painterResource(id = R.drawable.icon_rounded_setting),
             contentDescription = stringResource(id = R.string.content_descriptor_settings_icon)
         )
-        ConstraintLayout(
-            modifier = Modifier.layoutId("prayerRemainingText"),
-            constraintSet = PrayerHeaderConstraint.row
+
+        val textConfigPadding = if(isTablet()) 32.dp else 16.dp
+        Column(
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(
+                    bottom = textConfigPadding,
+                    end = 48.dp
+                ),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(6.dp)
+            ) {
+                DynamicSizedText(
+                    text = config.nextPrayerBanner,
+                    style = textStyle,
+                    textAlign = TextAlign.Center
+                )
+                DynamicSizedText(
+                    text = config.nextPrayerName,
+                    style = textStyle,
+                    textAlign = TextAlign.Center
+                )
+            }
             DynamicSizedText(
-                modifier = Modifier.layoutId("prayerRemainingString"),
-                text = config.nextPrayerBanner,
-                style = textStyle,
-                textAlign = TextAlign.Center
-            )
-            DynamicSizedText(
-                modifier = Modifier.layoutId("prayerNameString"),
-                text = config.nextPrayerName,
+                text = config.nextPrayerTime,
                 style = textStyle,
                 textAlign = TextAlign.Center
             )
         }
-        DynamicSizedText(
-            modifier = Modifier.layoutId("prayerRemainingTime"),
-            text = config.nextPrayerTime,
-            style = textStyle.copy(fontSize = 22.nonScaledSp),
-            textAlign = TextAlign.Center
-        )
     }
+
 }

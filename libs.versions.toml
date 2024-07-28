@@ -3,7 +3,8 @@ room = "2.6.1"
 retrofit = "2.9.0"
 moshi = "1.15.1"
 compose = "1.6.8"
-compose_material = "1.2.1"
+compose_m3 = "1.2.1"
+compose_m3_adaptive = "1.0.0-beta04"
 compose_navigation = "2.7.7"
 compose_constraint_layout = "1.0.1"
 accompanist = "0.32.0"
@@ -21,8 +22,8 @@ androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = 
 
 androidx-compose-ui = { group = "androidx.compose.ui", name = "ui", version.ref = "compose" }
 androidx-compose-ui-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview", version.ref = "compose" }
-androidx-compose-ui-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "compose_material" }
-androidx-compose-ui-m3-window = { group = "androidx.compose.material3", name = "material3-window-size-class", version.ref = "compose_material" }
+androidx-compose-ui-m3 = { group = "androidx.compose.material3", name = "material3", version.ref = "compose_m3" }
+androidx-compose-ui-m3-adaptive = { group = "androidx.compose.material3.adaptive", name = "adaptive", version.ref = "compose_m3_adaptive" }
 androidx-compose-navigation = { group = "androidx.navigation", name = "navigation-compose", version.ref = "compose_navigation" }
 androidx-compose-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout-compose", version.ref = "compose_constraint_layout" }
 
@@ -58,10 +59,10 @@ androidx-room = [
 androidx-compose = [
     "androidx-compose-ui",
     "androidx-compose-ui-preview",
-    "androidx-compose-ui-material3",
+    "androidx-compose-ui-m3",
     "androidx-compose-navigation",
     "androidx-compose-constraintlayout",
-    "androidx-compose-ui-m3-window"
+    "androidx-compose-ui-m3-adaptive"
 ]
 
 androidx-compose-tooling = [

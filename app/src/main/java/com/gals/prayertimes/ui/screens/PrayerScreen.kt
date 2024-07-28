@@ -1,5 +1,6 @@
 package com.gals.prayertimes.ui.screens
 
+import android.util.Log
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -12,7 +13,8 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.gals.prayertimes.model.UiState
-import com.gals.prayertimes.utils.isTabletInLandscape
+import com.gals.prayertimes.utils.isLandscape
+import com.gals.prayertimes.utils.isTablet
 import com.gals.prayertimes.viewmodel.MainViewModel
 
 @Composable
@@ -44,22 +46,24 @@ fun PrayerScreen(
                 is UiState.Success -> {
                     val state = uiState as UiState.Success
 
-                    if (isTabletInLandscape()) {
-                        PrayerTabletScreen(
+                    if (isLandscape()) {
+                        PrayerLandscapeScreen(
                             innerPadding = innerPadding,
                             prayers = state.prayer.prayers,
                             uiNextPrayer = uiNextPrayer,
                             uiDate = state.prayer.uiDate,
                             onSettingsClicked = onSettingsClicked
                         )
+                        Log.i("ngz_screen", "isTablet: ${isTablet()}")
                     } else {
-                        PrayerCompactScreen(
+                        PrayerPortraitScreen(
                             innerPadding = innerPadding,
                             prayers = state.prayer.prayers,
                             uiNextPrayer = uiNextPrayer,
                             uiDate = state.prayer.uiDate,
                             onSettingsClicked = onSettingsClicked
                         )
+                        Log.i("ngz_screen", "isTablet: ${isTablet()}")
                     }
                 }
             }
