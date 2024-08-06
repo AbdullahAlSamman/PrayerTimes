@@ -26,6 +26,7 @@ android {
                 )
                 isDebuggable = false
                 isJniDebuggable = false
+//                signingConfig = signingConfigs.getByName("release")
             }
         }
 
@@ -40,7 +41,14 @@ android {
         }
     }
 
-    signingConfigs { create("release") {} }
+    signingConfigs {
+        create("release"){
+            keyAlias = System.getenv("RELEASE_KEY_ALIAS")
+            keyPassword = System.getenv("RELEASE_KEY_PASSWORD")
+            storeFile = file("../kestore.jks")
+            storePassword = System.getenv("RELEASE_STORE_PASSWORD")
+        }
+    }
 
     kotlinOptions { jvmTarget = "17" }
 
@@ -51,7 +59,7 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
 
-    testOptions{
+    testOptions {
         unitTests.isReturnDefaultValues = true
     }
 
