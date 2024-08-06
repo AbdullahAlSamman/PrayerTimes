@@ -9,7 +9,7 @@ on:
         type: choice
         description: "Select testers"
         options:
-          - internalTesters
+          - internal
           - public
 
 jobs:
@@ -36,7 +36,7 @@ jobs:
           echo $ENCODED_STRING > keystore-b64.txt
           base64 -d keystore-b64.txt > keystore.jks
 
-      - name: build bundle
+      - name: build bundle for ${{ github.ref }}
         env:
           RELEASE_STORE_PASSWORD: ${{ secrets.RELEASE_STORE_PASSWORD }}
           RELEASE_KEY_ALIAS: ${{ secrets.RELEASE_KEY_ALIAS }}
@@ -46,5 +46,5 @@ jobs:
       - name: Store output
         uses: actions/upload-artifact@v4
         with:
-          name: Upload artifact
-          path: app/build/outputs/
+          name: bundle-${{ github.ref }}
+          path: app/build/outputs/bundle/release
