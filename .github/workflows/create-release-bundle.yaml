@@ -3,14 +3,16 @@ on:
   workflow_dispatch:
     inputs:
       name:
-        description: "Release-Build"
-        default: "Generate release build"
+        description: "Version name"
+        default: "v1.0.5"
       package:
         type: choice
         description: "Bundle or APK"
+        required: true
         options:
           - Bundle
           - Apk
+          - Both
 
 jobs:
   build:
@@ -32,16 +34,27 @@ jobs:
           RELEASE_STORE_PASSWORD: ${{ secrets.RELEASE_STORE_PASSWORD }}
           RELEASE_KEY_ALIAS: ${{ secrets.RELEASE_KEY_ALIAS }}
           RELEASE_KEY_PASSWORD: ${{ secrets.RELEASE_KEY_PASSWORD }}
-        run: | 
+        run: |
           echo $ENCODED_STRING > keystore-b64.txt
           base64 -d keystore-b64.txt > keystore.jks
 
-      - name: build bundle for ${{ github.ref }}
+      - name: build ${{ github.event.inputs.package }} for ${{ github.head_ref }}
+        if: |
+          ${{ contains(github.event.inputs.package, 'Both') || contains(github.event.inputs.package, 'Bundle') }}
         env:
           RELEASE_STORE_PASSWORD: ${{ secrets.RELEASE_STORE_PASSWORD }}
           RELEASE_KEY_ALIAS: ${{ secrets.RELEASE_KEY_ALIAS }}
           RELEASE_KEY_PASSWORD: ${{ secrets.RELEASE_KEY_PASSWORD }}
         run: ./gradlew bundleRelease --stacktrace
+
+      - name: build ${{ github.event.inputs.package }} for ${{ github.head_ref }}
+        if: |
+          ${{ contains(github.event.inputs.package, 'Both') || contains(github.event.inputs.package, 'Apk') }}
+        env:
+          RELEASE_STORE_PASSWORD: ${{ secrets.RELEASE_STORE_PASSWORD }}
+          RELEASE_KEY_ALIAS: ${{ secrets.RELEASE_KEY_ALIAS }}
+          RELEASE_KEY_PASSWORD: ${{ secrets.RELEASE_KEY_PASSWORD }}
+        run: ./gradlew assembleRelease --stacktrace
 
       - name: Store output
         uses: actions/upload-artifact@v4
