@@ -16,6 +16,15 @@ android {
         versionCode = 24
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
+        signingConfigs {
+            create("release"){
+                keyAlias = System.getenv("RELEASE_KEY_ALIAS")
+                keyPassword = System.getenv("RELEASE_KEY_PASSWORD")
+                storeFile = file("../keystore.jks")
+                storePassword = System.getenv("RELEASE_STORE_PASSWORD")
+            }
+        }
+
         buildTypes {
             release {
                 isMinifyEnabled = false
@@ -26,7 +35,7 @@ android {
                 )
                 isDebuggable = false
                 isJniDebuggable = false
-//                signingConfig = signingConfigs.getByName("release")
+                signingConfig = signingConfigs.getByName("release")
             }
         }
 
@@ -38,15 +47,6 @@ android {
             annotationProcessorOptions {
                 arguments += mapOf("room.schemaLocation" to "$projectDir/schemas")
             }
-        }
-    }
-
-    signingConfigs {
-        create("release"){
-            keyAlias = System.getenv("RELEASE_KEY_ALIAS")
-            keyPassword = System.getenv("RELEASE_KEY_PASSWORD")
-            storeFile = file("../keystore.jks")
-            storePassword = System.getenv("RELEASE_STORE_PASSWORD")
         }
     }
 
