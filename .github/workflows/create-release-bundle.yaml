@@ -1,9 +1,10 @@
-name: Release bundle
+name: Release App
 on:
   workflow_dispatch:
     inputs:
       name:
         description: "Version name"
+        required: true
         default: "v1.0.5"
       package:
         type: choice
@@ -15,7 +16,7 @@ on:
           - Both
 
 jobs:
-  build:
+  release_app_packages:
     runs-on: ubuntu-latest
 
     steps:
@@ -39,8 +40,7 @@ jobs:
           base64 -d keystore-b64.txt > keystore.jks
 
       - name: build ${{ github.event.inputs.package }} for ${{ github.head_ref }}
-        if: |
-          ${{ contains(github.event.inputs.package, 'Both') || contains(github.event.inputs.package, 'Bundle') }}
+        if: ${{ contains(github.event.inputs.package, 'Both') || contains(github.event.inputs.package, 'Bundle') }}
         env:
           RELEASE_STORE_PASSWORD: ${{ secrets.RELEASE_STORE_PASSWORD }}
           RELEASE_KEY_ALIAS: ${{ secrets.RELEASE_KEY_ALIAS }}
@@ -48,16 +48,23 @@ jobs:
         run: ./gradlew bundleRelease --stacktrace
 
       - name: build ${{ github.event.inputs.package }} for ${{ github.head_ref }}
-        if: |
-          ${{ contains(github.event.inputs.package, 'Both') || contains(github.event.inputs.package, 'Apk') }}
+        if: ${{ contains(github.event.inputs.package, 'Both') || contains(github.event.inputs.package, 'Apk') }}
         env:
           RELEASE_STORE_PASSWORD: ${{ secrets.RELEASE_STORE_PASSWORD }}
           RELEASE_KEY_ALIAS: ${{ secrets.RELEASE_KEY_ALIAS }}
           RELEASE_KEY_PASSWORD: ${{ secrets.RELEASE_KEY_PASSWORD }}
         run: ./gradlew assembleRelease --stacktrace
 
-      - name: Store output
+      - name: Upload bundle release
         uses: actions/upload-artifact@v4
+        if: ${{ contains(github.event.inputs.package, 'Both') || contains(github.event.inputs.package, 'Bundle') }}
         with:
           name: bundle-release
           path: app/build/outputs/bundle/release
+
+      - name: Upload apk release
+        uses: actions/upload-artifact@v4
+        if: ${{ contains(github.event.inputs.package, 'Both') || contains(github.event.inputs.package, 'Apk') }}
+        with:
+          name: bundle-release
+          path: app/build/outputs/apk/release
