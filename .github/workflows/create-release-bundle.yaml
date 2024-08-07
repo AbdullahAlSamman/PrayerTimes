@@ -66,5 +66,5 @@ jobs:
         uses: actions/upload-artifact@v4
         if: ${{ contains(github.event.inputs.package, 'Both') || contains(github.event.inputs.package, 'Apk') }}
         with:
-          name: bundle-release
+          name: apk-release
           path: app/build/outputs/apk/release
