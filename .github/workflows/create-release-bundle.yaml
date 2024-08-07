@@ -23,8 +23,8 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
           cache: 'gradle'
-      - name: setup gradle
-        uses: gradle/actions/setup-gradle@v3
+      - name: Setup android sdk
+        uses: android-actions/setup-android@v3
 
       - name: Decode Keystore
         env:
@@ -41,7 +41,7 @@ jobs:
           RELEASE_STORE_PASSWORD: ${{ secrets.RELEASE_STORE_PASSWORD }}
           RELEASE_KEY_ALIAS: ${{ secrets.RELEASE_KEY_ALIAS }}
           RELEASE_KEY_PASSWORD: ${{ secrets.RELEASE_KEY_PASSWORD }}
-        run: ./gradlew app:bundleRelease --stacktrace
+        run: ./gradlew bundleRelease --stacktrace
 
       - name: Store output
         uses: actions/upload-artifact@v4
