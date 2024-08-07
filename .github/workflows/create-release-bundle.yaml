@@ -5,12 +5,12 @@ on:
       name:
         description: "Release-Build"
         default: "Generate release build"
-      testers:
+      package:
         type: choice
-        description: "Select testers"
+        description: "Bundle or APK"
         options:
-          - internal
-          - public
+          - Bundle
+          - Apk
 
 jobs:
   build:
@@ -35,12 +35,6 @@ jobs:
         run: | 
           echo $ENCODED_STRING > keystore-b64.txt
           base64 -d keystore-b64.txt > keystore.jks
-
-      - name: Store key
-        uses: actions/upload-artifact@v4
-        with:
-          name: key
-          path: keystore.jks
 
       - name: build bundle for ${{ github.ref }}
         env:
