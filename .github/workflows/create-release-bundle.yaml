@@ -23,8 +23,8 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
           cache: 'gradle'
-      - name: Setup android sdk
-        uses: android-actions/setup-android@v3
+      - name: setup gradle
+        uses: gradle/actions/setup-gradle@v3
 
       - name: Decode Keystore
         env:
@@ -35,6 +35,12 @@ jobs:
         run: | 
           echo $ENCODED_STRING > keystore-b64.txt
           base64 -d keystore-b64.txt > keystore.jks
+
+      - name: Store key
+        uses: actions/upload-artifact@v4
+        with:
+          name: key
+          path: keystore.jks
 
       - name: build bundle for ${{ github.ref }}
         env:
