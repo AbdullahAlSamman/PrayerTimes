@@ -37,7 +37,7 @@ internal fun PrayerLandscapeScreen(
     ) {
         Column(
             modifier = Modifier
-                .weight(if(isTablet()) 0.6f else 0.4f)
+                .weight(if (isTablet()) 0.6f else 0.4f)
                 .fillMaxHeight()
         ) {
             PrayerHeader(

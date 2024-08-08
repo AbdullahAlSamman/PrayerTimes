@@ -12,7 +12,7 @@ import com.gals.prayertimes.R
 fun NavigationBackArrow(
     onBackAction: () -> Unit
 ) {
-    IconButton(onClick = { onBackAction() }) {
+    IconButton(onClick = onBackAction) {
         Icon(
             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
             contentDescription = stringResource(id = R.string.content_descriptor_back_arrow)

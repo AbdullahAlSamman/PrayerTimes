@@ -10,16 +10,21 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.invisibleToUser
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import com.gals.prayertimes.R
 import com.gals.prayertimes.model.MenuItem
 import com.gals.prayertimes.ui.theme.PrayerTypography
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun MenuItem(
     menuItem: MenuItem,
@@ -34,9 +39,11 @@ fun MenuItem(
         )
         {
             Icon(
-                modifier = Modifier.size(50.dp),
+                modifier = Modifier
+                    .size(50.dp)
+                    .semantics { invisibleToUser() },
                 painter = painterResource(id = menuItem.icon),
-                contentDescription = "item icon"
+                contentDescription = stringResource(R.string.menu_item_icon_content_description)
             )
             Text(
                 modifier = Modifier

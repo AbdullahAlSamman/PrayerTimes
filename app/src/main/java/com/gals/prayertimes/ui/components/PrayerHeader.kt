@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,7 +24,6 @@ import androidx.compose.ui.unit.dp
 import com.gals.prayertimes.R
 import com.gals.prayertimes.model.UiNextPrayer
 import com.gals.prayertimes.ui.theme.LightTextStyle
-import com.gals.prayertimes.utils.DynamicSizedText
 import com.gals.prayertimes.utils.isTablet
 import com.gals.prayertimes.utils.nonScaledSp
 
@@ -76,18 +76,18 @@ fun PrayerHeader(
             Row(
                 horizontalArrangement = Arrangement.spacedBy(6.dp)
             ) {
-                DynamicSizedText(
+                Text(
                     text = config.nextPrayerBanner,
                     style = textStyle,
                     textAlign = TextAlign.Center
                 )
-                DynamicSizedText(
+                Text(
                     text = config.nextPrayerName,
                     style = textStyle,
                     textAlign = TextAlign.Center
                 )
             }
-            DynamicSizedText(
+            Text(
                 text = config.nextPrayerTime,
                 style = textStyle,
                 textAlign = TextAlign.Center

@@ -4,12 +4,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
@@ -54,11 +50,12 @@ fun NotificationScreen(
                     )
                 },
                 navigationIcon = {
-                   NavigationBackArrow(
-                       onBackAction = onBackClicked
-                   )
+                    NavigationBackArrow(
+                        onBackAction = onBackClicked
+                    )
                 },
-                actions = {})
+                actions = {/* no-op */ }
+            )
         },
         content = { innerPadding ->
             val uiSelectedRadio by viewModel.uiSelectedRadio.collectAsState()
@@ -90,7 +87,7 @@ fun NotificationScreen(
                         )
                     }
                     Column(modifier = Modifier.padding(8.dp)) {
-                        val items = NotificationType.values()
+                        val items = NotificationType.entries.toTypedArray()
                         items.forEach { item ->
                             RadioButtonItem(
                                 item = item,
