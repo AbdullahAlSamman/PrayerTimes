@@ -14,7 +14,6 @@ import androidx.compose.ui.unit.dp
 import com.gals.prayertimes.R
 import com.gals.prayertimes.ui.theme.LightTextStyle
 import com.gals.prayertimes.ui.theme.colorBackgroundViewDate
-import com.gals.prayertimes.utils.DynamicSizedText
 import com.gals.prayertimes.utils.isTablet
 import com.gals.prayertimes.utils.nonScaledSp
 
