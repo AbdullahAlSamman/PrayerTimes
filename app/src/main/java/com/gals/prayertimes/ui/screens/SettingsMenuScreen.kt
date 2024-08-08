@@ -44,7 +44,8 @@ fun SettingsMenuScreen(
                         onBackAction = onBackClicked
                     )
                 },
-                actions = {})
+                actions = {/* no-op */ }
+            )
         },
         content = { innerPadding ->
             LazyColumn(
@@ -55,7 +56,8 @@ fun SettingsMenuScreen(
                     items(menuItems) { item ->
                         MenuItem(menuItem = item)
                     }
-                })
+                }
+            )
         }
     )
 }

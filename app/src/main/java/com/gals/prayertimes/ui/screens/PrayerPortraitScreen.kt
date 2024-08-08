@@ -36,7 +36,7 @@ internal fun PrayerPortraitScreen(
             .padding(innerPadding)
     ) {
         PrayerHeader(
-            modifier = Modifier.fillMaxHeight(if( isTablet()) .62f else .46f),
+            modifier = Modifier.fillMaxHeight(if (isTablet()) .62f else .46f),
             imageScale = ContentScale.FillHeight,
             config = uiNextPrayer,
             onSettingsClicked = onSettingsClicked
