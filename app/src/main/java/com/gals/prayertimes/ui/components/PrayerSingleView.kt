@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -16,7 +17,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.gals.prayertimes.repository.remote.model.PrayerName
 import com.gals.prayertimes.ui.theme.DarkTextStyle
-import com.gals.prayertimes.utils.DynamicSizedText
 import com.gals.prayertimes.utils.isPhoneInLandscape
 import com.gals.prayertimes.utils.isTablet
 import com.gals.prayertimes.utils.isTabletInPortrait
@@ -48,7 +48,7 @@ fun PrayerSingleView(
     ) {
         Spacer(modifier = Modifier.height(if (isPhoneInLandscape()) 5.dp else 15.dp))
 
-        DynamicSizedText(
+        Text(
             text = prayerNameMapper(prayerName = prayer.key),
             style = textStyle,
             textAlign = TextAlign.Center
@@ -56,7 +56,7 @@ fun PrayerSingleView(
 
         Spacer(modifier = Modifier.height(if (isPhoneInLandscape()) 7.dp else 20.dp))
 
-        DynamicSizedText(
+        Text(
             text = prayer.value,
             style = textStyle,
             textAlign = TextAlign.Center

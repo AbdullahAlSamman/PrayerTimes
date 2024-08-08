@@ -3,6 +3,7 @@ package com.gals.prayertimes.ui.components
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -37,25 +38,25 @@ fun PrayerDateBar(
     ) {
         val textModifier = modifier.padding(top = textTopPadding, bottom = textBottomPadding)
 
-        DynamicSizedText(
+        Text(
             modifier = textModifier.padding(start = 4.dp),
             text = day,
             textAlign = textAlign,
             style = textStyle
         )
-        DynamicSizedText(
+        Text(
             modifier = textModifier.weight(3f),
             text = sunDate,
             textAlign = textAlign,
             style = textStyle
         )
-        DynamicSizedText(
+        Text(
             modifier = textModifier,
             text = stringResource(id = R.string.text_date_separator),
             textAlign = textAlign,
             style = textStyle
         )
-        DynamicSizedText(
+        Text(
             modifier = textModifier.weight(3f),
             text = moonDate,
             textAlign = textAlign,
