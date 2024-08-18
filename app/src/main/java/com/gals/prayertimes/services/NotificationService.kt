@@ -1,5 +1,6 @@
 package com.gals.prayertimes.services
 
+import android.annotation.SuppressLint
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -22,6 +23,7 @@ import com.gals.prayertimes.model.NextPrayerConfig
 import com.gals.prayertimes.model.NotificationType
 import com.gals.prayertimes.model.Prayer
 import com.gals.prayertimes.repository.Repository
+import com.gals.prayertimes.repository.local.entities.PrayerEntity
 import com.gals.prayertimes.repository.local.entities.SettingsEntity
 import com.gals.prayertimes.utils.PrayerCalculation
 import com.gals.prayertimes.utils.UtilsManager
@@ -41,6 +43,7 @@ import kotlin.concurrent.schedule
 import kotlin.random.Random
 
 @AndroidEntryPoint
+@Deprecated("NotificationService is not used anymore switch to AlarmManager")
 class NotificationService : Service() {
     private val backgroundJob = Job()
 
@@ -48,7 +51,7 @@ class NotificationService : Service() {
     private val loading = MutableLiveData<Boolean>()
     private lateinit var timerHandler: Handler
 
-    private lateinit var prayer: Prayer
+    private lateinit var prayer: PrayerEntity
     private lateinit var settingsEntity: SettingsEntity
 
     @Inject
@@ -97,6 +100,7 @@ class NotificationService : Service() {
         startForeground(1, notification)
     }
 
+    @SuppressLint("MissingPermission")
     private fun showAlarmNotification(config: NextPrayerConfig, pendingIntent: PendingIntent) {
         Timer().schedule(NOTIFICATION_UPDATE_LONG) {
             val notification = buildNotification(
@@ -118,9 +122,9 @@ class NotificationService : Service() {
     private fun loadPrayerData() {
         backgroundScope.launch {
             loading.postValue(true)
-            prayer = repository.getPrayer(getTodayDate()).toPrayer()
+            prayer = repository.getPrayer(getTodayDate())
             settingsEntity = repository.getSettings()
-            if (prayer != Prayer()) {
+            if (prayer != PrayerEntity()) {
                 startUpdates()
                 loading.value = false
             }

@@ -2,7 +2,6 @@ package com.gals.prayertimes.utils
 
 import androidx.compose.ui.graphics.Color
 import com.gals.prayertimes.R
-import com.gals.prayertimes.model.DateConfig
 import com.gals.prayertimes.model.NextPrayerConfig
 import com.gals.prayertimes.model.Prayer
 import com.gals.prayertimes.model.TimePrayer
@@ -11,24 +10,27 @@ import com.gals.prayertimes.model.UiNextPrayer
 import com.gals.prayertimes.repository.local.entities.PrayerEntity
 import com.gals.prayertimes.repository.remote.model.PrayerName
 import com.gals.prayertimes.repository.remote.model.PrayersResponse
-import com.gals.prayertimes.repository.remote.model.SinglePrayer
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
-fun PrayerEntity.toPrayer(): Prayer = Prayer(
-    sDate = this.sDate,
-    mDate = this.mDate,
-    prayers = listOf(
-        SinglePrayer(name = PrayerName.FAJER, time = this.fajer),
-        SinglePrayer(name = PrayerName.SUNRISE, time = this.sunrise),
-        SinglePrayer(name = PrayerName.DUHR, time = this.duhr),
-        SinglePrayer(name = PrayerName.ASR, time = this.asr),
-        SinglePrayer(name = PrayerName.MAGHRIB, time = this.maghrib),
-        SinglePrayer(name = PrayerName.ISHA, time = this.isha)
+fun PrayerEntity.toPrayer(resourceProvider: ResourceProvider, formatter: Formatter): Prayer =
+    Prayer(
+        uiDate = UiDate(
+            dayName = resourceProvider.getString(getDayName(Calendar.getInstance()[Calendar.DAY_OF_WEEK])),
+            moonDate = formatter.formatDateText(this.mDate, false),
+            sunDate = formatter.formatDateText(this.sDate, true)
+        ),
+        prayers = mapOf(
+            PrayerName.FAJER to this.fajer,
+            PrayerName.SUNRISE to this.sunrise,
+            PrayerName.DUHR to this.duhr,
+            PrayerName.ASR to this.asr,
+            PrayerName.MAGHRIB to this.maghrib,
+            PrayerName.ISHA to this.isha
+        )
     )
-)
 
 fun PrayersResponse.toEntity(): PrayerEntity {
     val entity = PrayerEntity(
@@ -43,27 +45,21 @@ fun PrayersResponse.toEntity(): PrayerEntity {
             PrayerName.ASR -> entity.asr = prayer.time
             PrayerName.MAGHRIB -> entity.maghrib = prayer.time
             PrayerName.ISHA -> entity.isha = prayer.time
-            else -> {}
+            else -> {/* no-op */
+            }
         }
     }
     return entity
 }
 
-fun Prayer.toTimePrayer(): TimePrayer {
-    val timePrayer = TimePrayer()
-    this.prayers.forEach { prayer ->
-        when (prayer.name) {
-            PrayerName.FAJER -> timePrayer.fajer = prayer.time.toCalendar()
-            PrayerName.SUNRISE -> timePrayer.sunrise = prayer.time.toCalendar()
-            PrayerName.DUHR -> timePrayer.duhr = prayer.time.toCalendar()
-            PrayerName.ASR -> timePrayer.asr = prayer.time.toCalendar()
-            PrayerName.MAGHRIB -> timePrayer.maghreb = prayer.time.toCalendar()
-            PrayerName.ISHA -> timePrayer.isha = prayer.time.toCalendar()
-            else -> {}
-        }
-    }
-    return timePrayer
-}
+fun PrayerEntity.toTimePrayer(): TimePrayer = TimePrayer(
+    fajer = this.fajer.toCalendar(),
+    sunrise = this.sunrise.toCalendar(),
+    duhr = this.duhr.toCalendar(),
+    asr = this.asr.toCalendar(),
+    maghrib = this.maghrib.toCalendar(),
+    isha = this.isha.toCalendar()
+)
 
 fun String.toCalendar(): Calendar {
     val time = this.split(":".toRegex()).toTypedArray()
@@ -149,11 +145,4 @@ fun NextPrayerConfig.toUiNextPrayer(): UiNextPrayer =
         nextPrayerName = nextPrayerName,
         nextPrayerTime = nextPrayerTime,
         nextPrayerBanner = nextPrayerBanner
-    )
-
-fun DateConfig.toUiDate(): UiDate =
-    UiDate(
-        dayName = dayName,
-        moonDate = moonDate,
-        sunDate = sunDate
     )

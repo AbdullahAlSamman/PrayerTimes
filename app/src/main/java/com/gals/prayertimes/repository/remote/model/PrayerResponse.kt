@@ -48,7 +48,7 @@ enum class PrayerName(val value: String){
 
     companion object{
         infix fun fromValue(value: String): PrayerName {
-            val map = PrayerName.values().associateBy { it.value }
+            val map = entries.associateBy { it.value }
             return map[value] ?: UNKNOWN
         }
     }

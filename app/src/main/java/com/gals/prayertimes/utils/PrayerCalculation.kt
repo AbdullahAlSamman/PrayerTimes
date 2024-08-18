@@ -43,7 +43,7 @@ class PrayerCalculation @Inject constructor(
             isNowBeforeTime(currentPrayer.sunrise) -> currentPrayer.sunrise
             isNowBeforeTime(currentPrayer.duhr) -> currentPrayer.duhr
             isNowBeforeTime(currentPrayer.asr) -> currentPrayer.asr
-            isNowBeforeTime(currentPrayer.maghreb) -> currentPrayer.maghreb
+            isNowBeforeTime(currentPrayer.maghrib) -> currentPrayer.maghrib
             isNowBeforeTime(currentPrayer.isha) -> currentPrayer.isha
             isNowBeforeTime(currentPrayer.midNight) || getTimeNow().toCalendar() == currentPrayer.midNight ->
                 currentPrayer.midNight
@@ -100,10 +100,10 @@ class PrayerCalculation @Inject constructor(
                     resourceProvider.getString(R.string.text_prayer_asr)
             }
 
-            isNowBeforeTime(currentPrayer.maghreb) -> {
+            isNowBeforeTime(currentPrayer.maghrib) -> {
                 nextPrayerConfig.nextPrayerTime =
                     calculateDifferenceBetweenTimes(
-                        currentPrayer.maghreb,
+                        currentPrayer.maghrib,
                         getTimeNow().toCalendar()
                     )
                 nextPrayerConfig.nextPrayerName =
@@ -165,7 +165,7 @@ class PrayerCalculation @Inject constructor(
     }
 
     private fun isNight(prayer: TimePrayer): Boolean =
-        isNowAfterTime(prayer.maghreb) || isNowBeforeTime(prayer.sunrise)
+        isNowAfterTime(prayer.maghrib) || isNowBeforeTime(prayer.sunrise)
 
     private fun isNextAPrayer(prayer: TimePrayer): Boolean =
         !(isNextMidnight(prayer) || isNextSunrise(prayer))

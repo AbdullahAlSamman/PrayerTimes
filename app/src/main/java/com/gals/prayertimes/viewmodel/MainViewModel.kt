@@ -5,92 +5,88 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gals.prayertimes.R
 import com.gals.prayertimes.model.ConnectivityException
-import com.gals.prayertimes.model.DateConfig
-import com.gals.prayertimes.model.Prayer
-import com.gals.prayertimes.model.UiDate
+import com.gals.prayertimes.model.DefaultDispatcher
+import com.gals.prayertimes.model.NetworkException
 import com.gals.prayertimes.model.UiNextPrayer
 import com.gals.prayertimes.model.UiState
+import com.gals.prayertimes.model.ViewModelScreenUpdater
 import com.gals.prayertimes.repository.Repository
+import com.gals.prayertimes.repository.local.entities.PrayerEntity
 import com.gals.prayertimes.utils.Formatter
 import com.gals.prayertimes.utils.PrayerCalculation
 import com.gals.prayertimes.utils.ResourceProvider
-import com.gals.prayertimes.utils.getDayName
+import com.gals.prayertimes.utils.ScreenUpdater
 import com.gals.prayertimes.utils.getTodayDate
 import com.gals.prayertimes.utils.toPrayer
 import com.gals.prayertimes.utils.toTimePrayer
-import com.gals.prayertimes.utils.toUiDate
 import com.gals.prayertimes.utils.toUiNextPrayer
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.util.Calendar
 import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
+    @DefaultDispatcher private val dispatcher: CoroutineDispatcher,
+    @ViewModelScreenUpdater private val screenUpdater: ScreenUpdater,
     private val repository: Repository,
     private val resourceProvider: ResourceProvider,
     private val calculation: PrayerCalculation,
     private val formatter: Formatter
 ) : ViewModel() {
-    private var todayPrayers = Prayer()
+    private var todayPrayers = PrayerEntity()
 
     private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
-    private val _uiPrayers = MutableStateFlow(Prayer())
     private val _uiNextPrayer = MutableStateFlow(UiNextPrayer())
-    private val _uiDate = MutableStateFlow(UiDate())
 
     val uiState: StateFlow<UiState> = _uiState
-    val uiPrayers: StateFlow<Prayer> = _uiPrayers.asStateFlow()
     val nextPrayer: StateFlow<UiNextPrayer> = _uiNextPrayer.asStateFlow()
-    val uiDate: StateFlow<UiDate> = _uiDate.asStateFlow()
 
     init {
-        startLoading()
-        startTicks()
+        startLoading(dispatcher = dispatcher)
+    }
+
+    fun startUiTicks() {
+        screenUpdater.startTicks(delay = TICKS_DELAY)
             .onEach {
-                updateScreenFlows()
+                updateScreenStates()
             }.launchIn(viewModelScope)
     }
 
     /**retry method to call from ui*/
-    fun retryRequest() {
-        startLoading()
+    fun reload() {
+        startLoading(showLoadingScreen = true, dispatcher = dispatcher)
     }
 
     /**update all flows related to ui*/
-    private fun updateScreenFlows() = try {
+    private fun updateScreenStates() = try {
         Log.i(
-            "isDayChanged",
-            "" + calculation.isDayChanged(todayPrayers.sDate)
+            "ngz_is_day_changed",
+            "${calculation.isDayChanged(todayPrayers.sDate)}"
         )
 
         if (calculation.isDayChanged(todayPrayers.sDate)) {
-            startLoading()
+            startLoading(dispatcher = dispatcher)
         }
 
-        updatePrayersFlow()
-        updateNextPrayerFlow()
-        updateDateFlow()
+        updateNextPrayerState()
+
     } catch (e: Exception) {
-        Log.i(
-            "Flow updates",
-            "error: ${e.message.toString()}"
-        )
+        Log.e("ngz_flow_updates", "error: ${e.message.toString()}")
+        //TODO: not handled correctly show should check for exception type
         _uiState.update { UiState.Error(resourceProvider.getString(R.string.text_error_server_down)) }
     }
 
     /**update the time to next prayer*/
-    private fun updateNextPrayerFlow() {
+    private fun updateNextPrayerState() {
         _uiNextPrayer.update {
             calculation.calculateNextPrayerInfo(
                 currentPrayer = todayPrayers.toTimePrayer(),
@@ -99,36 +95,12 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    /** Build text for dates*/
-    private fun updateDateFlow() {
-        val calendar = Calendar.getInstance()
-        _uiDate.update {
-            DateConfig(
-                dayName = resourceProvider.getString(getDayName(calendar[Calendar.DAY_OF_WEEK])),
-                moonDate = formatter.formatDateText(todayPrayers.mDate, false),
-                sunDate = formatter.formatDateText(todayPrayers.sDate, true)
-            ).toUiDate()
-        }
-    }
-
-    /**Update prayers flow*/
-    private fun updatePrayersFlow() {
-        _uiPrayers.update { todayPrayers }
-    }
-
-    /**Timer to update the ui*/
-    private fun startTicks(delay: Long = TICKS_DELAY, initialDelay: Long = TICKS_INITIAL_DELAY) =
-        flow {
-            delay(initialDelay)
-            while (true) {
-                emit(Unit)
-                delay(delay)
-            }
-        }
-
     /**Method to initial loading flow*/
-    private fun startLoading() {
-        viewModelScope.launch {
+    private fun startLoading(showLoadingScreen: Boolean = false, dispatcher: CoroutineDispatcher) {
+        if (showLoadingScreen) {
+            _uiState.update { UiState.Loading }
+        }
+        viewModelScope.launch(context = dispatcher) {
             repository.fetchComposePrayer(getTodayDate())
                 .catch { cause ->
                     when (cause) {
@@ -136,19 +108,19 @@ class MainViewModel @Inject constructor(
                             _uiState.update { UiState.Error(resourceProvider.getString(R.string.text_error_check_internet)) }
                         }
 
-                        else -> {
+                        is NetworkException -> {
                             _uiState.update { UiState.Error(resourceProvider.getString(R.string.text_error_server_down)) }
                         }
                     }
                 }
                 .map { prayer ->
-                    prayer.toPrayer()
+                    todayPrayers = prayer
+                    prayer.toPrayer(resourceProvider, formatter)
                 }
                 .collect { prayers ->
                     prayers.let { composePrayers ->
-                        todayPrayers = composePrayers
-                        updateScreenFlows()
-                        _uiState.update { UiState.Success }
+                        updateScreenStates()
+                        _uiState.update { UiState.Success(prayer = composePrayers) }
                     }
                 }
         }
@@ -156,7 +128,6 @@ class MainViewModel @Inject constructor(
 
     companion object {
         const val STRING_DATE_SEPARATOR = "."
-        const val TICKS_INITIAL_DELAY: Long = 5_000
         const val TICKS_DELAY: Long = 25_000
     }
 }

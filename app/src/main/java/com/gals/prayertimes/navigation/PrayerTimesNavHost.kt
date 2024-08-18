@@ -34,7 +34,7 @@ fun PrayerTimesNavHost(
                     MenuItem(
                         icon = R.drawable.icon_notification_active,
                         title = R.string.text_settings_notifiaction,
-                        navigateTo = { navController.navigate(Notification.route)}
+                        navigateTo = { navController.navigate(Notification.route) }
                     ),
                     MenuItem(
                         icon = R.drawable.icon_privacy_policy,
