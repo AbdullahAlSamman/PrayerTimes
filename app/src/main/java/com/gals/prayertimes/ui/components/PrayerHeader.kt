@@ -46,22 +46,22 @@ fun PrayerHeader(
                 contentScale = imageScale
             )
     ) {
-        /*      val iconPadding = if (isTablet()) 32.dp else 16.dp
-              Icon(
-                  modifier = Modifier
-                      .size(if (isTablet()) 80.dp else 48.dp)
-                      .align(Alignment.TopStart)
-                      .padding(
-                          top = iconPadding,
-                          start = iconPadding
-                      )
-                      .clickable {
-                          onSettingsClicked()
-                      },
-                  tint = (if (isSystemInDarkTheme()) Color.White else Color.Black),
-                  painter = painterResource(id = R.drawable.icon_rounded_setting),
-                  contentDescription = stringResource(id = R.string.content_descriptor_settings_icon)
-              )*/
+        val iconPadding = if (isTablet()) 32.dp else 16.dp
+        Icon(
+            modifier = Modifier
+                .size(if (isTablet()) 80.dp else 48.dp)
+                .align(Alignment.TopStart)
+                .padding(
+                    top = iconPadding,
+                    start = iconPadding
+                )
+                .clickable {
+                    onSettingsClicked()
+                },
+            tint = (if (isSystemInDarkTheme()) Color.White else Color.Black),
+            painter = painterResource(id = R.drawable.icon_rounded_setting),
+            contentDescription = stringResource(id = R.string.content_descriptor_settings_icon)
+        )
 
         Column(
             modifier = Modifier
