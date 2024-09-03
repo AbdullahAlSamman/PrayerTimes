@@ -1,8 +1,9 @@
 plugins {
-    id("com.google.dagger.hilt.android")
     id("com.android.application")
-    id("kotlin-android")
-    id("kotlin-kapt")
+    alias(libs.plugins.com.google.dagger.hilt.android)
+    alias(libs.plugins.org.jetbrains.kotlin.android)
+    alias(libs.plugins.org.jetbrains.kotlin.kapt)
+    alias(libs.plugins.org.jetbrains.compose.compiler)
 }
 
 android {
@@ -10,14 +11,14 @@ android {
     compileSdk = 34
     defaultConfig {
         applicationId = "com.gals.prayertimes"
-        minSdk = 31
+        minSdk = 29
         targetSdk = 34
         versionName = "1.0.5"
         versionCode = 25
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         signingConfigs {
-            create("release"){
+            create("release") {
                 keyAlias = System.getenv("RELEASE_KEY_ALIAS")
                 keyPassword = System.getenv("RELEASE_KEY_PASSWORD")
                 storeFile = file("../keystore.jks")
@@ -52,7 +53,7 @@ android {
 
     kotlinOptions { jvmTarget = "17" }
 
-    composeOptions { kotlinCompilerExtensionVersion = "1.5.12" }
+    composeOptions { kotlinCompilerExtensionVersion = "1.5.15" }
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
@@ -70,9 +71,6 @@ android {
     }
 
     dependencies {
-        val hiltVersion = "2.50"
-        val hiltComposeNav = "1.2.0"
-
         //Appcompat
         implementation(libs.androidx.appcompat)
 
@@ -97,8 +95,8 @@ android {
         testImplementation(libs.bundles.unit.test)
 
         //Hilt
-        implementation("com.google.dagger:hilt-android:$hiltVersion")
-        implementation("androidx.hilt:hilt-navigation-compose:$hiltComposeNav")
-        kapt("com.google.dagger:hilt-android-compiler:$hiltVersion")
+        implementation(libs.google.dagger.hilt)
+        implementation(libs.androidx.hilt)
+        kapt(libs.google.dagger.hilt.compiler)
     }
 }

@@ -1,4 +1,5 @@
 [versions]
+kotlin = "2.0.20"
 room = "2.6.1"
 retrofit = "2.9.0"
 moshi = "1.15.1"
@@ -7,12 +8,19 @@ compose-m3 = "1.2.1"
 compose-m3-adaptive = "1.0.0-rc01"
 compose-navigation = "2.7.7"
 accompanist = "0.34.0"
+dagger-hilt = "2.52"
+hilt-navigation = "1.2.0"
 jupiter = "5.10.1"
 mockk = "1.13.11"
 turbine = "1.1.0"
 kotlin-coroutines = "1.8.1"
+google-services = "4.4.2"
+gradle = "8.6.0"
 
 [libraries]
+kotlin-gradle-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
+kotlin-android-extensions = { group = "org.jetbrains.kotlin", name = "kotlin-android-extensions", version.ref = "kotlin" }
+
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version = "1.7.0" }
 
 androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
@@ -27,6 +35,8 @@ androidx-compose-navigation = { group = "androidx.navigation", name = "navigatio
 
 androidx-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling", version.ref = "compose" }
 androidx-compose-ui-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest", version.ref = "compose" }
+
+androidx-hilt = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hilt-navigation" }
 
 androidx-accompanist-systemuicontrol = { group = "com.google.accompanist", name = "accompanist-systemuicontroller", version.ref = "accompanist" }
 androidx-accompanist-webview = { group = "com.google.accompanist", name = "accompanist-webview", version.ref = "accompanist" }
@@ -46,7 +56,16 @@ mockk-test = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
 turbine-test = { group = "app.cash.turbine", name = "turbine", version.ref = "turbine" }
 coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlin-coroutines" }
 
+google-gms-services = { group = "com.google.gms", name = "google-services", version.ref = "google-services" }
+google-tools-gradle = { group = "com.android.tools.build", name = "gradle", version.ref = "gradle" }
+google-dagger-hilt = { group = "com.google.dagger", name = "hilt-android", version.ref = "dagger-hilt" }
+google-dagger-hilt-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "dagger-hilt" }
+
 [plugins]
+com-google-dagger-hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "dagger-hilt" }
+org-jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+org-jetbrains-kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
+org-jetbrains-compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 
 [bundles]
 androidx-room = [
