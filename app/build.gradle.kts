@@ -2,8 +2,8 @@ plugins {
     id("com.android.application")
     alias(libs.plugins.com.google.dagger.hilt.android)
     alias(libs.plugins.org.jetbrains.kotlin.android)
-    alias(libs.plugins.org.jetbrains.kotlin.kapt)
     alias(libs.plugins.org.jetbrains.compose.compiler)
+    alias(libs.plugins.com.google.ksp)
 }
 
 android {
@@ -44,10 +44,8 @@ android {
 
         dependenciesInfo { includeInApk = false }
 
-        javaCompileOptions {
-            annotationProcessorOptions {
-                arguments += mapOf("room.schemaLocation" to "$projectDir/schemas")
-            }
+        ksp {
+            arg("room.schemaLocation", "$projectDir/schemas")
         }
     }
 
@@ -76,14 +74,14 @@ android {
 
         //Retrofit
         implementation(libs.bundles.retrofit)
-        kapt(libs.retrofit.moshi.kotlin.codegen)
+        ksp(libs.retrofit.moshi.kotlin.codegen)
 
         //Coroutines
         implementation(libs.kotlinx.coroutines)
 
         //Room
         implementation(libs.bundles.androidx.room)
-        kapt(libs.androidx.room.compiler)
+        ksp(libs.androidx.room.compiler)
         annotationProcessor(libs.androidx.room.compiler)
 
         //Compose
@@ -97,6 +95,6 @@ android {
         //Hilt
         implementation(libs.google.dagger.hilt)
         implementation(libs.androidx.hilt)
-        kapt(libs.google.dagger.hilt.compiler)
+        ksp(libs.google.dagger.hilt.compiler)
     }
 }
