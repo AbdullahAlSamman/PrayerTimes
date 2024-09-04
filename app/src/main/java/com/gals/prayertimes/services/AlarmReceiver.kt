@@ -10,6 +10,6 @@ class AlarmReceiver : BroadcastReceiver() {
         val message = intent?.getStringExtra(NOTIFICATION_MESSAGE).orEmpty()
         val title = intent?.getStringExtra(NOTIFICATION_TITLE).orEmpty()
         // TODO: Show notification via notification manager
-        Log.i("nvg_notification", "received title: $title, message: $message")
+        Log.i("ngz_notification", "received title: $title, message: $message")
     }
 }

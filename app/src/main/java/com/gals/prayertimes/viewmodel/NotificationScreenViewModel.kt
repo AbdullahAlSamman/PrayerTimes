@@ -5,17 +5,21 @@ import androidx.lifecycle.viewModelScope
 import com.gals.prayertimes.model.NotificationType
 import com.gals.prayertimes.repository.Repository
 import com.gals.prayertimes.repository.local.entities.SettingsEntity
+import com.gals.prayertimes.services.AlarmItem
+import com.gals.prayertimes.services.AlarmNotificationManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.time.LocalDateTime
 import javax.inject.Inject
 
 @HiltViewModel
 class NotificationScreenViewModel @Inject constructor(
-    private val repository: Repository
+    private val repository: Repository,
+    private val alarmScheduler: AlarmNotificationManager
 ) : ViewModel() {
     private val _uiSelectedRadio = MutableStateFlow(NotificationType.SILENT.value)
     private val _uiSwitchState = MutableStateFlow(false)
@@ -40,6 +44,16 @@ class NotificationScreenViewModel @Inject constructor(
 
     fun updateSwitchState(value: Boolean) {
         _uiSwitchState.update { value }
+        if (value) {
+            alarmScheduler.scheduleAlarm(
+                AlarmItem(
+                    time = LocalDateTime.now().plusMinutes(1),
+                    title = "test title",
+                    message = "test message"
+                )
+            )
+        }
+
         updateSettings(
             SettingsEntity(notificationType = _uiSelectedRadio.value, notification = value)
         )
