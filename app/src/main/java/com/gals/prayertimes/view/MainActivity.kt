@@ -27,4 +27,9 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+
+    override fun onResume() {
+        super.onResume()
+        //TODO: check if permission has changed
+    }
 }

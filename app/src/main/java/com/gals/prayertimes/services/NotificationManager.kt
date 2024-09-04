@@ -21,7 +21,6 @@ import com.gals.prayertimes.repository.local.entities.SettingsEntity
 import com.gals.prayertimes.utils.PrayerCalculation
 import com.gals.prayertimes.utils.UtilsManager
 import com.gals.prayertimes.view.MainActivity
-import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -31,7 +30,6 @@ import javax.inject.Inject
 import kotlin.concurrent.schedule
 import kotlin.random.Random
 
-@AndroidEntryPoint
 class NotificationManager @Inject constructor(
     @ApplicationContext private val applicationContext: Context,
     private val repository: Repository,
