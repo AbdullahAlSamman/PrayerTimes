@@ -13,52 +13,30 @@ import javax.inject.Inject
 
 class AlarmNotificationManager @Inject constructor(
     @ApplicationContext private val context: Context
-) : AlarmScheduler {
+) {
     private val alarmManager = context.getSystemService(AlarmManager::class.java)
 
-    override fun scheduleAlarm(alarmItem: AlarmItem) {
+    fun scheduleAlarm(alarmItem: AlarmItem) {
         val intent = Intent(context, AlarmReceiver::class.java).apply {
             putExtra(NOTIFICATION_MESSAGE, alarmItem.message)
             putExtra(NOTIFICATION_TITLE, alarmItem.title)
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+        if (checkAPILevel) {
             when {
                 alarmManager.canScheduleExactAlarms() -> {
-                    alarmManager.setExactAndAllowWhileIdle(
-                        AlarmManager.RTC_WAKEUP,
-                        alarmItem.time.atZone(ZoneId.systemDefault()).toEpochSecond() * 1000,
-                        PendingIntent.getBroadcast(
-                            context,
-                            alarmItem.hashCode(),
-                            intent,
-                            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-                        )
-                    )
+                    setAlarm(alarmItem, intent)
                 }
 
                 else -> {
-                    startActivity(
-                        context,
-                        Intent(ACTION_REQUEST_SCHEDULE_EXACT_ALARM).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK),
-                        null
-                    )
+                    requestPermission()
                 }
             }
         } else {
-            alarmManager.setExactAndAllowWhileIdle(
-                AlarmManager.RTC_WAKEUP,
-                alarmItem.time.atZone(ZoneId.systemDefault()).toEpochSecond() * 1000,
-                PendingIntent.getBroadcast(
-                    context,
-                    alarmItem.hashCode(),
-                    intent,
-                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-                )
-            )
+            setAlarm(alarmItem, intent)
         }
     }
 
-    override fun cancelAlarm(alarmItem: AlarmItem) {
+    fun cancelAlarm(alarmItem: AlarmItem) {
         alarmManager.cancel(
             PendingIntent.getBroadcast(
                 context,
@@ -69,6 +47,37 @@ class AlarmNotificationManager @Inject constructor(
         )
     }
 
+    fun canScheduleAlarms(): Boolean =
+        if (checkAPILevel) {
+            alarmManager.canScheduleExactAlarms()
+        } else {
+            true
+        }
+
+    fun requestPermission() {
+        if (checkAPILevel) {
+            startActivity(
+                context,
+                Intent(ACTION_REQUEST_SCHEDULE_EXACT_ALARM).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK),
+                null
+            )
+        }
+    }
+
+    private fun setAlarm(alarmItem: AlarmItem, intent: Intent) {
+        alarmManager.setExactAndAllowWhileIdle(
+            AlarmManager.RTC_WAKEUP,
+            alarmItem.time.atZone(ZoneId.systemDefault()).toEpochSecond() * 1000,
+            PendingIntent.getBroadcast(
+                context,
+                alarmItem.hashCode(),
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
+        )
+    }
+
+    private val checkAPILevel: Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
 }
 
 const val NOTIFICATION_MESSAGE = "notificationMessage"

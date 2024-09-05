@@ -69,6 +69,10 @@
     <string name="text_midnight_time_title">لمنتصف الليل</string>
     <string name="text_settings_privacy_policy">سياسة الخصوصية</string>
     <string name="text_settings_about_us">حول التطبيق</string>
+    <string name="text_notification_permission_dialog_title">هل تريد تفعيل التنبيهات؟</string>
+    <string name="text_notification_permission_dialog_message">لتفعيل الإشعارات يجب منح التطبيق أذن إضافي ليتمكن من ضبط تنبيهات أوقات الصلاة</string>
+    <string name="text_notification_permission_dialog_confirm">نعم</string>
+    <string name="text_notification_permission_dialog_dismiss">لا</string>
     <string name="content_descriptor_settings_icon">settings icon</string>
     <string name="content_descriptor_background">Background with moon or sun</string>
     <string name="content_descriptor_back_arrow">back to menu</string>
