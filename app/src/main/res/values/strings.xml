@@ -71,6 +71,9 @@
     <string name="text_settings_about_us">حول التطبيق</string>
     <string name="text_notification_permission_dialog_title">هل تريد تفعيل التنبيهات؟</string>
     <string name="text_notification_permission_dialog_message">لتفعيل الإشعارات يجب منح التطبيق أذن إضافي ليتمكن من ضبط تنبيهات أوقات الصلاة</string>
+    <string name="text_notification_permission_dialog_denied_title">لم يتم تفعيل التنبيهات!</string>
+    <string name="text_notification_permission_dialog_denied_message">لم يتم إعطاء التطبيق الأذونات الازمة يرجى المحاولة مرة ثانية</string>
+    <string name="text_notification_permission_dialog_okay">موافق</string>
     <string name="text_notification_permission_dialog_confirm">نعم</string>
     <string name="text_notification_permission_dialog_dismiss">لا</string>
     <string name="content_descriptor_settings_icon">settings icon</string>
