@@ -130,7 +130,7 @@ fun NotificationScreen(
                 LaunchedEffect(lifecycleState) {
                     when (lifecycleState) {
                         Lifecycle.State.RESUMED -> {
-                            Log.i("ngz_notification", "OnResume")
+                            Log.i("ngz_notification", "Notification Screen: OnResume")
                             if (checkAPILevelForAlarms) {
                                 when (viewModel.getPendingPermissions()) {
                                     PermissionState.PENDING -> {

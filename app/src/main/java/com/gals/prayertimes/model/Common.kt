@@ -1,16 +1,23 @@
 package com.gals.prayertimes.model
 
-import androidx.compose.runtime.Immutable
-import com.gals.prayertimes.repository.remote.model.PrayerName
 import com.gals.prayertimes.utils.setHoursMinutes
 import java.util.Calendar
 
-
-@Immutable
-data class Prayer(
-    var uiDate: UiDate = UiDate(),
-    var prayers: Map<PrayerName, String> = emptyMap()
+data class NextPrayerConfig(
+    var isRamadan: Boolean = false,
+    var isPrayer: Boolean = false,
+    var isNight: Boolean = false,
+    var nextPrayerName: String = "",
+    var nextPrayerTime: String = "",
+    var nextPrayerBanner: String = ""
 )
+
+enum class NotificationType(val value: String) {
+    SILENT("silent"),
+    TONE("tone"),
+    HALF("half"),
+    FULL("full")
+}
 
 data class TimePrayer(
     var fajer: Calendar = Calendar.getInstance(),
