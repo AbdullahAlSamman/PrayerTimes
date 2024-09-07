@@ -4,14 +4,14 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.provider.Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM
 import androidx.core.content.ContextCompat.startActivity
+import com.gals.prayertimes.utils.checkAPILevelForAlarms
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.time.ZoneId
 import javax.inject.Inject
 
-class AlarmNotificationManager @Inject constructor(
+class AlarmManager @Inject constructor(
     @ApplicationContext private val context: Context
 ) {
     private val alarmManager = context.getSystemService(AlarmManager::class.java)
@@ -21,7 +21,7 @@ class AlarmNotificationManager @Inject constructor(
             putExtra(NOTIFICATION_MESSAGE, alarmItem.message)
             putExtra(NOTIFICATION_TITLE, alarmItem.title)
         }
-        if (checkAPILevel) {
+        if (checkAPILevelForAlarms) {
             when {
                 alarmManager.canScheduleExactAlarms() -> {
                     setAlarm(alarmItem, intent)
@@ -48,14 +48,14 @@ class AlarmNotificationManager @Inject constructor(
     }
 
     fun canScheduleAlarms(): Boolean =
-        if (checkAPILevel) {
+        if (checkAPILevelForAlarms) {
             alarmManager.canScheduleExactAlarms()
         } else {
             true
         }
 
     fun requestPermission() {
-        if (checkAPILevel) {
+        if (checkAPILevelForAlarms) {
             startActivity(
                 context,
                 Intent(ACTION_REQUEST_SCHEDULE_EXACT_ALARM).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK),
@@ -76,8 +76,6 @@ class AlarmNotificationManager @Inject constructor(
             )
         )
     }
-
-    private val checkAPILevel: Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
 }
 
 const val NOTIFICATION_MESSAGE = "notificationMessage"

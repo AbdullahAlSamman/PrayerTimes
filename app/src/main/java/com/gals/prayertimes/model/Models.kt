@@ -24,3 +24,11 @@ enum class NotificationType(val value: String) {
     HALF("half"),
     FULL("full")
 }
+
+enum class PermissionState {
+    PENDING,
+    REQUESTED,
+    GRANTED,
+    DENIED,
+    NOT_REQUESTED
+}
