@@ -1,4 +1,4 @@
-package com.gals.prayertimes.services
+package com.gals.prayertimes.services.alarmmanager
 
 import android.app.AlarmManager
 import android.app.PendingIntent

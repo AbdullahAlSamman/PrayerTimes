@@ -7,8 +7,8 @@ import com.gals.prayertimes.model.NotificationType
 import com.gals.prayertimes.model.PermissionState
 import com.gals.prayertimes.repository.Repository
 import com.gals.prayertimes.repository.local.entities.SettingsEntity
-import com.gals.prayertimes.services.AlarmItem
-import com.gals.prayertimes.services.AlarmManager
+import com.gals.prayertimes.services.alarmmanager.AlarmItem
+import com.gals.prayertimes.services.alarmmanager.AlarmManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

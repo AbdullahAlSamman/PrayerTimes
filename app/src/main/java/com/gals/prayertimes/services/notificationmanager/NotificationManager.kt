@@ -1,4 +1,4 @@
-package com.gals.prayertimes.services
+package com.gals.prayertimes.services.notificationmanager
 
 import android.annotation.SuppressLint
 import android.app.Notification

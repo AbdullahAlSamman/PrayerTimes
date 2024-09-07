@@ -1,4 +1,4 @@
-package com.gals.prayertimes.services
+package com.gals.prayertimes.services.alarmmanager
 
 import java.time.LocalDateTime
 
