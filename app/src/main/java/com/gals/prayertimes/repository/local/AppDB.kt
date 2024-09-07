@@ -1,9 +1,7 @@
 package com.gals.prayertimes.repository.local
 
-import android.content.Context
 import androidx.room.AutoMigration
 import androidx.room.Database
-import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.gals.prayertimes.repository.local.entities.PrayerEntity
@@ -11,10 +9,10 @@ import com.gals.prayertimes.repository.local.entities.SettingsEntity
 
 @Database(
     entities = [PrayerEntity::class, SettingsEntity::class],
-    version = 2,
+    version = 3,
     exportSchema = true,
     autoMigrations = [
-        AutoMigration(from = 1, to = 2)
+        AutoMigration(from = 2, to = 3)
     ]
 )
 @TypeConverters(Converters::class)
@@ -37,26 +35,5 @@ abstract class AppDB : RoomDatabase() {
 
     companion object {
         const val DB_NAME = "prayers-db"
-        private var instance: AppDB? = null
-
-        /**
-         * Gets instance.
-         * Singleton implementation to forbid creating more than one data base connection.
-         *
-         * @param context the context of current activity.
-         * @return the instance
-         */
-        @JvmStatic
-        @Synchronized
-        fun getInstance(context: Context): AppDB {
-            if (instance == null) {
-                instance = Room.databaseBuilder(
-                    context.applicationContext,
-                    AppDB::class.java,
-                    DB_NAME
-                ).build()
-            }
-            return instance as AppDB
-        }
     }
 }

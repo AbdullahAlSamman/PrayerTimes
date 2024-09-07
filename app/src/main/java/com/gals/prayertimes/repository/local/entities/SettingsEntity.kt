@@ -12,6 +12,16 @@ data class SettingsEntity(
     var notification: Boolean,
     @ColumnInfo(defaultValue = "silent")
     var notificationType: String,
+    @ColumnInfo(defaultValue = "true")
+    var fajerNotification: Boolean = true,
     @ColumnInfo(defaultValue = "false")
-    var sunriseNotification: Boolean = false
+    var sunriseNotification: Boolean = false,
+    @ColumnInfo(defaultValue = "true")
+    var duhrNotification: Boolean = true,
+    @ColumnInfo(defaultValue = "true")
+    var asrNotification: Boolean = true,
+    @ColumnInfo(defaultValue = "true")
+    var maghribNotification: Boolean = true,
+    @ColumnInfo(defaultValue = "true")
+    var ishaNotification: Boolean = true
 )
