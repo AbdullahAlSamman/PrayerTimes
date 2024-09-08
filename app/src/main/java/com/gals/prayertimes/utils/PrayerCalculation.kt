@@ -4,6 +4,8 @@ import android.text.format.DateUtils
 import com.gals.prayertimes.R
 import com.gals.prayertimes.model.NextPrayerConfig
 import com.gals.prayertimes.model.TimePrayer
+import com.gals.prayertimes.model.mappers.timeNow
+import com.gals.prayertimes.model.mappers.toCalendar
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -15,8 +17,8 @@ class PrayerCalculation @Inject constructor(
     private val resourceProvider: ResourceProvider
 ) {
     fun isNowEqualsTime(value: Calendar): Boolean =
-        getTimeNow().toCalendar().get(Calendar.MINUTE) == value.get(Calendar.MINUTE) - 1
-                && getTimeNow().toCalendar()
+        timeNow().toCalendar().get(Calendar.MINUTE) == value.get(Calendar.MINUTE) - 1
+                && timeNow().toCalendar()
             .get(Calendar.HOUR_OF_DAY) == value.get(Calendar.HOUR_OF_DAY)
 
     /**Checks if the date changed at midnight*/
@@ -45,7 +47,7 @@ class PrayerCalculation @Inject constructor(
             isNowBeforeTime(currentPrayer.asr) -> currentPrayer.asr
             isNowBeforeTime(currentPrayer.maghrib) -> currentPrayer.maghrib
             isNowBeforeTime(currentPrayer.isha) -> currentPrayer.isha
-            isNowBeforeTime(currentPrayer.midNight) || getTimeNow().toCalendar() == currentPrayer.midNight ->
+            isNowBeforeTime(currentPrayer.midNight) || timeNow().toCalendar() == currentPrayer.midNight ->
                 currentPrayer.midNight
 
             else -> Calendar.getInstance()
@@ -63,7 +65,7 @@ class PrayerCalculation @Inject constructor(
                 nextPrayerConfig.nextPrayerTime =
                     calculateDifferenceBetweenTimes(
                         currentPrayer.fajer,
-                        getTimeNow().toCalendar()
+                        timeNow().toCalendar()
                     )
                 nextPrayerConfig.nextPrayerName =
                     resourceProvider.getString(R.string.text_prayer_fajer)
@@ -73,7 +75,7 @@ class PrayerCalculation @Inject constructor(
                 nextPrayerConfig.nextPrayerTime =
                     calculateDifferenceBetweenTimes(
                         currentPrayer.sunrise,
-                        getTimeNow().toCalendar()
+                        timeNow().toCalendar()
                     )
                 nextPrayerConfig.nextPrayerName =
                     resourceProvider.getString(R.string.text_prayer_day_sunrise)
@@ -84,7 +86,7 @@ class PrayerCalculation @Inject constructor(
                 nextPrayerConfig.nextPrayerTime =
                     calculateDifferenceBetweenTimes(
                         currentPrayer.duhr,
-                        getTimeNow().toCalendar()
+                        timeNow().toCalendar()
                     )
                 nextPrayerConfig.nextPrayerName =
                     resourceProvider.getString(R.string.text_prayer_duhr)
@@ -94,7 +96,7 @@ class PrayerCalculation @Inject constructor(
                 nextPrayerConfig.nextPrayerTime =
                     calculateDifferenceBetweenTimes(
                         currentPrayer.asr,
-                        getTimeNow().toCalendar()
+                        timeNow().toCalendar()
                     )
                 nextPrayerConfig.nextPrayerName =
                     resourceProvider.getString(R.string.text_prayer_asr)
@@ -104,7 +106,7 @@ class PrayerCalculation @Inject constructor(
                 nextPrayerConfig.nextPrayerTime =
                     calculateDifferenceBetweenTimes(
                         currentPrayer.maghrib,
-                        getTimeNow().toCalendar()
+                        timeNow().toCalendar()
                     )
                 nextPrayerConfig.nextPrayerName =
                     resourceProvider.getString(R.string.text_prayer_maghrib)
@@ -114,17 +116,17 @@ class PrayerCalculation @Inject constructor(
                 nextPrayerConfig.nextPrayerTime =
                     calculateDifferenceBetweenTimes(
                         currentPrayer.isha,
-                        getTimeNow().toCalendar()
+                        timeNow().toCalendar()
                     )
                 nextPrayerConfig.nextPrayerName =
                     resourceProvider.getString(R.string.text_prayer_isha)
             }
 
-            isNowBeforeTime(currentPrayer.midNight) || getTimeNow().toCalendar() == currentPrayer.midNight -> {
+            isNowBeforeTime(currentPrayer.midNight) || timeNow().toCalendar() == currentPrayer.midNight -> {
                 nextPrayerConfig.nextPrayerTime =
                     calculateDifferenceBetweenTimes(
                         currentPrayer.midNight,
-                        getTimeNow().toCalendar()
+                        timeNow().toCalendar()
                     )
                 nextPrayerConfig.isNight = true
                 nextPrayerConfig.nextPrayerName =
@@ -177,10 +179,10 @@ class PrayerCalculation @Inject constructor(
         isNowBeforeTime(prayer.midNight) && isNowAfterTime(prayer.isha)
 
     private fun isNowBeforeTime(value: Calendar): Boolean =
-        getTimeNow().toCalendar().before(value)
+        timeNow().toCalendar().before(value)
 
     private fun isNowAfterTime(value: Calendar): Boolean =
-        getTimeNow().toCalendar().after(value)
+        timeNow().toCalendar().after(value)
 
     private fun calculateDifferenceBetweenTimes(
         big: Calendar,

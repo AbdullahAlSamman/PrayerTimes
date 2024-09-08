@@ -1,6 +1,8 @@
 package com.gals.prayertimes.utils
 
 import com.gals.prayertimes.R
+import com.gals.prayertimes.model.mappers.mapMoonMonth
+import com.gals.prayertimes.model.mappers.mapSunMonth
 import com.gals.prayertimes.viewmodel.MainViewModel
 import java.util.StringTokenizer
 import javax.inject.Inject
@@ -17,10 +19,10 @@ class Formatter @Inject constructor(
         val month: Int
         val footer: String
         if (isSunCalendar) {
-            month = getSunMonth(dateList[1].toInt())
+            month = mapSunMonth(dateList[1].toInt())
             footer = resourceProvider.getString(R.string.text_sun_month_footer)
         } else {
-            month = getMoonMonth(dateList[1].toInt())
+            month = mapMoonMonth(dateList[1].toInt())
             footer = resourceProvider.getString(R.string.text_moon_month_footer)
         }
         return "${dateList[0]} ${resourceProvider.getString(month)} ${dateList[2]} $footer"

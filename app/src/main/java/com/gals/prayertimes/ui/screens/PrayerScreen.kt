@@ -49,18 +49,18 @@ fun PrayerScreen(
                     if (isLandscape()) {
                         PrayerLandscapeScreen(
                             innerPadding = innerPadding,
-                            prayers = state.prayer.prayers,
+                            prayers = state.uiPrayer.prayers,
                             uiNextPrayer = uiNextPrayer,
-                            uiDate = state.prayer.uiDate,
+                            uiDate = state.uiPrayer.uiDate,
                             onSettingsClicked = onSettingsClicked
                         )
                         Log.i("ngz_screen", "isTablet: ${isTablet()}")
                     } else {
                         PrayerPortraitScreen(
                             innerPadding = innerPadding,
-                            prayers = state.prayer.prayers,
+                            prayers = state.uiPrayer.prayers,
                             uiNextPrayer = uiNextPrayer,
-                            uiDate = state.prayer.uiDate,
+                            uiDate = state.uiPrayer.uiDate,
                             onSettingsClicked = onSettingsClicked
                         )
                         Log.i("ngz_screen", "isTablet: ${isTablet()}")

@@ -1,7 +1,7 @@
 package com.gals.prayertimes.viewmodel.utils
 
 import com.gals.prayertimes.model.NextPrayerConfig
-import com.gals.prayertimes.model.Prayer
+import com.gals.prayertimes.model.UiPrayer
 import com.gals.prayertimes.model.UiDate
 import com.gals.prayertimes.repository.local.entities.PrayerEntity
 import com.gals.prayertimes.repository.remote.model.PrayerName
@@ -28,7 +28,7 @@ val testNextPrayerConfig = NextPrayerConfig(
     nextPrayerTime = "16:00"
 )
 
-val testPrayer = Prayer(
+val testUiPrayer = UiPrayer(
     uiDate = UiDate(
         dayName = anyString,
         moonDate = dateString,

@@ -3,7 +3,7 @@ package com.gals.prayertimes.utils
 import androidx.compose.ui.graphics.Color
 import com.gals.prayertimes.R
 import com.gals.prayertimes.model.NextPrayerConfig
-import com.gals.prayertimes.model.Prayer
+import com.gals.prayertimes.model.UiPrayer
 import com.gals.prayertimes.model.TimePrayer
 import com.gals.prayertimes.model.UiDate
 import com.gals.prayertimes.model.UiNextPrayer
@@ -15,10 +15,10 @@ import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
-fun PrayerEntity.toPrayer(resourceProvider: ResourceProvider, formatter: Formatter): Prayer =
-    Prayer(
+fun PrayerEntity.toPrayer(resourceProvider: ResourceProvider, formatter: Formatter): UiPrayer =
+    UiPrayer(
         uiDate = UiDate(
-            dayName = resourceProvider.getString(getDayName(Calendar.getInstance()[Calendar.DAY_OF_WEEK])),
+            dayName = resourceProvider.getString(mapDayName(Calendar.getInstance()[Calendar.DAY_OF_WEEK])),
             moonDate = formatter.formatDateText(this.mDate, false),
             sunDate = formatter.formatDateText(this.sDate, true)
         ),
@@ -75,17 +75,17 @@ fun Calendar.setHoursMinutes(hours: Int, minutes: Int): Calendar {
     return this
 }
 
-fun getTodayDate(): String = SimpleDateFormat(
+fun todayDate(): String = SimpleDateFormat(
     "dd.MM.yyyy",
     Locale.US
 ).format(Date())
 
-fun getTimeNow(): String = SimpleDateFormat(
+fun timeNow(): String = SimpleDateFormat(
     "HH:mm",
     Locale.US
 ).format(Date())
 
-fun getSunMonth(month: Int): Int =
+fun mapSunMonth(month: Int): Int =
     when (month) {
         1 -> R.string.text_sun_month_jan
         2 -> R.string.text_sun_month_feb
@@ -102,7 +102,7 @@ fun getSunMonth(month: Int): Int =
         else -> 0
     }
 
-fun getMoonMonth(month: Int): Int =
+fun mapMoonMonth(month: Int): Int =
     when (month) {
         1 -> R.string.text_moon_month_muhram
         2 -> R.string.text_moon_month_safer
@@ -119,7 +119,7 @@ fun getMoonMonth(month: Int): Int =
         else -> 0
     }
 
-fun getDayName(day: Int): Int =
+fun mapDayName(day: Int): Int =
     when (day) {
         Calendar.SATURDAY -> R.string.text_day_sat
         Calendar.SUNDAY -> R.string.text_day_sun
@@ -131,7 +131,7 @@ fun getDayName(day: Int): Int =
         else -> 0
     }
 
-fun getImage(isNight: Boolean, isRamadan: Boolean): Int =
+fun mapImage(isNight: Boolean, isRamadan: Boolean): Int =
     if (isRamadan) {
         if (isNight) R.drawable.ramadan_night else R.drawable.ramadan_day
     } else {
@@ -140,7 +140,7 @@ fun getImage(isNight: Boolean, isRamadan: Boolean): Int =
 
 fun NextPrayerConfig.toUiNextPrayer(): UiNextPrayer =
     UiNextPrayer(
-        backgroundImage = getImage(isNight, isRamadan),
+        backgroundImage = mapImage(isNight, isRamadan),
         settingsIconTint = if (isNight) Color.White else Color.Black,
         nextPrayerName = nextPrayerName,
         nextPrayerTime = nextPrayerTime,

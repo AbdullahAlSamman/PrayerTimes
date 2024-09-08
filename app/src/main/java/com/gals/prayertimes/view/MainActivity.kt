@@ -11,7 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
 import com.gals.prayertimes.navigation.PrayerTimesNavHost
 import com.gals.prayertimes.ui.theme.PrayerTimesTheme
-import com.gals.prayertimes.utils.getStatusBarColors
+import com.gals.prayertimes.model.mappers.mapStatusBarColors
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -23,7 +23,7 @@ class MainActivity : ComponentActivity() {
             PrayerTimesTheme {
                 val navController = rememberNavController()
                 val systemUiController = rememberSystemUiController()
-                val statusBarSettings = getStatusBarColors()
+                val statusBarSettings = mapStatusBarColors()
                 SideEffect {
                     systemUiController.setStatusBarColor(
                         color = statusBarSettings.first,

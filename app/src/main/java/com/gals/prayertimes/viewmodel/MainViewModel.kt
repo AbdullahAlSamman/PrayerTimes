@@ -16,10 +16,10 @@ import com.gals.prayertimes.utils.Formatter
 import com.gals.prayertimes.utils.PrayerCalculation
 import com.gals.prayertimes.utils.ResourceProvider
 import com.gals.prayertimes.utils.ScreenUpdater
-import com.gals.prayertimes.utils.getTodayDate
-import com.gals.prayertimes.utils.toPrayer
-import com.gals.prayertimes.utils.toTimePrayer
-import com.gals.prayertimes.utils.toUiNextPrayer
+import com.gals.prayertimes.model.mappers.todayDate
+import com.gals.prayertimes.model.mappers.toPrayer
+import com.gals.prayertimes.model.mappers.toTimePrayer
+import com.gals.prayertimes.model.mappers.toUiNextPrayer
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -101,7 +101,7 @@ class MainViewModel @Inject constructor(
             _uiState.update { UiState.Loading }
         }
         viewModelScope.launch(context = dispatcher) {
-            repository.fetchComposePrayer(getTodayDate())
+            repository.fetchComposePrayer(todayDate())
                 .catch { cause ->
                     when (cause) {
                         is ConnectivityException -> {
@@ -120,7 +120,7 @@ class MainViewModel @Inject constructor(
                 .collect { prayers ->
                     prayers.let { composePrayers ->
                         updateScreenStates()
-                        _uiState.update { UiState.Success(prayer = composePrayers) }
+                        _uiState.update { UiState.Success(uiPrayer = composePrayers) }
                     }
                 }
         }

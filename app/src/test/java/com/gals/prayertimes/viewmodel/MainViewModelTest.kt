@@ -12,7 +12,7 @@ import com.gals.prayertimes.viewmodel.utils.TestDispatcherRule
 import com.gals.prayertimes.viewmodel.utils.anyString
 import com.gals.prayertimes.viewmodel.utils.dateString
 import com.gals.prayertimes.viewmodel.utils.testNextPrayerConfig
-import com.gals.prayertimes.viewmodel.utils.testPrayer
+import com.gals.prayertimes.viewmodel.utils.testUiPrayer
 import com.gals.prayertimes.viewmodel.utils.testPrayerEntity
 import io.mockk.coEvery
 import io.mockk.every
@@ -66,7 +66,7 @@ class MainViewModelTest {
             val viewModel = createViewModel()
 
             viewModel.uiState.test {
-                assertEquals(UiState.Success(testPrayer), awaitItem())
+                assertEquals(UiState.Success(testUiPrayer), awaitItem())
             }
         }
 
@@ -81,7 +81,7 @@ class MainViewModelTest {
 
             viewModel.uiState.test {
                 assertEquals(UiState.Loading, awaitItem())
-                assertEquals(UiState.Success(testPrayer), awaitItem())
+                assertEquals(UiState.Success(testUiPrayer), awaitItem())
             }
         }
 

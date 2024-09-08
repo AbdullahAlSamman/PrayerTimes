@@ -10,12 +10,11 @@ import com.gals.prayertimes.repository.local.entities.PrayerEntity
 import com.gals.prayertimes.repository.local.entities.SettingsEntity
 import com.gals.prayertimes.repository.remote.RemoteDataSource
 import com.gals.prayertimes.utils.UtilsManager
-import com.gals.prayertimes.utils.toEntity
+import com.gals.prayertimes.model.mappers.toEntity
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.launchIn
 import javax.inject.Inject
 
 class Repository @Inject constructor(

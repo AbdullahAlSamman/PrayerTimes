@@ -15,7 +15,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import com.gals.prayertimes.R
-import com.gals.prayertimes.model.MenuItem
+import com.gals.prayertimes.model.UiMenuItem
 import com.gals.prayertimes.ui.components.MenuItem
 import com.gals.prayertimes.ui.components.NavigationBackArrow
 import com.gals.prayertimes.ui.theme.PrayerTypography
@@ -24,7 +24,7 @@ import com.gals.prayertimes.ui.theme.PrayerTypography
 @Composable
 fun SettingsMenuScreen(
     onBackClicked: () -> Unit,
-    menuItems: List<MenuItem>,
+    uiMenuItems: List<UiMenuItem>,
     textStyle: TextStyle = PrayerTypography.headlineMedium
 ) {
     Scaffold(
@@ -53,8 +53,8 @@ fun SettingsMenuScreen(
                     .fillMaxWidth()
                     .padding(innerPadding),
                 content = {
-                    items(menuItems) { item ->
-                        MenuItem(menuItem = item)
+                    items(uiMenuItems) { item ->
+                        MenuItem(uiMenuItem = item)
                     }
                 }
             )
