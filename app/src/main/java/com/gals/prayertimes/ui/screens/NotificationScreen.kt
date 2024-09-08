@@ -31,7 +31,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.gals.prayertimes.R
 import com.gals.prayertimes.model.NotificationType
-import com.gals.prayertimes.model.PermissionState
+import com.gals.prayertimes.model.UiPermissionState
 import com.gals.prayertimes.ui.components.NavigationBackArrow
 import com.gals.prayertimes.ui.components.RadioButtonItem
 import com.gals.prayertimes.ui.theme.PrayerTypography
@@ -78,14 +78,14 @@ fun NotificationScreen(
 
             CompositionLocalProvider(LocalLayoutDirection.provides(LayoutDirection.Rtl)) {
                 when (uiPermissionDialog) {
-                    PermissionState.REQUESTED -> {
+                    UiPermissionState.REQUESTED -> {
                         ShowMissingPermissionDialog(
                             updatePermissionState = viewModel::updatePermissionState,
                             requestPermission = viewModel::requestAlarmPermission
                         )
                     }
 
-                    PermissionState.DENIED -> {
+                    UiPermissionState.DENIED -> {
                         ShowPermissionDeniedDialog(viewModel::updatePermissionState)
                     }
 
@@ -133,12 +133,12 @@ fun NotificationScreen(
                             Log.i("ngz_notification", "Notification Screen: OnResume")
                             if (checkAPILevelForAlarms) {
                                 when (viewModel.getPendingPermissions()) {
-                                    PermissionState.PENDING -> {
+                                    UiPermissionState.PENDING -> {
                                         if (viewModel.isAlarmPermissionGranted()) {
-                                            viewModel.updatePermissionState(PermissionState.GRANTED)
+                                            viewModel.updatePermissionState(UiPermissionState.GRANTED)
                                             viewModel.updateSwitchState(true)
                                         } else {
-                                            viewModel.updatePermissionState(PermissionState.DENIED)
+                                            viewModel.updatePermissionState(UiPermissionState.DENIED)
                                         }
                                     }
 
@@ -158,7 +158,7 @@ fun NotificationScreen(
 
 @Composable
 fun ShowMissingPermissionDialog(
-    updatePermissionState: (PermissionState) -> Unit,
+    updatePermissionState: (UiPermissionState) -> Unit,
     requestPermission: () -> Unit
 ) {
     AlertDialog(
@@ -167,7 +167,7 @@ fun ShowMissingPermissionDialog(
         confirmButton = {
             TextButton(
                 onClick = {
-                    updatePermissionState(PermissionState.REQUESTED)
+                    updatePermissionState(UiPermissionState.REQUESTED)
                     requestPermission()
                 }) {
                 Text(text = stringResource(id = R.string.text_notification_permission_dialog_confirm))
@@ -175,28 +175,28 @@ fun ShowMissingPermissionDialog(
         },
         dismissButton = {
             TextButton(
-                onClick = { updatePermissionState(PermissionState.DENIED) }
+                onClick = { updatePermissionState(UiPermissionState.DENIED) }
             ) {
                 Text(text = stringResource(id = R.string.text_notification_permission_dialog_dismiss))
             }
         },
-        onDismissRequest = { updatePermissionState(PermissionState.DENIED) }
+        onDismissRequest = { updatePermissionState(UiPermissionState.DENIED) }
     )
 }
 
 @Composable
-fun ShowPermissionDeniedDialog(updatePermissionState: (PermissionState) -> Unit) {
+fun ShowPermissionDeniedDialog(updatePermissionState: (UiPermissionState) -> Unit) {
     AlertDialog(
         title = { Text(text = stringResource(id = R.string.text_notification_permission_dialog_denied_title)) },
         text = { Text(text = stringResource(id = R.string.text_notification_permission_dialog_denied_message)) },
         confirmButton = {},
         dismissButton = {
             TextButton(
-                onClick = { updatePermissionState(PermissionState.NOT_REQUESTED) }
+                onClick = { updatePermissionState(UiPermissionState.NOT_REQUESTED) }
             ) {
                 Text(text = stringResource(id = R.string.text_notification_permission_dialog_okay))
             }
         },
-        onDismissRequest = { updatePermissionState(PermissionState.NOT_REQUESTED) }
+        onDismissRequest = { updatePermissionState(UiPermissionState.NOT_REQUESTED) }
     )
 }

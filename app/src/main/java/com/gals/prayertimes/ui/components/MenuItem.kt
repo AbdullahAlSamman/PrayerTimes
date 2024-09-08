@@ -21,13 +21,13 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.gals.prayertimes.R
-import com.gals.prayertimes.model.MenuItem
+import com.gals.prayertimes.model.UiMenuItem
 import com.gals.prayertimes.ui.theme.PrayerTypography
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun MenuItem(
-    menuItem: MenuItem,
+    uiMenuItem: UiMenuItem,
     textStyle: TextStyle = PrayerTypography.headlineSmall
 ) {
     CompositionLocalProvider(LocalLayoutDirection.provides(LayoutDirection.Rtl)) {
@@ -35,21 +35,21 @@ fun MenuItem(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(all = 16.dp)
-                .clickable { menuItem.navigateTo.invoke() }
+                .clickable { uiMenuItem.navigateTo.invoke() }
         )
         {
             Icon(
                 modifier = Modifier
                     .size(50.dp)
                     .semantics { invisibleToUser() },
-                painter = painterResource(id = menuItem.icon),
+                painter = painterResource(id = uiMenuItem.icon),
                 contentDescription = stringResource(R.string.menu_item_icon_content_description)
             )
             Text(
                 modifier = Modifier
                     .align(Alignment.CenterVertically)
                     .padding(start = 12.dp),
-                text = stringResource(id = menuItem.title),
+                text = stringResource(id = uiMenuItem.title),
                 style = textStyle
             )
         }

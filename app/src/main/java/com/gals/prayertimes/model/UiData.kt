@@ -7,7 +7,7 @@ import androidx.compose.ui.graphics.Color
 import com.gals.prayertimes.repository.remote.model.PrayerName
 
 @Immutable
-data class Prayer(
+data class UiPrayer(
     var uiDate: UiDate = UiDate(),
     var prayers: Map<PrayerName, String> = emptyMap()
 )
@@ -26,16 +26,17 @@ data class UiDate(
     val sunDate: String = ""
 )
 
-data class MenuItem(
+data class UiMenuItem(
     @DrawableRes val icon: Int = 0,
     @StringRes val title: Int = 0,
     val navigateTo: () -> Unit = {}
 )
 
-enum class PermissionState {
-    PENDING,
-    REQUESTED,
-    GRANTED,
-    DENIED,
-    NOT_REQUESTED
+enum class UiPrayerName {
+    FAJER,
+    SUNRISE,
+    DUHR,
+    ASR,
+    MAGRIB,
+    ISHA
 }

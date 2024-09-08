@@ -21,8 +21,8 @@ import com.gals.prayertimes.utils.isPhoneInLandscape
 import com.gals.prayertimes.utils.isTablet
 import com.gals.prayertimes.utils.isTabletInPortrait
 import com.gals.prayertimes.utils.nonScaledSp
-import com.gals.prayertimes.utils.prayerColorMapper
-import com.gals.prayertimes.utils.prayerNameMapper
+import com.gals.prayertimes.model.mappers.mapPrayerColor
+import com.gals.prayertimes.model.mappers.mapPrayerName
 
 /** Show single prayer with settings*/
 @Composable
@@ -41,7 +41,7 @@ fun PrayerSingleView(
             .fillMaxWidth()
             .padding(start = 2.dp, end = 2.dp)
             .background(
-                color = prayerColorMapper(prayer = prayer.key),
+                color = mapPrayerColor(prayer = prayer.key),
                 shape = MaterialTheme.shapes.small
             ),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -49,7 +49,7 @@ fun PrayerSingleView(
         Spacer(modifier = Modifier.height(if (isPhoneInLandscape()) 5.dp else 15.dp))
 
         Text(
-            text = prayerNameMapper(prayerName = prayer.key),
+            text = mapPrayerName(prayerName = prayer.key),
             style = textStyle,
             textAlign = TextAlign.Center
         )

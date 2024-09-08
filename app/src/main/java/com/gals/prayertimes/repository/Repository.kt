@@ -12,7 +12,7 @@ import com.gals.prayertimes.repository.local.entities.SettingsEntity
 import com.gals.prayertimes.repository.remote.RemoteDataSource
 import com.gals.prayertimes.repository.remote.model.PrayersResponse
 import com.gals.prayertimes.utils.UtilsManager
-import com.gals.prayertimes.utils.toEntity
+import com.gals.prayertimes.model.mappers.toEntity
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow

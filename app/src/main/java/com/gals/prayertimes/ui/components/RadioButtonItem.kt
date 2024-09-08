@@ -14,7 +14,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import com.gals.prayertimes.model.NotificationType
 import com.gals.prayertimes.ui.theme.PrayerTypography
-import com.gals.prayertimes.utils.getNotificationTypeText
+import com.gals.prayertimes.model.mappers.mapNotificationTypeText
 
 @Composable
 fun RadioButtonItem(
@@ -40,7 +40,7 @@ fun RadioButtonItem(
             selected = isSelectedItem(item.value),
             onClick = { onSelectionChanged(item.value) })
         Text(
-            text = getNotificationTypeText(notificationType = item),
+            text = mapNotificationTypeText(notificationType = item),
             style = textStyle
         )
     }
