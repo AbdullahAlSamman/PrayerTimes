@@ -1,6 +1,6 @@
 package com.gals.prayertimes.model
 
-import com.gals.prayertimes.utils.setHoursMinutes
+import com.gals.prayertimes.model.mappers.setHoursMinutes
 import java.util.Calendar
 
 data class NextPrayerConfig(
