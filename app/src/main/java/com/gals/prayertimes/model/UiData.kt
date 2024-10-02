@@ -40,3 +40,8 @@ enum class UiPrayerName {
     MAGRIB,
     ISHA
 }
+
+data class UiSelectedPrayerAlarm(
+    var selection: MutableMap<UiPrayerName, Boolean> = UiPrayerName.entries.associateWith { false }
+        .toMutableMap()
+)

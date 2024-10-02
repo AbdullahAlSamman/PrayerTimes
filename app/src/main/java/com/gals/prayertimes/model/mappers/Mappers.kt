@@ -12,6 +12,7 @@ import com.gals.prayertimes.model.TimePrayer
 import com.gals.prayertimes.model.UiDate
 import com.gals.prayertimes.model.UiNextPrayer
 import com.gals.prayertimes.model.UiPrayer
+import com.gals.prayertimes.model.UiPrayerName
 import com.gals.prayertimes.repository.local.entities.PrayerEntity
 import com.gals.prayertimes.repository.remote.model.PrayerName
 import com.gals.prayertimes.repository.remote.model.PrayersResponse
@@ -184,6 +185,16 @@ fun mapPrayerName(prayerName: PrayerName): String =
     }
 
 @Composable
+fun mapUiPrayerName(prayerName: UiPrayerName): String = when (prayerName) {
+    UiPrayerName.FAJER -> stringResource(id = R.string.text_prayer_fajer)
+    UiPrayerName.SUNRISE -> stringResource(id = R.string.text_prayer_sunrise)
+    UiPrayerName.DUHR -> stringResource(id = R.string.text_prayer_duhr)
+    UiPrayerName.ASR -> stringResource(id = R.string.text_prayer_asr)
+    UiPrayerName.MAGRIB -> stringResource(id = R.string.text_prayer_maghrib)
+    UiPrayerName.ISHA -> stringResource(id = R.string.text_prayer_isha)
+}
+
+@Composable
 fun mapStatusBarColors(): Pair<Color, Boolean> {
     val color = if (isSystemInDarkTheme()) {
         colorResource(id = R.color.background_color_time_isha)
@@ -200,4 +211,15 @@ fun mapNotificationTypeText(notificationType: NotificationType): String =
         NotificationType.TONE -> stringResource(id = R.string.text_alarm_tone)
         NotificationType.HALF -> stringResource(id = R.string.text_alarm_half_athan)
         NotificationType.FULL -> stringResource(id = R.string.text_alarm_full_athan)
+    }
+
+@Composable
+fun mapPrayerName(prayerName: UiPrayerName): String =
+    when (prayerName) {
+        UiPrayerName.FAJER -> stringResource(id = R.string.text_prayer_fajer)
+        UiPrayerName.SUNRISE -> stringResource(id = R.string.text_prayer_sunrise)
+        UiPrayerName.DUHR -> stringResource(id = R.string.text_prayer_duhr)
+        UiPrayerName.ASR -> stringResource(id = R.string.text_prayer_asr)
+        UiPrayerName.MAGRIB -> stringResource(id = R.string.text_prayer_maghrib)
+        UiPrayerName.ISHA -> stringResource(id = R.string.text_prayer_isha)
     }

@@ -1,6 +1,7 @@
 package com.gals.prayertimes.ui.screens
 
 import android.util.Log
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -32,15 +33,19 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.gals.prayertimes.R
 import com.gals.prayertimes.model.NotificationType
 import com.gals.prayertimes.model.UiPermissionState
+import com.gals.prayertimes.model.UiPrayerName
 import com.gals.prayertimes.ui.components.NavigationBackArrow
+import com.gals.prayertimes.ui.components.PrayerNotificationItem
 import com.gals.prayertimes.ui.components.RadioButtonItem
 import com.gals.prayertimes.ui.theme.PrayerTypography
+import com.gals.prayertimes.utils.applyDefaultPadding
 import com.gals.prayertimes.utils.checkAPILevelForAlarms
 import com.gals.prayertimes.viewmodel.NotificationScreenViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NotificationScreen(
+    modifier: Modifier = Modifier.applyDefaultPadding(16.dp),
     onBackClicked: () -> Unit,
     textStyle: TextStyle = PrayerTypography.headlineMedium,
     viewModel: NotificationScreenViewModel = hiltViewModel()
@@ -70,11 +75,14 @@ fun NotificationScreen(
 
             val uiSelectedRadio by viewModel.uiSelectedRadio.collectAsState()
             val uiSwitchState by viewModel.uiSwitchState.collectAsState()
+            val uiPrayerSwitches by viewModel.uiSelectedPrayerAlarms.collectAsState()
             val uiPermissionDialog by viewModel.uiPermissionState.collectAsState()
 
             val isRadioItemSelected: (String) -> Boolean = { uiSelectedRadio == it }
             val onRadioSelectionChanged: (String) -> Unit = { viewModel.updateSelectedRadio(it) }
             val onSwitchSelectionChanged: (Boolean) -> Unit = { viewModel.updateSwitchState(it) }
+            val onAlarmSelectionChanged: (UiPrayerName, Boolean) -> Unit =
+                { name, value -> viewModel.updateSelectedAlarms(name, value) }
 
             CompositionLocalProvider(LocalLayoutDirection.provides(LayoutDirection.Rtl)) {
                 when (uiPermissionDialog) {
@@ -94,11 +102,13 @@ fun NotificationScreen(
                     }
                 }
 
-                Column(modifier = Modifier.padding(innerPadding)) {
+                Column(
+                    modifier = Modifier.padding(innerPadding),
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                    horizontalAlignment = Alignment.Start
+                ) {
                     Row(
-                        modifier = Modifier
-                            .padding(top = 16.dp, start = 16.dp, end = 16.dp)
-                            .fillMaxWidth()
+                        modifier = modifier.fillMaxWidth()
                     )
                     {
                         Text(
@@ -114,7 +124,7 @@ fun NotificationScreen(
                             onCheckedChange = onSwitchSelectionChanged
                         )
                     }
-                    Column(modifier = Modifier.padding(8.dp)) {
+                    Column(modifier = modifier) {
                         val items = NotificationType.entries.toTypedArray()
                         items.forEach { item ->
                             RadioButtonItem(
@@ -123,6 +133,24 @@ fun NotificationScreen(
                                 onSelectionChanged = onRadioSelectionChanged,
                                 itemEnabled = uiSwitchState
                             )
+                        }
+                    }
+
+                    Column(
+                        modifier = modifier.fillMaxWidth(),
+                        verticalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        Text(
+                            text = stringResource(id = R.string.text_notification_selected_prayers),
+                            style = PrayerTypography.titleLarge
+                        )
+                        UiPrayerName.entries.forEach { name ->
+                                PrayerNotificationItem(
+                                    prayerName = name,
+                                    isSwitchChecked = uiPrayerSwitches.selection[name] == true,
+                                    isSwitchEnabled = uiSwitchState,
+                                    onCheckedChange = { onAlarmSelectionChanged(name, it) }
+                                )
                         }
                     }
                 }

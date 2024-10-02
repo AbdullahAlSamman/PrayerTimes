@@ -4,7 +4,9 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gals.prayertimes.model.NotificationType
-import com.gals.prayertimes.model.PermissionState
+import com.gals.prayertimes.model.UiPermissionState
+import com.gals.prayertimes.model.UiPrayerName
+import com.gals.prayertimes.model.UiSelectedPrayerAlarm
 import com.gals.prayertimes.repository.Repository
 import com.gals.prayertimes.repository.local.entities.SettingsEntity
 import com.gals.prayertimes.services.alarmmanager.AlarmItem
@@ -26,11 +28,13 @@ class NotificationScreenViewModel @Inject constructor(
 ) : ViewModel() {
     private val _uiSelectedRadio = MutableStateFlow(NotificationType.SILENT.value)
     private val _uiSwitchState = MutableStateFlow(false)
+    private val _uiSelectedPrayerAlarms = MutableStateFlow(UiSelectedPrayerAlarm())
     private val _uiPermissionState = MutableStateFlow(getPendingPermission())
 
     val uiSelectedRadio: StateFlow<String> = _uiSelectedRadio.asStateFlow()
     val uiSwitchState: StateFlow<Boolean> = _uiSwitchState.asStateFlow()
-    val uiPermissionState: StateFlow<PermissionState> = _uiPermissionState.asStateFlow()
+    val uiPermissionState: StateFlow<UiPermissionState> = _uiPermissionState.asStateFlow()
+    val uiSelectedPrayerAlarms: StateFlow<UiSelectedPrayerAlarm> = _uiSelectedPrayerAlarms.asStateFlow()
 
     init {
         checkSettingsAndPermissions()
@@ -43,10 +47,10 @@ class NotificationScreenViewModel @Inject constructor(
         )
     }
 
-    fun updatePermissionState(value: PermissionState) {
+    fun updatePermissionState(value: UiPermissionState) {
         _uiPermissionState.update { value }
         when (value) {
-            PermissionState.GRANTED, PermissionState.DENIED -> {
+            UiPermissionState.GRANTED, UiPermissionState.DENIED -> {
                 removePendingPermission()
             }
 
@@ -60,7 +64,7 @@ class NotificationScreenViewModel @Inject constructor(
                 if (alarmManager.canScheduleAlarms()) {
                     turnOnAlarm()
                 } else {
-                    _uiPermissionState.update { PermissionState.REQUESTED }
+                    _uiPermissionState.update { UiPermissionState.REQUESTED }
                 }
             }
 
@@ -82,12 +86,18 @@ class NotificationScreenViewModel @Inject constructor(
         }
     }
 
+    fun updateSelectedAlarms(name: UiPrayerName, value: Boolean) {
+        val updatedSelection = _uiSelectedPrayerAlarms.value.selection
+        updatedSelection[name] = value
+        _uiSelectedPrayerAlarms.update { UiSelectedPrayerAlarm(updatedSelection) }
+    }
+
     fun requestAlarmPermission() {
         saveRequestedPermission()
         alarmManager.requestPermission()
     }
 
-    fun getPendingPermissions(): PermissionState = getPendingPermission()
+    fun getPendingPermissions(): UiPermissionState = getPendingPermission()
 
     fun isAlarmPermissionGranted(): Boolean = alarmManager.canScheduleAlarms()
 
@@ -119,14 +129,14 @@ class NotificationScreenViewModel @Inject constructor(
     }
 
     private fun saveRequestedPermission() {
-        savedStateHandle[PENDING_ALARM_PERMISSION] = PermissionState.PENDING
+        savedStateHandle[PENDING_ALARM_PERMISSION] = UiPermissionState.PENDING
     }
 
-    private fun getPendingPermission(): PermissionState =
-        savedStateHandle[PENDING_ALARM_PERMISSION] ?: PermissionState.NOT_REQUESTED
+    private fun getPendingPermission(): UiPermissionState =
+        savedStateHandle[PENDING_ALARM_PERMISSION] ?: UiPermissionState.NOT_REQUESTED
 
     private fun removePendingPermission() {
-        savedStateHandle.remove<PermissionState>(PENDING_ALARM_PERMISSION)
+        savedStateHandle.remove<UiPermissionState>(PENDING_ALARM_PERMISSION)
     }
 
     private fun checkSettingsAndPermissions() {
