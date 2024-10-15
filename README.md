@@ -1,5 +1,5 @@
 # PrayerTimes
-![Build Status] (https://github.com/emibcn/badge-action/workflows/.github/workflows/run-quality-checks.yml/badge.svg)
+[![Run quality checks](https://github.com/AbdullahAlSamman/PrayerTimes/actions/workflows/run-quality-checks.yaml/badge.svg)](https://github.com/AbdullahAlSamman/PrayerTimes/actions/workflows/run-quality-checks.yaml)
 
 This Android application uses Jetpack Compose to display prayer times for Nürnberg a German city used by 500+ users.
 
