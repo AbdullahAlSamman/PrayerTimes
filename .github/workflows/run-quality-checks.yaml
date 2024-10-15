@@ -24,3 +24,9 @@ jobs:
 
       - name: Run unit tests
         run: ./gradlew test
+
+      - name: Update build status badge
+        uses: actions/github-actions-update-badge@v2.0.3
+        with:
+          label: 'Build Status'
+          status: ${{ job.status }}
