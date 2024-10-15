@@ -4,6 +4,10 @@
 
 This Android application uses Jetpack Compose to display prayer times for Nürnberg a German city used by 500+ users.
 
+## Play store listing
+
+https://play.google.com/store/apps/details?id=com.gals.prayertimes
+
 ## Features
 
 * Displays prayer times for the current day
