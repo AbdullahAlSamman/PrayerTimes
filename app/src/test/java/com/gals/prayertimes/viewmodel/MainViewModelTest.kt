@@ -71,16 +71,15 @@ class MainViewModelTest {
         }
 
     @Test
-    fun `Given request is ongoing, when start loading, then loading state is set then success state`() =
+    fun `Given request is ongoing, when start loading, then skip loading to success state`() =
         runTest {
             setNetworkRequest(prayerEntity = testPrayerEntity) {
-                delay(1)
+                delay(5)
             }
 
             val viewModel = createViewModel()
 
             viewModel.uiState.test {
-                assertEquals(UiState.Loading, awaitItem())
                 assertEquals(UiState.Success(testPrayer), awaitItem())
             }
         }

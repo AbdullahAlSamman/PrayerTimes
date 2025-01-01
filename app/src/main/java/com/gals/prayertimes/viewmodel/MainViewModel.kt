@@ -7,6 +7,7 @@ import com.gals.prayertimes.R
 import com.gals.prayertimes.model.ConnectivityException
 import com.gals.prayertimes.model.DefaultDispatcher
 import com.gals.prayertimes.model.NetworkException
+import com.gals.prayertimes.model.ServerException
 import com.gals.prayertimes.model.UiNextPrayer
 import com.gals.prayertimes.model.UiState
 import com.gals.prayertimes.model.ViewModelScreenUpdater
@@ -111,13 +112,15 @@ class MainViewModel @Inject constructor(
                         is NetworkException -> {
                             _uiState.update { UiState.Error(resourceProvider.getString(R.string.text_error_server_down)) }
                         }
+
+                        is ServerException -> {
+                            _uiState.update { UiState.Error(resourceProvider.getString(R.string.text_error_server_no_data)) }
+                        }
                     }
-                }
-                .map { prayer ->
+                }.map { prayer ->
                     todayPrayers = prayer
                     prayer.toPrayer(resourceProvider, formatter)
-                }
-                .collect { prayers ->
+                }.collect { prayers ->
                     prayers.let { composePrayers ->
                         updateScreenStates()
                         _uiState.update { UiState.Success(prayer = composePrayers) }

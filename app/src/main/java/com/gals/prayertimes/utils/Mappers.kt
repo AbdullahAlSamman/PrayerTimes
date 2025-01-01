@@ -45,8 +45,7 @@ fun PrayersResponse.toEntity(): PrayerEntity {
             PrayerName.ASR -> entity.asr = prayer.time
             PrayerName.MAGHRIB -> entity.maghrib = prayer.time
             PrayerName.ISHA -> entity.isha = prayer.time
-            else -> {/* no-op */
-            }
+            else -> {/* no-op */ }
         }
     }
     return entity

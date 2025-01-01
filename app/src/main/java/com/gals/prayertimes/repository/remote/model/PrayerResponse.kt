@@ -1,5 +1,6 @@
 package com.gals.prayertimes.repository.remote.model
 
+import com.gals.prayertimes.repository.remote.model.PrayerName.entries
 import com.google.gson.annotations.SerializedName
 
 
@@ -33,11 +34,13 @@ data class PrayersResponse(
     @SerializedName("mDate") val mDate: String,
     @SerializedName("prayers") val prayers: List<SinglePrayer>
 )
+
 data class SinglePrayer(
     val name: PrayerName,
     val time: String
 )
-enum class PrayerName(val value: String){
+
+enum class PrayerName(val value: String) {
     FAJER("fajer"),
     SUNRISE("sunrise"),
     DUHR("duhr"),
@@ -46,7 +49,7 @@ enum class PrayerName(val value: String){
     ISHA("isha"),
     UNKNOWN("unknown");
 
-    companion object{
+    companion object {
         infix fun fromValue(value: String): PrayerName {
             val map = entries.associateBy { it.value }
             return map[value] ?: UNKNOWN
