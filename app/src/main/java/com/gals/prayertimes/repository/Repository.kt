@@ -5,17 +5,18 @@ import com.gals.prayertimes.model.ConnectivityException
 import com.gals.prayertimes.model.IODispatcher
 import com.gals.prayertimes.model.NetworkException
 import com.gals.prayertimes.model.NotificationType
+import com.gals.prayertimes.model.ServerException
 import com.gals.prayertimes.repository.local.LocalDataSource
 import com.gals.prayertimes.repository.local.entities.PrayerEntity
 import com.gals.prayertimes.repository.local.entities.SettingsEntity
 import com.gals.prayertimes.repository.remote.RemoteDataSource
+import com.gals.prayertimes.repository.remote.model.PrayersResponse
 import com.gals.prayertimes.utils.UtilsManager
 import com.gals.prayertimes.utils.toEntity
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.launchIn
 import javax.inject.Inject
 
 class Repository @Inject constructor(
@@ -24,7 +25,7 @@ class Repository @Inject constructor(
     private val remoteDataSource: RemoteDataSource,
     private val tools: UtilsManager,
 ) {
-    suspend fun fetchComposePrayer(todayDate: String): Flow<PrayerEntity> = flow {
+    fun fetchComposePrayer(todayDate: String): Flow<PrayerEntity> = flow {
         if (localDataSource.isTodayPrayerExists(todayDate)) {
             Log.i("ngz_local_data_request", "exists locally in cache")
             emit(localDataSource.getPrayers(todayDate))
@@ -34,22 +35,22 @@ class Repository @Inject constructor(
             val result = remoteDataSource.getPrayers(todayDate)
             if (result.isSuccessful) {
                 result.body()?.let { response ->
-                    Log.i("ngz_remote_data_request", "Success: ${result.message()}")
+                    checkServerError(response)
+                    Log.i(LOG_TAG, "Success: ${result.message()}")
                     localDataSource.insertPrayers(response.toEntity())
                     emit(response.toEntity())
                 }
             } else {
-                Log.e("ngz_remote_data_request", "Network error: ${result.message()}")
+                Log.e(LOG_TAG, "Network error: ${result.message()}")
                 throw NetworkException("${result.code()}: ${result.message()}")
             }
         } else {
-            Log.e("ngz_remote_data_request", "Connectivity: No Internet")
+            Log.e(LOG_TAG, "Connectivity error: No Internet")
             throw ConnectivityException("No Internet")
         }
     }.flowOn(dispatcher)
 
-    suspend fun getPrayer(todayDate: String): PrayerEntity =
-        localDataSource.getPrayers(todayDate)
+    suspend fun getPrayer(todayDate: String): PrayerEntity = localDataSource.getPrayers(todayDate)
 
     suspend fun getSettings(): SettingsEntity =
         if (localDataSource.isSettingsExists()) {
@@ -66,4 +67,12 @@ class Repository @Inject constructor(
     suspend fun saveSettings(settingsEntity: SettingsEntity) =
         localDataSource.insertSettings(settingsEntity)
 
+
+    private fun checkServerError(response: PrayersResponse) {
+        if (response == PrayersResponse("", "", emptyList())) {
+            throw ServerException("Server error: No data")
+        }
+    }
 }
+
+private const val LOG_TAG = "ngz_remote_data_request"
