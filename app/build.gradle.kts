@@ -12,8 +12,8 @@ android {
         applicationId = "com.gals.prayertimes"
         minSdk = 26
         targetSdk = 34
-        versionName = "1.0.6"
-        versionCode = 26
+        versionName = "1.0.7"
+        versionCode = 27
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         signingConfigs {
