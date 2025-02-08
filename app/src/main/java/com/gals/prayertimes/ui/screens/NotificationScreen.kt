@@ -41,9 +41,9 @@ import com.gals.prayertimes.ui.theme.PrayerTypography
 import com.gals.prayertimes.utils.checkAPILevelForAlarms
 import com.gals.prayertimes.viewmodel.NotificationScreenViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NotificationScreen(
+@OptIn(ExperimentalMaterial3Api::class)
+internal fun NotificationScreen(
     modifier: Modifier = Modifier,
     onBackClicked: () -> Unit,
     textStyle: TextStyle = PrayerTypography.headlineMedium,
@@ -181,7 +181,7 @@ fun NotificationScreen(
 }
 
 @Composable
-fun ShowMissingPermissionDialog(
+private fun ShowMissingPermissionDialog(
     updatePermissionState: (UiPermissionState) -> Unit,
     requestPermission: () -> Unit
 ) {
@@ -209,7 +209,7 @@ fun ShowMissingPermissionDialog(
 }
 
 @Composable
-fun ShowPermissionDeniedDialog(updatePermissionState: (UiPermissionState) -> Unit) {
+private fun ShowPermissionDeniedDialog(updatePermissionState: (UiPermissionState) -> Unit) {
     AlertDialog(
         title = { Text(text = stringResource(id = R.string.text_notification_permission_dialog_denied_title)) },
         text = { Text(text = stringResource(id = R.string.text_notification_permission_dialog_denied_message)) },

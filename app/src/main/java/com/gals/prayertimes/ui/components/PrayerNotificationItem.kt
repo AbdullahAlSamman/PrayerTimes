@@ -14,7 +14,7 @@ import com.gals.prayertimes.model.mappers.mapUiPrayerName
 import com.gals.prayertimes.ui.theme.PrayerTypography
 
 @Composable
-fun PrayerNotificationItem(
+internal fun PrayerNotificationItem(
     modifier: Modifier = Modifier,
     prayerName: UiPrayerName,
     isSwitchChecked: Boolean,
@@ -27,7 +27,11 @@ fun PrayerNotificationItem(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        Switch(checked = isSwitchChecked, onCheckedChange = onCheckedChange, enabled = isSwitchEnabled)
+        Switch(
+            checked = isSwitchChecked,
+            onCheckedChange = onCheckedChange,
+            enabled = isSwitchEnabled
+        )
 
         Text(
             text = mapUiPrayerName(prayerName),
