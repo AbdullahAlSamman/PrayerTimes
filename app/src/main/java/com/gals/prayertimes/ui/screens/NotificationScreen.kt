@@ -38,14 +38,13 @@ import com.gals.prayertimes.ui.components.NavigationBackArrow
 import com.gals.prayertimes.ui.components.PrayerNotificationItem
 import com.gals.prayertimes.ui.components.RadioButtonItem
 import com.gals.prayertimes.ui.theme.PrayerTypography
-import com.gals.prayertimes.utils.applyDefaultPadding
 import com.gals.prayertimes.utils.checkAPILevelForAlarms
 import com.gals.prayertimes.viewmodel.NotificationScreenViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NotificationScreen(
-    modifier: Modifier = Modifier.applyDefaultPadding(16.dp),
+    modifier: Modifier = Modifier,
     onBackClicked: () -> Unit,
     textStyle: TextStyle = PrayerTypography.headlineMedium,
     viewModel: NotificationScreenViewModel = hiltViewModel()
@@ -107,10 +106,7 @@ fun NotificationScreen(
                     verticalArrangement = Arrangement.spacedBy(16.dp),
                     horizontalAlignment = Alignment.Start
                 ) {
-                    Row(
-                        modifier = modifier.fillMaxWidth()
-                    )
-                    {
+                    Row(modifier = modifier.fillMaxWidth()) {
                         Text(
                             modifier = Modifier
                                 .weight(3f)
@@ -145,12 +141,12 @@ fun NotificationScreen(
                             style = PrayerTypography.titleLarge
                         )
                         UiPrayerName.entries.forEach { name ->
-                                PrayerNotificationItem(
-                                    prayerName = name,
-                                    isSwitchChecked = uiPrayerSwitches.selection[name] == true,
-                                    isSwitchEnabled = uiSwitchState,
-                                    onCheckedChange = { onAlarmSelectionChanged(name, it) }
-                                )
+                            PrayerNotificationItem(
+                                prayerName = name,
+                                isSwitchChecked = uiPrayerSwitches[name] == true,
+                                isSwitchEnabled = uiSwitchState,
+                                onCheckedChange = { onAlarmSelectionChanged(name, it) }
+                            )
                         }
                     }
                 }

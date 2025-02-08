@@ -6,7 +6,6 @@ import androidx.lifecycle.viewModelScope
 import com.gals.prayertimes.model.NotificationType
 import com.gals.prayertimes.model.UiPermissionState
 import com.gals.prayertimes.model.UiPrayerName
-import com.gals.prayertimes.model.UiSelectedPrayerAlarm
 import com.gals.prayertimes.repository.Repository
 import com.gals.prayertimes.repository.local.entities.SettingsEntity
 import com.gals.prayertimes.services.alarmmanager.AlarmItem
@@ -28,13 +27,15 @@ class NotificationScreenViewModel @Inject constructor(
 ) : ViewModel() {
     private val _uiSelectedRadio = MutableStateFlow(NotificationType.SILENT.value)
     private val _uiSwitchState = MutableStateFlow(false)
-    private val _uiSelectedPrayerAlarms = MutableStateFlow(UiSelectedPrayerAlarm())
+    private val _uiSelectedPrayerAlarms =
+        MutableStateFlow<Map<UiPrayerName, Boolean>>(UiPrayerName.entries.associateWith { it != UiPrayerName.SUNRISE })
     private val _uiPermissionState = MutableStateFlow(getPendingPermission())
 
     val uiSelectedRadio: StateFlow<String> = _uiSelectedRadio.asStateFlow()
     val uiSwitchState: StateFlow<Boolean> = _uiSwitchState.asStateFlow()
     val uiPermissionState: StateFlow<UiPermissionState> = _uiPermissionState.asStateFlow()
-    val uiSelectedPrayerAlarms: StateFlow<UiSelectedPrayerAlarm> = _uiSelectedPrayerAlarms.asStateFlow()
+    val uiSelectedPrayerAlarms: StateFlow<Map<UiPrayerName, Boolean>> =
+        _uiSelectedPrayerAlarms.asStateFlow()
 
     init {
         checkSettingsAndPermissions()
@@ -87,9 +88,7 @@ class NotificationScreenViewModel @Inject constructor(
     }
 
     fun updateSelectedAlarms(name: UiPrayerName, value: Boolean) {
-        val updatedSelection = _uiSelectedPrayerAlarms.value.selection
-        updatedSelection[name] = value
-        _uiSelectedPrayerAlarms.update { UiSelectedPrayerAlarm(updatedSelection) }
+        _uiSelectedPrayerAlarms.update { oldMap -> oldMap + (name to value) }
     }
 
     fun requestAlarmPermission() {
