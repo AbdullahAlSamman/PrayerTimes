@@ -4,9 +4,12 @@ import android.text.format.DateUtils
 import com.gals.prayertimes.R
 import com.gals.prayertimes.model.NextPrayerConfig
 import com.gals.prayertimes.model.TimePrayer
+import com.gals.prayertimes.model.UiPrayerName // Assuming UiPrayerName is here
 import com.gals.prayertimes.model.mappers.timeNow
 import com.gals.prayertimes.model.mappers.toCalendar
 import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.time.ZoneId
 import java.util.Calendar
 import java.util.Locale
 import java.util.StringTokenizer
@@ -151,6 +154,21 @@ class PrayerCalculation @Inject constructor(
                 resourceProvider.getString(R.string.text_remaining_time)
         }
         return nextPrayerConfig
+    }
+
+    fun getNextPrayerLocalDateTime(
+        prayerName: UiPrayerName,
+        timePrayer: TimePrayer
+    ): LocalDateTime? {
+        val prayerCalendar: Calendar = when (prayerName) {
+            UiPrayerName.FAJER -> timePrayer.fajer
+            UiPrayerName.SUNRISE -> timePrayer.sunrise // Included for completeness, though alarms might not be set for it
+            UiPrayerName.DUHR -> timePrayer.duhr
+            UiPrayerName.ASR -> timePrayer.asr
+            UiPrayerName.MAGRIB -> timePrayer.maghrib
+            UiPrayerName.ISHA -> timePrayer.isha
+        }
+        return prayerCalendar.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime()
     }
 
     private fun isRamadan(moonDate: String?): Boolean {
