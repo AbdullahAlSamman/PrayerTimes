@@ -1,9 +1,14 @@
 package com.gals.prayertimes.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.work.ExistingWorkPolicy
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
 import com.gals.prayertimes.model.NotificationType
+import com.gals.prayertimes.model.TimePrayer
 import com.gals.prayertimes.model.UiPermissionState
 import com.gals.prayertimes.model.UiPrayerName
 import com.gals.prayertimes.model.mappers.toTimePrayer
@@ -19,6 +24,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.time.LocalDateTime
+import java.util.Calendar
 import javax.inject.Inject
 
 @HiltViewModel
@@ -26,6 +33,7 @@ class NotificationScreenViewModel @Inject constructor(
     private val repository: Repository,
     private val alarmManager: AlarmManager,
     private val prayerCalculation: PrayerCalculation,
+    private val workManager: WorkManager,
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     private val _uiSelectedRadio = MutableStateFlow(NotificationType.SILENT.value)
@@ -41,52 +49,11 @@ class NotificationScreenViewModel @Inject constructor(
         _uiSelectedPrayerAlarms.asStateFlow()
 
     init {
-        checkSettingsAndPermissions()
-    }
-
-    private suspend fun rescheduleAllSelectedAlarms() {
-        if (!_uiSwitchState.value || !alarmManager.canScheduleAlarms()) return
-
-        val timePrayer = repository.getPrayer(todayDate()).toTimePrayer()
-        _uiSelectedPrayerAlarms.value.forEach { prayerName, isSelected ->
-            if (isSelected && prayerName != UiPrayerName.SUNRISE) {
-                prayerCalculation.getNextPrayerLocalDateTime(prayerName, timePrayer)
-                    ?.let { prayerDateTime ->
-                        alarmManager.scheduleAlarm(
-                            AlarmItem(
-                                time = prayerDateTime,
-                                title = "${prayerName.name} Prayer",
-                                message = "Time for ${prayerName.name} prayer."
-                            )
-                        )
-                    }
-            }
-        }
-    }
-
-    private suspend fun cancelAllPrayerAlarms() {
-        val timePrayer = repository.getPrayer(todayDate()).toTimePrayer()
-        UiPrayerName.entries.forEach { prayerName ->
-            if (prayerName != UiPrayerName.SUNRISE) { // No need to cancel sunrise if never scheduled
-                prayerCalculation.getNextPrayerLocalDateTime(prayerName, timePrayer)
-                    ?.let { prayerDateTime ->
-                        alarmManager.cancelAlarm(
-                            AlarmItem(
-                                time = prayerDateTime,
-                                title = "${prayerName.name} Prayer",
-                                message = "Time for ${prayerName.name} prayer."
-                            )
-                        )
-                    }
-            }
-        }
+        loadSavedSettings()
     }
 
     fun updateSelectedRadio(value: String) {
         _uiSelectedRadio.update { value }
-        updateSettings(
-            SettingsEntity(notificationType = value, notification = _uiSwitchState.value)
-        )
     }
 
     fun updatePermissionState(value: UiPermissionState) {
@@ -94,23 +61,15 @@ class NotificationScreenViewModel @Inject constructor(
         when (value) {
             UiPermissionState.GRANTED -> {
                 removePendingPermission()
-                // If permission just granted, and switch was supposed to be on, reschedule
-                if (_uiSwitchState.value) {
-                    viewModelScope.launch { rescheduleAllSelectedAlarms() }
-                }
             }
 
             UiPermissionState.DENIED -> {
                 removePendingPermission()
-                // If permission denied, ensure alarms are cancelled and switch is off
                 _uiSwitchState.update { false }
-                viewModelScope.launch { cancelAllPrayerAlarms() }
-                updateSettings(
-                    SettingsEntity(notificationType = _uiSelectedRadio.value, notification = false)
-                )
             }
 
-            else -> {}
+            else -> {/* no-op */
+            }
         }
     }
 
@@ -118,53 +77,16 @@ class NotificationScreenViewModel @Inject constructor(
         if (value) { // Turning ON
             if (alarmManager.canScheduleAlarms()) {
                 _uiSwitchState.update { true }
-                viewModelScope.launch {
-                    rescheduleAllSelectedAlarms()
-                }
-                updateSettings(
-                    SettingsEntity(
-                        notificationType = _uiSelectedRadio.value,
-                        notification = true
-                    )
-                )
             } else {
                 _uiPermissionState.update { UiPermissionState.REQUESTED }
             }
         } else { // Turning OFF
             _uiSwitchState.update { false }
-            viewModelScope.launch {
-                cancelAllPrayerAlarms()
-            }
-            updateSettings(
-                SettingsEntity(notificationType = _uiSelectedRadio.value, notification = false)
-            )
         }
     }
 
     fun updateSelectedAlarms(prayerName: UiPrayerName, isSelected: Boolean) {
         _uiSelectedPrayerAlarms.update { oldMap -> oldMap + (prayerName to isSelected) }
-
-        if (!_uiSwitchState.value || !alarmManager.canScheduleAlarms() || prayerName == UiPrayerName.SUNRISE) {
-            return
-        }
-
-        viewModelScope.launch {
-            val timePrayer = repository.getPrayer(todayDate()).toTimePrayer()
-            prayerCalculation.getNextPrayerLocalDateTime(prayerName, timePrayer)
-                ?.let { prayerDateTime ->
-                    val alarmItem = AlarmItem(
-                        time = prayerDateTime,
-                        title = "${prayerName.name} Prayer",
-                        message = "Time for ${prayerName.name} prayer."
-                    )
-                    if (isSelected) {
-                        alarmManager.scheduleAlarm(alarmItem)
-                    } else {
-                        alarmManager.cancelAlarm(alarmItem)
-                    }
-                }
-        }
-        // TODO: Persist the state of _uiSelectedPrayerAlarms if needed.
     }
 
     fun requestAlarmPermission() {
@@ -175,6 +97,52 @@ class NotificationScreenViewModel @Inject constructor(
     fun getPendingPermissions(): UiPermissionState = getPendingPermission()
 
     fun isAlarmPermissionGranted(): Boolean = alarmManager.canScheduleAlarms()
+
+    fun submitChanges() {
+        val currentSettings = SettingsEntity(
+            notification = _uiSwitchState.value,
+            notificationType = _uiSelectedRadio.value,
+            fajerNotification = _uiSelectedPrayerAlarms.value[UiPrayerName.FAJER] == true,
+            sunriseNotification = _uiSelectedPrayerAlarms.value[UiPrayerName.SUNRISE] == true,
+            duhrNotification = _uiSelectedPrayerAlarms.value[UiPrayerName.DUHR] == true,
+            asrNotification = _uiSelectedPrayerAlarms.value[UiPrayerName.ASR] == true,
+            maghribNotification = _uiSelectedPrayerAlarms.value[UiPrayerName.MAGRIB] == true,
+            ishaNotification = _uiSelectedPrayerAlarms.value[UiPrayerName.ISHA] == true
+        )
+        updateSettings(currentSettings)
+
+        if (_uiSwitchState.value) {
+            viewModelScope.launch {
+                val prayerAlarmWorkRequest =
+                    OneTimeWorkRequestBuilder<androidx.work.ListenableWorker>().build()
+                workManager.enqueueUniqueWork(
+                    PRAYER_ALARM_WORK_NAME,
+                    ExistingWorkPolicy.REPLACE,
+                    prayerAlarmWorkRequest
+                )
+                scheduleUpcomingAlarms()
+                Log.i("ngz_alarms","alarms scheduled")
+            }
+        } else {
+            viewModelScope.launch {
+                Log.i("ngz_alarms","alarms cancelled")
+                cancelAllPrayerAlarms()
+                workManager.cancelUniqueWork(PRAYER_ALARM_WORK_NAME)
+            }
+        }
+    }
+
+    private fun getTimePrayerByName(
+        prayerName: UiPrayerName,
+        timePrayer: TimePrayer
+    ): Calendar = when (prayerName) {
+        UiPrayerName.FAJER -> timePrayer.fajer
+        UiPrayerName.SUNRISE -> timePrayer.sunrise
+        UiPrayerName.DUHR -> timePrayer.duhr
+        UiPrayerName.ASR -> timePrayer.asr
+        UiPrayerName.MAGRIB -> timePrayer.maghrib
+        UiPrayerName.ISHA -> timePrayer.isha
+    }
 
     private fun updateSettings(settingsEntity: SettingsEntity) {
         viewModelScope.launch {
@@ -193,28 +161,58 @@ class NotificationScreenViewModel @Inject constructor(
         savedStateHandle.remove<UiPermissionState>(PENDING_ALARM_PERMISSION)
     }
 
-    private fun checkSettingsAndPermissions() {
+    private fun loadSavedSettings() {
         viewModelScope.launch {
             val settings = repository.getSettings()
             _uiSelectedRadio.update { settings.notificationType }
 
             if (alarmManager.canScheduleAlarms()) {
                 _uiSwitchState.update { settings.notification }
-                if (settings.notification) {
-                    rescheduleAllSelectedAlarms()
-                } else {
-                    // This case might be redundant if alarms are always cancelled when switch is off
-                    // but it's safer to ensure they are cancelled if settings.notification is false.
-                    cancelAllPrayerAlarms()
-                }
             } else {
-                _uiSwitchState.update { false } // Ensure switch is off if no permission
-                cancelAllPrayerAlarms() // Cancel any existing alarms if permission is lost
-                // Persist the switch state as false if permission is not granted
-                updateSettings(
-                    SettingsEntity(
-                        notificationType = settings.notificationType,
-                        notification = false
+                _uiSwitchState.update { false }
+            }
+        }
+    }
+
+    private suspend fun scheduleUpcomingAlarms() {
+        val timePrayer = repository.getPrayer(todayDate()).toTimePrayer()
+        _uiSelectedPrayerAlarms.value.forEach { prayerName, isSelected ->
+            val prayer = prayerCalculation.getNextPrayerLocalTime(
+                prayerTime = getTimePrayerByName(
+                    prayerName = prayerName,
+                    timePrayer = timePrayer
+                )
+            )
+            val upcoming = prayer?.isAfter(LocalDateTime.now()) == true
+            if (isSelected && upcoming) {
+                alarmManager.scheduleAlarm( // TODO: 1. replace test strings with notification strings.
+                    AlarmItem(
+                        time = prayer,
+                        title = "${prayerName.name} Prayer",
+                        message = "Time for ${prayerName.name} prayer."
+                    )
+                )
+            }
+        }
+    }
+
+    private suspend fun cancelAllPrayerAlarms() {
+        val timePrayer = repository.getPrayer(todayDate()).toTimePrayer()
+        UiPrayerName.entries.forEach { prayerName ->
+            val prayer = prayerCalculation.getNextPrayerLocalTime(
+                prayerTime = getTimePrayerByName(
+                    prayerName = prayerName,
+                    timePrayer = timePrayer
+                )
+            )
+            val upcoming = prayer?.isAfter(LocalDateTime.now()) == true
+            if (upcoming) {
+                Log.i("ngz_alarms","$prayerName alarm cancelled")
+                alarmManager.cancelAlarm( // TODO: 1. replace test strings with notification strings.
+                    AlarmItem(
+                        time = prayer,
+                        title = "${prayerName.name} Prayer",
+                        message = "Time for ${prayerName.name} prayer."
                     )
                 )
             }
@@ -223,5 +221,6 @@ class NotificationScreenViewModel @Inject constructor(
 
     companion object {
         private const val PENDING_ALARM_PERMISSION = "pendingAlarmPermission"
+        const val PRAYER_ALARM_WORK_NAME = "PrayerAlarmPeriodicWork"
     }
 }

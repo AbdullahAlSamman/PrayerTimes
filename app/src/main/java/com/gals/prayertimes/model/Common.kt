@@ -19,6 +19,7 @@ enum class NotificationType(val value: String) {
     FULL("full")
 }
 
+//TODO: rethink using map with prayer name as key.
 data class TimePrayer(
     var fajer: Calendar = Calendar.getInstance(),
     var sunrise: Calendar = Calendar.getInstance(),

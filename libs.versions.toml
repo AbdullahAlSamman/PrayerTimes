@@ -16,8 +16,10 @@ mockk = "1.13.11"
 turbine = "1.1.0"
 kotlin-coroutines = "1.8.1"
 google-services = "4.4.2"
-gradle = "8.8.0"
+gradle = "8.10.1"
 ksp = "2.0.20-1.0.24"
+work-runtime-ktx = "2.9.0"
+work-hilt = "1.2.0"
 
 [libraries]
 kotlin-gradle-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
@@ -43,6 +45,9 @@ androidx-hilt = { group = "androidx.hilt", name = "hilt-navigation-compose", ver
 
 androidx-accompanist-systemuicontrol = { group = "com.google.accompanist", name = "accompanist-systemuicontroller", version.ref = "accompanist" }
 androidx-accompanist-webview = { group = "com.google.accompanist", name = "accompanist-webview", version.ref = "accompanist" }
+
+androidx-work-manager = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "work-runtime-ktx" }
+androidx-work-manager-hilt = { group = "androidx.hilt", name = "hilt-work", version.ref = "work-hilt" }
 
 kotlinx-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "kotlin-coroutines" }
 
@@ -94,6 +99,11 @@ androidx-compose-tooling = [
 androidx-accompainst = [
     "androidx-accompanist-systemuicontrol",
     "androidx-accompanist-webview"
+]
+
+androidx-work-manager =[
+    "androidx-work-manager",
+    "androidx-work-manager-hilt"
 ]
 
 retrofit = [

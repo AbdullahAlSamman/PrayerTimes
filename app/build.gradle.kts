@@ -6,6 +6,9 @@ plugins {
     alias(libs.plugins.org.jetbrains.compose.compiler)
     alias(libs.plugins.com.google.ksp)
 }
+ksp {
+    arg("room.schemaLocation", "$projectDir/schemas")
+}
 
 android {
     namespace = "com.gals.prayertimes"
@@ -44,10 +47,6 @@ android {
         buildFeatures { compose = true }
 
         dependenciesInfo { includeInApk = false }
-
-        ksp {
-            arg("room.schemaLocation", "$projectDir/schemas")
-        }
     }
 
     kotlinOptions { jvmTarget = "17" }
@@ -88,12 +87,16 @@ android {
         implementation(libs.bundles.androidx.accompainst)
         debugImplementation(libs.bundles.androidx.compose.tooling)
 
-        //Test
-        testImplementation(libs.bundles.unit.test)
+        //Work manager
+        implementation(libs.bundles.androidx.work.manager)
 
         //Hilt
         implementation(libs.google.dagger.hilt)
         implementation(libs.androidx.hilt)
         ksp(libs.google.dagger.hilt.compiler)
+
+        //Test
+        testImplementation(libs.bundles.unit.test)
+
     }
 }

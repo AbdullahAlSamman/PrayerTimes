@@ -4,7 +4,6 @@ import android.text.format.DateUtils
 import com.gals.prayertimes.R
 import com.gals.prayertimes.model.NextPrayerConfig
 import com.gals.prayertimes.model.TimePrayer
-import com.gals.prayertimes.model.UiPrayerName // Assuming UiPrayerName is here
 import com.gals.prayertimes.model.mappers.timeNow
 import com.gals.prayertimes.model.mappers.toCalendar
 import java.text.SimpleDateFormat
@@ -19,11 +18,6 @@ import kotlin.math.ceil
 class PrayerCalculation @Inject constructor(
     private val resourceProvider: ResourceProvider
 ) {
-    fun isNowEqualsTime(value: Calendar): Boolean =
-        timeNow().toCalendar().get(Calendar.MINUTE) == value.get(Calendar.MINUTE) - 1
-                && timeNow().toCalendar()
-            .get(Calendar.HOUR_OF_DAY) == value.get(Calendar.HOUR_OF_DAY)
-
     /**Checks if the date changed at midnight*/
     fun isDayChanged(date: String?): Boolean {
         try {
@@ -41,20 +35,6 @@ class PrayerCalculation @Inject constructor(
         }
         return true // to trigger an Update when the date is not determined
     }
-
-    fun calculateNextPrayer(currentPrayer: TimePrayer): Calendar =
-        when {
-            isNowBeforeTime(currentPrayer.fajer) -> currentPrayer.fajer
-            isNowBeforeTime(currentPrayer.sunrise) -> currentPrayer.sunrise
-            isNowBeforeTime(currentPrayer.duhr) -> currentPrayer.duhr
-            isNowBeforeTime(currentPrayer.asr) -> currentPrayer.asr
-            isNowBeforeTime(currentPrayer.maghrib) -> currentPrayer.maghrib
-            isNowBeforeTime(currentPrayer.isha) -> currentPrayer.isha
-            isNowBeforeTime(currentPrayer.midNight) || timeNow().toCalendar() == currentPrayer.midNight ->
-                currentPrayer.midNight
-
-            else -> Calendar.getInstance()
-        }
 
     fun calculateNextPrayerInfo(currentPrayer: TimePrayer, moonDate: String?): NextPrayerConfig {
         val nextPrayerConfig = NextPrayerConfig(
@@ -156,20 +136,8 @@ class PrayerCalculation @Inject constructor(
         return nextPrayerConfig
     }
 
-    fun getNextPrayerLocalDateTime(
-        prayerName: UiPrayerName,
-        timePrayer: TimePrayer
-    ): LocalDateTime? {
-        val prayerCalendar: Calendar = when (prayerName) {
-            UiPrayerName.FAJER -> timePrayer.fajer
-            UiPrayerName.SUNRISE -> timePrayer.sunrise // Included for completeness, though alarms might not be set for it
-            UiPrayerName.DUHR -> timePrayer.duhr
-            UiPrayerName.ASR -> timePrayer.asr
-            UiPrayerName.MAGRIB -> timePrayer.maghrib
-            UiPrayerName.ISHA -> timePrayer.isha
-        }
-        return prayerCalendar.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime()
-    }
+    fun getNextPrayerLocalTime(prayerTime: Calendar): LocalDateTime? =
+        prayerTime.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime()
 
     private fun isRamadan(moonDate: String?): Boolean {
         try {

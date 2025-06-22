@@ -1,6 +1,7 @@
 package com.gals.prayertimes.ui.screens
 
 import android.util.Log
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -63,7 +64,10 @@ internal fun NotificationScreen(
                 },
                 navigationIcon = {
                     NavigationBackArrow(
-                        onBackAction = onBackClicked
+                        onBackAction = {
+                            viewModel.submitChanges()
+                            onBackClicked()
+                        }
                     )
                 },
                 actions = {/* no-op */ }
@@ -82,6 +86,11 @@ internal fun NotificationScreen(
             val onSwitchSelectionChanged: (Boolean) -> Unit = { viewModel.updateSwitchState(it) }
             val onAlarmSelectionChanged: (UiPrayerName, Boolean) -> Unit =
                 { name, value -> viewModel.updateSelectedAlarms(name, value) }
+
+            BackHandler {
+                viewModel.submitChanges()
+                onBackClicked()
+            }
 
             CompositionLocalProvider(LocalLayoutDirection.provides(LayoutDirection.Rtl)) {
                 when (uiPermissionDialog) {
