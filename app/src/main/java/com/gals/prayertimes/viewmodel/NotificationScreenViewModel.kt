@@ -17,6 +17,7 @@ import com.gals.prayertimes.repository.Repository
 import com.gals.prayertimes.repository.local.entities.SettingsEntity
 import com.gals.prayertimes.services.alarmmanager.AlarmItem
 import com.gals.prayertimes.services.alarmmanager.AlarmManager
+import com.gals.prayertimes.services.alarmmanager.AlarmWorker
 import com.gals.prayertimes.utils.PrayerCalculation
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -114,34 +115,33 @@ class NotificationScreenViewModel @Inject constructor(
         if (_uiSwitchState.value) {
             viewModelScope.launch {
                 val prayerAlarmWorkRequest =
-                    OneTimeWorkRequestBuilder<androidx.work.ListenableWorker>().build()
+                    OneTimeWorkRequestBuilder<AlarmWorker>().build()
                 workManager.enqueueUniqueWork(
                     PRAYER_ALARM_WORK_NAME,
                     ExistingWorkPolicy.REPLACE,
                     prayerAlarmWorkRequest
                 )
                 scheduleUpcomingAlarms()
-                Log.i("ngz_alarms","alarms scheduled")
+                Log.i("ngz_alarms", "alarms scheduled")
             }
         } else {
             viewModelScope.launch {
-                Log.i("ngz_alarms","alarms cancelled")
+                Log.i("ngz_alarms", "alarms cancelled")
                 cancelAllPrayerAlarms()
                 workManager.cancelUniqueWork(PRAYER_ALARM_WORK_NAME)
             }
         }
     }
 
-    private fun getTimePrayerByName(
-        prayerName: UiPrayerName,
-        timePrayer: TimePrayer
+    private fun TimePrayer.getTimePrayerByName(
+        prayerName: UiPrayerName
     ): Calendar = when (prayerName) {
-        UiPrayerName.FAJER -> timePrayer.fajer
-        UiPrayerName.SUNRISE -> timePrayer.sunrise
-        UiPrayerName.DUHR -> timePrayer.duhr
-        UiPrayerName.ASR -> timePrayer.asr
-        UiPrayerName.MAGRIB -> timePrayer.maghrib
-        UiPrayerName.ISHA -> timePrayer.isha
+        UiPrayerName.FAJER -> fajer
+        UiPrayerName.SUNRISE -> sunrise
+        UiPrayerName.DUHR -> duhr
+        UiPrayerName.ASR -> asr
+        UiPrayerName.MAGRIB -> maghrib
+        UiPrayerName.ISHA -> isha
     }
 
     private fun updateSettings(settingsEntity: SettingsEntity) {
@@ -178,10 +178,7 @@ class NotificationScreenViewModel @Inject constructor(
         val timePrayer = repository.getPrayer(todayDate()).toTimePrayer()
         _uiSelectedPrayerAlarms.value.forEach { prayerName, isSelected ->
             val prayer = prayerCalculation.getNextPrayerLocalTime(
-                prayerTime = getTimePrayerByName(
-                    prayerName = prayerName,
-                    timePrayer = timePrayer
-                )
+                timePrayer.getTimePrayerByName(prayerName)
             )
             val upcoming = prayer?.isAfter(LocalDateTime.now()) == true
             if (isSelected && upcoming) {
@@ -200,14 +197,11 @@ class NotificationScreenViewModel @Inject constructor(
         val timePrayer = repository.getPrayer(todayDate()).toTimePrayer()
         UiPrayerName.entries.forEach { prayerName ->
             val prayer = prayerCalculation.getNextPrayerLocalTime(
-                prayerTime = getTimePrayerByName(
-                    prayerName = prayerName,
-                    timePrayer = timePrayer
-                )
+                timePrayer.getTimePrayerByName(prayerName)
             )
             val upcoming = prayer?.isAfter(LocalDateTime.now()) == true
             if (upcoming) {
-                Log.i("ngz_alarms","$prayerName alarm cancelled")
+                Log.i("ngz_alarms", "$prayerName alarm cancelled")
                 alarmManager.cancelAlarm( // TODO: 1. replace test strings with notification strings.
                     AlarmItem(
                         time = prayer,
