@@ -18,6 +18,8 @@ import com.gals.prayertimes.repository.local.entities.SettingsEntity
 import com.gals.prayertimes.services.alarmmanager.AlarmItem
 import com.gals.prayertimes.services.alarmmanager.AlarmManager
 import com.gals.prayertimes.services.alarmmanager.AlarmWorker
+import com.gals.prayertimes.services.alarmmanager.PRAYER_ALARM_WORK_NAME
+import com.gals.prayertimes.services.alarmmanager.PRAYER_ALARM_WORK_NEXT_DAY_NAME
 import com.gals.prayertimes.utils.PrayerCalculation
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -129,6 +131,7 @@ class NotificationScreenViewModel @Inject constructor(
                 Log.i("ngz_alarms", "alarms cancelled")
                 cancelAllPrayerAlarms()
                 workManager.cancelUniqueWork(PRAYER_ALARM_WORK_NAME)
+                workManager.cancelUniqueWork(PRAYER_ALARM_WORK_NEXT_DAY_NAME)
             }
         }
     }
@@ -215,6 +218,5 @@ class NotificationScreenViewModel @Inject constructor(
 
     companion object {
         private const val PENDING_ALARM_PERMISSION = "pendingAlarmPermission"
-        const val PRAYER_ALARM_WORK_NAME = "PrayerAlarmPeriodicWork"
     }
 }
