@@ -9,14 +9,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
-import com.gals.prayertimes.model.UiPrayerName
+import com.gals.prayertimes.model.PrayerName
 import com.gals.prayertimes.model.mappers.mapUiPrayerName
 import com.gals.prayertimes.ui.theme.PrayerTypography
 
 @Composable
 internal fun PrayerNotificationItem(
     modifier: Modifier = Modifier,
-    prayerName: UiPrayerName,
+    prayerName: PrayerName,
     isSwitchChecked: Boolean,
     isSwitchEnabled: Boolean,
     onCheckedChange: (Boolean) -> Unit,

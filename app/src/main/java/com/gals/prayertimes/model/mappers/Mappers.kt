@@ -8,13 +8,13 @@ import androidx.compose.ui.res.stringResource
 import com.gals.prayertimes.R
 import com.gals.prayertimes.model.NextPrayerConfig
 import com.gals.prayertimes.model.NotificationType
+import com.gals.prayertimes.model.PrayerName
 import com.gals.prayertimes.model.TimePrayer
 import com.gals.prayertimes.model.UiDate
 import com.gals.prayertimes.model.UiNextPrayer
 import com.gals.prayertimes.model.UiPrayer
-import com.gals.prayertimes.model.UiPrayerName
 import com.gals.prayertimes.repository.local.entities.PrayerEntity
-import com.gals.prayertimes.repository.remote.model.PrayerName
+import com.gals.prayertimes.repository.remote.model.PrayerNameResponse
 import com.gals.prayertimes.repository.remote.model.PrayersResponse
 import com.gals.prayertimes.ui.theme.colorBackgroundAsr
 import com.gals.prayertimes.ui.theme.colorBackgroundDuhr
@@ -37,12 +37,12 @@ fun PrayerEntity.toPrayer(resourceProvider: ResourceProvider, formatter: Formatt
             sunDate = formatter.formatDateText(this.sDate, true)
         ),
         prayers = mapOf(
-            PrayerName.FAJER to this.fajer,
-            PrayerName.SUNRISE to this.sunrise,
-            PrayerName.DUHR to this.duhr,
-            PrayerName.ASR to this.asr,
-            PrayerName.MAGHRIB to this.maghrib,
-            PrayerName.ISHA to this.isha
+            PrayerNameResponse.FAJER to this.fajer,
+            PrayerNameResponse.SUNRISE to this.sunrise,
+            PrayerNameResponse.DUHR to this.duhr,
+            PrayerNameResponse.ASR to this.asr,
+            PrayerNameResponse.MAGHRIB to this.maghrib,
+            PrayerNameResponse.ISHA to this.isha
         )
     )
 
@@ -53,13 +53,14 @@ fun PrayersResponse.toEntity(): PrayerEntity {
     )
     this.prayers.forEach { prayer ->
         when (prayer.name) {
-            PrayerName.FAJER -> entity.fajer = prayer.time
-            PrayerName.SUNRISE -> entity.sunrise = prayer.time
-            PrayerName.DUHR -> entity.duhr = prayer.time
-            PrayerName.ASR -> entity.asr = prayer.time
-            PrayerName.MAGHRIB -> entity.maghrib = prayer.time
-            PrayerName.ISHA -> entity.isha = prayer.time
-            else -> {/* no-op */ }
+            PrayerNameResponse.FAJER -> entity.fajer = prayer.time
+            PrayerNameResponse.SUNRISE -> entity.sunrise = prayer.time
+            PrayerNameResponse.DUHR -> entity.duhr = prayer.time
+            PrayerNameResponse.ASR -> entity.asr = prayer.time
+            PrayerNameResponse.MAGHRIB -> entity.maghrib = prayer.time
+            PrayerNameResponse.ISHA -> entity.isha = prayer.time
+            else -> {/* no-op */
+            }
         }
     }
     return entity
@@ -160,38 +161,49 @@ fun NextPrayerConfig.toUiNextPrayer(): UiNextPrayer =
         nextPrayerBanner = nextPrayerBanner
     )
 
+fun TimePrayer.getTimePrayerByName(
+    prayerName: PrayerName
+): Calendar = when (prayerName) {
+    PrayerName.FAJER -> fajer
+    PrayerName.SUNRISE -> sunrise
+    PrayerName.DUHR -> duhr
+    PrayerName.ASR -> asr
+    PrayerName.MAGRIB -> maghrib
+    PrayerName.ISHA -> isha
+}
+
 @Composable
-fun mapPrayerColor(prayer: PrayerName): Color =
+fun mapPrayerColor(prayer: com.gals.prayertimes.repository.remote.model.PrayerNameResponse): Color =
     when (prayer) {
-        PrayerName.FAJER -> colorBackgroundFajer
-        PrayerName.SUNRISE -> colorBackgroundSunrise
-        PrayerName.DUHR -> colorBackgroundDuhr
-        PrayerName.ASR -> colorBackgroundAsr
-        PrayerName.MAGHRIB -> colorBackgroundMaghrib
-        PrayerName.ISHA -> colorBackgroundIsha
-        PrayerName.UNKNOWN -> colorBackgroundFajer
+        PrayerNameResponse.FAJER -> colorBackgroundFajer
+        PrayerNameResponse.SUNRISE -> colorBackgroundSunrise
+        PrayerNameResponse.DUHR -> colorBackgroundDuhr
+        PrayerNameResponse.ASR -> colorBackgroundAsr
+        PrayerNameResponse.MAGHRIB -> colorBackgroundMaghrib
+        PrayerNameResponse.ISHA -> colorBackgroundIsha
+        PrayerNameResponse.UNKNOWN -> colorBackgroundFajer
     }
 
 @Composable
-fun mapPrayerName(prayerName: PrayerName): String =
+fun mapPrayerName(prayerName: com.gals.prayertimes.repository.remote.model.PrayerNameResponse): String =
     when (prayerName) {
-        PrayerName.FAJER -> stringResource(id = R.string.text_prayer_fajer)
-        PrayerName.SUNRISE -> stringResource(id = R.string.text_prayer_sunrise)
-        PrayerName.DUHR -> stringResource(id = R.string.text_prayer_duhr)
-        PrayerName.ASR -> stringResource(id = R.string.text_prayer_asr)
-        PrayerName.MAGHRIB -> stringResource(id = R.string.text_prayer_maghrib)
-        PrayerName.ISHA -> stringResource(id = R.string.text_prayer_isha)
-        PrayerName.UNKNOWN -> stringResource(id = R.string.text_prayer_isha)
+        PrayerNameResponse.FAJER -> stringResource(id = R.string.text_prayer_fajer)
+        PrayerNameResponse.SUNRISE -> stringResource(id = R.string.text_prayer_sunrise)
+        PrayerNameResponse.DUHR -> stringResource(id = R.string.text_prayer_duhr)
+        PrayerNameResponse.ASR -> stringResource(id = R.string.text_prayer_asr)
+        PrayerNameResponse.MAGHRIB -> stringResource(id = R.string.text_prayer_maghrib)
+        PrayerNameResponse.ISHA -> stringResource(id = R.string.text_prayer_isha)
+        PrayerNameResponse.UNKNOWN -> stringResource(id = R.string.text_prayer_isha)
     }
 
 @Composable
-fun mapUiPrayerName(prayerName: UiPrayerName): String = when (prayerName) {
-    UiPrayerName.FAJER -> stringResource(id = R.string.text_prayer_fajer)
-    UiPrayerName.SUNRISE -> stringResource(id = R.string.text_prayer_sunrise)
-    UiPrayerName.DUHR -> stringResource(id = R.string.text_prayer_duhr)
-    UiPrayerName.ASR -> stringResource(id = R.string.text_prayer_asr)
-    UiPrayerName.MAGRIB -> stringResource(id = R.string.text_prayer_maghrib)
-    UiPrayerName.ISHA -> stringResource(id = R.string.text_prayer_isha)
+fun mapUiPrayerName(prayerName: PrayerName): String = when (prayerName) {
+    PrayerName.FAJER -> stringResource(id = R.string.text_prayer_fajer)
+    PrayerName.SUNRISE -> stringResource(id = R.string.text_prayer_sunrise)
+    PrayerName.DUHR -> stringResource(id = R.string.text_prayer_duhr)
+    PrayerName.ASR -> stringResource(id = R.string.text_prayer_asr)
+    PrayerName.MAGRIB -> stringResource(id = R.string.text_prayer_maghrib)
+    PrayerName.ISHA -> stringResource(id = R.string.text_prayer_isha)
 }
 
 @Composable
@@ -211,15 +223,4 @@ fun mapNotificationTypeText(notificationType: NotificationType): String =
         NotificationType.TONE -> stringResource(id = R.string.text_alarm_tone)
         NotificationType.HALF -> stringResource(id = R.string.text_alarm_half_athan)
         NotificationType.FULL -> stringResource(id = R.string.text_alarm_full_athan)
-    }
-
-@Composable
-fun mapPrayerName(prayerName: UiPrayerName): String =
-    when (prayerName) {
-        UiPrayerName.FAJER -> stringResource(id = R.string.text_prayer_fajer)
-        UiPrayerName.SUNRISE -> stringResource(id = R.string.text_prayer_sunrise)
-        UiPrayerName.DUHR -> stringResource(id = R.string.text_prayer_duhr)
-        UiPrayerName.ASR -> stringResource(id = R.string.text_prayer_asr)
-        UiPrayerName.MAGRIB -> stringResource(id = R.string.text_prayer_maghrib)
-        UiPrayerName.ISHA -> stringResource(id = R.string.text_prayer_isha)
     }

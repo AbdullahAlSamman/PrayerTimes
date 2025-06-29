@@ -29,3 +29,12 @@ data class TimePrayer(
     var isha: Calendar = Calendar.getInstance(),
     val midNight: Calendar = Calendar.getInstance().setHoursMinutes(23, 59)
 )
+
+enum class PrayerName {
+    FAJER,
+    SUNRISE,
+    DUHR,
+    ASR,
+    MAGRIB,
+    ISHA
+}

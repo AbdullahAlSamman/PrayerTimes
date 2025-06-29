@@ -4,12 +4,12 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.Color
-import com.gals.prayertimes.repository.remote.model.PrayerName
+import com.gals.prayertimes.repository.remote.model.PrayerNameResponse
 
 @Immutable
 data class UiPrayer(
     var uiDate: UiDate = UiDate(),
-    var prayers: Map<PrayerName, String> = emptyMap()
+    var prayers: Map<PrayerNameResponse, String> = emptyMap()
 )
 
 data class UiNextPrayer(
@@ -31,12 +31,3 @@ data class UiMenuItem(
     @StringRes val title: Int = 0,
     val navigateTo: () -> Unit = {}
 )
-
-enum class UiPrayerName {
-    FAJER,
-    SUNRISE,
-    DUHR,
-    ASR,
-    MAGRIB,
-    ISHA
-}

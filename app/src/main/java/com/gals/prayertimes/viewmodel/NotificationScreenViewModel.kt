@@ -8,9 +8,9 @@ import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import com.gals.prayertimes.model.NotificationType
-import com.gals.prayertimes.model.TimePrayer
+import com.gals.prayertimes.model.PrayerName
 import com.gals.prayertimes.model.UiPermissionState
-import com.gals.prayertimes.model.UiPrayerName
+import com.gals.prayertimes.model.mappers.getTimePrayerByName
 import com.gals.prayertimes.model.mappers.toTimePrayer
 import com.gals.prayertimes.model.mappers.todayDate
 import com.gals.prayertimes.repository.Repository
@@ -28,7 +28,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
-import java.util.Calendar
 import javax.inject.Inject
 
 @HiltViewModel
@@ -42,13 +41,13 @@ class NotificationScreenViewModel @Inject constructor(
     private val _uiSelectedRadio = MutableStateFlow(NotificationType.SILENT.value)
     private val _uiSwitchState = MutableStateFlow(false)
     private val _uiSelectedPrayerAlarms =
-        MutableStateFlow(UiPrayerName.entries.associateWith { it != UiPrayerName.SUNRISE })
+        MutableStateFlow(PrayerName.entries.associateWith { it != PrayerName.SUNRISE })
     private val _uiPermissionState = MutableStateFlow(getPendingPermission())
 
     val uiSelectedRadio: StateFlow<String> = _uiSelectedRadio.asStateFlow()
     val uiSwitchState: StateFlow<Boolean> = _uiSwitchState.asStateFlow()
     val uiPermissionState: StateFlow<UiPermissionState> = _uiPermissionState.asStateFlow()
-    val uiSelectedPrayerAlarms: StateFlow<Map<UiPrayerName, Boolean>> =
+    val uiSelectedPrayerAlarms: StateFlow<Map<PrayerName, Boolean>> =
         _uiSelectedPrayerAlarms.asStateFlow()
 
     init {
@@ -88,7 +87,7 @@ class NotificationScreenViewModel @Inject constructor(
         }
     }
 
-    fun updateSelectedAlarms(prayerName: UiPrayerName, isSelected: Boolean) {
+    fun updateSelectedAlarms(prayerName: PrayerName, isSelected: Boolean) {
         _uiSelectedPrayerAlarms.update { oldMap -> oldMap + (prayerName to isSelected) }
     }
 
@@ -105,46 +104,33 @@ class NotificationScreenViewModel @Inject constructor(
         val currentSettings = SettingsEntity(
             notification = _uiSwitchState.value,
             notificationType = _uiSelectedRadio.value,
-            fajerNotification = _uiSelectedPrayerAlarms.value[UiPrayerName.FAJER] == true,
-            sunriseNotification = _uiSelectedPrayerAlarms.value[UiPrayerName.SUNRISE] == true,
-            duhrNotification = _uiSelectedPrayerAlarms.value[UiPrayerName.DUHR] == true,
-            asrNotification = _uiSelectedPrayerAlarms.value[UiPrayerName.ASR] == true,
-            maghribNotification = _uiSelectedPrayerAlarms.value[UiPrayerName.MAGRIB] == true,
-            ishaNotification = _uiSelectedPrayerAlarms.value[UiPrayerName.ISHA] == true
+            fajerNotification = _uiSelectedPrayerAlarms.value[PrayerName.FAJER] == true,
+            sunriseNotification = _uiSelectedPrayerAlarms.value[PrayerName.SUNRISE] == true,
+            duhrNotification = _uiSelectedPrayerAlarms.value[PrayerName.DUHR] == true,
+            asrNotification = _uiSelectedPrayerAlarms.value[PrayerName.ASR] == true,
+            maghribNotification = _uiSelectedPrayerAlarms.value[PrayerName.MAGRIB] == true,
+            ishaNotification = _uiSelectedPrayerAlarms.value[PrayerName.ISHA] == true
         )
         updateSettings(currentSettings)
 
         if (_uiSwitchState.value) {
             viewModelScope.launch {
-                val prayerAlarmWorkRequest =
-                    OneTimeWorkRequestBuilder<AlarmWorker>().build()
+                val prayerAlarmWorkRequest = OneTimeWorkRequestBuilder<AlarmWorker>().build()
                 workManager.enqueueUniqueWork(
                     PRAYER_ALARM_WORK_NAME,
                     ExistingWorkPolicy.REPLACE,
                     prayerAlarmWorkRequest
                 )
-                scheduleUpcomingAlarms()
                 Log.i("ngz_alarms", "alarms scheduled")
             }
         } else {
             viewModelScope.launch {
-                Log.i("ngz_alarms", "alarms cancelled")
                 cancelAllPrayerAlarms()
                 workManager.cancelUniqueWork(PRAYER_ALARM_WORK_NAME)
                 workManager.cancelUniqueWork(PRAYER_ALARM_WORK_NEXT_DAY_NAME)
+                Log.i("ngz_alarms", "alarms cancelled")
             }
         }
-    }
-
-    private fun TimePrayer.getTimePrayerByName(
-        prayerName: UiPrayerName
-    ): Calendar = when (prayerName) {
-        UiPrayerName.FAJER -> fajer
-        UiPrayerName.SUNRISE -> sunrise
-        UiPrayerName.DUHR -> duhr
-        UiPrayerName.ASR -> asr
-        UiPrayerName.MAGRIB -> maghrib
-        UiPrayerName.ISHA -> isha
     }
 
     private fun updateSettings(settingsEntity: SettingsEntity) {
@@ -177,28 +163,9 @@ class NotificationScreenViewModel @Inject constructor(
         }
     }
 
-    private suspend fun scheduleUpcomingAlarms() {
-        val timePrayer = repository.getPrayer(todayDate()).toTimePrayer()
-        _uiSelectedPrayerAlarms.value.forEach { prayerName, isSelected ->
-            val prayer = prayerCalculation.getNextPrayerLocalTime(
-                timePrayer.getTimePrayerByName(prayerName)
-            )
-            val upcoming = prayer?.isAfter(LocalDateTime.now()) == true
-            if (isSelected && upcoming) {
-                alarmManager.scheduleAlarm( // TODO: 1. replace test strings with notification strings.
-                    AlarmItem(
-                        time = prayer,
-                        title = "${prayerName.name} Prayer",
-                        message = "Time for ${prayerName.name} prayer."
-                    )
-                )
-            }
-        }
-    }
-
     private suspend fun cancelAllPrayerAlarms() {
         val timePrayer = repository.getPrayer(todayDate()).toTimePrayer()
-        UiPrayerName.entries.forEach { prayerName ->
+        PrayerName.entries.forEach { prayerName ->
             val prayer = prayerCalculation.getNextPrayerLocalTime(
                 timePrayer.getTimePrayerByName(prayerName)
             )

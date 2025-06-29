@@ -9,7 +9,7 @@ class LocalDataSource @Inject constructor(
     private val settingsDao: SettingsDao
 ) {
     suspend fun insertSettings(settingsEntity: SettingsEntity) =
-        settingsDao.insert(settingsEntity)
+        settingsDao.upsert(settingsEntity)
 
     suspend fun insertPrayers(prayer: PrayerEntity) =
         prayerDao.insert(prayer)

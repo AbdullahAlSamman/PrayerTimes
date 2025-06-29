@@ -33,8 +33,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.gals.prayertimes.R
 import com.gals.prayertimes.model.NotificationType
+import com.gals.prayertimes.model.PrayerName
 import com.gals.prayertimes.model.UiPermissionState
-import com.gals.prayertimes.model.UiPrayerName
 import com.gals.prayertimes.ui.components.NavigationBackArrow
 import com.gals.prayertimes.ui.components.PrayerNotificationItem
 import com.gals.prayertimes.ui.components.RadioButtonItem
@@ -84,7 +84,7 @@ internal fun NotificationScreen(
             val isRadioItemSelected: (String) -> Boolean = { uiSelectedRadio == it }
             val onRadioSelectionChanged: (String) -> Unit = { viewModel.updateSelectedRadio(it) }
             val onSwitchSelectionChanged: (Boolean) -> Unit = { viewModel.updateSwitchState(it) }
-            val onAlarmSelectionChanged: (UiPrayerName, Boolean) -> Unit =
+            val onAlarmSelectionChanged: (PrayerName, Boolean) -> Unit =
                 { name, value -> viewModel.updateSelectedAlarms(name, value) }
 
             BackHandler {
@@ -149,7 +149,7 @@ internal fun NotificationScreen(
                             text = stringResource(id = R.string.text_notification_selected_prayers),
                             style = PrayerTypography.titleLarge
                         )
-                        UiPrayerName.entries.forEach { name ->
+                        PrayerName.entries.forEach { name ->
                             PrayerNotificationItem(
                                 prayerName = name,
                                 isSwitchChecked = uiPrayerSwitches[name] == true,

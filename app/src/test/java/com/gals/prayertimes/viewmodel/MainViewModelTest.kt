@@ -12,8 +12,8 @@ import com.gals.prayertimes.viewmodel.utils.TestDispatcherRule
 import com.gals.prayertimes.viewmodel.utils.anyString
 import com.gals.prayertimes.viewmodel.utils.dateString
 import com.gals.prayertimes.viewmodel.utils.testNextPrayerConfig
-import com.gals.prayertimes.viewmodel.utils.testUiPrayer
 import com.gals.prayertimes.viewmodel.utils.testPrayerEntity
+import com.gals.prayertimes.viewmodel.utils.testUiPrayer
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
@@ -89,7 +89,7 @@ class MainViewModelTest {
 
     private fun setNetworkRequest(prayerEntity: PrayerEntity, block: suspend () -> Unit) {
         coEvery {
-            mockRepository.fetchComposePrayer(any())
+            mockRepository.fetchPrayer(any())
         } coAnswers {
             block()
             flowOf(prayerEntity)
