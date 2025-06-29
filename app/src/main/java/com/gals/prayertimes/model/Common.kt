@@ -3,6 +3,15 @@ package com.gals.prayertimes.model
 import com.gals.prayertimes.model.mappers.setHoursMinutes
 import java.util.Calendar
 
+enum class PrayerName {
+    FAJER,
+    SUNRISE,
+    DUHR,
+    ASR,
+    MAGRIB,
+    ISHA
+}
+
 data class NextPrayerConfig(
     var isRamadan: Boolean = false,
     var isPrayer: Boolean = false,
@@ -19,7 +28,7 @@ enum class NotificationType(val value: String) {
     FULL("full")
 }
 
-//TODO: rethink using map with prayer name as key.
+//TODO: replace with map prayer name as key and LocalDateTime as value.
 data class TimePrayer(
     var fajer: Calendar = Calendar.getInstance(),
     var sunrise: Calendar = Calendar.getInstance(),
@@ -29,12 +38,3 @@ data class TimePrayer(
     var isha: Calendar = Calendar.getInstance(),
     val midNight: Calendar = Calendar.getInstance().setHoursMinutes(23, 59)
 )
-
-enum class PrayerName {
-    FAJER,
-    SUNRISE,
-    DUHR,
-    ASR,
-    MAGRIB,
-    ISHA
-}
