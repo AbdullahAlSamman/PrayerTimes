@@ -4,7 +4,10 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.navigation.compose.rememberNavController
 import com.gals.prayertimes.navigation.PrayerTimesNavHost
 import com.gals.prayertimes.ui.theme.PrayerTimesTheme
@@ -16,9 +19,11 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            PrayerTimesTheme {
-                val navController = rememberNavController()
-                PrayerTimesNavHost(navController = navController, modifier = Modifier)
+            CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
+                PrayerTimesTheme {
+                    val navController = rememberNavController()
+                    PrayerTimesNavHost(navController = navController, modifier = Modifier)
+                }
             }
         }
     }
