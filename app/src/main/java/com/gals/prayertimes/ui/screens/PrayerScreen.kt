@@ -1,7 +1,9 @@
 package com.gals.prayertimes.ui.screens
 
 import android.util.Log
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -25,7 +27,9 @@ fun PrayerScreen(
     val uiState by viewModel.uiState.collectAsState()
     val uiNextPrayer by viewModel.nextPrayer.collectAsState()
 
-    Scaffold { innerPadding ->
+    Scaffold(
+        contentWindowInsets = WindowInsets.safeDrawing
+    ) { innerPadding ->
         CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
 
             LaunchedEffect(uiState) {
