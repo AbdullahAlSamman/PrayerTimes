@@ -8,8 +8,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.gals.prayertimes.R
 import com.gals.prayertimes.model.MenuItem
+import com.gals.prayertimes.ui.screens.MainScreen
 import com.gals.prayertimes.ui.screens.NotificationScreen
-import com.gals.prayertimes.ui.screens.PrayerScreen
 import com.gals.prayertimes.ui.screens.PrivacyPolicyScreen
 import com.gals.prayertimes.ui.screens.SettingsMenuScreen
 
@@ -24,7 +24,7 @@ fun PrayerTimesNavHost(
         modifier = modifier
     ) {
         composable(route = Home.route) {
-            PrayerScreen(onSettingsClicked = { navController.navigate(Menu.route) })
+            MainScreen(onSettingsClicked = { navController.navigate(Menu.route) })
         }
 
         composable(route = Menu.route) {

@@ -74,13 +74,12 @@ private val DarkColors = darkColorScheme(
 
 @Composable
 fun PrayerTimesTheme(
-    useDarkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable() () -> Unit
 ) {
-    val colors = if (!useDarkTheme) {
-        LightColors
-    } else {
+    val colors = if (isSystemInDarkTheme()) {
         DarkColors
+    } else {
+        LightColors
     }
 
     MaterialTheme(

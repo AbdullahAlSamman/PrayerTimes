@@ -17,13 +17,13 @@ import com.gals.prayertimes.utils.isTablet
 import com.gals.prayertimes.viewmodel.MainViewModel
 
 @Composable
-fun PrayerScreen(
+fun MainScreen(
     viewModel: MainViewModel = hiltViewModel(),
     onSettingsClicked: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val uiNextPrayer by viewModel.nextPrayer.collectAsState()
-
+    
     Scaffold(
         contentWindowInsets = WindowInsets.safeDrawing
     ) { innerPadding ->
