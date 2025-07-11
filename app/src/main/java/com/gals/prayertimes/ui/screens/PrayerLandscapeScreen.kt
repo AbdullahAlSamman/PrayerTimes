@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
@@ -33,7 +34,9 @@ internal fun PrayerLandscapeScreen(
     onSettingsClicked: () -> Unit
 ) {
     Row(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(innerPadding)
     ) {
         Column(
             modifier = Modifier
@@ -66,7 +69,6 @@ internal fun PrayerLandscapeScreen(
         LazyHorizontalGrid(
             modifier = Modifier.weight(0.4f),
             rows = GridCells.Fixed(6),
-            contentPadding = innerPadding,
             userScrollEnabled = false,
             verticalArrangement = Arrangement.spacedBy(8.dp),
             content = {

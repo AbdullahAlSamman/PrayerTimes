@@ -49,7 +49,7 @@ fun PrayerHeader(
         val iconPadding = if (isTablet()) 32.dp else 16.dp
         Icon(
             modifier = Modifier
-                .size(if (isTablet()) 80.dp else 48.dp)
+                .size(if (isTablet()) 128.dp else 64.dp)
                 .align(Alignment.TopStart)
                 .padding(
                     top = iconPadding,

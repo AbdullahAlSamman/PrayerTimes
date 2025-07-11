@@ -1,4 +1,5 @@
 plugins {
+    id("org.jetbrains.kotlin.plugin.compose")
     id("com.google.dagger.hilt.android")
     id("com.android.application")
     id("kotlin-android")
@@ -7,11 +8,11 @@ plugins {
 
 android {
     namespace = "com.gals.prayertimes"
-    compileSdk = 34
+    compileSdk = 35
     defaultConfig {
         applicationId = "com.gals.prayertimes"
         minSdk = 26
-        targetSdk = 34
+        targetSdk = 35
         versionName = "1.0.7"
         versionCode = 27
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -52,8 +53,6 @@ android {
 
     kotlinOptions { jvmTarget = "17" }
 
-    composeOptions { kotlinCompilerExtensionVersion = "1.5.12" }
-
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
@@ -70,9 +69,6 @@ android {
     }
 
     dependencies {
-        val hiltVersion = "2.50"
-        val hiltComposeNav = "1.2.0"
-
         //Appcompat
         implementation(libs.androidx.appcompat)
 
@@ -97,8 +93,7 @@ android {
         testImplementation(libs.bundles.unit.test)
 
         //Hilt
-        implementation("com.google.dagger:hilt-android:$hiltVersion")
-        implementation("androidx.hilt:hilt-navigation-compose:$hiltComposeNav")
-        kapt("com.google.dagger:hilt-android-compiler:$hiltVersion")
+        implementation(libs.bundles.hilt)
+        kapt(libs.google.dagger.hilt.compiler)
     }
 }

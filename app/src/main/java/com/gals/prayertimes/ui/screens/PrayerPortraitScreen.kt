@@ -3,7 +3,6 @@ package com.gals.prayertimes.ui.screens
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -20,7 +19,6 @@ import com.gals.prayertimes.repository.remote.model.PrayerName
 import com.gals.prayertimes.ui.components.PrayerDateBar
 import com.gals.prayertimes.ui.components.PrayerHeader
 import com.gals.prayertimes.ui.components.PrayerSingleView
-import com.gals.prayertimes.utils.isTablet
 
 @Composable
 internal fun PrayerPortraitScreen(
@@ -55,7 +53,6 @@ internal fun PrayerPortraitScreen(
         LazyVerticalGrid(
             columns = GridCells.Fixed(6),
             modifier = Modifier.fillMaxSize(),
-            contentPadding = innerPadding,
             userScrollEnabled = false,
             content = {
                 prayers.forEach { prayer ->
