@@ -47,7 +47,6 @@ mockk-test = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
 turbine-test = { group = "app.cash.turbine", name = "turbine", version.ref = "turbine" }
 coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlin-coroutines" }
 
-# Hilt libraries - New
 google-dagger-hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
 google-dagger-hilt-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt" }
 androidx-hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "androidx-hilt-compose-nav" }
@@ -94,7 +93,6 @@ unit-test = [
     "coroutines-test"
 ]
 
-# Hilt bundle - New
 hilt = [
     "google-dagger-hilt-android",
     "androidx-hilt-navigation-compose"
