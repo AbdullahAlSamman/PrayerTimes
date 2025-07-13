@@ -1,6 +1,7 @@
 package com.gals.prayertimes.services.alarmmanager
 
 import android.content.Context
+import android.util.Log
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.ExistingWorkPolicy
@@ -61,6 +62,7 @@ class AlarmWorker @AssistedInject constructor(
                         notificationType = ""
                     )
                 )
+                Log.i("ngz_alarm_set", "$prayerName alarm has been set")
             }
         }
     }
@@ -78,7 +80,7 @@ class AlarmWorker @AssistedInject constructor(
 
         WorkManager.getInstance(appContext).enqueueUniqueWork(
             PRAYER_ALARM_WORK_NEXT_DAY_NAME,
-            ExistingWorkPolicy.APPEND,
+            ExistingWorkPolicy.REPLACE,
             nextAlarmWorkRequest
         )
     }
