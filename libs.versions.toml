@@ -36,7 +36,7 @@ androidx-compose-ui-preview = { group = "androidx.compose.ui", name = "ui-toolin
 androidx-compose-ui-m3 = { group = "androidx.compose.material3", name = "material3", version.ref = "compose-m3" }
 androidx-compose-ui-m3-adaptive = { group = "androidx.compose.material3.adaptive", name = "adaptive", version.ref = "compose-m3-adaptive" }
 androidx-compose-navigation = { group = "androidx.navigation", name = "navigation-compose", version.ref = "compose-navigation" }
-androidx-compose-runtime = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "compose-runtime"}
+androidx-compose-runtime = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "compose-runtime" }
 
 androidx-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling", version.ref = "compose" }
 androidx-compose-ui-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest", version.ref = "compose" }
@@ -101,7 +101,7 @@ androidx-accompainst = [
     "androidx-accompanist-webview"
 ]
 
-androidx-work-manager =[
+androidx-work-manager = [
     "androidx-work-manager",
     "androidx-work-manager-hilt"
 ]
