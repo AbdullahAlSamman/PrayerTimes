@@ -8,12 +8,14 @@ import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
+import com.gals.prayertimes.model.NotificationType
 import com.gals.prayertimes.model.PrayerName
 import com.gals.prayertimes.model.TimePrayer
 import com.gals.prayertimes.model.mappers.getTimePrayerByName
 import com.gals.prayertimes.model.mappers.toTimePrayer
 import com.gals.prayertimes.model.mappers.todayDate
 import com.gals.prayertimes.repository.Repository
+import com.gals.prayertimes.repository.local.entities.SettingsEntity.Companion.toPrayerNotification
 import com.gals.prayertimes.utils.PrayerCalculation
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
@@ -35,9 +37,11 @@ class AlarmWorker @AssistedInject constructor(
     override suspend fun doWork(): Result {
         repository.fetchPrayer(todayDate())
             .collect { prayer ->
+                val settings = repository.getSettings()
                 scheduleUpcomingAlarms(
                     timePrayers = prayer.toTimePrayer(),
-                    selectedPrayerNotifications = repository.getPrayerNotification()
+                    selectedPrayerNotifications = settings.toPrayerNotification(),
+                    notificationType = settings.notificationType
                 )
 
                 scheduleNextAlarmWorker()
@@ -48,6 +52,7 @@ class AlarmWorker @AssistedInject constructor(
 
     private fun scheduleUpcomingAlarms(
         timePrayers: TimePrayer,
+        notificationType: NotificationType,
         selectedPrayerNotifications: Map<PrayerName, Boolean>
     ) {
         selectedPrayerNotifications.forEach { prayerName, isEnabled ->
@@ -59,10 +64,13 @@ class AlarmWorker @AssistedInject constructor(
                     AlarmItem(
                         time = prayer,
                         title = prayerName.name,
-                        notificationType = ""
+                        notificationType = notificationType.name
                     )
                 )
-                Log.i("ngz_alarm_set", "$prayerName alarm has been set")
+                Log.i(
+                    "ngz_alarm_set",
+                    "$prayerName alarm has been set with type ${notificationType.name}"
+                )
             }
         }
     }
