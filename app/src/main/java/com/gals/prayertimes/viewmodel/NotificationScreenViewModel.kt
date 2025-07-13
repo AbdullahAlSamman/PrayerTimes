@@ -15,6 +15,7 @@ import com.gals.prayertimes.model.mappers.toTimePrayer
 import com.gals.prayertimes.model.mappers.todayDate
 import com.gals.prayertimes.repository.Repository
 import com.gals.prayertimes.repository.local.entities.SettingsEntity
+import com.gals.prayertimes.repository.local.entities.SettingsEntity.Companion.toPrayerNotification
 import com.gals.prayertimes.services.alarmmanager.AlarmItem
 import com.gals.prayertimes.services.alarmmanager.AlarmManager
 import com.gals.prayertimes.services.alarmmanager.AlarmWorker
@@ -113,8 +114,13 @@ class NotificationScreenViewModel @Inject constructor(
         )
         updateSettings(currentSettings)
 
-        if (_uiSwitchState.value) {
-            viewModelScope.launch {
+        viewModelScope.launch {
+            cancelAllPrayerAlarms()
+            workManager.cancelUniqueWork(PRAYER_ALARM_WORK_NAME)
+            workManager.cancelUniqueWork(PRAYER_ALARM_WORK_NEXT_DAY_NAME)
+            Log.i("ngz_alarms", "alarms cancelled")
+
+            if (_uiSwitchState.value) {
                 val prayerAlarmWorkRequest = OneTimeWorkRequestBuilder<AlarmWorker>().build()
                 workManager.enqueueUniqueWork(
                     PRAYER_ALARM_WORK_NAME,
@@ -122,13 +128,6 @@ class NotificationScreenViewModel @Inject constructor(
                     prayerAlarmWorkRequest
                 )
                 Log.i("ngz_alarms", "alarms scheduled")
-            }
-        } else {
-            viewModelScope.launch {
-                cancelAllPrayerAlarms()
-                workManager.cancelUniqueWork(PRAYER_ALARM_WORK_NAME)
-                workManager.cancelUniqueWork(PRAYER_ALARM_WORK_NEXT_DAY_NAME)
-                Log.i("ngz_alarms", "alarms cancelled")
             }
         }
     }
@@ -154,6 +153,7 @@ class NotificationScreenViewModel @Inject constructor(
         viewModelScope.launch {
             val settings = repository.getSettings()
             _uiSelectedRadio.update { settings.notificationType }
+            _uiSelectedPrayerAlarms.update { settings.toPrayerNotification() }
 
             if (alarmManager.canScheduleAlarms()) {
                 _uiSwitchState.update { settings.notification }

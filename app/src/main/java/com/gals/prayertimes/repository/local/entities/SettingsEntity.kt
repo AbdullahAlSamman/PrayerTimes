@@ -3,6 +3,7 @@ package com.gals.prayertimes.repository.local.entities
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.gals.prayertimes.model.PrayerName
 
 @Entity(tableName = "settings")
 data class SettingsEntity(
@@ -24,4 +25,18 @@ data class SettingsEntity(
     var maghribNotification: Boolean = true,
     @ColumnInfo(defaultValue = "true")
     var ishaNotification: Boolean = true
-)
+) {
+    companion object {
+        fun SettingsEntity.toPrayerNotification(): Map<PrayerName, Boolean> =
+            PrayerName.entries.associateWith {
+                when (it) {
+                    PrayerName.FAJER -> fajerNotification
+                    PrayerName.SUNRISE -> sunriseNotification
+                    PrayerName.DUHR -> duhrNotification
+                    PrayerName.ASR -> asrNotification
+                    PrayerName.MAGRIB -> maghribNotification
+                    PrayerName.ISHA -> ishaNotification
+                }
+            }
+    }
+}

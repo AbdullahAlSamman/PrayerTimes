@@ -11,6 +11,7 @@ import com.gals.prayertimes.model.mappers.toEntity
 import com.gals.prayertimes.repository.local.LocalDataSource
 import com.gals.prayertimes.repository.local.entities.PrayerEntity
 import com.gals.prayertimes.repository.local.entities.SettingsEntity
+import com.gals.prayertimes.repository.local.entities.SettingsEntity.Companion.toPrayerNotification
 import com.gals.prayertimes.repository.remote.RemoteDataSource
 import com.gals.prayertimes.repository.remote.model.PrayersResponse
 import com.gals.prayertimes.utils.UtilsManager
@@ -68,19 +69,8 @@ class Repository @Inject constructor(
     suspend fun saveSettings(settingsEntity: SettingsEntity) =
         localDataSource.insertSettings(settingsEntity)
 
-    suspend fun getPrayerNotification(): Map<PrayerName, Boolean> {
-        val settings = localDataSource.getSettings()
-        return PrayerName.entries.associateWith {
-            when (it) {
-                PrayerName.FAJER -> settings.fajerNotification
-                PrayerName.SUNRISE -> settings.sunriseNotification
-                PrayerName.DUHR -> settings.duhrNotification
-                PrayerName.ASR -> settings.asrNotification
-                PrayerName.MAGRIB -> settings.maghribNotification
-                PrayerName.ISHA -> settings.ishaNotification
-            }
-        }
-    }
+    suspend fun getPrayerNotification(): Map<PrayerName, Boolean> =
+        localDataSource.getSettings().toPrayerNotification()
 
     private fun checkServerError(response: PrayersResponse) {
         if (response == PrayersResponse("", "", emptyList())) {
