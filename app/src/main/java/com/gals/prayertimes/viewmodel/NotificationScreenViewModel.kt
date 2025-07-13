@@ -39,13 +39,13 @@ class NotificationScreenViewModel @Inject constructor(
     private val workManager: WorkManager,
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
-    private val _uiSelectedRadio = MutableStateFlow(NotificationType.SILENT.value)
+    private val _uiSelectedRadio = MutableStateFlow(NotificationType.SILENT)
     private val _uiSwitchState = MutableStateFlow(false)
     private val _uiSelectedPrayerAlarms =
         MutableStateFlow(PrayerName.entries.associateWith { it != PrayerName.SUNRISE })
     private val _uiPermissionState = MutableStateFlow(getPendingPermission())
 
-    val uiSelectedRadio: StateFlow<String> = _uiSelectedRadio.asStateFlow()
+    val uiSelectedRadio: StateFlow<NotificationType> = _uiSelectedRadio.asStateFlow()
     val uiSwitchState: StateFlow<Boolean> = _uiSwitchState.asStateFlow()
     val uiPermissionState: StateFlow<UiPermissionState> = _uiPermissionState.asStateFlow()
     val uiSelectedPrayerAlarms: StateFlow<Map<PrayerName, Boolean>> =
@@ -55,7 +55,7 @@ class NotificationScreenViewModel @Inject constructor(
         loadSavedSettings()
     }
 
-    fun updateSelectedRadio(value: String) {
+    fun updateSelectedRadio(value: NotificationType) {
         _uiSelectedRadio.update { value }
     }
 
@@ -104,7 +104,7 @@ class NotificationScreenViewModel @Inject constructor(
     fun submitChanges() {
         val currentSettings = SettingsEntity(
             notification = _uiSwitchState.value,
-            notificationType = _uiSelectedRadio.value,
+            notificationType = uiSelectedRadio.value,
             fajerNotification = _uiSelectedPrayerAlarms.value[PrayerName.FAJER] == true,
             sunriseNotification = _uiSelectedPrayerAlarms.value[PrayerName.SUNRISE] == true,
             duhrNotification = _uiSelectedPrayerAlarms.value[PrayerName.DUHR] == true,
@@ -176,7 +176,7 @@ class NotificationScreenViewModel @Inject constructor(
                     AlarmItem(
                         time = prayer,
                         title = "${prayerName.name} Prayer",
-                        message = "Time for ${prayerName.name} prayer."
+                        notificationType = "Time for ${prayerName.name} prayer."
                     )
                 )
             }

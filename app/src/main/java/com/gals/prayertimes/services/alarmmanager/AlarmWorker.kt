@@ -33,9 +33,9 @@ class AlarmWorker @AssistedInject constructor(
 ) : CoroutineWorker(appContext, workerParams) {
     override suspend fun doWork(): Result {
         repository.fetchPrayer(todayDate())
-            .collect {
+            .collect { prayer ->
                 scheduleUpcomingAlarms(
-                    timePrayers = it.toTimePrayer(),
+                    timePrayers = prayer.toTimePrayer(),
                     selectedPrayerNotifications = repository.getPrayerNotification()
                 )
 
@@ -57,8 +57,8 @@ class AlarmWorker @AssistedInject constructor(
                 alarmManager.scheduleAlarm( // TODO: 1. replace test strings with notification strings.
                     AlarmItem(
                         time = prayer,
-                        title = "${prayerName.name} Prayer",
-                        message = "Time for ${prayerName.name} prayer."
+                        title = prayerName.name,
+                        notificationType = ""
                     )
                 )
             }

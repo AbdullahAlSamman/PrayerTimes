@@ -18,7 +18,7 @@ class AlarmManager @Inject constructor(
 
     fun scheduleAlarm(alarmItem: AlarmItem) {
         val intent = Intent(context, AlarmReceiver::class.java).apply {
-            putExtra(NOTIFICATION_MESSAGE, alarmItem.message)
+            putExtra(NOTIFICATION_MESSAGE, alarmItem.notificationType)
             putExtra(NOTIFICATION_TITLE, alarmItem.title)
         }
         if (checkAPILevelForAlarms) {

@@ -1,6 +1,7 @@
 package com.gals.prayertimes.repository.local
 
 import androidx.room.TypeConverter
+import com.gals.prayertimes.model.NotificationType
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -15,4 +16,10 @@ object Converters {
 
     @TypeConverter
     fun stringToBoolean(bool: String?): Boolean = bool.toBoolean()
+
+    @TypeConverter
+    fun fromNotificationType(value: NotificationType): String = value.name
+
+    @TypeConverter
+    fun toNotificationType(value: String): NotificationType = NotificationType.valueOf(value)
 }

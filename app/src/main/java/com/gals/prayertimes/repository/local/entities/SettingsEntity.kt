@@ -3,6 +3,7 @@ package com.gals.prayertimes.repository.local.entities
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.gals.prayertimes.model.NotificationType
 import com.gals.prayertimes.model.PrayerName
 
 @Entity(tableName = "settings")
@@ -11,8 +12,8 @@ data class SettingsEntity(
     var id: Int = 1,
     @ColumnInfo(defaultValue = "false")
     var notification: Boolean,
-    @ColumnInfo(defaultValue = "silent")
-    var notificationType: String,
+    @ColumnInfo(defaultValue = "SILENT")
+    var notificationType: NotificationType,
     @ColumnInfo(defaultValue = "true")
     var fajerNotification: Boolean = true,
     @ColumnInfo(defaultValue = "false")

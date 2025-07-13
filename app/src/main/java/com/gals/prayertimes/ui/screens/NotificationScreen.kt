@@ -81,8 +81,9 @@ internal fun NotificationScreen(
             val uiPrayerSwitches by viewModel.uiSelectedPrayerAlarms.collectAsState()
             val uiPermissionDialog by viewModel.uiPermissionState.collectAsState()
 
-            val isRadioItemSelected: (String) -> Boolean = { uiSelectedRadio == it }
-            val onRadioSelectionChanged: (String) -> Unit = { viewModel.updateSelectedRadio(it) }
+            val isRadioItemSelected: (NotificationType) -> Boolean = { uiSelectedRadio == it }
+            val onRadioSelectionChanged: (NotificationType) -> Unit =
+                { viewModel.updateSelectedRadio(it) }
             val onSwitchSelectionChanged: (Boolean) -> Unit = { viewModel.updateSwitchState(it) }
             val onAlarmSelectionChanged: (PrayerName, Boolean) -> Unit =
                 { name, value -> viewModel.updateSelectedAlarms(name, value) }

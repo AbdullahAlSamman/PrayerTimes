@@ -59,7 +59,7 @@ class Repository @Inject constructor(
             localDataSource.getSettings()
         } else {
             val settings = SettingsEntity(
-                notificationType = NotificationType.SILENT.value,
+                notificationType = NotificationType.SILENT,
                 notification = false
             )
             localDataSource.insertSettings(settings)

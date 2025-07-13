@@ -16,15 +16,10 @@ import androidx.core.app.NotificationManagerCompat
 import com.gals.prayertimes.R
 import com.gals.prayertimes.model.NextPrayerConfig
 import com.gals.prayertimes.model.NotificationType
-import com.gals.prayertimes.repository.Repository
 import com.gals.prayertimes.repository.local.entities.SettingsEntity
-import com.gals.prayertimes.utils.PrayerCalculation
 import com.gals.prayertimes.utils.UtilsManager
 import com.gals.prayertimes.view.MainActivity
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import java.util.Timer
 import javax.inject.Inject
 import kotlin.concurrent.schedule
@@ -32,10 +27,7 @@ import kotlin.random.Random
 
 class NotificationManager @Inject constructor(
     @ApplicationContext private val applicationContext: Context,
-    private val repository: Repository,
-    private val calculation: PrayerCalculation,
-    private val tools: UtilsManager,
-    private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.Main + Job())
+    private val tools: UtilsManager
 ) {
 
     private lateinit var settingsEntity: SettingsEntity
@@ -111,43 +103,37 @@ class NotificationManager @Inject constructor(
     private fun buildNotification(
         pendingIntent: PendingIntent,
         config: NextPrayerConfig,
-        notificationType: String
+        notificationType: NotificationType
     ) =
         when (notificationType) {
-            NotificationType.SILENT.value -> createNotification(
+            NotificationType.SILENT -> createNotification(
                 pendingIntent = pendingIntent,
                 channelID = NOTIFICATION_CHANNEL_SILENT_ID,
                 soundUri = Uri.EMPTY,
                 config = config
             )
 
-            NotificationType.TONE.value -> createNotification(
+            NotificationType.TONE -> createNotification(
                 pendingIntent = pendingIntent,
                 channelID = NOTIFICATION_CHANNEL_TONE_ID,
                 soundUri = defaultSystemRingtone,
                 config = config
             )
 
-            NotificationType.HALF.value -> createNotification(
+            NotificationType.HALF -> createNotification(
                 pendingIntent = pendingIntent,
                 channelID = NOTIFICATION_CHANNEL_HALF_ID,
                 soundUri = tools.getSoundUri(NotificationType.HALF),
                 config = config
             )
 
-            NotificationType.FULL.value -> createNotification(
+            NotificationType.FULL -> createNotification(
                 pendingIntent = pendingIntent,
                 channelID = NOTIFICATION_CHANNEL_FULL_ID,
                 soundUri = tools.getSoundUri(NotificationType.FULL),
                 config = config
             )
 
-            else -> createNotification(
-                pendingIntent = pendingIntent,
-                channelID = NOTIFICATION_CHANNEL_SILENT_ID,
-                soundUri = Uri.EMPTY,
-                config = config
-            )
         }
 
     private fun createNotification(

@@ -13,14 +13,14 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import com.gals.prayertimes.model.NotificationType
-import com.gals.prayertimes.ui.theme.PrayerTypography
 import com.gals.prayertimes.model.mappers.mapNotificationTypeText
+import com.gals.prayertimes.ui.theme.PrayerTypography
 
 @Composable
 fun RadioButtonItem(
     item: NotificationType,
-    isSelectedItem: (String) -> Boolean,
-    onSelectionChanged: (String) -> Unit,
+    isSelectedItem: (NotificationType) -> Boolean,
+    onSelectionChanged: (NotificationType) -> Unit,
     textStyle: TextStyle = PrayerTypography.titleMedium,
     itemEnabled: Boolean
 ) {
@@ -28,8 +28,8 @@ fun RadioButtonItem(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .selectable(
-                selected = isSelectedItem(item.value),
-                onClick = { onSelectionChanged(item.value) },
+                selected = isSelectedItem(item),
+                onClick = { onSelectionChanged(item) },
                 role = Role.RadioButton
             )
             .padding(top = 4.dp)
@@ -37,8 +37,8 @@ fun RadioButtonItem(
     ) {
         RadioButton(
             enabled = itemEnabled,
-            selected = isSelectedItem(item.value),
-            onClick = { onSelectionChanged(item.value) })
+            selected = isSelectedItem(item),
+            onClick = { onSelectionChanged(item) })
         Text(
             text = mapNotificationTypeText(notificationType = item),
             style = textStyle
