@@ -175,7 +175,7 @@ class NotificationScreenViewModel @Inject constructor(
                 alarmManager.cancelAlarm( // TODO: 1. replace test strings with notification strings.
                     AlarmItem(
                         time = prayer,
-                        title = "${prayerName.name} Prayer",
+                        prayer = "${prayerName.name} Prayer",
                         notificationType = "Time for ${prayerName.name} prayer."
                     )
                 )

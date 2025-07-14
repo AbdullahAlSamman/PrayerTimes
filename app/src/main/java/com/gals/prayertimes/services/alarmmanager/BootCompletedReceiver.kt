@@ -28,7 +28,7 @@ class BootCompletedReceiver : BroadcastReceiver() {
 
     /**
      * This receiver is designed to reschedule lost alarms after reboot plus
-     * making sure all works despite being persistent are rescheduled.
+     * making sure [AlarmWorker] despite being persistent is rescheduled.
      * */
     override fun onReceive(context: Context?, intent: Intent?) {
         if (intent?.action == Intent.ACTION_BOOT_COMPLETED) {

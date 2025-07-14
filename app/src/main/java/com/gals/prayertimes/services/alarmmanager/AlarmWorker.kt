@@ -60,10 +60,10 @@ class AlarmWorker @AssistedInject constructor(
                 timePrayers.getTimePrayerByName(prayerName)
             )
             if (prayer?.isAfter(LocalDateTime.now()) == true) {
-                alarmManager.scheduleAlarm( // TODO: 1. replace test strings with notification strings.
+                alarmManager.scheduleAlarm(
                     AlarmItem(
                         time = prayer,
-                        title = prayerName.name,
+                        prayer = prayerName.name,
                         notificationType = notificationType.name
                     )
                 )
