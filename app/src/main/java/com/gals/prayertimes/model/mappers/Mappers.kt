@@ -172,8 +172,18 @@ fun TimePrayer.getTimePrayerByName(
     PrayerName.ISHA -> isha
 }
 
+fun PrayerName.getStringId(): Int =
+    when(this){
+        PrayerName.FAJER -> R.string.text_prayer_fajer
+        PrayerName.SUNRISE -> R.string.text_prayer_sunrise
+        PrayerName.DUHR -> R.string.text_prayer_duhr
+        PrayerName.ASR -> R.string.text_prayer_asr
+        PrayerName.MAGRIB -> R.string.text_prayer_maghrib
+        PrayerName.ISHA -> R.string.text_prayer_isha
+    }
+
 @Composable
-fun mapPrayerColor(prayer: com.gals.prayertimes.repository.remote.model.PrayerNameResponse): Color =
+fun mapPrayerColor(prayer: PrayerNameResponse): Color =
     when (prayer) {
         PrayerNameResponse.FAJER -> colorBackgroundFajer
         PrayerNameResponse.SUNRISE -> colorBackgroundSunrise
@@ -185,7 +195,7 @@ fun mapPrayerColor(prayer: com.gals.prayertimes.repository.remote.model.PrayerNa
     }
 
 @Composable
-fun mapPrayerName(prayerName: com.gals.prayertimes.repository.remote.model.PrayerNameResponse): String =
+fun mapPrayerName(prayerName: PrayerNameResponse): String =
     when (prayerName) {
         PrayerNameResponse.FAJER -> stringResource(id = R.string.text_prayer_fajer)
         PrayerNameResponse.SUNRISE -> stringResource(id = R.string.text_prayer_sunrise)

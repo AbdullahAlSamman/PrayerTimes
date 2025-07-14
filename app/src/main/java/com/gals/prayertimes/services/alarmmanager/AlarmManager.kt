@@ -18,8 +18,8 @@ class AlarmManager @Inject constructor(
 
     fun scheduleAlarm(alarmItem: AlarmItem) {
         val intent = Intent(context, AlarmReceiver::class.java).apply {
-            putExtra(NOTIFICATION_MESSAGE, alarmItem.notificationType)
-            putExtra(NOTIFICATION_TITLE, alarmItem.prayer)
+            putExtra(INTENT_EXTRA_NOTIFICATION_TYPE, alarmItem.notificationType)
+            putExtra(INTENT_EXTRA_NOTIFICATION_PRAYER, alarmItem.prayer)
         }
         if (checkAPILevelForAlarms) {
             when {
@@ -78,5 +78,5 @@ class AlarmManager @Inject constructor(
     }
 }
 
-const val NOTIFICATION_MESSAGE = "notificationMessage"
-const val NOTIFICATION_TITLE = "notificationTitle"
+const val INTENT_EXTRA_NOTIFICATION_TYPE = "notificationType"
+const val INTENT_EXTRA_NOTIFICATION_PRAYER = "notificationPrayer"

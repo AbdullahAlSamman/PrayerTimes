@@ -14,7 +14,7 @@ import com.gals.prayertimes.repository.local.entities.SettingsEntity
 import com.gals.prayertimes.repository.local.entities.SettingsEntity.Companion.toPrayerNotification
 import com.gals.prayertimes.repository.remote.RemoteDataSource
 import com.gals.prayertimes.repository.remote.model.PrayersResponse
-import com.gals.prayertimes.utils.UtilsManager
+import com.gals.prayertimes.utils.SystemUtils
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -25,7 +25,7 @@ class Repository @Inject constructor(
     @IODispatcher private val dispatcher: CoroutineDispatcher,
     private val localDataSource: LocalDataSource,
     private val remoteDataSource: RemoteDataSource,
-    private val tools: UtilsManager,
+    private val tools: SystemUtils,
 ) {
     fun fetchPrayer(todayDate: String): Flow<PrayerEntity> = flow {
         if (localDataSource.isTodayPrayerExists(todayDate)) {

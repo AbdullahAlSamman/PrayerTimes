@@ -9,7 +9,12 @@ enum class PrayerName {
     DUHR,
     ASR,
     MAGRIB,
-    ISHA
+    ISHA;
+
+    companion object {
+        fun fromString(value: String?): PrayerName =
+            PrayerName.entries.find { it.name == value } ?: ISHA
+    }
 }
 
 data class NextPrayerConfig(
@@ -25,7 +30,12 @@ enum class NotificationType {
     SILENT,
     TONE,
     HALF,
-    FULL
+    FULL;
+
+    companion object {
+        fun fromString(value: String?): NotificationType =
+            NotificationType.entries.find { it.name == value } ?: SILENT
+    }
 }
 
 //TODO: replace with map prayer name as key and LocalDateTime as value.

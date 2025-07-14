@@ -115,7 +115,7 @@ class NotificationScreenViewModel @Inject constructor(
         updateSettings(currentSettings)
 
         viewModelScope.launch {
-            cancelAllPrayerAlarms()
+            cancelAllPrayerAlarms(notificationType = currentSettings.notificationType)
             workManager.cancelUniqueWork(PRAYER_ALARM_WORK_NAME)
             workManager.cancelUniqueWork(PRAYER_ALARM_WORK_NEXT_DAY_NAME)
             Log.i("ngz_alarms", "alarms cancelled")
@@ -163,7 +163,9 @@ class NotificationScreenViewModel @Inject constructor(
         }
     }
 
-    private suspend fun cancelAllPrayerAlarms() {
+    private suspend fun cancelAllPrayerAlarms(
+        notificationType: NotificationType
+    ) {
         val timePrayer = repository.getPrayer(todayDate()).toTimePrayer()
         PrayerName.entries.forEach { prayerName ->
             val prayer = prayerCalculation.getNextPrayerLocalTime(
@@ -175,8 +177,8 @@ class NotificationScreenViewModel @Inject constructor(
                 alarmManager.cancelAlarm( // TODO: 1. replace test strings with notification strings.
                     AlarmItem(
                         time = prayer,
-                        prayer = "${prayerName.name} Prayer",
-                        notificationType = "Time for ${prayerName.name} prayer."
+                        prayer = prayerName.name,
+                        notificationType = notificationType.name
                     )
                 )
             }
