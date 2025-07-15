@@ -39,7 +39,7 @@ import com.gals.prayertimes.ui.components.NavigationBackArrow
 import com.gals.prayertimes.ui.components.PrayerNotificationItem
 import com.gals.prayertimes.ui.components.RadioButtonItem
 import com.gals.prayertimes.ui.theme.PrayerTypography
-import com.gals.prayertimes.utils.checkAPILevelForAlarms
+import com.gals.prayertimes.utils.upAPILevel31
 import com.gals.prayertimes.viewmodel.NotificationScreenViewModel
 
 @Composable
@@ -165,7 +165,7 @@ internal fun NotificationScreen(
                     when (lifecycleState) {
                         Lifecycle.State.RESUMED -> {
                             Log.i("ngz_notification", "Notification Screen: OnResume")
-                            if (checkAPILevelForAlarms) {
+                            if (upAPILevel31) {
                                 when (viewModel.getPendingPermissions()) {
                                     UiPermissionState.PENDING -> {
                                         if (viewModel.isAlarmPermissionGranted()) {

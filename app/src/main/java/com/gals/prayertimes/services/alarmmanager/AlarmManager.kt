@@ -6,7 +6,8 @@ import android.content.Context
 import android.content.Intent
 import android.provider.Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM
 import androidx.core.content.ContextCompat.startActivity
-import com.gals.prayertimes.utils.checkAPILevelForAlarms
+import com.gals.prayertimes.model.mappers.toAlarmItem
+import com.gals.prayertimes.utils.upAPILevel31
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.time.ZoneId
 import javax.inject.Inject
@@ -16,15 +17,15 @@ class AlarmManager @Inject constructor(
 ) {
     private val alarmManager = context.getSystemService(AlarmManager::class.java)
 
-    fun scheduleAlarm(alarmItem: AlarmItem) {
+    fun scheduleAlarm(prayerAlarmItem: PrayerAlarmItem) {
         val intent = Intent(context, AlarmReceiver::class.java).apply {
-            putExtra(INTENT_EXTRA_NOTIFICATION_TYPE, alarmItem.notificationType)
-            putExtra(INTENT_EXTRA_NOTIFICATION_PRAYER, alarmItem.prayer)
+            putExtra(INTENT_EXTRA_NOTIFICATION_TYPE, prayerAlarmItem.notificationType)
+            putExtra(INTENT_EXTRA_NOTIFICATION_PRAYER, prayerAlarmItem.prayer)
         }
-        if (checkAPILevelForAlarms) {
+        if (upAPILevel31) {
             when {
                 alarmManager.canScheduleExactAlarms() -> {
-                    setAlarm(alarmItem, intent)
+                    setAlarm(prayerAlarmItem.toAlarmItem(), intent)
                 }
 
                 else -> {
@@ -32,7 +33,7 @@ class AlarmManager @Inject constructor(
                 }
             }
         } else {
-            setAlarm(alarmItem, intent)
+            setAlarm(prayerAlarmItem.toAlarmItem(), intent)
         }
     }
 
@@ -48,14 +49,14 @@ class AlarmManager @Inject constructor(
     }
 
     fun canScheduleAlarms(): Boolean =
-        if (checkAPILevelForAlarms) {
+        if (upAPILevel31) {
             alarmManager.canScheduleExactAlarms()
         } else {
             true
         }
 
     fun requestPermission() {
-        if (checkAPILevelForAlarms) {
+        if (upAPILevel31) {
             startActivity(
                 context,
                 Intent(ACTION_REQUEST_SCHEDULE_EXACT_ALARM).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK),

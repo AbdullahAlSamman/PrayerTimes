@@ -16,6 +16,8 @@ import com.gals.prayertimes.model.UiPrayer
 import com.gals.prayertimes.repository.local.entities.PrayerEntity
 import com.gals.prayertimes.repository.remote.model.PrayerNameResponse
 import com.gals.prayertimes.repository.remote.model.PrayersResponse
+import com.gals.prayertimes.services.alarmmanager.AlarmItem
+import com.gals.prayertimes.services.alarmmanager.PrayerAlarmItem
 import com.gals.prayertimes.ui.theme.colorBackgroundAsr
 import com.gals.prayertimes.ui.theme.colorBackgroundDuhr
 import com.gals.prayertimes.ui.theme.colorBackgroundFajer
@@ -173,7 +175,7 @@ fun TimePrayer.getTimePrayerByName(
 }
 
 fun PrayerName.getStringId(): Int =
-    when(this){
+    when (this) {
         PrayerName.FAJER -> R.string.text_prayer_fajer
         PrayerName.SUNRISE -> R.string.text_prayer_sunrise
         PrayerName.DUHR -> R.string.text_prayer_duhr
@@ -181,6 +183,9 @@ fun PrayerName.getStringId(): Int =
         PrayerName.MAGRIB -> R.string.text_prayer_maghrib
         PrayerName.ISHA -> R.string.text_prayer_isha
     }
+
+fun PrayerAlarmItem.toAlarmItem(): AlarmItem =
+    AlarmItem(time = time, prayer = prayer)
 
 @Composable
 fun mapPrayerColor(prayer: PrayerNameResponse): Color =

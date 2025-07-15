@@ -1,5 +1,6 @@
 package com.gals.prayertimes.navigation
 
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -13,7 +14,6 @@ import com.gals.prayertimes.ui.screens.MainScreen
 import com.gals.prayertimes.ui.screens.NotificationScreen
 import com.gals.prayertimes.ui.screens.PrivacyPolicyScreen
 import com.gals.prayertimes.ui.screens.SettingsMenuScreen
-import com.gals.prayertimes.utils.applyDefaultPadding
 
 @Composable
 fun PrayerTimesNavHost(
@@ -61,7 +61,7 @@ fun PrayerTimesNavHost(
 
         composable(route = Notification.route) {
             NotificationScreen(
-                modifier = Modifier.applyDefaultPadding(16.dp),
+                modifier = Modifier.padding(horizontal = 16.dp),
                 onBackClicked = { navController.navigateUp() }
             )
         }

@@ -28,22 +28,19 @@ class AlarmReceiver : BroadcastReceiver() {
         context?.let {
             val notificationType =
                 NotificationType.fromString(intent?.getStringExtra(INTENT_EXTRA_NOTIFICATION_TYPE))
-            val prayerName = PrayerName.fromString(intent?.getStringExtra(INTENT_EXTRA_NOTIFICATION_PRAYER))
+            val prayerName =
+                PrayerName.fromString(intent?.getStringExtra(INTENT_EXTRA_NOTIFICATION_PRAYER))
 
             Log.i("ngz_notification", "Alarm received for: $prayerName, type: $notificationType")
 
             val intent = Intent(context, MainActivity::class.java)
-            val mutabilityFlag = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                PendingIntent.FLAG_IMMUTABLE
-            } else {
-                PendingIntent.FLAG_UPDATE_CURRENT
-            }
 
             val tapIntent = PendingIntent.getActivity(
                 context,
                 prayerName.hashCode(),
                 intent,
-                mutabilityFlag or PendingIntent.FLAG_UPDATE_CURRENT
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
+                    PendingIntent.FLAG_IMMUTABLE else PendingIntent.FLAG_UPDATE_CURRENT
             )
 
             if (utils.hasNotificationPermission()) {

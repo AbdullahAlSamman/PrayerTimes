@@ -5,13 +5,11 @@ import com.gals.prayertimes.model.ConnectivityException
 import com.gals.prayertimes.model.IODispatcher
 import com.gals.prayertimes.model.NetworkException
 import com.gals.prayertimes.model.NotificationType
-import com.gals.prayertimes.model.PrayerName
 import com.gals.prayertimes.model.ServerException
 import com.gals.prayertimes.model.mappers.toEntity
 import com.gals.prayertimes.repository.local.LocalDataSource
 import com.gals.prayertimes.repository.local.entities.PrayerEntity
 import com.gals.prayertimes.repository.local.entities.SettingsEntity
-import com.gals.prayertimes.repository.local.entities.SettingsEntity.Companion.toPrayerNotification
 import com.gals.prayertimes.repository.remote.RemoteDataSource
 import com.gals.prayertimes.repository.remote.model.PrayersResponse
 import com.gals.prayertimes.utils.SystemUtils
@@ -25,7 +23,7 @@ class Repository @Inject constructor(
     @IODispatcher private val dispatcher: CoroutineDispatcher,
     private val localDataSource: LocalDataSource,
     private val remoteDataSource: RemoteDataSource,
-    private val tools: SystemUtils,
+    private val utils: SystemUtils,
 ) {
     fun fetchPrayer(todayDate: String): Flow<PrayerEntity> = flow {
         if (localDataSource.isTodayPrayerExists(todayDate)) {
@@ -33,7 +31,7 @@ class Repository @Inject constructor(
             emit(localDataSource.getPrayers(todayDate))
             return@flow
         }
-        if (tools.isNetworkAvailable()) {
+        if (utils.isNetworkAvailable()) {
             val result = remoteDataSource.getPrayers(todayDate)
             if (result.isSuccessful) {
                 result.body()?.let { response ->
@@ -68,10 +66,7 @@ class Repository @Inject constructor(
 
     suspend fun saveSettings(settingsEntity: SettingsEntity) =
         localDataSource.insertSettings(settingsEntity)
-
-    suspend fun getPrayerNotification(): Map<PrayerName, Boolean> =
-        localDataSource.getSettings().toPrayerNotification()
-
+    
     private fun checkServerError(response: PrayersResponse) {
         if (response == PrayersResponse("", "", emptyList())) {
             throw ServerException("Server error: No data")

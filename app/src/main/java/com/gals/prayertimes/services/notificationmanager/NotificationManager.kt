@@ -13,6 +13,7 @@ import android.widget.RemoteViews
 import androidx.annotation.RequiresPermission
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.net.toUri
 import com.gals.prayertimes.R
 import com.gals.prayertimes.model.NotificationType
 import com.gals.prayertimes.model.PrayerName
@@ -48,7 +49,41 @@ class NotificationManager @Inject constructor(
         }
     }
 
-    private fun buildAlarmNotificationBannerInfo(prayer: PrayerName): RemoteViews =
+    private fun buildNotification(
+        pendingIntent: PendingIntent,
+        prayer: PrayerName,
+        notificationType: NotificationType
+    ): Notification {
+
+        val notificationManager =
+            applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+        val notificationChannel = NotificationChannel(
+            NOTIFICATION_CHANNEL_ALARM_ID,
+            NOTIFICATION_CHANNEL_ALARM_NAME,
+            NotificationManager.IMPORTANCE_HIGH
+        )
+
+        notificationChannel.setSound(
+            notificationType.getNotificationSound(),
+            AudioAttributes.Builder()
+                .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                .setUsage(AudioAttributes.USAGE_ALARM)
+                .build()
+        )
+        notificationManager.createNotificationChannel(notificationChannel)
+
+        return NotificationCompat.Builder(applicationContext, NOTIFICATION_CHANNEL_ALARM_ID)
+            .setSmallIcon(R.drawable.ic_haya_notification)
+            .setStyle(NotificationCompat.DecoratedCustomViewStyle())
+            .setCustomContentView(buildNotificationInfo(prayer))
+            .setContentIntent(pendingIntent)
+            .setAutoCancel(true)
+            .build()
+
+    }
+
+    private fun buildNotificationInfo(prayer: PrayerName): RemoteViews =
         RemoteViews(
             applicationContext.packageName,
             R.layout.notification_service_alarm_remote_view
@@ -67,84 +102,18 @@ class NotificationManager @Inject constructor(
             )
         }
 
-    private fun buildNotification(
-        pendingIntent: PendingIntent,
-        notificationType: NotificationType,
-        prayer: PrayerName
-    ) = when (notificationType) {
-        NotificationType.SILENT -> createNotification(
-            pendingIntent = pendingIntent,
-            soundUri = notificationType.getNotificationSound(),
-            prayer = prayer
-        )
-
-        NotificationType.TONE -> createNotification(
-            pendingIntent = pendingIntent,
-            soundUri = notificationType.getNotificationSound(),
-            prayer = prayer
-        )
-
-        NotificationType.HALF -> createNotification(
-            pendingIntent = pendingIntent,
-            soundUri = notificationType.getNotificationSound(),
-            prayer = prayer
-        )
-
-        NotificationType.FULL -> createNotification(
-            pendingIntent = pendingIntent,
-            soundUri = notificationType.getNotificationSound(),
-            prayer = prayer
-        )
-    }
-
     private fun NotificationType.getNotificationSound(): Uri =
         when (this) {
             NotificationType.SILENT -> Uri.EMPTY
             NotificationType.TONE -> defaultRingtone
-            NotificationType.HALF -> utils.getSoundUri(NotificationType.HALF)
-            NotificationType.FULL -> utils.getSoundUri(NotificationType.FULL)
+            NotificationType.HALF -> (URI_DEFAULT_PATH + R.raw.halfathan).toUri()
+            NotificationType.FULL -> (URI_DEFAULT_PATH + R.raw.fullathan).toUri()
         }
-
-    private fun createNotification(
-        pendingIntent: PendingIntent,
-        prayer: PrayerName,
-        soundUri: Uri
-    ): Notification {
-        val notificationManager =
-            applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-
-        val notificationChannel = NotificationChannel(
-            NOTIFICATION_CHANNEL_ALARM_ID,
-            NOTIFICATION_CHANNEL_ALARM_NAME,
-            NotificationManager.IMPORTANCE_HIGH
-        )
-
-        notificationChannel.setSound(
-            soundUri,
-            AudioAttributes.Builder()
-                .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                .setUsage(AudioAttributes.USAGE_ALARM)
-                .build()
-        )
-        notificationManager.createNotificationChannel(notificationChannel)
-        return createNotificationWithSound(pendingIntent, prayer)
-    }
-
-    private fun createNotificationWithSound(
-        pendingIntent: PendingIntent,
-        prayer: PrayerName
-    ): Notification =
-        NotificationCompat.Builder(applicationContext, NOTIFICATION_CHANNEL_ALARM_ID)
-            .setSmallIcon(R.drawable.ic_haya_notification)
-            .setStyle(NotificationCompat.DecoratedCustomViewStyle())
-            .setCustomContentView(buildAlarmNotificationBannerInfo(prayer))
-            .setContentIntent(pendingIntent)
-            .setAutoCancel(true)
-            .build()
 
     private val defaultRingtone = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
 
     companion object {
+        private const val URI_DEFAULT_PATH = "android.resource://com.gals.prayertimes/"
         private const val NOTIFICATION_CHANNEL_ALARM_ID = "athan_notification_channel_permanent"
         private const val NOTIFICATION_CHANNEL_ALARM_NAME = "Athan Alarm"
     }

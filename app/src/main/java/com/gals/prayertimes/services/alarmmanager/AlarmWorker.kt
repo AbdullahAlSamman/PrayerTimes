@@ -61,7 +61,7 @@ class AlarmWorker @AssistedInject constructor(
             )
             if (prayer?.isAfter(LocalDateTime.now()) == true) {
                 alarmManager.scheduleAlarm(
-                    AlarmItem(
+                    PrayerAlarmItem(
                         time = prayer,
                         prayer = prayerName.name,
                         notificationType = notificationType.name
@@ -77,22 +77,25 @@ class AlarmWorker @AssistedInject constructor(
 
     private fun scheduleNextAlarmWorker() {
         val now = LocalDateTime.now(ZoneId.systemDefault())
-        val midnightNextDay =
-            LocalDateTime.of(LocalDate.now(ZoneId.systemDefault()).plusDays(1), LocalTime.MIDNIGHT)
+        val targetExecutionTime =
+            LocalDateTime.of(LocalDate.now(ZoneId.systemDefault()).plusDays(1), LocalTime.of(0, 5))
 
-        val delay = Duration.between(now, midnightNextDay).toMillis()
+        val delay = Duration.between(now, targetExecutionTime).toMillis()
 
-        val nextAlarmWorkRequest = OneTimeWorkRequestBuilder<AlarmWorker>()
-            .setInitialDelay(delay, TimeUnit.MILLISECONDS)
-            .build()
+        if (delay > 0) {
+            val nextAlarmWorkRequest = OneTimeWorkRequestBuilder<AlarmWorker>()
+                .setInitialDelay(delay, TimeUnit.MILLISECONDS)
+                .build()
 
-        WorkManager.getInstance(appContext).enqueueUniqueWork(
-            PRAYER_ALARM_WORK_NEXT_DAY_NAME,
-            ExistingWorkPolicy.REPLACE,
-            nextAlarmWorkRequest
-        )
+            WorkManager.getInstance(appContext).enqueueUniqueWork(
+                PRAYER_ALARM_WORK_NEXT_DAY_NAME,
+                ExistingWorkPolicy.REPLACE,
+                nextAlarmWorkRequest
+            )
+            Log.i("AlarmWorker", "Next day worker scheduled to run at: $targetExecutionTime")
+        }
     }
 }
 
 internal const val PRAYER_ALARM_WORK_NAME = "PrayerAlarmPeriodicWork"
-internal const val PRAYER_ALARM_WORK_NEXT_DAY_NAME = "PrayerAlarmPeriodicWork"
+internal const val PRAYER_ALARM_WORK_NEXT_DAY_NAME = "PrayerAlarmNextDayWork"
