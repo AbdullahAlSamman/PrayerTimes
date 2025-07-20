@@ -27,7 +27,7 @@ class Repository @Inject constructor(
 ) {
     fun fetchPrayer(todayDate: String): Flow<PrayerEntity> = flow {
         if (localDataSource.isTodayPrayerExists(todayDate)) {
-            Log.i("ngz_local_data_request", "exists locally in cache")
+            Log.i(LOG_TAG, "exists locally in cache")
             emit(localDataSource.getPrayers(todayDate))
             return@flow
         }
@@ -66,7 +66,7 @@ class Repository @Inject constructor(
 
     suspend fun saveSettings(settingsEntity: SettingsEntity) =
         localDataSource.insertSettings(settingsEntity)
-    
+
     private fun checkServerError(response: PrayersResponse) {
         if (response == PrayersResponse("", "", emptyList())) {
             throw ServerException("Server error: No data")

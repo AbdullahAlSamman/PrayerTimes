@@ -9,6 +9,7 @@ import android.content.Context
 import android.media.AudioAttributes
 import android.media.RingtoneManager
 import android.net.Uri
+import android.util.Log
 import android.widget.RemoteViews
 import androidx.annotation.RequiresPermission
 import androidx.core.app.NotificationCompat
@@ -58,22 +59,15 @@ class NotificationManager @Inject constructor(
         val notificationManager =
             applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-        val notificationChannel = NotificationChannel(
-            NOTIFICATION_CHANNEL_ALARM_ID,
-            NOTIFICATION_CHANNEL_ALARM_NAME,
-            NotificationManager.IMPORTANCE_HIGH
+        createNotificationChannel(
+            notificationManager = notificationManager,
+            notificationType = notificationType
         )
 
-        notificationChannel.setSound(
-            notificationType.getNotificationSound(),
-            AudioAttributes.Builder()
-                .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                .setUsage(AudioAttributes.USAGE_ALARM)
-                .build()
+        return NotificationCompat.Builder(
+            applicationContext,
+            NOTIFICATION_CHANNEL_ID_FULL_ATHAN_ALARM
         )
-        notificationManager.createNotificationChannel(notificationChannel)
-
-        return NotificationCompat.Builder(applicationContext, NOTIFICATION_CHANNEL_ALARM_ID)
             .setSmallIcon(R.drawable.ic_haya_notification)
             .setStyle(NotificationCompat.DecoratedCustomViewStyle())
             .setCustomContentView(buildNotificationInfo(prayer))
@@ -81,6 +75,32 @@ class NotificationManager @Inject constructor(
             .setAutoCancel(true)
             .build()
 
+    }
+
+    private fun createNotificationChannel(
+        notificationManager: NotificationManager,
+        notificationType: NotificationType
+    ) {
+        if (notificationManager.getNotificationChannel(notificationType.getNotificationChannelID()) == null) {
+            val notificationChannel = NotificationChannel(
+                notificationType.getNotificationChannelID(),
+                notificationType.getNotificationChannelName(),
+                NotificationManager.IMPORTANCE_HIGH
+            )
+
+            Log.i(
+                "ngz_notification",
+                "Notification Resource: ${notificationType.getNotificationSound()}"
+            )
+            notificationChannel.setSound(
+                notificationType.getNotificationSound(),
+                AudioAttributes.Builder()
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                    .setUsage(AudioAttributes.USAGE_ALARM)
+                    .build()
+            )
+            notificationManager.createNotificationChannel(notificationChannel)
+        }
     }
 
     private fun buildNotificationInfo(prayer: PrayerName): RemoteViews =
@@ -105,16 +125,36 @@ class NotificationManager @Inject constructor(
     private fun NotificationType.getNotificationSound(): Uri =
         when (this) {
             NotificationType.SILENT -> Uri.EMPTY
-            NotificationType.TONE -> defaultRingtone
+            NotificationType.TONE -> RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
             NotificationType.HALF -> (URI_DEFAULT_PATH + R.raw.halfathan).toUri()
             NotificationType.FULL -> (URI_DEFAULT_PATH + R.raw.fullathan).toUri()
         }
 
-    private val defaultRingtone = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
+    private fun NotificationType.getNotificationChannelID(): String =
+        when (this) {
+            NotificationType.SILENT -> NOTIFICATION_CHANNEL_ID_SILENT_ATHAN_ALARM
+            NotificationType.TONE -> NOTIFICATION_CHANNEL_ID_RINGTONE_ATHAN_ALARM
+            NotificationType.HALF -> NOTIFICATION_CHANNEL_ID_HALF_ATHAN_ALARM
+            NotificationType.FULL -> NOTIFICATION_CHANNEL_ID_FULL_ATHAN_ALARM
+        }
+
+    private fun NotificationType.getNotificationChannelName(): String =
+        when (this) {
+            NotificationType.SILENT -> NOTIFICATION_CHANNEL_NAME_ALARM_SILENT
+            NotificationType.TONE -> NOTIFICATION_CHANNEL_NAME_ALARM_RINGTONE
+            NotificationType.HALF -> NOTIFICATION_CHANNEL_NAME_ALARM_HALF_ATHAN
+            NotificationType.FULL -> NOTIFICATION_CHANNEL_NAME_ALARM_FULL_ATHAN
+        }
 
     companion object {
         private const val URI_DEFAULT_PATH = "android.resource://com.gals.prayertimes/"
-        private const val NOTIFICATION_CHANNEL_ALARM_ID = "athan_notification_channel_permanent"
-        private const val NOTIFICATION_CHANNEL_ALARM_NAME = "Athan Alarm"
+        private const val NOTIFICATION_CHANNEL_ID_FULL_ATHAN_ALARM = "athan_notification_full_channel_permanent"
+        private const val NOTIFICATION_CHANNEL_ID_HALF_ATHAN_ALARM = "athan_notification_half_channel_permanent"
+        private const val NOTIFICATION_CHANNEL_ID_RINGTONE_ATHAN_ALARM = "athan_notification_ringtone_channel_permanent"
+        private const val NOTIFICATION_CHANNEL_ID_SILENT_ATHAN_ALARM = "athan_notification_silent_channel_permanent"
+        private const val NOTIFICATION_CHANNEL_NAME_ALARM_FULL_ATHAN = "Full Athan Alarm"
+        private const val NOTIFICATION_CHANNEL_NAME_ALARM_HALF_ATHAN = "Half Athan Alarm"
+        private const val NOTIFICATION_CHANNEL_NAME_ALARM_RINGTONE = "Default Ringtone Alarm"
+        private const val NOTIFICATION_CHANNEL_NAME_ALARM_SILENT = "Silent Alarm"
     }
 }
