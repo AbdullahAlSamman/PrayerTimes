@@ -15,7 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.invisibleToUser
+import androidx.compose.ui.semantics.hideFromAccessibility
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.LayoutDirection
@@ -41,7 +41,7 @@ fun MenuItem(
             Icon(
                 modifier = Modifier
                     .size(50.dp)
-                    .semantics { invisibleToUser() },
+                    .semantics { hideFromAccessibility() },
                 painter = painterResource(id = uiMenuItem.icon),
                 contentDescription = stringResource(R.string.menu_item_icon_content_description)
             )

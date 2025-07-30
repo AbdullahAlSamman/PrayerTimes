@@ -1,31 +1,33 @@
 [versions]
-kotlin = "2.0.20"
-room = "2.6.1"
-retrofit = "2.9.0"
-moshi = "1.15.1"
-compose = "1.7.0"
-compose-m3 = "1.3.0"
-compose-m3-adaptive = "1.0.0"
-compose-navigation = "2.8.0"
-compose-runtime = "2.8.5"
+kotlin = "2.2.0"
+room = "2.7.2"
+retrofit = "3.0.0"
+moshi = "1.15.2"
+compose = "1.8.3"
+compose-m3 = "1.3.2"
+compose-m3-adaptive = "1.1.0"
+compose-navigation = "2.9.3"
+compose-runtime = "2.9.2"
 accompanist = "0.36.0"
-hilt = "2.52"
+hilt = "2.57"
 hilt-navigation = "1.2.0"
-jupiter = "5.10.1"
-mockk = "1.13.11"
-turbine = "1.1.0"
-kotlin-coroutines = "1.8.1"
-google-services = "4.4.2"
+jupiter = "5.13.4"
+mockk = "1.14.5"
+turbine = "1.2.1"
+kotlin-coroutines = "1.10.2"
+google-services = "4.4.3"
 gradle = "8.11.1"
-ksp = "2.0.20-1.0.24"
-work-runtime-ktx = "2.9.0"
+ksp = "2.2.0-2.0.2"
+work-runtime-ktx = "2.10.3"
 work-hilt = "1.2.0"
+app-compat = "1.7.1"
+ok-http = "5.1.0"
 
 [libraries]
 kotlin-gradle-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
 kotlin-android-extensions = { group = "org.jetbrains.kotlin", name = "kotlin-android-extensions", version.ref = "kotlin" }
 
-androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version = "1.7.0" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "app-compat" }
 
 androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
 androidx-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
@@ -41,9 +43,6 @@ androidx-compose-runtime = { group = "androidx.lifecycle", name = "lifecycle-run
 androidx-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling", version.ref = "compose" }
 androidx-compose-ui-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest", version.ref = "compose" }
 
-androidx-hilt = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hilt-navigation" }
-
-androidx-accompanist-systemuicontrol = { group = "com.google.accompanist", name = "accompanist-systemuicontroller", version.ref = "accompanist" }
 androidx-accompanist-webview = { group = "com.google.accompanist", name = "accompanist-webview", version.ref = "accompanist" }
 androidx-accompanist-permissions = { group = "com.google.accompanist", name = "accompanist-permissions", version.ref = "accompanist" }
 
@@ -52,7 +51,7 @@ androidx-work-manager-hilt = { group = "androidx.hilt", name = "hilt-work", vers
 
 kotlinx-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "kotlin-coroutines" }
 
-retrofit-okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version = "4.12.0" }
+retrofit-okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "ok-http" }
 retrofit-convertor-gson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofit" }
 retrofit-lib = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
 retrofit-moshi-kotlin = { group = "com.squareup.moshi", name = "moshi", version.ref = "moshi" }
@@ -73,7 +72,7 @@ google-tools-gradle = { group = "com.android.tools.build", name = "gradle", vers
 
 [plugins]
 com-google-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
-com-google-dagger-hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "dagger-hilt" }
+com-google-dagger-hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 org-jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 org-jetbrains-compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 
@@ -98,7 +97,6 @@ androidx-compose-tooling = [
 ]
 
 androidx-accompainst = [
-    "androidx-accompanist-systemuicontrol",
     "androidx-accompanist-webview",
     "androidx-accompanist-permissions"
 ]

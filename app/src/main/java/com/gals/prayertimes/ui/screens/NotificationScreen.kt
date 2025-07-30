@@ -169,7 +169,8 @@ internal fun NotificationScreen(
                                     }
                                 try {
                                     context.startActivity(intent)
-                                }  catch (_: Exception) { /* no-op */ }
+                                } catch (_: Exception) { /* no-op */
+                                }
                             }
                         )
                     }

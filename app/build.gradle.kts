@@ -1,6 +1,5 @@
 plugins {
     id("com.android.application")
-    id("org.jetbrains.kotlin.plugin.compose")
     alias(libs.plugins.com.google.dagger.hilt.android)
     alias(libs.plugins.org.jetbrains.kotlin.android)
     alias(libs.plugins.org.jetbrains.compose.compiler)
@@ -49,11 +48,9 @@ android {
         dependenciesInfo { includeInApk = false }
     }
 
-    kotlinOptions { jvmTarget = "17" }
-
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
 
     testOptions {
@@ -64,6 +61,10 @@ android {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
+    }
+
+    kotlin{
+        jvmToolchain(21)
     }
 
     dependencies {
@@ -91,8 +92,7 @@ android {
         implementation(libs.bundles.androidx.work.manager)
 
         //Hilt
-        implementation(libs.google.dagger.hilt)
-        implementation(libs.androidx.hilt)
+        implementation(libs.bundles.hilt)
         ksp(libs.google.dagger.hilt.compiler)
 
         //Test
