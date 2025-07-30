@@ -24,9 +24,6 @@ app-compat = "1.7.1"
 ok-http = "5.1.0"
 
 [libraries]
-kotlin-gradle-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
-kotlin-android-extensions = { group = "org.jetbrains.kotlin", name = "kotlin-android-extensions", version.ref = "kotlin" }
-
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "app-compat" }
 
 androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }

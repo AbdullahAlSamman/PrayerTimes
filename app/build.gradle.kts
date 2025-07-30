@@ -63,7 +63,7 @@ android {
         }
     }
 
-    kotlin{
+    kotlin {
         jvmToolchain(21)
     }
 
@@ -81,7 +81,6 @@ android {
         //Room
         implementation(libs.bundles.androidx.room)
         ksp(libs.androidx.room.compiler)
-        annotationProcessor(libs.androidx.room.compiler)
 
         //Compose
         implementation(libs.bundles.androidx.compose)
@@ -97,6 +96,5 @@ android {
 
         //Test
         testImplementation(libs.bundles.unit.test)
-
     }
 }
