@@ -92,7 +92,7 @@ class NotificationScreenViewModel @Inject constructor(
         _uiSelectedPrayerAlarms.update { oldMap -> oldMap + (prayerName to isSelected) }
     }
 
-    fun requestAlarmPermission() {
+    fun requestExactAlarmPermission() {
         saveRequestedPermission()
         alarmManager.requestPermission()
     }

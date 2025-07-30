@@ -10,3 +10,4 @@ val Int.nonScaledSp
     get() = (this / LocalDensity.current.fontScale).sp
 
 val upAPILevel31: Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
+val upAPILevel33: Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU

@@ -1,5 +1,8 @@
 package com.gals.prayertimes.ui.screens
 
+import android.content.Intent
+import android.net.Uri
+import android.provider.Settings
 import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
@@ -20,8 +23,11 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -40,10 +46,16 @@ import com.gals.prayertimes.ui.components.PrayerNotificationItem
 import com.gals.prayertimes.ui.components.RadioButtonItem
 import com.gals.prayertimes.ui.theme.PrayerTypography
 import com.gals.prayertimes.utils.upAPILevel31
+import com.gals.prayertimes.utils.upAPILevel33
 import com.gals.prayertimes.viewmodel.NotificationScreenViewModel
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.PermissionState
+import com.google.accompanist.permissions.isGranted
+import com.google.accompanist.permissions.rememberPermissionState
+import com.google.accompanist.permissions.shouldShowRationale
 
 @Composable
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalPermissionsApi::class)
 internal fun NotificationScreen(
     modifier: Modifier = Modifier,
     onBackClicked: () -> Unit,
@@ -75,11 +87,12 @@ internal fun NotificationScreen(
         },
         content = { innerPadding ->
             val lifecycleState by LocalLifecycleOwner.current.lifecycle.currentStateFlow.collectAsState()
+            val context = LocalContext.current
 
             val uiSelectedRadio by viewModel.uiSelectedRadio.collectAsState()
             val uiSwitchState by viewModel.uiSwitchState.collectAsState()
             val uiPrayerSwitches by viewModel.uiSelectedPrayerAlarms.collectAsState()
-            val uiPermissionDialog by viewModel.uiPermissionState.collectAsState()
+            val uiAlarmPermissionDialog by viewModel.uiPermissionState.collectAsState()
 
             val isRadioItemSelected: (NotificationType) -> Boolean = { uiSelectedRadio == it }
             val onRadioSelectionChanged: (NotificationType) -> Unit =
@@ -87,6 +100,12 @@ internal fun NotificationScreen(
             val onSwitchSelectionChanged: (Boolean) -> Unit = { viewModel.updateSwitchState(it) }
             val onAlarmSelectionChanged: (PrayerName, Boolean) -> Unit =
                 { name, value -> viewModel.updateSelectedAlarms(name, value) }
+            val showRationaleDialog = remember { mutableStateOf(false) }
+            val showGoToSettingsDialog = remember { mutableStateOf(false) }
+
+            val notificationPermissionState: PermissionState? = if (upAPILevel33) {
+                rememberPermissionState(android.Manifest.permission.POST_NOTIFICATIONS)
+            } else null
 
             BackHandler {
                 viewModel.submitChanges()
@@ -94,11 +113,11 @@ internal fun NotificationScreen(
             }
 
             CompositionLocalProvider(LocalLayoutDirection.provides(LayoutDirection.Rtl)) {
-                when (uiPermissionDialog) {
+                when (uiAlarmPermissionDialog) {
                     UiPermissionState.REQUESTED -> {
-                        ShowMissingPermissionDialog(
+                        ShowExactAlarmPermissionDialog(
                             updatePermissionState = viewModel::updatePermissionState,
-                            requestPermission = viewModel::requestAlarmPermission
+                            requestPermission = viewModel::requestExactAlarmPermission
                         )
                     }
 
@@ -106,8 +125,48 @@ internal fun NotificationScreen(
                         ShowPermissionDeniedDialog(viewModel::updatePermissionState)
                     }
 
-
                     else -> {/* no-op */
+                    }
+                }
+
+                notificationPermissionState?.let { permissionState ->
+                    LaunchedEffect(permissionState.status, lifecycleState) {
+                        if (lifecycleState == Lifecycle.State.RESUMED && !permissionState.status.isGranted) {
+                            if (permissionState.status.shouldShowRationale) {
+                                showGoToSettingsDialog.value = false
+                                showRationaleDialog.value = true
+                            } else {
+                                showRationaleDialog.value = false
+                                showGoToSettingsDialog.value = true
+                            }
+                        } else if (permissionState.status.isGranted) {
+                            showRationaleDialog.value = false
+                            showGoToSettingsDialog.value = false
+                        }
+                    }
+
+                    if (showRationaleDialog.value) {
+                        ShowNotificationPermissionDialog(
+                            requestPermission = {
+                                permissionState.launchPermissionRequest()
+                                showRationaleDialog.value = false
+                            },
+                            onDismissRequest = {
+                                showRationaleDialog.value = false
+                            }
+                        )
+                    }
+
+                    if (showGoToSettingsDialog.value) {
+                        ShowPermissionPermanentlyDeniedDialog(
+                            onDismissRequest = { showGoToSettingsDialog.value = false },
+                            onGoToSettingsClicked = {
+                                showGoToSettingsDialog.value = false
+                                val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                                intent.data = Uri.fromParts("package", context.packageName, null)
+                                context.startActivity(intent)
+                            }
+                        )
                     }
                 }
 
@@ -191,13 +250,14 @@ internal fun NotificationScreen(
 }
 
 @Composable
-private fun ShowMissingPermissionDialog(
+private fun ShowExactAlarmPermissionDialog(
     updatePermissionState: (UiPermissionState) -> Unit,
-    requestPermission: () -> Unit
+    requestPermission: () -> Unit,
+    dismissPermission: () -> Unit = { updatePermissionState(UiPermissionState.DENIED) }
 ) {
     AlertDialog(
-        title = { Text(text = stringResource(id = R.string.text_notification_permission_dialog_title)) },
-        text = { Text(text = stringResource(id = R.string.text_notification_permission_dialog_message)) },
+        title = { Text(text = stringResource(id = R.string.text_notification_alarm_permission_dialog_title)) },
+        text = { Text(text = stringResource(id = R.string.text_notification_alarm_permission_dialog_message)) },
         confirmButton = {
             TextButton(
                 onClick = {
@@ -209,20 +269,44 @@ private fun ShowMissingPermissionDialog(
         },
         dismissButton = {
             TextButton(
-                onClick = { updatePermissionState(UiPermissionState.DENIED) }
+                onClick = dismissPermission
             ) {
                 Text(text = stringResource(id = R.string.text_notification_permission_dialog_dismiss))
             }
         },
-        onDismissRequest = { updatePermissionState(UiPermissionState.DENIED) }
+        onDismissRequest = dismissPermission
+    )
+}
+
+@Composable
+private fun ShowNotificationPermissionDialog(
+    requestPermission: () -> Unit,
+    onDismissRequest: () -> Unit
+) {
+    AlertDialog(
+        title = { Text(text = stringResource(id = R.string.text_notification_permission_dialog_title)) },
+        text = { Text(text = stringResource(id = R.string.text_notification_alarm_permission_dialog_message)) },
+        confirmButton = {
+            TextButton(onClick = { requestPermission() }) {
+                Text(text = stringResource(id = R.string.text_notification_permission_dialog_confirm))
+            }
+        },
+        dismissButton = {
+            TextButton(
+                onClick = onDismissRequest
+            ) {
+                Text(text = stringResource(id = R.string.text_notification_permission_dialog_dismiss))
+            }
+        },
+        onDismissRequest = onDismissRequest
     )
 }
 
 @Composable
 private fun ShowPermissionDeniedDialog(updatePermissionState: (UiPermissionState) -> Unit) {
     AlertDialog(
-        title = { Text(text = stringResource(id = R.string.text_notification_permission_dialog_denied_title)) },
-        text = { Text(text = stringResource(id = R.string.text_notification_permission_dialog_denied_message)) },
+        title = { Text(text = stringResource(id = R.string.text_notification_alarm_permission_dialog_denied_title)) },
+        text = { Text(text = stringResource(id = R.string.text_notification_alarm_permission_dialog_denied_message)) },
         confirmButton = {},
         dismissButton = {
             TextButton(
@@ -232,5 +316,27 @@ private fun ShowPermissionDeniedDialog(updatePermissionState: (UiPermissionState
             }
         },
         onDismissRequest = { updatePermissionState(UiPermissionState.NOT_REQUESTED) }
+    )
+}
+
+@Composable
+private fun ShowPermissionPermanentlyDeniedDialog(
+    onDismissRequest: () -> Unit,
+    onGoToSettingsClicked: () -> Unit
+) {
+    AlertDialog(
+        title = { Text(text = stringResource(id = R.string.text_notification_permission_denied_title)) },
+        text = { Text(text = stringResource(id = R.string.text_notification_permission_denied_message)) },
+        confirmButton = {
+            TextButton(onClick = onGoToSettingsClicked) {
+                Text(text = stringResource(id = R.string.text_notification_permission_go_to_settings))
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismissRequest) {
+                Text(text = stringResource(id = R.string.text_notification_permission_dialog_dismiss))
+            }
+        },
+        onDismissRequest = onDismissRequest
     )
 }
