@@ -1,7 +1,6 @@
 package com.gals.prayertimes.ui.screens
 
 import android.content.Intent
-import android.net.Uri
 import android.provider.Settings
 import android.util.Log
 import androidx.activity.compose.BackHandler
@@ -153,6 +152,7 @@ internal fun NotificationScreen(
                             },
                             onDismissRequest = {
                                 showRationaleDialog.value = false
+                                showGoToSettingsDialog.value = true
                             }
                         )
                     }
@@ -162,9 +162,14 @@ internal fun NotificationScreen(
                             onDismissRequest = { showGoToSettingsDialog.value = false },
                             onGoToSettingsClicked = {
                                 showGoToSettingsDialog.value = false
-                                val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-                                intent.data = Uri.fromParts("package", context.packageName, null)
-                                context.startActivity(intent)
+                                val intent = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
+                                    .apply {
+                                        putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName)
+                                        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                    }
+                                try {
+                                    context.startActivity(intent)
+                                }  catch (_: Exception) { /* no-op */ }
                             }
                         )
                     }
