@@ -15,7 +15,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import com.gals.prayertimes.model.UiDate
 import com.gals.prayertimes.model.UiNextPrayer
-import com.gals.prayertimes.repository.remote.model.PrayerNameResponse
+import com.gals.prayertimes.model.UiPrayerName
 import com.gals.prayertimes.ui.components.PrayerDateBar
 import com.gals.prayertimes.ui.components.PrayerHeader
 import com.gals.prayertimes.ui.components.PrayerSingleView
@@ -23,7 +23,7 @@ import com.gals.prayertimes.ui.components.PrayerSingleView
 @Composable
 internal fun PrayerPortraitScreen(
     innerPadding: PaddingValues,
-    prayers: Map<PrayerNameResponse, String>,
+    prayers: Map<UiPrayerName, String>,
     uiNextPrayer: UiNextPrayer,
     uiDate: UiDate,
     onSettingsClicked: () -> Unit

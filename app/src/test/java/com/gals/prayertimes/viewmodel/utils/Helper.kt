@@ -3,8 +3,8 @@ package com.gals.prayertimes.viewmodel.utils
 import com.gals.prayertimes.model.NextPrayerConfig
 import com.gals.prayertimes.model.UiDate
 import com.gals.prayertimes.model.UiPrayer
+import com.gals.prayertimes.model.UiPrayerName
 import com.gals.prayertimes.repository.local.entities.PrayerEntity
-import com.gals.prayertimes.repository.remote.model.PrayerNameResponse
 
 const val errorMessage = "errorMessage"
 const val anyString = "anyString"
@@ -35,11 +35,11 @@ val testUiPrayer = UiPrayer(
         sunDate = dateString
     ),
     prayers = mapOf(
-        PrayerNameResponse.FAJER to "04:00",
-        PrayerNameResponse.SUNRISE to "06:00",
-        PrayerNameResponse.DUHR to "13:00",
-        PrayerNameResponse.ASR to "16:00",
-        PrayerNameResponse.MAGHRIB to "20:00",
-        PrayerNameResponse.ISHA to "22:00"
+        UiPrayerName.FAJER to "04:00",
+        UiPrayerName.SUNRISE to "06:00",
+        UiPrayerName.DUHR to "13:00",
+        UiPrayerName.ASR to "16:00",
+        UiPrayerName.MAGHRIB to "20:00",
+        UiPrayerName.ISHA to "22:00"
     )
 )

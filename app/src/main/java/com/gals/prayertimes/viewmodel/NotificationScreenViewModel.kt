@@ -8,7 +8,7 @@ import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import com.gals.prayertimes.model.NotificationType
-import com.gals.prayertimes.model.PrayerName
+import com.gals.prayertimes.model.UiPrayerName
 import com.gals.prayertimes.model.UiPermissionState
 import com.gals.prayertimes.model.mappers.getTimePrayerByName
 import com.gals.prayertimes.model.mappers.toTimePrayer
@@ -42,13 +42,13 @@ class NotificationScreenViewModel @Inject constructor(
     private val _uiSelectedRadio = MutableStateFlow(NotificationType.SILENT)
     private val _uiSwitchState = MutableStateFlow(false)
     private val _uiSelectedPrayerAlarms =
-        MutableStateFlow(PrayerName.entries.associateWith { it != PrayerName.SUNRISE })
+        MutableStateFlow(UiPrayerName.entries.associateWith { it != UiPrayerName.SUNRISE })
     private val _uiPermissionState = MutableStateFlow(getPendingPermission())
 
     val uiSelectedRadio: StateFlow<NotificationType> = _uiSelectedRadio.asStateFlow()
     val uiSwitchState: StateFlow<Boolean> = _uiSwitchState.asStateFlow()
     val uiPermissionState: StateFlow<UiPermissionState> = _uiPermissionState.asStateFlow()
-    val uiSelectedPrayerAlarms: StateFlow<Map<PrayerName, Boolean>> =
+    val uiSelectedPrayerAlarms: StateFlow<Map<UiPrayerName, Boolean>> =
         _uiSelectedPrayerAlarms.asStateFlow()
 
     init {
@@ -77,18 +77,18 @@ class NotificationScreenViewModel @Inject constructor(
     }
 
     fun updateSwitchState(value: Boolean) {
-        if (value) { // Turning ON
+        if (value) {
             if (alarmManager.canScheduleAlarms()) {
                 _uiSwitchState.update { true }
             } else {
                 _uiPermissionState.update { UiPermissionState.REQUESTED }
             }
-        } else { // Turning OFF
+        } else {
             _uiSwitchState.update { false }
         }
     }
 
-    fun updateSelectedAlarms(prayerName: PrayerName, isSelected: Boolean) {
+    fun updateSelectedAlarms(prayerName: UiPrayerName, isSelected: Boolean) {
         _uiSelectedPrayerAlarms.update { oldMap -> oldMap + (prayerName to isSelected) }
     }
 
@@ -105,12 +105,12 @@ class NotificationScreenViewModel @Inject constructor(
         val currentSettings = SettingsEntity(
             notification = _uiSwitchState.value,
             notificationType = uiSelectedRadio.value,
-            fajerNotification = _uiSelectedPrayerAlarms.value[PrayerName.FAJER] == true,
-            sunriseNotification = _uiSelectedPrayerAlarms.value[PrayerName.SUNRISE] == true,
-            duhrNotification = _uiSelectedPrayerAlarms.value[PrayerName.DUHR] == true,
-            asrNotification = _uiSelectedPrayerAlarms.value[PrayerName.ASR] == true,
-            maghribNotification = _uiSelectedPrayerAlarms.value[PrayerName.MAGRIB] == true,
-            ishaNotification = _uiSelectedPrayerAlarms.value[PrayerName.ISHA] == true
+            fajerNotification = _uiSelectedPrayerAlarms.value[UiPrayerName.FAJER] == true,
+            sunriseNotification = _uiSelectedPrayerAlarms.value[UiPrayerName.SUNRISE] == true,
+            duhrNotification = _uiSelectedPrayerAlarms.value[UiPrayerName.DUHR] == true,
+            asrNotification = _uiSelectedPrayerAlarms.value[UiPrayerName.ASR] == true,
+            maghribNotification = _uiSelectedPrayerAlarms.value[UiPrayerName.MAGHRIB] == true,
+            ishaNotification = _uiSelectedPrayerAlarms.value[UiPrayerName.ISHA] == true
         )
         updateSettings(currentSettings)
 
@@ -165,7 +165,7 @@ class NotificationScreenViewModel @Inject constructor(
 
     private suspend fun cancelAllPrayerAlarms() {
         val timePrayer = repository.getPrayer(todayDate()).toTimePrayer()
-        PrayerName.entries.forEach { prayerName ->
+        UiPrayerName.entries.forEach { prayerName ->
             val prayer = prayerCalculation.getNextPrayerLocalTime(
                 timePrayer.getTimePrayerByName(prayerName)
             )

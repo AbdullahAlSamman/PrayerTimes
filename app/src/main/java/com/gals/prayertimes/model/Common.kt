@@ -3,17 +3,17 @@ package com.gals.prayertimes.model
 import com.gals.prayertimes.model.mappers.setHoursMinutes
 import java.util.Calendar
 
-enum class PrayerName {
+enum class UiPrayerName {
     FAJER,
     SUNRISE,
     DUHR,
     ASR,
-    MAGRIB,
+    MAGHRIB,
     ISHA;
 
-    companion object {
-        fun fromString(value: String?): PrayerName =
-            PrayerName.entries.find { it.name == value } ?: ISHA
+    companion object Companion {
+        fun fromString(value: String?): UiPrayerName =
+            UiPrayerName.entries.find { it.name == value } ?: ISHA
     }
 }
 

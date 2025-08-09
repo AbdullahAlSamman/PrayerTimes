@@ -15,20 +15,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.gals.prayertimes.model.UiPrayerName
 import com.gals.prayertimes.model.mappers.mapPrayerColor
 import com.gals.prayertimes.model.mappers.mapPrayerName
-import com.gals.prayertimes.repository.remote.model.PrayerNameResponse
 import com.gals.prayertimes.ui.theme.DarkTextStyle
 import com.gals.prayertimes.utils.isPhoneInLandscape
 import com.gals.prayertimes.utils.isTablet
 import com.gals.prayertimes.utils.isTabletInPortrait
 import com.gals.prayertimes.utils.nonScaledSp
 
-/** Show single prayer with settings*/
+
 @Composable
 fun PrayerSingleView(
     modifier: Modifier = Modifier,
-    prayer: Map.Entry<PrayerNameResponse, String>,
+    prayer: Map.Entry<UiPrayerName, String>,
     textStyle: TextStyle = if (isTablet()) {
         DarkTextStyle.copy(fontSize = 32.nonScaledSp)
     } else {
@@ -37,7 +37,7 @@ fun PrayerSingleView(
 ) {
     Column(
         modifier = modifier
-            .defaultMinSize(minHeight = if(isTabletInPortrait()) 160.dp else 120.dp)
+            .defaultMinSize(minHeight = if (isTabletInPortrait()) 160.dp else 120.dp)
             .fillMaxWidth()
             .padding(start = 2.dp, end = 2.dp)
             .background(

@@ -33,7 +33,7 @@ class PrayerCalculation @Inject constructor(
         } catch (e: java.lang.Exception) {
             e.printStackTrace()
         }
-        return true // to trigger an Update when the date is not determined
+        return true
     }
 
     fun calculateNextPrayerInfo(currentPrayer: TimePrayer, moonDate: String?): NextPrayerConfig {

@@ -4,12 +4,11 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.Color
-import com.gals.prayertimes.repository.remote.model.PrayerNameResponse
 
 @Immutable
 data class UiPrayer(
     var uiDate: UiDate = UiDate(),
-    var prayers: Map<PrayerNameResponse, String> = emptyMap()
+    var prayers: Map<UiPrayerName, String> = emptyMap()
 )
 
 data class UiNextPrayer(

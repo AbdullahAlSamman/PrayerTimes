@@ -9,7 +9,7 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import com.gals.prayertimes.model.NotificationType
-import com.gals.prayertimes.model.PrayerName
+import com.gals.prayertimes.model.UiPrayerName
 import com.gals.prayertimes.model.TimePrayer
 import com.gals.prayertimes.model.mappers.getTimePrayerByName
 import com.gals.prayertimes.model.mappers.toTimePrayer
@@ -53,7 +53,7 @@ class AlarmWorker @AssistedInject constructor(
     private fun scheduleUpcomingAlarms(
         timePrayers: TimePrayer,
         notificationType: NotificationType,
-        selectedPrayerNotifications: Map<PrayerName, Boolean>
+        selectedPrayerNotifications: Map<UiPrayerName, Boolean>
     ) {
         selectedPrayerNotifications.forEach { prayerName, isEnabled ->
             val prayer = prayerCalculation.getNextPrayerLocalTime(

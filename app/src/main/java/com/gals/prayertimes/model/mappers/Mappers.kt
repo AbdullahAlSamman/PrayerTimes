@@ -1,18 +1,16 @@
 package com.gals.prayertimes.model.mappers
 
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import com.gals.prayertimes.R
 import com.gals.prayertimes.model.NextPrayerConfig
 import com.gals.prayertimes.model.NotificationType
-import com.gals.prayertimes.model.PrayerName
 import com.gals.prayertimes.model.TimePrayer
 import com.gals.prayertimes.model.UiDate
 import com.gals.prayertimes.model.UiNextPrayer
 import com.gals.prayertimes.model.UiPrayer
+import com.gals.prayertimes.model.UiPrayerName
 import com.gals.prayertimes.repository.local.entities.PrayerEntity
 import com.gals.prayertimes.repository.remote.model.PrayerNameResponse
 import com.gals.prayertimes.repository.remote.model.PrayersResponse
@@ -39,12 +37,12 @@ fun PrayerEntity.toPrayer(resourceProvider: ResourceProvider, formatter: Formatt
             sunDate = formatter.formatDateText(this.sDate, true)
         ),
         prayers = mapOf(
-            PrayerNameResponse.FAJER to this.fajer,
-            PrayerNameResponse.SUNRISE to this.sunrise,
-            PrayerNameResponse.DUHR to this.duhr,
-            PrayerNameResponse.ASR to this.asr,
-            PrayerNameResponse.MAGHRIB to this.maghrib,
-            PrayerNameResponse.ISHA to this.isha
+            UiPrayerName.FAJER to this.fajer,
+            UiPrayerName.SUNRISE to this.sunrise,
+            UiPrayerName.DUHR to this.duhr,
+            UiPrayerName.ASR to this.asr,
+            UiPrayerName.MAGHRIB to this.maghrib,
+            UiPrayerName.ISHA to this.isha
         )
     )
 
@@ -164,71 +162,59 @@ fun NextPrayerConfig.toUiNextPrayer(): UiNextPrayer =
     )
 
 fun TimePrayer.getTimePrayerByName(
-    prayerName: PrayerName
+    prayerName: UiPrayerName
 ): Calendar = when (prayerName) {
-    PrayerName.FAJER -> fajer
-    PrayerName.SUNRISE -> sunrise
-    PrayerName.DUHR -> duhr
-    PrayerName.ASR -> asr
-    PrayerName.MAGRIB -> maghrib
-    PrayerName.ISHA -> isha
+    UiPrayerName.FAJER -> fajer
+    UiPrayerName.SUNRISE -> sunrise
+    UiPrayerName.DUHR -> duhr
+    UiPrayerName.ASR -> asr
+    UiPrayerName.MAGHRIB -> maghrib
+    UiPrayerName.ISHA -> isha
 }
 
-fun PrayerName.getStringId(): Int =
+fun UiPrayerName.getStringId(): Int =
     when (this) {
-        PrayerName.FAJER -> R.string.text_prayer_fajer
-        PrayerName.SUNRISE -> R.string.text_prayer_sunrise
-        PrayerName.DUHR -> R.string.text_prayer_duhr
-        PrayerName.ASR -> R.string.text_prayer_asr
-        PrayerName.MAGRIB -> R.string.text_prayer_maghrib
-        PrayerName.ISHA -> R.string.text_prayer_isha
+        UiPrayerName.FAJER -> R.string.text_prayer_fajer
+        UiPrayerName.SUNRISE -> R.string.text_prayer_sunrise
+        UiPrayerName.DUHR -> R.string.text_prayer_duhr
+        UiPrayerName.ASR -> R.string.text_prayer_asr
+        UiPrayerName.MAGHRIB -> R.string.text_prayer_maghrib
+        UiPrayerName.ISHA -> R.string.text_prayer_isha
     }
 
 fun PrayerAlarmItem.toAlarmItem(): AlarmItem =
     AlarmItem(time = time, prayer = prayer)
 
 @Composable
-fun mapPrayerColor(prayer: PrayerNameResponse): Color =
+fun mapPrayerColor(prayer: UiPrayerName): Color =
     when (prayer) {
-        PrayerNameResponse.FAJER -> colorBackgroundFajer
-        PrayerNameResponse.SUNRISE -> colorBackgroundSunrise
-        PrayerNameResponse.DUHR -> colorBackgroundDuhr
-        PrayerNameResponse.ASR -> colorBackgroundAsr
-        PrayerNameResponse.MAGHRIB -> colorBackgroundMaghrib
-        PrayerNameResponse.ISHA -> colorBackgroundIsha
-        PrayerNameResponse.UNKNOWN -> colorBackgroundFajer
+        UiPrayerName.FAJER -> colorBackgroundFajer
+        UiPrayerName.SUNRISE -> colorBackgroundSunrise
+        UiPrayerName.DUHR -> colorBackgroundDuhr
+        UiPrayerName.ASR -> colorBackgroundAsr
+        UiPrayerName.MAGHRIB -> colorBackgroundMaghrib
+        UiPrayerName.ISHA -> colorBackgroundIsha
     }
 
 @Composable
-fun mapPrayerName(prayerName: PrayerNameResponse): String =
+fun mapPrayerName(prayerName: UiPrayerName): String =
     when (prayerName) {
-        PrayerNameResponse.FAJER -> stringResource(id = R.string.text_prayer_fajer)
-        PrayerNameResponse.SUNRISE -> stringResource(id = R.string.text_prayer_sunrise)
-        PrayerNameResponse.DUHR -> stringResource(id = R.string.text_prayer_duhr)
-        PrayerNameResponse.ASR -> stringResource(id = R.string.text_prayer_asr)
-        PrayerNameResponse.MAGHRIB -> stringResource(id = R.string.text_prayer_maghrib)
-        PrayerNameResponse.ISHA -> stringResource(id = R.string.text_prayer_isha)
-        PrayerNameResponse.UNKNOWN -> stringResource(id = R.string.text_prayer_isha)
+        UiPrayerName.FAJER -> stringResource(id = R.string.text_prayer_fajer)
+        UiPrayerName.SUNRISE -> stringResource(id = R.string.text_prayer_sunrise)
+        UiPrayerName.DUHR -> stringResource(id = R.string.text_prayer_duhr)
+        UiPrayerName.ASR -> stringResource(id = R.string.text_prayer_asr)
+        UiPrayerName.MAGHRIB -> stringResource(id = R.string.text_prayer_maghrib)
+        UiPrayerName.ISHA -> stringResource(id = R.string.text_prayer_isha)
     }
 
 @Composable
-fun mapUiPrayerName(prayerName: PrayerName): String = when (prayerName) {
-    PrayerName.FAJER -> stringResource(id = R.string.text_prayer_fajer)
-    PrayerName.SUNRISE -> stringResource(id = R.string.text_prayer_sunrise)
-    PrayerName.DUHR -> stringResource(id = R.string.text_prayer_duhr)
-    PrayerName.ASR -> stringResource(id = R.string.text_prayer_asr)
-    PrayerName.MAGRIB -> stringResource(id = R.string.text_prayer_maghrib)
-    PrayerName.ISHA -> stringResource(id = R.string.text_prayer_isha)
-}
-
-@Composable
-fun mapStatusBarColors(): Pair<Color, Boolean> {
-    val color = if (isSystemInDarkTheme()) {
-        colorResource(id = R.color.background_color_time_isha)
-    } else {
-        colorResource(id = R.color.background_color_time_fajer)
-    }
-    return (color to isSystemInDarkTheme())
+fun mapUiPrayerName(prayerName: UiPrayerName): String = when (prayerName) {
+    UiPrayerName.FAJER -> stringResource(id = R.string.text_prayer_fajer)
+    UiPrayerName.SUNRISE -> stringResource(id = R.string.text_prayer_sunrise)
+    UiPrayerName.DUHR -> stringResource(id = R.string.text_prayer_duhr)
+    UiPrayerName.ASR -> stringResource(id = R.string.text_prayer_asr)
+    UiPrayerName.MAGHRIB -> stringResource(id = R.string.text_prayer_maghrib)
+    UiPrayerName.ISHA -> stringResource(id = R.string.text_prayer_isha)
 }
 
 @Composable

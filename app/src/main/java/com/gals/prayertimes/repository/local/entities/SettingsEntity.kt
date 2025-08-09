@@ -4,7 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.gals.prayertimes.model.NotificationType
-import com.gals.prayertimes.model.PrayerName
+import com.gals.prayertimes.model.UiPrayerName
 
 @Entity(tableName = "settings")
 data class SettingsEntity(
@@ -28,15 +28,15 @@ data class SettingsEntity(
     var ishaNotification: Boolean = true
 ) {
     companion object {
-        fun SettingsEntity.toPrayerNotification(): Map<PrayerName, Boolean> =
-            PrayerName.entries.associateWith {
+        fun SettingsEntity.toPrayerNotification(): Map<UiPrayerName, Boolean> =
+            UiPrayerName.entries.associateWith {
                 when (it) {
-                    PrayerName.FAJER -> fajerNotification
-                    PrayerName.SUNRISE -> sunriseNotification
-                    PrayerName.DUHR -> duhrNotification
-                    PrayerName.ASR -> asrNotification
-                    PrayerName.MAGRIB -> maghribNotification
-                    PrayerName.ISHA -> ishaNotification
+                    UiPrayerName.FAJER -> fajerNotification
+                    UiPrayerName.SUNRISE -> sunriseNotification
+                    UiPrayerName.DUHR -> duhrNotification
+                    UiPrayerName.ASR -> asrNotification
+                    UiPrayerName.MAGHRIB -> maghribNotification
+                    UiPrayerName.ISHA -> ishaNotification
                 }
             }
     }

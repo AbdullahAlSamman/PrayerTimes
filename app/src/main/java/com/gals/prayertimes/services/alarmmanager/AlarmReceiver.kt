@@ -4,12 +4,12 @@ import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.util.Log
 import com.gals.prayertimes.model.NotificationType
-import com.gals.prayertimes.model.PrayerName
+import com.gals.prayertimes.model.UiPrayerName
 import com.gals.prayertimes.services.notificationmanager.NotificationManager
 import com.gals.prayertimes.utils.SystemUtils
+import com.gals.prayertimes.utils.upAPILevel31
 import com.gals.prayertimes.view.MainActivity
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -29,7 +29,7 @@ class AlarmReceiver : BroadcastReceiver() {
             val notificationType =
                 NotificationType.fromString(intent?.getStringExtra(INTENT_EXTRA_NOTIFICATION_TYPE))
             val prayerName =
-                PrayerName.fromString(intent?.getStringExtra(INTENT_EXTRA_NOTIFICATION_PRAYER))
+                UiPrayerName.fromString(intent?.getStringExtra(INTENT_EXTRA_NOTIFICATION_PRAYER))
 
             Log.i("ngz_notification", "Alarm received for: $prayerName, type: $notificationType")
 
@@ -39,7 +39,7 @@ class AlarmReceiver : BroadcastReceiver() {
                 context,
                 prayerName.hashCode(),
                 intent,
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
+                if (upAPILevel31)
                     PendingIntent.FLAG_IMMUTABLE else PendingIntent.FLAG_UPDATE_CURRENT
             )
 

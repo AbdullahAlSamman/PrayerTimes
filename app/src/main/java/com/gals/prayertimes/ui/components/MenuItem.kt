@@ -24,8 +24,8 @@ import com.gals.prayertimes.R
 import com.gals.prayertimes.model.UiMenuItem
 import com.gals.prayertimes.ui.theme.PrayerTypography
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
+@OptIn(ExperimentalComposeUiApi::class)
 fun MenuItem(
     uiMenuItem: UiMenuItem,
     textStyle: TextStyle = PrayerTypography.headlineSmall
@@ -35,7 +35,7 @@ fun MenuItem(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(all = 16.dp)
-                .clickable { uiMenuItem.navigateTo.invoke() }
+                .clickable { uiMenuItem.navigateTo() }
         )
         {
             Icon(

@@ -17,7 +17,7 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.core.net.toUri
 import com.gals.prayertimes.R
 import com.gals.prayertimes.model.NotificationType
-import com.gals.prayertimes.model.PrayerName
+import com.gals.prayertimes.model.UiPrayerName
 import com.gals.prayertimes.model.mappers.getStringId
 import com.gals.prayertimes.utils.ResourceProvider
 import com.gals.prayertimes.utils.SystemUtils
@@ -31,10 +31,9 @@ class NotificationManager @Inject constructor(
     private val utils: SystemUtils
 ) {
 
-    /*TODO: Notification permission check refactor and cleanup notification manager*/
     @RequiresPermission(Manifest.permission.POST_NOTIFICATIONS)
     fun showAlarmNotification(
-        prayer: PrayerName,
+        prayer: UiPrayerName,
         notificationType: NotificationType,
         pendingIntent: PendingIntent
     ) {
@@ -52,7 +51,7 @@ class NotificationManager @Inject constructor(
 
     private fun buildNotification(
         pendingIntent: PendingIntent,
-        prayer: PrayerName,
+        prayer: UiPrayerName,
         notificationType: NotificationType
     ): Notification {
 
@@ -103,7 +102,7 @@ class NotificationManager @Inject constructor(
         }
     }
 
-    private fun buildNotificationInfo(prayer: PrayerName): RemoteViews =
+    private fun buildNotificationInfo(prayer: UiPrayerName): RemoteViews =
         RemoteViews(
             applicationContext.packageName,
             R.layout.notification_service_alarm_remote_view
@@ -111,7 +110,7 @@ class NotificationManager @Inject constructor(
             setTextViewText(
                 R.id.notification_permanent_next_prayer_banner_text,
                 when (prayer) {
-                    PrayerName.SUNRISE -> resourceProvider.getString(R.string.text_now_time_sunrise)
+                    UiPrayerName.SUNRISE -> resourceProvider.getString(R.string.text_now_time_sunrise)
                     else -> resourceProvider.getString(R.string.text_now_prayer_time)
                 }
             )
