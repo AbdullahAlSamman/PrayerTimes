@@ -42,6 +42,13 @@ android {
                 isJniDebuggable = false
                 signingConfig = signingConfigs.getByName("release")
             }
+            debug {
+                isMinifyEnabled = false
+                isShrinkResources = false
+                isDebuggable = true
+                isJniDebuggable = true
+                applicationIdSuffix = ".debug"
+            }
         }
 
         buildFeatures { compose = true }
