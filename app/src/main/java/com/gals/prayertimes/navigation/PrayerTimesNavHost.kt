@@ -42,11 +42,6 @@ fun PrayerTimesNavHost(
                         icon = R.drawable.icon_privacy_policy,
                         title = R.string.text_settings_privacy_policy,
                         navigateTo = { navController.navigate(PrivacyPolicy.route) }
-                    ),
-                    UiMenuItem(
-                        icon = R.drawable.icon_info,
-                        title = R.string.text_settings_about_us,
-                        navigateTo = {}
                     )
                 )
             )
