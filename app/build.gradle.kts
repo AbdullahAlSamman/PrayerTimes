@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.org.jetbrains.kotlin.android)
     alias(libs.plugins.org.jetbrains.compose.compiler)
     alias(libs.plugins.com.google.ksp)
+    alias(libs.plugins.org.jetbrains.kotlin.serialization)
 }
 ksp {
     arg("room.schemaLocation", "$projectDir/schemas")

@@ -22,6 +22,7 @@ work-runtime-ktx = "2.10.3"
 work-hilt = "1.2.0"
 app-compat = "1.7.1"
 ok-http = "5.1.0"
+kotlin-serialization = "1.9.0"
 
 [libraries]
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "app-compat" }
@@ -72,6 +73,7 @@ com-google-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 com-google-dagger-hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 org-jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 org-jetbrains-compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+org-jetbrains-kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin-serialization" }
 
 [bundles]
 androidx-room = [
