@@ -21,8 +21,10 @@ class MainActivity : ComponentActivity() {
         setContent {
             CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
                 PrayerTimesTheme {
-                    val navController = rememberNavController()
-                    PrayerTimesNavHost(navController = navController, modifier = Modifier)
+                    PrayerTimesNavHost(
+                        modifier = Modifier,
+                        navController = rememberNavController()
+                    )
                 }
             }
         }

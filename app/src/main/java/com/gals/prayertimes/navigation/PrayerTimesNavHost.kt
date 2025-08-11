@@ -22,39 +22,39 @@ fun PrayerTimesNavHost(
 ) {
     NavHost(
         navController = navController,
-        startDestination = Home.route,
+        startDestination = Home,
         modifier = modifier
     ) {
-        composable(route = Home.route) {
-            MainScreen(onSettingsClicked = { navController.navigate(Menu.route) })
+        composable<Home> {
+            MainScreen(onSettingsClicked = { navController.navigate(Menu) })
         }
 
-        composable(route = Menu.route) {
+        composable<Menu> { backStackEntry ->
             SettingsMenuScreen(
                 onBackClicked = { navController.navigateUp() },
                 uiMenuItems = listOf(
                     UiMenuItem(
                         icon = R.drawable.icon_notification_active,
                         title = R.string.text_settings_notifiaction,
-                        navigateTo = { navController.navigate(Notification.route) }
+                        navigateTo = { navController.navigate(Notification) }
                     ),
                     UiMenuItem(
                         icon = R.drawable.icon_privacy_policy,
                         title = R.string.text_settings_privacy_policy,
-                        navigateTo = { navController.navigate(PrivacyPolicy.route) }
+                        navigateTo = { navController.navigate(PrivacyPolicy) }
                     )
                 )
             )
         }
 
-        composable(route = PrivacyPolicy.route) {
+        composable<PrivacyPolicy> {
             PrivacyPolicyScreen(
                 onBackClicked = { navController.navigateUp() },
                 webUri = stringResource(id = R.string.asset_url_privacy_policy)
             )
         }
 
-        composable(route = Notification.route) {
+        composable<Notification> {
             NotificationScreen(
                 modifier = Modifier.padding(horizontal = 16.dp),
                 onBackClicked = { navController.navigateUp() }
