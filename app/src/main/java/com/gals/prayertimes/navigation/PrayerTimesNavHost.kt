@@ -1,13 +1,15 @@
 package com.gals.prayertimes.navigation
 
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.gals.prayertimes.R
-import com.gals.prayertimes.model.MenuItem
+import com.gals.prayertimes.model.UiMenuItem
 import com.gals.prayertimes.ui.screens.MainScreen
 import com.gals.prayertimes.ui.screens.NotificationScreen
 import com.gals.prayertimes.ui.screens.PrivacyPolicyScreen
@@ -30,18 +32,18 @@ fun PrayerTimesNavHost(
         composable(route = Menu.route) {
             SettingsMenuScreen(
                 onBackClicked = { navController.navigateUp() },
-                menuItems = listOf(
-                    MenuItem(
+                uiMenuItems = listOf(
+                    UiMenuItem(
                         icon = R.drawable.icon_notification_active,
                         title = R.string.text_settings_notifiaction,
                         navigateTo = { navController.navigate(Notification.route) }
                     ),
-                    MenuItem(
+                    UiMenuItem(
                         icon = R.drawable.icon_privacy_policy,
                         title = R.string.text_settings_privacy_policy,
                         navigateTo = { navController.navigate(PrivacyPolicy.route) }
                     ),
-                    MenuItem(
+                    UiMenuItem(
                         icon = R.drawable.icon_info,
                         title = R.string.text_settings_about_us,
                         navigateTo = {}
@@ -59,6 +61,7 @@ fun PrayerTimesNavHost(
 
         composable(route = Notification.route) {
             NotificationScreen(
+                modifier = Modifier.padding(horizontal = 16.dp),
                 onBackClicked = { navController.navigateUp() }
             )
         }

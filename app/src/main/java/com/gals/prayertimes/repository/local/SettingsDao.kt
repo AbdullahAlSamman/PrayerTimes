@@ -4,7 +4,6 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import androidx.room.Update
 import com.gals.prayertimes.repository.local.entities.SettingsEntity
 
 /**
@@ -22,20 +21,12 @@ interface SettingsDao {
     suspend fun settingsEntity(): SettingsEntity
 
     /**
-     * Update settings into db.
-     *
-     * @param settingsEntity
-     */
-    @Update(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun update(settingsEntity: SettingsEntity)
-
-    /**
      * Insert settings into db.
      *
      * @param settingsEntity
      */
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(settingsEntity: SettingsEntity)
+    suspend fun upsert(settingsEntity: SettingsEntity)
 
     /**
      * Check if the table has rows

@@ -1,18 +1,12 @@
 package com.gals.prayertimes.repository.local
 
 import androidx.room.TypeConverter
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
+import com.gals.prayertimes.model.NotificationType
 
 object Converters {
     @TypeConverter
-    fun fromTimestamp(value: Long?): Date? = if (value == null) null else Date(value)
+    fun fromNotificationType(value: NotificationType): String = value.name
 
     @TypeConverter
-    fun stringToDate(date: String): Date? =
-        SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US).parse(date)
-
-    @TypeConverter
-    fun stringToBoolean(bool: String?): Boolean = bool.toBoolean()
+    fun toNotificationType(value: String): NotificationType = NotificationType.valueOf(value)
 }

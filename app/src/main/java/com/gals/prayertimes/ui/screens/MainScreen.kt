@@ -23,7 +23,7 @@ fun MainScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val uiNextPrayer by viewModel.nextPrayer.collectAsState()
-    
+
     Scaffold(
         contentWindowInsets = WindowInsets.safeDrawing
     ) { innerPadding ->
@@ -48,18 +48,18 @@ fun MainScreen(
                 if (isLandscape()) {
                     PrayerLandscapeScreen(
                         innerPadding = innerPadding,
-                        prayers = state.prayer.prayers,
+                        prayers = state.uiPrayer.prayers,
                         uiNextPrayer = uiNextPrayer,
-                        uiDate = state.prayer.uiDate,
+                        uiDate = state.uiPrayer.uiDate,
                         onSettingsClicked = onSettingsClicked
                     )
                     Log.i("ngz_screen", "isTablet: ${isTablet()}")
                 } else {
                     PrayerPortraitScreen(
                         innerPadding = innerPadding,
-                        prayers = state.prayer.prayers,
+                        prayers = state.uiPrayer.prayers,
                         uiNextPrayer = uiNextPrayer,
-                        uiDate = state.prayer.uiDate,
+                        uiDate = state.uiPrayer.uiDate,
                         onSettingsClicked = onSettingsClicked
                     )
                     Log.i("ngz_screen", "isTablet: ${isTablet()}")

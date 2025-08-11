@@ -1,24 +1,27 @@
 plugins {
-    id("org.jetbrains.kotlin.plugin.compose")
-    id("com.google.dagger.hilt.android")
     id("com.android.application")
-    id("kotlin-android")
-    id("kotlin-kapt")
+    alias(libs.plugins.com.google.dagger.hilt.android)
+    alias(libs.plugins.org.jetbrains.kotlin.android)
+    alias(libs.plugins.org.jetbrains.compose.compiler)
+    alias(libs.plugins.com.google.ksp)
+}
+ksp {
+    arg("room.schemaLocation", "$projectDir/schemas")
 }
 
 android {
     namespace = "com.gals.prayertimes"
-    compileSdk = 35
+    compileSdk = 36
     defaultConfig {
         applicationId = "com.gals.prayertimes"
         minSdk = 26
-        targetSdk = 35
+        targetSdk = 36
         versionName = "1.0.7"
         versionCode = 27
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         signingConfigs {
-            create("release"){
+            create("release") {
                 keyAlias = System.getenv("RELEASE_KEY_ALIAS")
                 keyPassword = System.getenv("RELEASE_KEY_PASSWORD")
                 storeFile = file("../keystore.jks")
@@ -43,19 +46,11 @@ android {
         buildFeatures { compose = true }
 
         dependenciesInfo { includeInApk = false }
-
-        javaCompileOptions {
-            annotationProcessorOptions {
-                arguments += mapOf("room.schemaLocation" to "$projectDir/schemas")
-            }
-        }
     }
 
-    kotlinOptions { jvmTarget = "17" }
-
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
 
     testOptions {
@@ -68,32 +63,38 @@ android {
         }
     }
 
+    kotlin {
+        jvmToolchain(21)
+    }
+
     dependencies {
         //Appcompat
         implementation(libs.androidx.appcompat)
 
         //Retrofit
         implementation(libs.bundles.retrofit)
-        kapt(libs.retrofit.moshi.kotlin.codegen)
+        ksp(libs.retrofit.moshi.kotlin.codegen)
 
         //Coroutines
         implementation(libs.kotlinx.coroutines)
 
         //Room
         implementation(libs.bundles.androidx.room)
-        kapt(libs.androidx.room.compiler)
-        annotationProcessor(libs.androidx.room.compiler)
+        ksp(libs.androidx.room.compiler)
 
         //Compose
         implementation(libs.bundles.androidx.compose)
         implementation(libs.bundles.androidx.accompainst)
         debugImplementation(libs.bundles.androidx.compose.tooling)
 
-        //Test
-        testImplementation(libs.bundles.unit.test)
+        //Work manager
+        implementation(libs.bundles.androidx.work.manager)
 
         //Hilt
         implementation(libs.bundles.hilt)
-        kapt(libs.google.dagger.hilt.compiler)
+        ksp(libs.google.dagger.hilt.compiler)
+
+        //Test
+        testImplementation(libs.bundles.unit.test)
     }
 }

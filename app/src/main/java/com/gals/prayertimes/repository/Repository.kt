@@ -6,13 +6,13 @@ import com.gals.prayertimes.model.IODispatcher
 import com.gals.prayertimes.model.NetworkException
 import com.gals.prayertimes.model.NotificationType
 import com.gals.prayertimes.model.ServerException
+import com.gals.prayertimes.model.mappers.toEntity
 import com.gals.prayertimes.repository.local.LocalDataSource
 import com.gals.prayertimes.repository.local.entities.PrayerEntity
 import com.gals.prayertimes.repository.local.entities.SettingsEntity
 import com.gals.prayertimes.repository.remote.RemoteDataSource
 import com.gals.prayertimes.repository.remote.model.PrayersResponse
-import com.gals.prayertimes.utils.UtilsManager
-import com.gals.prayertimes.utils.toEntity
+import com.gals.prayertimes.utils.SystemUtils
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -23,15 +23,15 @@ class Repository @Inject constructor(
     @IODispatcher private val dispatcher: CoroutineDispatcher,
     private val localDataSource: LocalDataSource,
     private val remoteDataSource: RemoteDataSource,
-    private val tools: UtilsManager,
+    private val utils: SystemUtils,
 ) {
-    fun fetchComposePrayer(todayDate: String): Flow<PrayerEntity> = flow {
+    fun fetchPrayer(todayDate: String): Flow<PrayerEntity> = flow {
         if (localDataSource.isTodayPrayerExists(todayDate)) {
-            Log.i("ngz_local_data_request", "exists locally in cache")
+            Log.i(LOG_TAG, "exists locally in cache")
             emit(localDataSource.getPrayers(todayDate))
             return@flow
         }
-        if (tools.isNetworkAvailable()) {
+        if (utils.isNetworkAvailable()) {
             val result = remoteDataSource.getPrayers(todayDate)
             if (result.isSuccessful) {
                 result.body()?.let { response ->
@@ -57,7 +57,7 @@ class Repository @Inject constructor(
             localDataSource.getSettings()
         } else {
             val settings = SettingsEntity(
-                notificationType = NotificationType.SILENT.value,
+                notificationType = NotificationType.SILENT,
                 notification = false
             )
             localDataSource.insertSettings(settings)
@@ -66,7 +66,6 @@ class Repository @Inject constructor(
 
     suspend fun saveSettings(settingsEntity: SettingsEntity) =
         localDataSource.insertSettings(settingsEntity)
-
 
     private fun checkServerError(response: PrayersResponse) {
         if (response == PrayersResponse("", "", emptyList())) {
