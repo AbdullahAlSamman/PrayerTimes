@@ -1,6 +1,5 @@
 package com.gals.prayertimes.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gals.prayertimes.R
@@ -32,6 +31,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -69,10 +69,7 @@ class MainViewModel @Inject constructor(
 
     /**update all flows related to ui*/
     private fun updateScreenStates() = try {
-        Log.i(
-            "ngz_is_day_changed",
-            "${calculation.isDayChanged(todayPrayers.sDate)}"
-        )
+        Timber.tag("ngz_is_day_changed").i("${calculation.isDayChanged(todayPrayers.sDate)}")
 
         if (calculation.isDayChanged(todayPrayers.sDate)) {
             startLoading(dispatcher = dispatcher)
@@ -81,7 +78,7 @@ class MainViewModel @Inject constructor(
         updateNextPrayerState()
 
     } catch (e: Exception) {
-        Log.e("ngz_flow_updates", "error: ${e.message.toString()}")
+        Timber.tag("ngz_flow_updates").e("error: ${e.message.toString()}")
         //TODO: not handled correctly show should check for exception type
         _uiState.update { UiState.Error(resourceProvider.getString(R.string.text_error_server_down)) }
     }

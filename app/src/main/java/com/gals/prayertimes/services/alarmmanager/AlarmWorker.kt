@@ -1,7 +1,6 @@
 package com.gals.prayertimes.services.alarmmanager
 
 import android.content.Context
-import android.util.Log
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.ExistingWorkPolicy
@@ -9,8 +8,8 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import com.gals.prayertimes.model.NotificationType
-import com.gals.prayertimes.model.UiPrayerName
 import com.gals.prayertimes.model.TimePrayer
+import com.gals.prayertimes.model.UiPrayerName
 import com.gals.prayertimes.model.mappers.getTimePrayerByName
 import com.gals.prayertimes.model.mappers.toTimePrayer
 import com.gals.prayertimes.model.mappers.todayDate
@@ -19,6 +18,7 @@ import com.gals.prayertimes.repository.local.entities.SettingsEntity.Companion.t
 import com.gals.prayertimes.utils.PrayerCalculation
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
+import timber.log.Timber
 import java.time.Duration
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -67,10 +67,8 @@ class AlarmWorker @AssistedInject constructor(
                         notificationType = notificationType.name
                     )
                 )
-                Log.i(
-                    "ngz_alarm_set",
-                    "$prayerName alarm has been set with type ${notificationType.name}"
-                )
+                Timber.tag("ngz_alarm_set")
+                    .i("$prayerName alarm has been set with type ${notificationType.name}")
             }
         }
     }
@@ -92,7 +90,7 @@ class AlarmWorker @AssistedInject constructor(
                 ExistingWorkPolicy.REPLACE,
                 nextAlarmWorkRequest
             )
-            Log.i("AlarmWorker", "Next day worker scheduled to run at: $targetExecutionTime")
+            Timber.tag("AlarmWorker").i("Next day worker scheduled to run at: $targetExecutionTime")
         }
     }
 }

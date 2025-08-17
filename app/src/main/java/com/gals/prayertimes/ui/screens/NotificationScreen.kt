@@ -2,7 +2,6 @@ package com.gals.prayertimes.ui.screens
 
 import android.content.Intent
 import android.provider.Settings
-import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -38,8 +37,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.gals.prayertimes.R
 import com.gals.prayertimes.model.NotificationType
-import com.gals.prayertimes.model.UiPrayerName
 import com.gals.prayertimes.model.UiPermissionState
+import com.gals.prayertimes.model.UiPrayerName
 import com.gals.prayertimes.ui.components.NavigationBackArrow
 import com.gals.prayertimes.ui.components.PrayerNotificationItem
 import com.gals.prayertimes.ui.components.RadioButtonItem
@@ -52,6 +51,7 @@ import com.google.accompanist.permissions.PermissionState
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.google.accompanist.permissions.shouldShowRationale
+import timber.log.Timber
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalPermissionsApi::class)
@@ -229,7 +229,7 @@ internal fun NotificationScreen(
                 LaunchedEffect(lifecycleState) {
                     when (lifecycleState) {
                         Lifecycle.State.RESUMED -> {
-                            Log.i("ngz_notification", "Notification Screen: OnResume")
+                            Timber.tag("ngz_notification").i("Notification Screen: OnResume")
                             if (upAPILevel31) {
                                 when (viewModel.getPendingPermissions()) {
                                     UiPermissionState.PENDING -> {

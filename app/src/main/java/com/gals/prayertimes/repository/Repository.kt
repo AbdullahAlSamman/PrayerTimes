@@ -1,6 +1,5 @@
 package com.gals.prayertimes.repository
 
-import android.util.Log
 import com.gals.prayertimes.model.ConnectivityException
 import com.gals.prayertimes.model.IODispatcher
 import com.gals.prayertimes.model.NetworkException
@@ -17,6 +16,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import timber.log.Timber
 import javax.inject.Inject
 
 class Repository @Inject constructor(
@@ -27,7 +27,7 @@ class Repository @Inject constructor(
 ) {
     fun fetchPrayer(todayDate: String): Flow<PrayerEntity> = flow {
         if (localDataSource.isTodayPrayerExists(todayDate)) {
-            Log.i(LOG_TAG, "exists locally in cache")
+            Timber.tag(LOG_TAG).i("exists locally in cache")
             emit(localDataSource.getPrayers(todayDate))
             return@flow
         }
@@ -36,16 +36,16 @@ class Repository @Inject constructor(
             if (result.isSuccessful) {
                 result.body()?.let { response ->
                     checkServerError(response)
-                    Log.i(LOG_TAG, "Success: ${result.message()}")
+                    Timber.tag(LOG_TAG).i("Success: ${result.message()}")
                     localDataSource.insertPrayers(response.toEntity())
                     emit(response.toEntity())
                 }
             } else {
-                Log.e(LOG_TAG, "Network error: ${result.message()}")
+                Timber.tag(LOG_TAG).e("Network error: ${result.message()}")
                 throw NetworkException("${result.code()}: ${result.message()}")
             }
         } else {
-            Log.e(LOG_TAG, "Connectivity error: No Internet")
+            Timber.tag(LOG_TAG).e("Connectivity error: No Internet")
             throw ConnectivityException("No Internet")
         }
     }.flowOn(dispatcher)

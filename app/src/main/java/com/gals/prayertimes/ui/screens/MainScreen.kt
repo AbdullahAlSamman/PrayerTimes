@@ -1,6 +1,5 @@
 package com.gals.prayertimes.ui.screens
 
-import android.util.Log
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.safeDrawing
@@ -15,6 +14,7 @@ import com.gals.prayertimes.model.UiState
 import com.gals.prayertimes.utils.isLandscape
 import com.gals.prayertimes.utils.isTablet
 import com.gals.prayertimes.viewmodel.MainViewModel
+import timber.log.Timber
 
 @Composable
 fun MainScreen(
@@ -53,7 +53,7 @@ fun MainScreen(
                         uiDate = state.uiPrayer.uiDate,
                         onSettingsClicked = onSettingsClicked
                     )
-                    Log.i("ngz_screen", "isTablet: ${isTablet()}")
+                    Timber.tag(LOG_TAG).i("isTablet: ${isTablet()}")
                 } else {
                     PrayerPortraitScreen(
                         innerPadding = innerPadding,
@@ -62,9 +62,11 @@ fun MainScreen(
                         uiDate = state.uiPrayer.uiDate,
                         onSettingsClicked = onSettingsClicked
                     )
-                    Log.i("ngz_screen", "isTablet: ${isTablet()}")
+                    Timber.tag(LOG_TAG).i("isTablet: ${isTablet()}")
                 }
             }
         }
     }
 }
+
+private const val LOG_TAG = "ngz_screen"

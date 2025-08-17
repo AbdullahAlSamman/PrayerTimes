@@ -4,7 +4,6 @@ import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import com.gals.prayertimes.model.NotificationType
 import com.gals.prayertimes.model.UiPrayerName
 import com.gals.prayertimes.services.notificationmanager.NotificationManager
@@ -12,6 +11,7 @@ import com.gals.prayertimes.utils.SystemUtils
 import com.gals.prayertimes.utils.upAPILevel31
 import com.gals.prayertimes.view.MainActivity
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -31,7 +31,8 @@ class AlarmReceiver : BroadcastReceiver() {
             val prayerName =
                 UiPrayerName.fromString(intent?.getStringExtra(INTENT_EXTRA_NOTIFICATION_PRAYER))
 
-            Log.i("ngz_notification", "Alarm received for: $prayerName, type: $notificationType")
+            Timber.tag(LOG_TAG)
+                .i("Alarm received for: $prayerName, type: $notificationType")
 
             val intent = Intent(context, MainActivity::class.java)
 
@@ -52,10 +53,9 @@ class AlarmReceiver : BroadcastReceiver() {
                 )
             }
 
-            Log.i(
-                "ngz_notification",
-                "Notification should be shown for $prayerName"
-            )
+            Timber.tag(LOG_TAG).i("Notification should be shown for $prayerName")
         }
     }
 }
+
+private const val LOG_TAG = "ngz_notification"
