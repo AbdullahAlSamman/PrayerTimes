@@ -118,7 +118,7 @@ class NotificationScreenViewModel @Inject constructor(
             cancelAllPrayerAlarms()
             workManager.cancelUniqueWork(PRAYER_ALARM_WORK_NAME)
             workManager.cancelUniqueWork(PRAYER_ALARM_WORK_NEXT_DAY_NAME)
-            Timber.tag(LOG_TAG).i("alarms cancelled")
+            Timber.i("All alarms are cancelled")
 
             if (_uiSwitchState.value) {
                 val prayerAlarmWorkRequest = OneTimeWorkRequestBuilder<AlarmWorker>().build()
@@ -127,7 +127,7 @@ class NotificationScreenViewModel @Inject constructor(
                     ExistingWorkPolicy.REPLACE,
                     prayerAlarmWorkRequest
                 )
-                Timber.tag(LOG_TAG).i("alarms scheduled")
+                Timber.i("alarms are scheduled")
             }
         }
     }
@@ -171,7 +171,7 @@ class NotificationScreenViewModel @Inject constructor(
             )
             val upcoming = prayer?.isAfter(LocalDateTime.now()) == true
             if (upcoming) {
-                Timber.tag(LOG_TAG).i("$prayerName alarm cancelled")
+                Timber.i("$prayerName alarm cancelled")
                 alarmManager.cancelAlarm(
                     AlarmItem(
                         time = prayer,
@@ -186,5 +186,3 @@ class NotificationScreenViewModel @Inject constructor(
         private const val PENDING_ALARM_PERMISSION = "pendingAlarmPermission"
     }
 }
-
-private const val LOG_TAG = "ngz_alarms"

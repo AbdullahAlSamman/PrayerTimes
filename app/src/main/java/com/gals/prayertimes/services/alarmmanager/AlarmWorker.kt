@@ -67,8 +67,7 @@ class AlarmWorker @AssistedInject constructor(
                         notificationType = notificationType.name
                     )
                 )
-                Timber.tag("ngz_alarm_set")
-                    .i("$prayerName alarm has been set with type ${notificationType.name}")
+                Timber.i("$prayerName alarm has been set with type ${notificationType.name}")
             }
         }
     }
@@ -90,7 +89,7 @@ class AlarmWorker @AssistedInject constructor(
                 ExistingWorkPolicy.REPLACE,
                 nextAlarmWorkRequest
             )
-            Timber.tag("AlarmWorker").i("Next day worker scheduled to run at: $targetExecutionTime")
+            Timber.i("Next day worker scheduled to run at: $targetExecutionTime")
         }
     }
 }

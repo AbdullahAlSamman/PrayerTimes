@@ -32,7 +32,7 @@ class BootCompletedReceiver : BroadcastReceiver() {
      * */
     override fun onReceive(context: Context?, intent: Intent?) {
         if (intent?.action == Intent.ACTION_BOOT_COMPLETED) {
-            Timber.tag(LOG_TAG).i("checking alarms after reboot")
+            Timber.i("checking alarms after reboot")
             context?.let {
                 CoroutineScope(ioDispatcher).launch {
                     if (repository.getSettings().notification) {
@@ -43,12 +43,10 @@ class BootCompletedReceiver : BroadcastReceiver() {
                             ExistingWorkPolicy.REPLACE,
                             prayerAlarmWorkRequest
                         )
-                        Timber.tag(LOG_TAG).i("works and alarms scheduled after reboot")
+                        Timber.i("works and alarms scheduled after reboot")
                     }
                 }
             }
         }
     }
 }
-
-private const val LOG_TAG = "ngz_boot_receiver"

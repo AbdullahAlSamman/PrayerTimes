@@ -27,7 +27,7 @@ class Repository @Inject constructor(
 ) {
     fun fetchPrayer(todayDate: String): Flow<PrayerEntity> = flow {
         if (localDataSource.isTodayPrayerExists(todayDate)) {
-            Timber.tag(LOG_TAG).i("exists locally in cache")
+            Timber.i("exists locally in cache")
             emit(localDataSource.getPrayers(todayDate))
             return@flow
         }
@@ -36,16 +36,16 @@ class Repository @Inject constructor(
             if (result.isSuccessful) {
                 result.body()?.let { response ->
                     checkServerError(response)
-                    Timber.tag(LOG_TAG).i("Success: ${result.message()}")
+                    Timber.i("Success: ${result.message()}")
                     localDataSource.insertPrayers(response.toEntity())
                     emit(response.toEntity())
                 }
             } else {
-                Timber.tag(LOG_TAG).e("Network error: ${result.message()}")
+                Timber.e("Network error: ${result.message()}")
                 throw NetworkException("${result.code()}: ${result.message()}")
             }
         } else {
-            Timber.tag(LOG_TAG).e("Connectivity error: No Internet")
+            Timber.e("Connectivity error: No Internet")
             throw ConnectivityException("No Internet")
         }
     }.flowOn(dispatcher)
@@ -73,5 +73,3 @@ class Repository @Inject constructor(
         }
     }
 }
-
-private const val LOG_TAG = "ngz_remote_data_request"

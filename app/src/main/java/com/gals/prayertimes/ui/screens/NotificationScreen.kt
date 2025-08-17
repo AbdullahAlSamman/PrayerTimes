@@ -229,7 +229,7 @@ internal fun NotificationScreen(
                 LaunchedEffect(lifecycleState) {
                     when (lifecycleState) {
                         Lifecycle.State.RESUMED -> {
-                            Timber.tag("ngz_notification").i("Notification Screen: OnResume")
+                            Timber.i("Notification Screen: OnResume")
                             if (upAPILevel31) {
                                 when (viewModel.getPendingPermissions()) {
                                     UiPermissionState.PENDING -> {

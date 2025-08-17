@@ -53,7 +53,7 @@ fun MainScreen(
                         uiDate = state.uiPrayer.uiDate,
                         onSettingsClicked = onSettingsClicked
                     )
-                    Timber.tag(LOG_TAG).i("isTablet: ${isTablet()}")
+                    Timber.i("isTablet: ${isTablet()}")
                 } else {
                     PrayerPortraitScreen(
                         innerPadding = innerPadding,
@@ -62,11 +62,9 @@ fun MainScreen(
                         uiDate = state.uiPrayer.uiDate,
                         onSettingsClicked = onSettingsClicked
                     )
-                    Timber.tag(LOG_TAG).i("isTablet: ${isTablet()}")
+                    Timber.i("isTablet: ${isTablet()}")
                 }
             }
         }
     }
 }
-
-private const val LOG_TAG = "ngz_screen"

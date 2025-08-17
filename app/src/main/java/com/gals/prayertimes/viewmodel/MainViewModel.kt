@@ -69,7 +69,7 @@ class MainViewModel @Inject constructor(
 
     /**update all flows related to ui*/
     private fun updateScreenStates() = try {
-        Timber.tag("ngz_is_day_changed").i("${calculation.isDayChanged(todayPrayers.sDate)}")
+        Timber.i("is day changed: ${calculation.isDayChanged(todayPrayers.sDate)}")
 
         if (calculation.isDayChanged(todayPrayers.sDate)) {
             startLoading(dispatcher = dispatcher)
@@ -78,7 +78,7 @@ class MainViewModel @Inject constructor(
         updateNextPrayerState()
 
     } catch (e: Exception) {
-        Timber.tag("ngz_flow_updates").e("error: ${e.message.toString()}")
+        Timber.e("flow update error: ${e.message.toString()}")
         //TODO: not handled correctly show should check for exception type
         _uiState.update { UiState.Error(resourceProvider.getString(R.string.text_error_server_down)) }
     }

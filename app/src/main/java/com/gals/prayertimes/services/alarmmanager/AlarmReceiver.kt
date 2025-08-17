@@ -31,8 +31,7 @@ class AlarmReceiver : BroadcastReceiver() {
             val prayerName =
                 UiPrayerName.fromString(intent?.getStringExtra(INTENT_EXTRA_NOTIFICATION_PRAYER))
 
-            Timber.tag(LOG_TAG)
-                .i("Alarm received for: $prayerName, type: $notificationType")
+            Timber.i("Alarm received for: $prayerName, type: $notificationType")
 
             val intent = Intent(context, MainActivity::class.java)
 
@@ -53,9 +52,7 @@ class AlarmReceiver : BroadcastReceiver() {
                 )
             }
 
-            Timber.tag(LOG_TAG).i("Notification should be shown for $prayerName")
+            Timber.i("Notification should be shown for $prayerName")
         }
     }
 }
-
-private const val LOG_TAG = "ngz_notification"

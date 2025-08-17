@@ -87,8 +87,7 @@ class NotificationManager @Inject constructor(
                 NotificationManager.IMPORTANCE_HIGH
             )
 
-            Timber.tag("ngz_notification")
-                .i("Notification Resource: ${notificationType.getNotificationSound()}")
+            Timber.i("Sound Resource: ${notificationType.getNotificationSound()}")
             notificationChannel.setSound(
                 notificationType.getNotificationSound(),
                 AudioAttributes.Builder()

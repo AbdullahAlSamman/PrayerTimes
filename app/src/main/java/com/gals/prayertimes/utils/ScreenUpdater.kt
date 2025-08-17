@@ -20,7 +20,7 @@ class VMScreenUpdater @Inject constructor(
     override fun startTicks(delay: Long): Flow<Unit> =
         flow {
             while (true) {
-                Timber.tag("ngz_screen_updater").i("tick at ${System.currentTimeMillis()}")
+                Timber.i("tick at ${System.currentTimeMillis()}")
                 emit(Unit)
                 delay(delay)
             }

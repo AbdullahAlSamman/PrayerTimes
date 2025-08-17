@@ -2,6 +2,7 @@ package com.gals.prayertimes
 
 import android.app.Application
 import androidx.work.Configuration
+import com.gals.prayertimes.logging.AppDebugTree
 import com.gals.prayertimes.services.alarmmanager.AlarmWorkerFactory
 import dagger.hilt.android.HiltAndroidApp
 import timber.log.Timber
@@ -13,6 +14,9 @@ class App : Application(), Configuration.Provider {
     @Inject
     lateinit var workerFactory: AlarmWorkerFactory
 
+    @Inject
+    lateinit var appDebugTree: AppDebugTree
+
     override val workManagerConfiguration: Configuration
         get() = Configuration.Builder()
             .setWorkerFactory(workerFactory)
@@ -21,7 +25,7 @@ class App : Application(), Configuration.Provider {
     override fun onCreate() {
         super.onCreate()
         if (BuildConfig.DEBUG) {
-            Timber.plant(Timber.DebugTree())
+            Timber.plant(appDebugTree)
         }
     }
 }
