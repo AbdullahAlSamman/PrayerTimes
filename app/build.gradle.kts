@@ -102,6 +102,9 @@ android {
         implementation(libs.bundles.hilt)
         ksp(libs.google.dagger.hilt.compiler)
 
+        //Logging
+        implementation(libs.timber)
+
         //Test
         testImplementation(libs.bundles.unit.test)
     }
