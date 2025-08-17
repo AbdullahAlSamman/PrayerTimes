@@ -5,7 +5,6 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.provider.Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM
-import androidx.core.content.ContextCompat.startActivity
 import com.gals.prayertimes.model.mappers.toAlarmItem
 import com.gals.prayertimes.utils.upAPILevel31
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -57,8 +56,7 @@ class AlarmManager @Inject constructor(
 
     fun requestPermission() {
         if (upAPILevel31) {
-            startActivity(
-                context,
+            context.startActivity(
                 Intent(ACTION_REQUEST_SCHEDULE_EXACT_ALARM).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK),
                 null
             )
