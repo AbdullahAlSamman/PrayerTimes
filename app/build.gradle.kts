@@ -51,7 +51,10 @@ android {
             }
         }
 
-        buildFeatures { compose = true }
+        buildFeatures {
+            compose = true
+            buildConfig = true
+        }
 
         dependenciesInfo { includeInApk = false }
     }
@@ -73,6 +76,7 @@ android {
 
     kotlin {
         jvmToolchain(21)
+        compilerOptions.freeCompilerArgs.add("-Xannotation-default-target=param-property")
     }
 
     dependencies {
@@ -101,6 +105,9 @@ android {
         //Hilt
         implementation(libs.bundles.hilt)
         ksp(libs.google.dagger.hilt.compiler)
+
+        //Logging
+        implementation(libs.timber)
 
         //Test
         testImplementation(libs.bundles.unit.test)

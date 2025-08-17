@@ -1,6 +1,5 @@
 package com.gals.prayertimes.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -8,8 +7,8 @@ import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import com.gals.prayertimes.model.NotificationType
-import com.gals.prayertimes.model.UiPrayerName
 import com.gals.prayertimes.model.UiPermissionState
+import com.gals.prayertimes.model.UiPrayerName
 import com.gals.prayertimes.model.mappers.getTimePrayerByName
 import com.gals.prayertimes.model.mappers.toTimePrayer
 import com.gals.prayertimes.model.mappers.todayDate
@@ -28,6 +27,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.time.LocalDateTime
 import javax.inject.Inject
 
@@ -118,7 +118,7 @@ class NotificationScreenViewModel @Inject constructor(
             cancelAllPrayerAlarms()
             workManager.cancelUniqueWork(PRAYER_ALARM_WORK_NAME)
             workManager.cancelUniqueWork(PRAYER_ALARM_WORK_NEXT_DAY_NAME)
-            Log.i("ngz_alarms", "alarms cancelled")
+            Timber.i("All alarms are cancelled")
 
             if (_uiSwitchState.value) {
                 val prayerAlarmWorkRequest = OneTimeWorkRequestBuilder<AlarmWorker>().build()
@@ -127,7 +127,7 @@ class NotificationScreenViewModel @Inject constructor(
                     ExistingWorkPolicy.REPLACE,
                     prayerAlarmWorkRequest
                 )
-                Log.i("ngz_alarms", "alarms scheduled")
+                Timber.i("alarms are scheduled")
             }
         }
     }
@@ -171,7 +171,7 @@ class NotificationScreenViewModel @Inject constructor(
             )
             val upcoming = prayer?.isAfter(LocalDateTime.now()) == true
             if (upcoming) {
-                Log.i("ngz_alarms", "$prayerName alarm cancelled")
+                Timber.i("$prayerName alarm cancelled")
                 alarmManager.cancelAlarm(
                     AlarmItem(
                         time = prayer,

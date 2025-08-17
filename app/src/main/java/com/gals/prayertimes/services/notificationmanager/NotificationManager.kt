@@ -9,7 +9,6 @@ import android.content.Context
 import android.media.AudioAttributes
 import android.media.RingtoneManager
 import android.net.Uri
-import android.util.Log
 import android.widget.RemoteViews
 import androidx.annotation.RequiresPermission
 import androidx.core.app.NotificationCompat
@@ -22,6 +21,7 @@ import com.gals.prayertimes.model.mappers.getStringId
 import com.gals.prayertimes.utils.ResourceProvider
 import com.gals.prayertimes.utils.SystemUtils
 import dagger.hilt.android.qualifiers.ApplicationContext
+import timber.log.Timber
 import javax.inject.Inject
 import kotlin.random.Random
 
@@ -87,10 +87,7 @@ class NotificationManager @Inject constructor(
                 NotificationManager.IMPORTANCE_HIGH
             )
 
-            Log.i(
-                "ngz_notification",
-                "Notification Resource: ${notificationType.getNotificationSound()}"
-            )
+            Timber.i("Sound Resource: ${notificationType.getNotificationSound()}")
             notificationChannel.setSound(
                 notificationType.getNotificationSound(),
                 AudioAttributes.Builder()
