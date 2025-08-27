@@ -1,5 +1,7 @@
 package com.gals.prayertimes.ui.screens
 
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -11,20 +13,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.viewinterop.AndroidView
 import com.gals.prayertimes.R
 import com.gals.prayertimes.ui.components.NavigationBackArrow
 import com.gals.prayertimes.ui.theme.PrayerTypography
-import com.google.accompanist.web.WebView
-import com.google.accompanist.web.rememberWebViewState
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
+@OptIn(ExperimentalMaterial3Api::class)
 fun PrivacyPolicyScreen(
-    onBackClicked: () -> Unit,
     webUri: String,
+    onBackClicked: () -> Unit,
     textStyle: TextStyle = PrayerTypography.headlineMedium
 ) {
-    val state = rememberWebViewState(url = webUri)
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -45,9 +45,14 @@ fun PrivacyPolicyScreen(
                 actions = {})
         },
         content = { innerPadding ->
-            WebView(
+            AndroidView(
                 modifier = Modifier.padding(innerPadding),
-                state = state
+                factory = { context ->
+                    WebView(context).apply {
+                        webViewClient = WebViewClient()
+                        loadUrl(webUri)
+                    }
+                }
             )
         }
     )
