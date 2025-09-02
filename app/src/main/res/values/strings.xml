@@ -94,4 +94,5 @@
     <string name="asset_url_privacy_policy">file:///android_asset/privacy_policy.html</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="menu_item_icon_content_description">menu item icon</string>
+    <string name="loading_screen_icon_content_description">A man is in sgoud position</string>
 </resources>
