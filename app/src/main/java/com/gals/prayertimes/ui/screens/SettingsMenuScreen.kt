@@ -30,7 +30,7 @@ fun SettingsMenuScreen(
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(),
+                colors = TopAppBarDefaults.topAppBarColors(),
                 title = {
                     Text(
                         text = stringResource(id = R.string.text_settings_title),
