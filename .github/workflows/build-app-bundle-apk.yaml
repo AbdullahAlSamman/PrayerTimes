@@ -2,6 +2,14 @@ name: Release App
 on:
   workflow_dispatch:
     inputs:
+      buildType:
+        type: choice
+        description: "Build type"
+        required: true
+        default: "Debug"
+        options:
+          - Release
+          - Debug
       name:
         description: "Version name"
         required: true
@@ -16,7 +24,7 @@ on:
           - Both
 
 jobs:
-  release_app_packages:
+  setup_environment:
     runs-on: ubuntu-latest
 
     steps:
@@ -29,6 +37,35 @@ jobs:
       - name: setup gradle
         uses: gradle/actions/setup-gradle@v3
 
+  debug_app_packages:
+    if: ${{ github.event.inputs.buildType == 'Debug' }}
+    runs-on: ubuntu-latest
+    needs: setup_environment
+
+    steps:
+      - name: Build debug apk
+        run: ./gradlew assembleDebug --stacktrace
+
+      - name: Upload bundle debug
+        uses: actions/upload-artifact@v4
+        if: ${{ contains(github.event.inputs.package, 'Both') || contains(github.event.inputs.package, 'Bundle') }}
+        with:
+          name: bundle-debug
+          path: app/build/outputs/bundle/debug
+
+      - name: Upload apk debug
+        uses: actions/upload-artifact@v4
+        if: ${{ contains(github.event.inputs.package, 'Both') || contains(github.event.inputs.package, 'Apk') }}
+        with:
+          name: apk-debug
+          path: app/build/outputs/apk/debug
+
+  release_app_packages:
+    if: ${{ github.event.inputs.buildType == 'Release' }}
+    runs-on: ubuntu-latest
+    needs: setup_environment
+
+    steps:
       - name: Decode Keystore
         env:
           ENCODED_STRING: ${{ secrets.KEYSTORE_BASE_64 }}
