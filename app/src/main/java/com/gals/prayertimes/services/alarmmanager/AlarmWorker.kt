@@ -7,12 +7,12 @@ import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
-import com.gals.prayertimes.model.NotificationType
-import com.gals.prayertimes.model.TimePrayer
-import com.gals.prayertimes.model.UiPrayerName
-import com.gals.prayertimes.model.mappers.getTimePrayerByName
-import com.gals.prayertimes.model.mappers.toTimePrayer
-import com.gals.prayertimes.model.mappers.todayDate
+import com.gals.prayertimes.common.NotificationType
+import com.gals.prayertimes.common.TimePrayer
+import com.gals.prayertimes.common.UiPrayerName
+import com.gals.prayertimes.common.mappers.getTimePrayerByName
+import com.gals.prayertimes.common.mappers.toTimePrayer
+import com.gals.prayertimes.common.mappers.todayDate
 import com.gals.prayertimes.repository.Repository
 import com.gals.prayertimes.repository.local.entities.SettingsEntity.Companion.toPrayerNotification
 import com.gals.prayertimes.utils.PrayerCalculation
@@ -55,7 +55,7 @@ class AlarmWorker @AssistedInject constructor(
         notificationType: NotificationType,
         selectedPrayerNotifications: Map<UiPrayerName, Boolean>
     ) {
-        selectedPrayerNotifications.forEach { prayerName, isEnabled ->
+        selectedPrayerNotifications.forEach { prayerName, _ ->
             val prayer = prayerCalculation.getNextPrayerLocalTime(
                 timePrayers.getTimePrayerByName(prayerName)
             )

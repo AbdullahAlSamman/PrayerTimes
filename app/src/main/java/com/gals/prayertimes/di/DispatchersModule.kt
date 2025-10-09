@@ -1,9 +1,9 @@
 package com.gals.prayertimes.di
 
-import com.gals.prayertimes.model.DefaultDispatcher
-import com.gals.prayertimes.model.IODispatcher
-import com.gals.prayertimes.model.MainDispatcher
-import com.gals.prayertimes.model.TestDispatcher
+import com.gals.prayertimes.common.DefaultDispatcher
+import com.gals.prayertimes.common.IODispatcher
+import com.gals.prayertimes.common.MainDispatcher
+import com.gals.prayertimes.common.TestDispatcher
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

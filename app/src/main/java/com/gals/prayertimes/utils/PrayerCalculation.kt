@@ -2,10 +2,10 @@ package com.gals.prayertimes.utils
 
 import android.text.format.DateUtils
 import com.gals.prayertimes.R
-import com.gals.prayertimes.model.NextPrayerConfig
-import com.gals.prayertimes.model.TimePrayer
-import com.gals.prayertimes.model.mappers.timeNow
-import com.gals.prayertimes.model.mappers.toCalendar
+import com.gals.prayertimes.common.NextPrayerConfig
+import com.gals.prayertimes.common.TimePrayer
+import com.gals.prayertimes.common.mappers.timeNow
+import com.gals.prayertimes.common.mappers.toCalendar
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.time.ZoneId

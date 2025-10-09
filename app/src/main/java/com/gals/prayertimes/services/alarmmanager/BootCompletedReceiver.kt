@@ -6,7 +6,7 @@ import android.content.Intent
 import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
-import com.gals.prayertimes.model.IODispatcher
+import com.gals.prayertimes.common.IODispatcher
 import com.gals.prayertimes.repository.Repository
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineDispatcher

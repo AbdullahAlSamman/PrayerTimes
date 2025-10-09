@@ -5,7 +5,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.provider.Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM
-import com.gals.prayertimes.model.mappers.toAlarmItem
+import com.gals.prayertimes.common.mappers.toAlarmItem
 import com.gals.prayertimes.utils.upAPILevel31
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.time.ZoneId

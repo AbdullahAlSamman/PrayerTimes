@@ -15,7 +15,7 @@ android {
     compileSdk = 36
     defaultConfig {
         applicationId = "com.gals.prayertimes"
-        minSdk = 26
+        minSdk = 26 //TODO lower if possible 24
         targetSdk = 36
         versionName = "1.0.7"
         versionCode = 27

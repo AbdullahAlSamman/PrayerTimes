@@ -1,9 +1,9 @@
 package com.gals.prayertimes.utils
 
 import com.gals.prayertimes.R
-import com.gals.prayertimes.model.mappers.mapMoonMonth
-import com.gals.prayertimes.model.mappers.mapSunMonth
-import com.gals.prayertimes.viewmodel.MainViewModel
+import com.gals.prayertimes.common.mappers.mapMoonMonth
+import com.gals.prayertimes.common.mappers.mapSunMonth
+import com.gals.prayertimes.main.MainViewModel
 import java.util.StringTokenizer
 import javax.inject.Inject
 
