@@ -1,39 +1,25 @@
-package com.gals.prayertimes.services.alarmmanager
+package com.gals.prayertimes.handlers.alarm
 
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.provider.Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM
 import com.gals.prayertimes.common.mappers.toAlarmItem
 import com.gals.prayertimes.utils.upAPILevel31
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.time.ZoneId
 import javax.inject.Inject
 
-class AlarmManager @Inject constructor(
-    @ApplicationContext private val context: Context
+class AlarmHandler @Inject constructor(
+    @ApplicationContext private val context: Context,
+    private val alarmManager: AlarmManager
 ) {
-    private val alarmManager = context.getSystemService(AlarmManager::class.java)
-
     fun scheduleAlarm(prayerAlarmItem: PrayerAlarmItem) {
         val intent = Intent(context, AlarmReceiver::class.java).apply {
             putExtra(INTENT_EXTRA_NOTIFICATION_TYPE, prayerAlarmItem.notificationType)
             putExtra(INTENT_EXTRA_NOTIFICATION_PRAYER, prayerAlarmItem.prayer)
         }
-        if (upAPILevel31) {
-            when {
-                alarmManager.canScheduleExactAlarms() -> {
-                    setAlarm(prayerAlarmItem.toAlarmItem(), intent)
-                }
-
-                else -> {
-                    requestPermission()
-                }
-            }
-        } else {
-            setAlarm(prayerAlarmItem.toAlarmItem(), intent)
-        }
+        setAlarm(prayerAlarmItem.toAlarmItem(), intent)
     }
 
     fun cancelAlarm(alarmItem: AlarmItem) {
@@ -53,15 +39,6 @@ class AlarmManager @Inject constructor(
         } else {
             true
         }
-
-    fun requestPermission() {
-        if (upAPILevel31) {
-            context.startActivity(
-                Intent(ACTION_REQUEST_SCHEDULE_EXACT_ALARM).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK),
-                null
-            )
-        }
-    }
 
     private fun setAlarm(alarmItem: AlarmItem, intent: Intent) {
         alarmManager.setExactAndAllowWhileIdle(

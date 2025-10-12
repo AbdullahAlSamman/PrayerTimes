@@ -37,7 +37,7 @@
             tools:node="remove" />
 
         <receiver
-            android:name=".services.alarmmanager.BootCompletedReceiver"
+            android:name=".handlers.alarm.BootCompletedReceiver"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
@@ -45,7 +45,7 @@
             </intent-filter>
         </receiver>
 
-        <receiver android:name=".services.alarmmanager.AlarmReceiver" />
+        <receiver android:name=".handlers.alarm.AlarmReceiver" />
     </application>
 
 </manifest>

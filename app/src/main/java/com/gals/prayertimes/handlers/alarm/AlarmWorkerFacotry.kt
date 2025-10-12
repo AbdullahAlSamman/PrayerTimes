@@ -1,4 +1,4 @@
-package com.gals.prayertimes.services.alarmmanager
+package com.gals.prayertimes.handlers.alarm
 
 import android.content.Context
 import androidx.work.ListenableWorker
@@ -10,16 +10,16 @@ import javax.inject.Inject
 
 class AlarmWorkerFactory @Inject constructor(
     private val repository: Repository,
-    private val alarmManager: AlarmManager,
+    private val alarmHandler: AlarmHandler,
     private val prayerCalculation: PrayerCalculation
 ) : WorkerFactory() {
     override fun createWorker(
         appContext: Context,
         workerClassName: String,
         workerParameters: WorkerParameters
-    ): ListenableWorker? = AlarmWorker(
+    ): ListenableWorker = AlarmWorker(
         repository = repository,
-        alarmManager = alarmManager,
+        alarmHandler = alarmHandler,
         prayerCalculation = prayerCalculation,
         appContext = appContext,
         workerParams = workerParameters

@@ -1,4 +1,4 @@
-package com.gals.prayertimes.services.alarmmanager
+package com.gals.prayertimes.handlers.alarm
 
 import android.content.Context
 import androidx.hilt.work.HiltWorker
@@ -31,7 +31,7 @@ class AlarmWorker @AssistedInject constructor(
     @Assisted private val appContext: Context,
     @Assisted workerParams: WorkerParameters,
     @Assisted private val repository: Repository,
-    @Assisted private val alarmManager: AlarmManager,
+    @Assisted private val alarmHandler: AlarmHandler,
     @Assisted private val prayerCalculation: PrayerCalculation
 ) : CoroutineWorker(appContext, workerParams) {
     override suspend fun doWork(): Result {
@@ -60,7 +60,7 @@ class AlarmWorker @AssistedInject constructor(
                 timePrayers.getTimePrayerByName(prayerName)
             )
             if (prayer?.isAfter(LocalDateTime.now()) == true) {
-                alarmManager.scheduleAlarm(
+                alarmHandler.scheduleAlarm(
                     PrayerAlarmItem(
                         time = prayer,
                         prayer = prayerName.name,

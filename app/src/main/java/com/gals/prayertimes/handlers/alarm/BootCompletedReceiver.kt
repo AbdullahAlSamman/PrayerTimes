@@ -1,4 +1,4 @@
-package com.gals.prayertimes.services.alarmmanager
+package com.gals.prayertimes.handlers.alarm
 
 import android.content.BroadcastReceiver
 import android.content.Context

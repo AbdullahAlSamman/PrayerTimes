@@ -10,14 +10,14 @@ import com.gals.prayertimes.common.UiPrayerName
 import com.gals.prayertimes.common.mappers.getTimePrayerByName
 import com.gals.prayertimes.common.mappers.toTimePrayer
 import com.gals.prayertimes.common.mappers.todayDate
+import com.gals.prayertimes.handlers.alarm.AlarmHandler
+import com.gals.prayertimes.handlers.alarm.AlarmItem
+import com.gals.prayertimes.handlers.alarm.AlarmWorker
+import com.gals.prayertimes.handlers.alarm.PRAYER_ALARM_WORK_NAME
+import com.gals.prayertimes.handlers.alarm.PRAYER_ALARM_WORK_NEXT_DAY_NAME
 import com.gals.prayertimes.repository.Repository
 import com.gals.prayertimes.repository.local.entities.SettingsEntity
 import com.gals.prayertimes.repository.local.entities.SettingsEntity.Companion.toPrayerNotification
-import com.gals.prayertimes.services.alarmmanager.AlarmItem
-import com.gals.prayertimes.services.alarmmanager.AlarmManager
-import com.gals.prayertimes.services.alarmmanager.AlarmWorker
-import com.gals.prayertimes.services.alarmmanager.PRAYER_ALARM_WORK_NAME
-import com.gals.prayertimes.services.alarmmanager.PRAYER_ALARM_WORK_NEXT_DAY_NAME
 import com.gals.prayertimes.utils.PrayerCalculation
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -32,7 +32,7 @@ import javax.inject.Inject
 @HiltViewModel
 class NotificationViewModel @Inject constructor(
     private val repository: Repository,
-    private val alarmManager: AlarmManager,
+    private val alarmHandler: AlarmHandler,
     private val prayerCalculation: PrayerCalculation,
     private val workManager: WorkManager
 ) : ViewModel() { // TODO if permission changed by user reopen permission screen
@@ -56,7 +56,7 @@ class NotificationViewModel @Inject constructor(
 
     fun updateSwitchState(value: Boolean) {
         if (value) {
-            if (alarmManager.canScheduleAlarms()) {
+            if (alarmHandler.canScheduleAlarms()) {
                 _uiSwitchState.update { true }
             }
         } else {
@@ -111,7 +111,7 @@ class NotificationViewModel @Inject constructor(
             _uiSelectedRadio.update { settings.notificationType }
             _uiSelectedPrayerAlarms.update { settings.toPrayerNotification() }
 
-            if (alarmManager.canScheduleAlarms()) {
+            if (alarmHandler.canScheduleAlarms()) {
                 _uiSwitchState.update { settings.notification }
             } else {
                 _uiSwitchState.update { false }
@@ -128,7 +128,7 @@ class NotificationViewModel @Inject constructor(
             val upcoming = prayer?.isAfter(LocalDateTime.now()) == true
             if (upcoming) {
                 Timber.i("$prayerName alarm cancelled")
-                alarmManager.cancelAlarm(
+                alarmHandler.cancelAlarm(
                     AlarmItem(
                         time = prayer,
                         prayer = prayerName.name

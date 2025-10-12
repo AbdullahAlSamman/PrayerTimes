@@ -23,7 +23,7 @@ class Repository @Inject constructor(
     @IODispatcher private val dispatcher: CoroutineDispatcher,
     private val localDataSource: LocalDataSource,
     private val remoteDataSource: RemoteDataSource,
-    private val utils: SystemUtils,
+    private val utils: SystemUtils
 ) {
     fun fetchPrayer(todayDate: String): Flow<PrayerEntity> = flow {
         if (localDataSource.isTodayPrayerExists(todayDate)) {

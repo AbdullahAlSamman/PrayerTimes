@@ -8,14 +8,14 @@ import com.gals.prayertimes.common.NextPrayerConfig
 import com.gals.prayertimes.common.NotificationType
 import com.gals.prayertimes.common.TimePrayer
 import com.gals.prayertimes.common.UiPrayerName
+import com.gals.prayertimes.handlers.alarm.AlarmItem
+import com.gals.prayertimes.handlers.alarm.PrayerAlarmItem
 import com.gals.prayertimes.main.model.UiDate
 import com.gals.prayertimes.main.model.UiNextPrayer
 import com.gals.prayertimes.main.model.UiPrayer
 import com.gals.prayertimes.repository.local.entities.PrayerEntity
 import com.gals.prayertimes.repository.remote.model.PrayerNameResponse
 import com.gals.prayertimes.repository.remote.model.PrayersResponse
-import com.gals.prayertimes.services.alarmmanager.AlarmItem
-import com.gals.prayertimes.services.alarmmanager.PrayerAlarmItem
 import com.gals.prayertimes.ui.theme.colorBackgroundAsr
 import com.gals.prayertimes.ui.theme.colorBackgroundDuhr
 import com.gals.prayertimes.ui.theme.colorBackgroundFajer

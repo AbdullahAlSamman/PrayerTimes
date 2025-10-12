@@ -1,4 +1,4 @@
-package com.gals.prayertimes.services.alarmmanager
+package com.gals.prayertimes.handlers.alarm
 
 import android.app.PendingIntent
 import android.content.BroadcastReceiver
@@ -6,9 +6,9 @@ import android.content.Context
 import android.content.Intent
 import com.gals.prayertimes.common.NotificationType
 import com.gals.prayertimes.common.UiPrayerName
+import com.gals.prayertimes.handlers.notification.NotificationHandler
 import com.gals.prayertimes.main.MainActivity
-import com.gals.prayertimes.services.notificationmanagement.NotificationManagement
-import com.gals.prayertimes.utils.SystemUtils
+import com.gals.prayertimes.permissions.notification.NotificationPermissionHandler
 import com.gals.prayertimes.utils.upAPILevel31
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
@@ -18,10 +18,10 @@ import javax.inject.Inject
 class AlarmReceiver : BroadcastReceiver() {
 
     @Inject
-    lateinit var notificationManagement: NotificationManagement
+    lateinit var notificationHandler: NotificationHandler
 
     @Inject
-    lateinit var utils: SystemUtils
+    lateinit var notificationPermissionHandler: NotificationPermissionHandler
 
     override fun onReceive(context: Context?, intent: Intent?) {
 
@@ -43,9 +43,8 @@ class AlarmReceiver : BroadcastReceiver() {
                     PendingIntent.FLAG_IMMUTABLE else PendingIntent.FLAG_UPDATE_CURRENT
             )
 
-            if (utils.hasNotificationPermission()) {
-                @Suppress("MissingPermission")
-                notificationManagement.showAlarmNotification(
+            if (notificationPermissionHandler.isGranted()) {
+                notificationHandler.showAlarmNotification(
                     pendingIntent = tapIntent,
                     notificationType = notificationType,
                     prayer = prayerName

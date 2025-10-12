@@ -1,4 +1,4 @@
-package com.gals.prayertimes.services.notificationmanagement
+package com.gals.prayertimes.handlers.notification
 
 import android.Manifest
 import android.app.Notification
@@ -18,17 +18,17 @@ import com.gals.prayertimes.R
 import com.gals.prayertimes.common.NotificationType
 import com.gals.prayertimes.common.UiPrayerName
 import com.gals.prayertimes.common.mappers.getStringId
+import com.gals.prayertimes.permissions.notification.NotificationPermissionHandler
 import com.gals.prayertimes.utils.ResourceProvider
-import com.gals.prayertimes.utils.SystemUtils
 import dagger.hilt.android.qualifiers.ApplicationContext
 import timber.log.Timber
 import javax.inject.Inject
 import kotlin.random.Random
 
-class NotificationManagement @Inject constructor(
+class NotificationHandler @Inject constructor(
     @ApplicationContext private val applicationContext: Context,
     private val resourceProvider: ResourceProvider,
-    private val utils: SystemUtils
+    private val notificationPermissionHandler: NotificationPermissionHandler
 ) {
 
     @RequiresPermission(Manifest.permission.POST_NOTIFICATIONS)
@@ -37,7 +37,7 @@ class NotificationManagement @Inject constructor(
         notificationType: NotificationType,
         pendingIntent: PendingIntent
     ) {
-        if (utils.hasNotificationPermission()) {
+        if (notificationPermissionHandler.isGranted()) {
             val notification = buildNotification(
                 pendingIntent = pendingIntent,
                 notificationType = notificationType,
@@ -144,10 +144,14 @@ class NotificationManagement @Inject constructor(
 
     companion object {
         private const val URI_DEFAULT_PATH = "android.resource://com.gals.prayertimes/"
-        private const val NOTIFICATION_CHANNEL_ID_FULL_ATHAN_ALARM = "athan_notification_full_channel_permanent"
-        private const val NOTIFICATION_CHANNEL_ID_HALF_ATHAN_ALARM = "athan_notification_half_channel_permanent"
-        private const val NOTIFICATION_CHANNEL_ID_RINGTONE_ATHAN_ALARM = "athan_notification_ringtone_channel_permanent"
-        private const val NOTIFICATION_CHANNEL_ID_SILENT_ATHAN_ALARM = "athan_notification_silent_channel_permanent"
+        private const val NOTIFICATION_CHANNEL_ID_FULL_ATHAN_ALARM =
+            "athan_notification_full_channel_permanent"
+        private const val NOTIFICATION_CHANNEL_ID_HALF_ATHAN_ALARM =
+            "athan_notification_half_channel_permanent"
+        private const val NOTIFICATION_CHANNEL_ID_RINGTONE_ATHAN_ALARM =
+            "athan_notification_ringtone_channel_permanent"
+        private const val NOTIFICATION_CHANNEL_ID_SILENT_ATHAN_ALARM =
+            "athan_notification_silent_channel_permanent"
         private const val NOTIFICATION_CHANNEL_NAME_ALARM_FULL_ATHAN = "Full Athan Alarm"
         private const val NOTIFICATION_CHANNEL_NAME_ALARM_HALF_ATHAN = "Half Athan Alarm"
         private const val NOTIFICATION_CHANNEL_NAME_ALARM_RINGTONE = "Default Ringtone Alarm"
