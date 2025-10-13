@@ -1,7 +1,5 @@
 package com.gals.prayertimes.permissions
 
-import androidx.activity.result.ActivityResultLauncher
-
 /**
  * An interface for handling different types of permissions required by the application.
  */
@@ -15,10 +13,10 @@ interface PermissionHandler {
     /**
      * Opens the relevant system settings screen for the user to grant the permission.
      */
-    fun requestPermission()
+    fun requestPermission(){/* no-op */}
 
     /**
      * Launches the permission request, if applicable.
      */
-    fun requestPermission(launcher: ActivityResultLauncher<String>?) {} //TODO check if useful
+    fun openSettings(){/* no-op */}
 }

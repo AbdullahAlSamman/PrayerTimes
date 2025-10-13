@@ -8,6 +8,7 @@ import android.provider.Settings
 import com.gals.prayertimes.permissions.PermissionHandler
 import com.gals.prayertimes.utils.upAPILevel31
 import dagger.hilt.android.qualifiers.ApplicationContext
+import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -19,6 +20,7 @@ class AlarmPermissionHandler @Inject constructor(
 ) : PermissionHandler {
 
     override fun isGranted(): Boolean = if (upAPILevel31) {
+        Timber.d("Alarm permission granted: ${alarmManager.canScheduleExactAlarms()}")
         alarmManager.canScheduleExactAlarms()
     } else {
         true

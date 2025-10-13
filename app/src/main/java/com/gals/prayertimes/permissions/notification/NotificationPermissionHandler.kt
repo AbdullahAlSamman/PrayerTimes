@@ -1,14 +1,13 @@
 package com.gals.prayertimes.permissions.notification
 
-import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.provider.Settings
-import androidx.activity.result.ActivityResultLauncher
 import androidx.core.app.NotificationManagerCompat
 import com.gals.prayertimes.permissions.PermissionHandler
 import com.gals.prayertimes.utils.upAPILevel33
 import dagger.hilt.android.qualifiers.ApplicationContext
+import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -20,23 +19,18 @@ class NotificationPermissionHandler @Inject constructor(
 ) : PermissionHandler {
 
     override fun isGranted(): Boolean = if (upAPILevel33) {
+        Timber.d("Notification permission granted: ${notificationManagerCompat.areNotificationsEnabled()}")
         notificationManagerCompat.areNotificationsEnabled()
     } else {
         true
     }
 
-    override fun requestPermission() {
+    override fun openSettings() {
         val intent = Intent().apply {
             action = Settings.ACTION_APP_NOTIFICATION_SETTINGS
             putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName)
             flags = Intent.FLAG_ACTIVITY_NEW_TASK
         }
         context.startActivity(intent)
-    }
-
-    override fun requestPermission(launcher: ActivityResultLauncher<String>?) {
-        if (upAPILevel33) {
-            launcher?.launch(Manifest.permission.POST_NOTIFICATIONS)
-        }
     }
 }

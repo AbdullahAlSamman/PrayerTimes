@@ -44,8 +44,6 @@ object PrayerTimesNavHost {
         navController: NavHostController,
         modifier: Modifier = Modifier
     ) {
-        //TODO: a universal check for all permissions
-
         NavHost(
             navController = navController,
             startDestination = NavDestination.Home,
@@ -64,7 +62,7 @@ object PrayerTimesNavHost {
                             title = R.string.text_settings_notifiaction,
                             navigateTo = {
                                 navController.navigateToGrantPermission(
-                                    false,
+                                    false, //TODO: check permission before navigation
                                     NavDestination.Notification
                                 )
                             }
@@ -94,7 +92,7 @@ object PrayerTimesNavHost {
 
             composable<NavDestination.Permission> {
                 PermissionScreen(
-                    onBackClicked = { navController.navigateUp() },
+                    onBackClicked = { navController.popBackStack() },
                     onFinish = { navController.navigateUp() }
                 )
             }
@@ -106,6 +104,7 @@ private fun NavController.navigateToGrantPermission(
     areAllPermissionsGranted: Boolean,
     destination: NavDestination
 ) {
+    //TODO add next destination which is the origin destination.
     if (areAllPermissionsGranted) {
         navigate(destination)
     } else {

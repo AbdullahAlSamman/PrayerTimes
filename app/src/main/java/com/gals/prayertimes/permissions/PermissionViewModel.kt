@@ -1,14 +1,10 @@
 package com.gals.prayertimes.permissions
 
-import android.content.Context
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import com.gals.prayertimes.handlers.alarm.AlarmHandler
 import com.gals.prayertimes.permissions.alarm.AlarmPermissionHandler
 import com.gals.prayertimes.permissions.battery.BatteryOptimizationPermissionHandler
 import com.gals.prayertimes.permissions.notification.NotificationPermissionHandler
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -17,71 +13,50 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PermissionViewModel @Inject constructor(
-    @ApplicationContext context: Context,
     private val notificationPermissionHandler: NotificationPermissionHandler,
-    private val alarmManager: AlarmHandler,
     private val alarmPermissionHandler: AlarmPermissionHandler,
-    private val batteryPermissionHandler: BatteryOptimizationPermissionHandler,
-    private val savedStateHandle: SavedStateHandle //TODO check if required for the permission
+    private val batteryPermissionHandler: BatteryOptimizationPermissionHandler
 ) : ViewModel() {
-    private val _uiPermissions = MutableStateFlow(emptyMap<UiPermission, UiPermissionState>())
-    val uiPermissionStates: StateFlow<Map<UiPermission, UiPermissionState>> =
+    //TODO add loading and content state while checking permissions
+    private val _uiPermissions =
+        MutableStateFlow(PermissionType.entries.associateWith { UiPermissionState.Required })
+    val uiPermissionStates: StateFlow<Map<PermissionType, UiPermissionState>> =
         _uiPermissions.asStateFlow()
 
-    init {
-        checkPermissions(context = context, uiPermissions = _uiPermissions)
-    }
-
-    fun updatePermissionState(key: UiPermission, value: UiPermissionState) {
-        _uiPermissions.update { it + (key to value) }
-    }
-
-    fun requestExactAlarmPermission() {
-        saveRequestedPermission()
-        alarmPermissionHandler.requestPermission()
-    }
-
-    fun getPendingPermissions(): UiPermissionState = getPendingPermission()
-
-    private fun checkPermissions(
-        context: Context,
-        uiPermissions: MutableStateFlow<Map<UiPermission, UiPermissionState>>
-    ) {
-        uiPermissions.value.forEach { (key, _) ->
-            when (key) {
-                UiPermission.NOTIFICATION -> {
-                    if (!notificationPermissionHandler.isGranted()) {
-                        uiPermissions.update { it + (key to UiPermissionState.REQUIRED) }
-                    }
-                }
-
-                UiPermission.BATTERY_OPTIMIZATION -> {
-                    if (!batteryPermissionHandler.isGranted()) {
-                        uiPermissions.update { it + (key to UiPermissionState.REQUIRED) }
-                    }
-                }
-
-                UiPermission.ALARM -> {
-                    if (!alarmManager.canScheduleAlarms()) {
-                        uiPermissions.update { it + (key to UiPermissionState.REQUIRED) }
-                    }
-                }
-            }
+    fun requestPermission(permission: PermissionType) {
+        when (permission) {
+            PermissionType.Notification -> notificationPermissionHandler.requestPermission()
+            PermissionType.BatteryOptimisation -> batteryPermissionHandler.requestPermission()
+            PermissionType.Alarm -> alarmPermissionHandler.requestPermission()
         }
     }
 
-    private fun saveRequestedPermission() {
-        savedStateHandle[PENDING_ALARM_PERMISSION] = UiPermissionState.PENDING
+    fun openSettings(permission: PermissionType) {
+        when (permission) {
+            PermissionType.Notification -> notificationPermissionHandler.openSettings()
+            PermissionType.BatteryOptimisation -> batteryPermissionHandler.openSettings()
+            PermissionType.Alarm -> alarmPermissionHandler.openSettings()
+        }
     }
 
-    private fun getPendingPermission(): UiPermissionState =
-        savedStateHandle[PENDING_ALARM_PERMISSION] ?: UiPermissionState.NOT_REQUIRED
+    fun checkPermissions() {
+        for (permission in PermissionType.entries) {
+            when (permission) {
+                PermissionType.Notification ->
+                    _uiPermissions.update { currentPermissions ->
+                        currentPermissions + (PermissionType.Notification to if (notificationPermissionHandler.isGranted()) UiPermissionState.NotRequired else UiPermissionState.Required)
+                    }
 
-    private fun removePendingPermission() {
-        savedStateHandle.remove<UiPermissionState>(PENDING_ALARM_PERMISSION)
-    }
+                PermissionType.BatteryOptimisation ->
+                    _uiPermissions.update { currentPermissions ->
+                        currentPermissions + (PermissionType.BatteryOptimisation to if (batteryPermissionHandler.isGranted()) UiPermissionState.NotRequired else UiPermissionState.Required)
+                    }
 
-    companion object {
-        private const val PENDING_ALARM_PERMISSION = "pendingAlarmPermission"
+                PermissionType.Alarm ->
+                    _uiPermissions.update { currentPermissions ->
+                        currentPermissions + (PermissionType.Alarm to if (alarmPermissionHandler.isGranted()) UiPermissionState.NotRequired else UiPermissionState.Required)
+                    }
+            }
+        }
     }
 }
