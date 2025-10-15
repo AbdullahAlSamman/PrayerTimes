@@ -1,6 +1,8 @@
 package com.gals.prayertimes.permissions
 
 import androidx.lifecycle.ViewModel
+import com.gals.prayertimes.permissions.PermissionScreen.PermissionState.NotRequired
+import com.gals.prayertimes.permissions.PermissionScreen.PermissionState.Required
 import com.gals.prayertimes.permissions.alarm.AlarmPermissionHandler
 import com.gals.prayertimes.permissions.battery.BatteryOptimizationPermissionHandler
 import com.gals.prayertimes.permissions.notification.NotificationPermissionHandler
@@ -13,50 +15,50 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PermissionViewModel @Inject constructor(
-    private val notificationPermissionHandler: NotificationPermissionHandler,
     private val alarmPermissionHandler: AlarmPermissionHandler,
+    private val notificationPermissionHandler: NotificationPermissionHandler,
     private val batteryPermissionHandler: BatteryOptimizationPermissionHandler
 ) : ViewModel() {
-    //TODO add loading and content state while checking permissions
-    private val _uiPermissions =
-        MutableStateFlow(PermissionType.entries.associateWith { UiPermissionState.Required })
-    val uiPermissionStates: StateFlow<Map<PermissionType, UiPermissionState>> =
-        _uiPermissions.asStateFlow()
+    private val _uiState = MutableStateFlow<PermissionScreen.State>(PermissionScreen.State.Loading)
+    val uiState: StateFlow<PermissionScreen.State> = _uiState.asStateFlow()
 
-    fun requestPermission(permission: PermissionType) {
+    init {
+        checkPermissions()
+    }
+
+    fun requestPermission(permission: PermissionScreen.PermissionType) {
         when (permission) {
-            PermissionType.Notification -> notificationPermissionHandler.requestPermission()
-            PermissionType.BatteryOptimisation -> batteryPermissionHandler.requestPermission()
-            PermissionType.Alarm -> alarmPermissionHandler.requestPermission()
+            PermissionScreen.PermissionType.Notification -> notificationPermissionHandler.requestPermission()
+            PermissionScreen.PermissionType.BatteryOptimisation -> batteryPermissionHandler.requestPermission()
+            PermissionScreen.PermissionType.Alarm -> alarmPermissionHandler.requestPermission()
         }
     }
 
-    fun openSettings(permission: PermissionType) {
+    fun openSettings(permission: PermissionScreen.PermissionType) {
         when (permission) {
-            PermissionType.Notification -> notificationPermissionHandler.openSettings()
-            PermissionType.BatteryOptimisation -> batteryPermissionHandler.openSettings()
-            PermissionType.Alarm -> alarmPermissionHandler.openSettings()
+            PermissionScreen.PermissionType.Notification -> notificationPermissionHandler.openSettings()
+            PermissionScreen.PermissionType.BatteryOptimisation -> batteryPermissionHandler.openSettings()
+            PermissionScreen.PermissionType.Alarm -> alarmPermissionHandler.openSettings()
         }
     }
 
-    fun checkPermissions() {
-        for (permission in PermissionType.entries) {
-            when (permission) {
-                PermissionType.Notification ->
-                    _uiPermissions.update { currentPermissions ->
-                        currentPermissions + (PermissionType.Notification to if (notificationPermissionHandler.isGranted()) UiPermissionState.NotRequired else UiPermissionState.Required)
-                    }
+    fun updatePermissions() {
+        _uiState.update { PermissionScreen.State.Loading }
+        checkPermissions()
+    }
 
-                PermissionType.BatteryOptimisation ->
-                    _uiPermissions.update { currentPermissions ->
-                        currentPermissions + (PermissionType.BatteryOptimisation to if (batteryPermissionHandler.isGranted()) UiPermissionState.NotRequired else UiPermissionState.Required)
-                    }
-
-                PermissionType.Alarm ->
-                    _uiPermissions.update { currentPermissions ->
-                        currentPermissions + (PermissionType.Alarm to if (alarmPermissionHandler.isGranted()) UiPermissionState.NotRequired else UiPermissionState.Required)
-                    }
-            }
+    private fun checkPermissions() {
+        _uiState.update {
+            PermissionScreen.State.Content(
+                permissions = PermissionScreen.PermissionType.entries.associate { it.checkPermission() }
+            )
         }
     }
+
+    private fun PermissionScreen.PermissionType.checkPermission(): Pair<PermissionScreen.PermissionType, PermissionScreen.PermissionState> =
+        when (this) {
+            PermissionScreen.PermissionType.Notification -> (PermissionScreen.PermissionType.Notification to if (notificationPermissionHandler.isGranted()) NotRequired else Required)
+            PermissionScreen.PermissionType.BatteryOptimisation -> (PermissionScreen.PermissionType.BatteryOptimisation to if (batteryPermissionHandler.isGranted()) NotRequired else Required)
+            PermissionScreen.PermissionType.Alarm -> (PermissionScreen.PermissionType.Alarm to if (alarmPermissionHandler.isGranted()) NotRequired else Required)
+        }
 }

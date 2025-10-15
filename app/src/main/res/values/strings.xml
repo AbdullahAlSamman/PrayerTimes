@@ -78,6 +78,7 @@
     <string name="text_permission_go_to_settings_button">فتح الإعدادات</string>
     <string name="text_permission_request_button">منح الإذن</string>
     <string name="text_permission_all_done">تم منح جميع الإذونات اللازمة</string>
+    <string name="text_permission_continue">متابعة</string>
     <string name="text_notification_selected_prayers">التنبيه للصلوات المختارة:</string>
     <string name="content_descriptor_settings_icon">settings icon</string>
     <string name="content_descriptor_background">Background with moon or sun</string>

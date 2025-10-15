@@ -54,19 +54,27 @@ import com.google.accompanist.permissions.rememberPermissionState
 import com.google.accompanist.permissions.shouldShowRationale
 import timber.log.Timber
 
-enum class UiPermissionState {
-    Required,
-    NotRequired
-}
-
-enum class PermissionType {
-    Notification,
-    BatteryOptimisation,
-    Alarm
-}
 
 @OptIn(ExperimentalPermissionsApi::class, ExperimentalMaterial3Api::class)
 object PermissionScreen {
+
+    sealed class State {
+        data object Loading : State()
+        data class Content(
+            val permissions: Map<PermissionType, PermissionState>
+        ) : State()
+    }
+
+    enum class PermissionState {
+        Required,
+        NotRequired
+    }
+
+    enum class PermissionType {
+        Notification,
+        BatteryOptimisation,
+        Alarm
+    }
 
     @Composable
     operator fun invoke(
@@ -75,74 +83,85 @@ object PermissionScreen {
         onFinish: () -> Unit
     ) {
         val lifecycleState by LocalLifecycleOwner.current.lifecycle.currentStateFlow.collectAsState()
-        val permissionStates by viewModel.uiPermissionStates.collectAsState()
-        val notificationPermissionState: PermissionState? = if (upAPILevel33) {
-            rememberPermissionState(Manifest.permission.POST_NOTIFICATIONS)
-        } else null
-        val requirePermissions =
-            permissionStates.filter { it.value == UiPermissionState.Required }.toList()
-        val pagerState = rememberPagerState { requirePermissions.size }
+        val permissionStates by viewModel.uiState.collectAsState()
+        val notificationPermissionState =
+            if (upAPILevel33) {
+                rememberPermissionState(Manifest.permission.POST_NOTIFICATIONS)
+            } else null
 
-        LaunchedEffect(lifecycleState) {
-            if (lifecycleState == Lifecycle.State.RESUMED) {
-                Timber.tag("permission").i("Permission Screen Resumed")
-                viewModel.checkPermissions()
+        when (permissionStates) {
+            State.Loading -> {
+                TODO("loading screen state")
+            }
+
+            is State.Content -> {
+                with(permissionStates as State.Content) {
+                    val requirePermissions = permissions.filter { it.value == PermissionScreen.PermissionState.Required }.toList()
+                    val pagerState = rememberPagerState { requirePermissions.size }
+
+                    LaunchedEffect(lifecycleState) {
+                        if (lifecycleState == Lifecycle.State.RESUMED) {
+                            Timber.tag("permission").i("Permission Screen Resumed")
+                            viewModel.updatePermissions()
+                        }
+                    }
+
+                    Scaffold(
+                        contentWindowInsets = WindowInsets.safeDrawing,
+                        content = { innerPadding ->
+                            Box(
+                                modifier = Modifier
+                                    .padding(innerPadding)
+                                    .padding(horizontal = 16.dp)
+                                    .fillMaxSize()
+                            ) {
+                                IconButton(onClick = onBackClicked) {
+                                    Icon(
+                                        modifier = Modifier.size(48.dp),
+                                        imageVector = Icons.Outlined.Close,
+                                        contentDescription = stringResource(id = R.string.content_descriptor_back_arrow)
+                                    )
+                                }
+                                if (requirePermissions.isNotEmpty()) {
+                                    HorizontalPager(
+                                        modifier = Modifier
+                                            .fillMaxSize()
+                                            .align(Alignment.Center),
+                                        state = pagerState
+                                    ) { page ->
+                                        PageContent(
+                                            permission = requirePermissions[page].first,
+                                            notificationPermissionState = notificationPermissionState,
+                                            onRequestPermission = viewModel::requestPermission,
+                                            onOpenSettings = viewModel::openSettings
+                                        )
+                                    }
+
+                                    PageIndicator(
+                                        pagerState = pagerState,
+                                        modifier = Modifier
+                                            .padding(16.dp)
+                                            .align(Alignment.BottomCenter)
+                                    )
+
+                                } else {
+                                    PermissionInfo(
+                                        modifier = Modifier.align(Alignment.Center),
+                                        icon = Icons.Filled.DoneAll,
+                                        iconDescription = "",
+                                        title = stringResource(R.string.text_permission_all_done),
+                                        buttons = {
+                                            Button(onClick = onFinish) {
+                                                Text(text = stringResource(R.string.text_permission_continue))
+                                            }
+                                        }
+                                    )
+                                }
+                            }
+                        })
+                }
             }
         }
-
-        Scaffold(
-            contentWindowInsets = WindowInsets.safeDrawing,
-            content = { innerPadding ->
-                Box(
-                    modifier = Modifier
-                        .padding(innerPadding)
-                        .padding(horizontal = 16.dp)
-                ) {
-                    IconButton(onClick = onBackClicked) {
-                        Icon(
-                            modifier = Modifier.size(48.dp),
-                            imageVector = Icons.Outlined.Close,
-                            contentDescription = stringResource(id = R.string.content_descriptor_back_arrow)
-                        )
-                    }
-                    if (requirePermissions.isNotEmpty()) {
-                        HorizontalPager(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .align(Alignment.Center),
-                            state = pagerState
-                        ) { page ->
-                            PageContent(
-                                permission = requirePermissions[page].first,
-                                notificationPermissionState = notificationPermissionState,
-                                onRequestPermission = viewModel::requestPermission,
-                                onOpenSettings = viewModel::openSettings
-                            )
-                        }
-
-                        PageIndicator(
-                            pagerState = pagerState,
-                            modifier = Modifier
-                                .padding(16.dp)
-                                .align(Alignment.BottomCenter)
-                        )
-
-                    } else {
-                        //TODO close up permission screen instead
-                        Box(
-                            modifier = Modifier.fillMaxSize(),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            PermissionInfo(
-                                icon = Icons.Filled.DoneAll,
-                                iconDescription = "",
-                                title = stringResource(R.string.text_permission_all_done),
-                                buttons = {}
-                            )
-                        }
-                    }
-                }
-            })
     }
 }
 
@@ -150,10 +169,10 @@ object PermissionScreen {
 @Composable
 @OptIn(ExperimentalPermissionsApi::class)
 private fun PageContent(
-    permission: PermissionType,
+    permission: PermissionScreen.PermissionType,
     notificationPermissionState: PermissionState?,
-    onRequestPermission: (PermissionType) -> Unit,
-    onOpenSettings: (PermissionType) -> Unit,
+    onRequestPermission: (PermissionScreen.PermissionType) -> Unit,
+    onOpenSettings: (PermissionScreen.PermissionType) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -162,7 +181,7 @@ private fun PageContent(
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         when (permission) {
-            PermissionType.Notification -> {
+            PermissionScreen.PermissionType.Notification -> {
                 notificationPermissionState?.let {
                     val status = it.status
                     PermissionInfo(
@@ -173,7 +192,7 @@ private fun PageContent(
                         buttons = {
                             when {
                                 !status.shouldShowRationale && status != PermissionStatus.Granted -> {
-                                    Button(onClick = { onOpenSettings(PermissionType.Notification) }) {
+                                    Button(onClick = { onOpenSettings(PermissionScreen.PermissionType.Notification) }) {
                                         Text(text = stringResource(R.string.text_permission_go_to_settings_button))
                                     }
                                 }
@@ -189,7 +208,7 @@ private fun PageContent(
                 }
             }
 
-            PermissionType.BatteryOptimisation -> {
+            PermissionScreen.PermissionType.BatteryOptimisation -> {
                 PermissionInfo(
                     icon = Icons.Filled.BatterySaver,
                     iconDescription = "",
@@ -202,7 +221,7 @@ private fun PageContent(
                 )
             }
 
-            PermissionType.Alarm -> {
+            PermissionScreen.PermissionType.Alarm -> {
                 PermissionInfo(
                     icon = Icons.Filled.AlarmOn,
                     iconDescription = "",
