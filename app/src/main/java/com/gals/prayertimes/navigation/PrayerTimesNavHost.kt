@@ -9,6 +9,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.toRoute
 import com.gals.prayertimes.R
 import com.gals.prayertimes.main.MainScreen
 import com.gals.prayertimes.navigation.PrayerTimesNavHost.NavDestination
@@ -18,6 +19,7 @@ import com.gals.prayertimes.settings.screens.PrivacyPolicyScreen
 import com.gals.prayertimes.settings.screens.SettingsMenuScreen
 import com.gals.prayertimes.settings.screens.UiMenuItem
 import kotlinx.serialization.Serializable
+import kotlin.reflect.typeOf
 
 
 object PrayerTimesNavHost {
@@ -36,7 +38,9 @@ object PrayerTimesNavHost {
         data object Notification : NavDestination()
 
         @Serializable
-        data object Permission : NavDestination()
+        data class Permission(
+            val nextDestination: NavDestination
+        ) : NavDestination()
     }
 
     @Composable
@@ -90,10 +94,17 @@ object PrayerTimesNavHost {
                 )
             }
 
-            composable<NavDestination.Permission> {
+            composable<NavDestination.Permission>(
+                typeMap = mapOf(typeOf<NavDestination>() to CustomNavTypes.NavDestination)
+            ) { backStackEntry ->
+                val permissionRoute: NavDestination.Permission = backStackEntry.toRoute()
                 PermissionScreen(
-                    onBackClicked = { navController.popBackStack() },
-                    onFinish = { navController.navigateUp() }
+                    onBackClicked = { navController.navigateUp() },
+                    onFinish = {
+                        navController.navigate(permissionRoute.nextDestination) {
+                            popUpTo<NavDestination.Permission> { inclusive = true }
+                        }
+                    }
                 )
             }
         }
@@ -104,10 +115,9 @@ private fun NavController.navigateToGrantPermission(
     areAllPermissionsGranted: Boolean,
     destination: NavDestination
 ) {
-    //TODO add next destination which is the origin destination.
     if (areAllPermissionsGranted) {
         navigate(destination)
     } else {
-        navigate(NavDestination.Permission)
+        navigate(NavDestination.Permission(destination))
     }
 }

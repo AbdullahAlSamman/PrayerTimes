@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import com.gals.prayertimes.R
 import com.gals.prayertimes.common.ConnectivityException
 import com.gals.prayertimes.common.DefaultDispatcher
-import com.gals.prayertimes.common.NetworkException
 import com.gals.prayertimes.common.ServerException
 import com.gals.prayertimes.common.ViewModelScreenUpdater
 import com.gals.prayertimes.common.mappers.toPrayer
@@ -44,7 +43,6 @@ class MainViewModel @Inject constructor(
     private val formatter: Formatter
 ) : ViewModel() {
     private var todayPrayers = PrayerEntity()
-
     private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
     private val _uiNextPrayer = MutableStateFlow(UiNextPrayer())
 
@@ -77,10 +75,9 @@ class MainViewModel @Inject constructor(
 
         updateNextPrayerState()
 
-    } catch (e: Exception) {
-        Timber.e("flow update error: ${e.message.toString()}")
-        //TODO: not handled correctly show should check for exception type
-        _uiState.update { UiState.Error(resourceProvider.getString(R.string.text_error_server_down)) }
+    } catch (error: Exception) {
+        Timber.e("flow update error: ${error.message.toString()}")
+        error.toUiError()
     }
 
     /**update the time to next prayer*/
@@ -100,21 +97,8 @@ class MainViewModel @Inject constructor(
         }
         viewModelScope.launch(context = dispatcher) {
             repository.fetchPrayer(todayDate())
-                .catch { cause ->
-                    when (cause) {
-                        is ConnectivityException -> {
-                            _uiState.update { UiState.Error(resourceProvider.getString(R.string.text_error_check_internet)) }
-                        }
-
-                        is NetworkException -> {
-                            _uiState.update { UiState.Error(resourceProvider.getString(R.string.text_error_server_down)) }
-                        }
-
-                        is ServerException -> {
-                            _uiState.update { UiState.Error(resourceProvider.getString(R.string.text_error_server_no_data)) }
-                        }
-                    }
-                }.map { prayer ->
+                .catch { cause -> cause.toUiError() }
+                .map { prayer ->
                     todayPrayers = prayer
                     prayer.toPrayer(resourceProvider, formatter)
                 }.collect { prayers ->
@@ -125,6 +109,13 @@ class MainViewModel @Inject constructor(
                 }
         }
     }
+
+    private fun Throwable.toUiError() =
+        when (this) {
+            is ConnectivityException -> _uiState.update { UiState.Error(resourceProvider.getString(R.string.text_error_check_internet)) }
+            is ServerException -> _uiState.update { UiState.Error(resourceProvider.getString(R.string.text_error_server_no_data)) }
+            else -> _uiState.update { UiState.Error(resourceProvider.getString(R.string.text_error_server_down)) }
+        }
 
     companion object {
         const val STRING_DATE_SEPARATOR = "."

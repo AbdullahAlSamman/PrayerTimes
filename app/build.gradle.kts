@@ -87,8 +87,8 @@ android {
         implementation(libs.bundles.retrofit)
         ksp(libs.retrofit.moshi.kotlin.codegen)
 
-        //Coroutines
-        implementation(libs.kotlinx.coroutines)
+        //kotlinx
+        implementation(libs.bundles.kotlinx)
 
         //Room
         implementation(libs.bundles.androidx.room)

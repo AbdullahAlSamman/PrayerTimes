@@ -16,6 +16,7 @@ jupiter = "5.14.0"
 mockk = "1.14.5"
 turbine = "1.2.1"
 kotlin-coroutines = "1.10.2"
+kotlin-serialization = "1.9.0"
 google-services = "4.4.3"
 gradle = "8.13.0"
 ksp = "2.2.20-2.0.3"
@@ -49,6 +50,7 @@ androidx-work-manager = { group = "androidx.work", name = "work-runtime-ktx", ve
 androidx-work-manager-hilt = { group = "androidx.hilt", name = "hilt-work", version.ref = "work-hilt" }
 
 kotlinx-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "kotlin-coroutines" }
+kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlin-serialization" }
 
 retrofit-okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "ok-http" }
 retrofit-convertor-gson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofit" }
@@ -126,4 +128,9 @@ unit-test = [
 hilt = [
     "google-dagger-hilt-android",
     "androidx-hilt-navigation-compose"
+]
+
+kotlinx = [
+    "kotlinx-coroutines",
+    "kotlinx-serialization-json"
 ]
