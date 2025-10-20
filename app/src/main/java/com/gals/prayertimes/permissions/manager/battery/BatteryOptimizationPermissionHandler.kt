@@ -1,11 +1,11 @@
-package com.gals.prayertimes.permissions.battery
+package com.gals.prayertimes.permissions.manager.battery
 
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.PowerManager
 import android.provider.Settings
-import com.gals.prayertimes.permissions.PermissionHandler
+import com.gals.prayertimes.permissions.manager.PermissionHandler
 import com.gals.prayertimes.utils.upAPILevel23
 import dagger.hilt.android.qualifiers.ApplicationContext
 import timber.log.Timber

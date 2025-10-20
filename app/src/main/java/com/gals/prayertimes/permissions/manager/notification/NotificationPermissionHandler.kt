@@ -1,10 +1,10 @@
-package com.gals.prayertimes.permissions.notification
+package com.gals.prayertimes.permissions.manager.notification
 
 import android.content.Context
 import android.content.Intent
 import android.provider.Settings
 import androidx.core.app.NotificationManagerCompat
-import com.gals.prayertimes.permissions.PermissionHandler
+import com.gals.prayertimes.permissions.manager.PermissionHandler
 import com.gals.prayertimes.utils.upAPILevel33
 import dagger.hilt.android.qualifiers.ApplicationContext
 import timber.log.Timber

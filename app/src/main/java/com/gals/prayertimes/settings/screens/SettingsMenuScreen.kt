@@ -26,23 +26,28 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.gals.prayertimes.R
+import com.gals.prayertimes.settings.SettingsMenuViewModel
 import com.gals.prayertimes.settings.screens.components.NavigationBackArrow
 import com.gals.prayertimes.ui.theme.PrayerTypography
 
 data class UiMenuItem(
     @DrawableRes val icon: Int = 0,
     @StringRes val title: Int = 0,
-    val navigateTo: () -> Unit = {}
+    val navigateTo: (arePermissionsGranted: Boolean) -> Unit = {}
 )
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
+@OptIn(ExperimentalMaterial3Api::class)
 fun SettingsMenuScreen(
     onBackClicked: () -> Unit,
     uiMenuItems: List<UiMenuItem>,
+    viewModel: SettingsMenuViewModel = hiltViewModel(),
     textStyle: TextStyle = PrayerTypography.headlineMedium
 ) {
+    val arePermissionsGranted = viewModel.areAllPermissionsGranted()
+
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -56,9 +61,7 @@ fun SettingsMenuScreen(
                     )
                 },
                 navigationIcon = {
-                    NavigationBackArrow(
-                        onBackAction = onBackClicked
-                    )
+                    NavigationBackArrow(onBackAction = onBackClicked)
                 },
                 actions = {/* no-op */ }
             )
@@ -70,7 +73,7 @@ fun SettingsMenuScreen(
                     .padding(innerPadding),
                 content = {
                     items(uiMenuItems) { item ->
-                        MenuItem(uiMenuItem = item)
+                        MenuItem(uiMenuItem = item, arePermissionsGranted = arePermissionsGranted)
                     }
                 }
             )
@@ -82,15 +85,15 @@ fun SettingsMenuScreen(
 @OptIn(ExperimentalComposeUiApi::class)
 fun MenuItem(
     uiMenuItem: UiMenuItem,
+    arePermissionsGranted: Boolean,
     textStyle: TextStyle = PrayerTypography.headlineSmall
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(all = 16.dp)
-            .clickable { uiMenuItem.navigateTo() }
-    )
-    {
+            .clickable { uiMenuItem.navigateTo(arePermissionsGranted) }
+    ) {
         Icon(
             modifier = Modifier
                 .size(50.dp)

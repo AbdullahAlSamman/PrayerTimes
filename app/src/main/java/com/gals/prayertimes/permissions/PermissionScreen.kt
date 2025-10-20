@@ -24,7 +24,9 @@ import androidx.compose.material.icons.filled.DoneAll
 import androidx.compose.material.icons.filled.NotificationsActive
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material3.Button
+import androidx.compose.material3.ContainedLoadingIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -46,6 +48,9 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.gals.prayertimes.R
+import com.gals.prayertimes.permissions.model.PermissionType
+import com.gals.prayertimes.ui.theme.colorBackgroundFajer
+import com.gals.prayertimes.ui.theme.colorBackgroundIsha
 import com.gals.prayertimes.utils.upAPILevel33
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionState
@@ -53,27 +58,21 @@ import com.google.accompanist.permissions.PermissionStatus
 import com.google.accompanist.permissions.rememberPermissionState
 import com.google.accompanist.permissions.shouldShowRationale
 import timber.log.Timber
+import com.gals.prayertimes.permissions.model.PermissionState as UiPermissionState
 
 
-@OptIn(ExperimentalPermissionsApi::class, ExperimentalMaterial3Api::class)
+@OptIn(
+    ExperimentalPermissionsApi::class,
+    ExperimentalMaterial3Api::class,
+    ExperimentalMaterial3ExpressiveApi::class
+)
 object PermissionScreen {
 
     sealed class State {
         data object Loading : State()
         data class Content(
-            val permissions: Map<PermissionType, PermissionState>
+            val permissions: Map<PermissionType, UiPermissionState>
         ) : State()
-    }
-
-    enum class PermissionState {
-        Required,
-        NotRequired
-    }
-
-    enum class PermissionType {
-        Notification,
-        BatteryOptimisation,
-        Alarm
     }
 
     @Composable
@@ -91,12 +90,21 @@ object PermissionScreen {
 
         when (permissionStates) {
             State.Loading -> {
-                TODO("loading screen state")
+                Box(Modifier.fillMaxSize()) {
+                    ContainedLoadingIndicator(
+                        modifier = Modifier
+                            .size(64.dp)
+                            .align(Alignment.Center),
+                        indicatorColor = colorBackgroundFajer,
+                        containerColor = colorBackgroundIsha
+                    )
+                }
             }
 
             is State.Content -> {
                 with(permissionStates as State.Content) {
-                    val requirePermissions = permissions.filter { it.value == PermissionScreen.PermissionState.Required }.toList()
+                    val requirePermissions =
+                        permissions.filter { it.value == UiPermissionState.Required }.toList()
                     val pagerState = rememberPagerState { requirePermissions.size }
 
                     LaunchedEffect(lifecycleState) {
@@ -169,10 +177,10 @@ object PermissionScreen {
 @Composable
 @OptIn(ExperimentalPermissionsApi::class)
 private fun PageContent(
-    permission: PermissionScreen.PermissionType,
+    permission: PermissionType,
     notificationPermissionState: PermissionState?,
-    onRequestPermission: (PermissionScreen.PermissionType) -> Unit,
-    onOpenSettings: (PermissionScreen.PermissionType) -> Unit,
+    onRequestPermission: (PermissionType) -> Unit,
+    onOpenSettings: (PermissionType) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -181,7 +189,7 @@ private fun PageContent(
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         when (permission) {
-            PermissionScreen.PermissionType.Notification -> {
+            PermissionType.Notification -> {
                 notificationPermissionState?.let {
                     val status = it.status
                     PermissionInfo(
@@ -192,7 +200,7 @@ private fun PageContent(
                         buttons = {
                             when {
                                 !status.shouldShowRationale && status != PermissionStatus.Granted -> {
-                                    Button(onClick = { onOpenSettings(PermissionScreen.PermissionType.Notification) }) {
+                                    Button(onClick = { onOpenSettings(PermissionType.Notification) }) {
                                         Text(text = stringResource(R.string.text_permission_go_to_settings_button))
                                     }
                                 }
@@ -208,7 +216,7 @@ private fun PageContent(
                 }
             }
 
-            PermissionScreen.PermissionType.BatteryOptimisation -> {
+            PermissionType.BatteryOptimisation -> {
                 PermissionInfo(
                     icon = Icons.Filled.BatterySaver,
                     iconDescription = "",
@@ -221,7 +229,7 @@ private fun PageContent(
                 )
             }
 
-            PermissionScreen.PermissionType.Alarm -> {
+            PermissionType.Alarm -> {
                 PermissionInfo(
                     icon = Icons.Filled.AlarmOn,
                     iconDescription = "",

@@ -1,4 +1,4 @@
-package com.gals.prayertimes.permissions
+package com.gals.prayertimes.permissions.manager
 
 /**
  * An interface for handling different types of permissions required by the application.

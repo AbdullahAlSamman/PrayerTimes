@@ -1,11 +1,11 @@
-package com.gals.prayertimes.permissions.alarm
+package com.gals.prayertimes.permissions.manager.alarm
 
 import android.app.AlarmManager
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.provider.Settings
-import com.gals.prayertimes.permissions.PermissionHandler
+import com.gals.prayertimes.permissions.manager.PermissionHandler
 import com.gals.prayertimes.utils.upAPILevel31
 import dagger.hilt.android.qualifiers.ApplicationContext
 import timber.log.Timber

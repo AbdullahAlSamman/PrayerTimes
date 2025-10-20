@@ -8,7 +8,7 @@ import com.gals.prayertimes.common.NotificationType
 import com.gals.prayertimes.common.UiPrayerName
 import com.gals.prayertimes.handlers.notification.NotificationHandler
 import com.gals.prayertimes.main.MainActivity
-import com.gals.prayertimes.permissions.notification.NotificationPermissionHandler
+import com.gals.prayertimes.permissions.manager.notification.NotificationPermissionHandler
 import com.gals.prayertimes.utils.upAPILevel31
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber

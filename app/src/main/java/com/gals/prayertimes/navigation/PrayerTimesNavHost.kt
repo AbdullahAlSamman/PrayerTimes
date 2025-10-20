@@ -64,9 +64,9 @@ object PrayerTimesNavHost {
                         UiMenuItem(
                             icon = R.drawable.icon_notification_active,
                             title = R.string.text_settings_notifiaction,
-                            navigateTo = {
+                            navigateTo = { arePermissionsGranted ->
                                 navController.navigateToGrantPermission(
-                                    false, //TODO: check permission before navigation
+                                    arePermissionsGranted,
                                     NavDestination.Notification
                                 )
                             }
@@ -74,7 +74,7 @@ object PrayerTimesNavHost {
                         UiMenuItem(
                             icon = R.drawable.icon_privacy_policy,
                             title = R.string.text_settings_privacy_policy,
-                            navigateTo = { navController.navigate(NavDestination.PrivacyPolicy) }
+                            navigateTo = { _ -> navController.navigate(NavDestination.PrivacyPolicy) }
                         )
                     )
                 )

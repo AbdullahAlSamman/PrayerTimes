@@ -18,7 +18,7 @@ import com.gals.prayertimes.R
 import com.gals.prayertimes.common.NotificationType
 import com.gals.prayertimes.common.UiPrayerName
 import com.gals.prayertimes.common.mappers.getStringId
-import com.gals.prayertimes.permissions.notification.NotificationPermissionHandler
+import com.gals.prayertimes.permissions.manager.notification.NotificationPermissionHandler
 import com.gals.prayertimes.utils.ResourceProvider
 import dagger.hilt.android.qualifiers.ApplicationContext
 import timber.log.Timber
