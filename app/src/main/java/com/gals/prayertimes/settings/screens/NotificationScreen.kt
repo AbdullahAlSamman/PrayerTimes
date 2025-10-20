@@ -21,7 +21,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.gals.prayertimes.R
 import com.gals.prayertimes.common.NotificationType
 import com.gals.prayertimes.common.UiPrayerName
@@ -39,7 +39,7 @@ internal fun NotificationScreen(
     onBackClicked: () -> Unit,
     textStyle: TextStyle = PrayerTypography.headlineMedium,
     viewModel: NotificationViewModel = hiltViewModel()
-) { //TODO if any permissions are missing open permission screen
+) {
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(

@@ -20,4 +20,3 @@ class SystemUtils @Inject constructor(
                 capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)
     }
 }
-

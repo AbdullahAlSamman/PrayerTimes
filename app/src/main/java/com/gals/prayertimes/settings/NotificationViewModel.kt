@@ -35,7 +35,7 @@ class NotificationViewModel @Inject constructor(
     private val alarmHandler: AlarmHandler,
     private val prayerCalculation: PrayerCalculation,
     private val workManager: WorkManager
-) : ViewModel() { // TODO if permission changed by user reopen permission screen
+) : ViewModel() {
     private val _uiSelectedRadio = MutableStateFlow(NotificationType.SILENT)
     private val _uiSwitchState = MutableStateFlow(false)
     private val _uiSelectedPrayerAlarms =
@@ -54,15 +54,12 @@ class NotificationViewModel @Inject constructor(
         _uiSelectedRadio.update { value }
     }
 
-    fun updateSwitchState(value: Boolean) {
+    fun updateSwitchState(value: Boolean) =
         if (value) {
-            if (alarmHandler.canScheduleAlarms()) {
-                _uiSwitchState.update { true }
-            }
+            _uiSwitchState.update { true }
         } else {
             _uiSwitchState.update { false }
         }
-    }
 
     fun updateSelectedAlarms(prayerName: UiPrayerName, isSelected: Boolean) {
         _uiSelectedPrayerAlarms.update { oldMap -> oldMap + (prayerName to isSelected) }
@@ -110,12 +107,7 @@ class NotificationViewModel @Inject constructor(
             val settings = repository.getSettings()
             _uiSelectedRadio.update { settings.notificationType }
             _uiSelectedPrayerAlarms.update { settings.toPrayerNotification() }
-
-            if (alarmHandler.canScheduleAlarms()) {
-                _uiSwitchState.update { settings.notification }
-            } else {
-                _uiSwitchState.update { false }
-            }
+            _uiSwitchState.update { settings.notification }
         }
     }
 

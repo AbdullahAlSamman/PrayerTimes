@@ -45,13 +45,11 @@ object PrayerTimesNavHost {
 
     @Composable
     operator fun invoke(
-        navController: NavHostController,
-        modifier: Modifier = Modifier
+        navController: NavHostController
     ) {
         NavHost(
             navController = navController,
-            startDestination = NavDestination.Home,
-            modifier = modifier
+            startDestination = NavDestination.Home
         ) {
             composable<NavDestination.Home> {
                 MainScreen(onSettingsClicked = { navController.navigate(NavDestination.Menu) })
