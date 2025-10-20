@@ -1,5 +1,6 @@
 package com.gals.prayertimes.permissions.manager.battery
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -27,6 +28,7 @@ class BatteryOptimizationPermissionHandler @Inject constructor(
             true
         }
 
+    @SuppressLint("BatteryLife")
     override fun requestPermission() {
         if (upAPILevel23) {
             val intent = Intent().apply {

@@ -4,11 +4,11 @@ import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import androidx.annotation.RequiresPermission
 import com.gals.prayertimes.common.NotificationType
 import com.gals.prayertimes.common.UiPrayerName
 import com.gals.prayertimes.handlers.notification.NotificationHandler
 import com.gals.prayertimes.main.MainActivity
-import com.gals.prayertimes.permissions.manager.notification.NotificationPermissionHandler
 import com.gals.prayertimes.utils.upAPILevel31
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
@@ -20,12 +20,10 @@ class AlarmReceiver : BroadcastReceiver() {
     @Inject
     lateinit var notificationHandler: NotificationHandler
 
-    @Inject
-    lateinit var notificationPermissionHandler: NotificationPermissionHandler
-
+    @RequiresPermission(android.Manifest.permission.POST_NOTIFICATIONS)
     override fun onReceive(context: Context?, intent: Intent?) {
 
-        context?.let {
+        context?.let{
             val notificationType =
                 NotificationType.fromString(intent?.getStringExtra(INTENT_EXTRA_NOTIFICATION_TYPE))
             val prayerName =
@@ -43,13 +41,11 @@ class AlarmReceiver : BroadcastReceiver() {
                     PendingIntent.FLAG_IMMUTABLE else PendingIntent.FLAG_UPDATE_CURRENT
             )
 
-            if (notificationPermissionHandler.isGranted()) {
-                notificationHandler.showAlarmNotification(
-                    pendingIntent = tapIntent,
-                    notificationType = notificationType,
-                    prayer = prayerName
-                )
-            }
+            notificationHandler.showAlarmNotification(
+                pendingIntent = tapIntent,
+                notificationType = notificationType,
+                prayer = prayerName
+            )
 
             Timber.i("Notification should be shown for $prayerName")
         }
