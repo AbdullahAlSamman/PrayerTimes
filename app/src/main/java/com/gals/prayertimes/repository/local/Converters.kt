@@ -1,7 +1,7 @@
 package com.gals.prayertimes.repository.local
 
 import androidx.room.TypeConverter
-import com.gals.prayertimes.model.NotificationType
+import com.gals.prayertimes.common.NotificationType
 
 object Converters {
     @TypeConverter

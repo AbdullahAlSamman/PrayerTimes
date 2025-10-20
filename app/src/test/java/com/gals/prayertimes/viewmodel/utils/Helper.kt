@@ -1,12 +1,11 @@
 package com.gals.prayertimes.viewmodel.utils
 
-import com.gals.prayertimes.model.NextPrayerConfig
-import com.gals.prayertimes.model.UiDate
-import com.gals.prayertimes.model.UiPrayer
-import com.gals.prayertimes.model.UiPrayerName
+import com.gals.prayertimes.common.NextPrayerConfig
+import com.gals.prayertimes.common.UiPrayerName
+import com.gals.prayertimes.main.model.UiDate
+import com.gals.prayertimes.main.model.UiPrayer
 import com.gals.prayertimes.repository.local.entities.PrayerEntity
 
-const val errorMessage = "errorMessage"
 const val anyString = "anyString"
 const val dateString = "dateString"
 

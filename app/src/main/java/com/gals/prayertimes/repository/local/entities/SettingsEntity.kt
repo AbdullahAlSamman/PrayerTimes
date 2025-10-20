@@ -3,8 +3,8 @@ package com.gals.prayertimes.repository.local.entities
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.gals.prayertimes.model.NotificationType
-import com.gals.prayertimes.model.UiPrayerName
+import com.gals.prayertimes.common.NotificationType
+import com.gals.prayertimes.common.UiPrayerName
 
 @Entity(tableName = "settings")
 data class SettingsEntity(

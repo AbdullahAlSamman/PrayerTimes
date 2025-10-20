@@ -1,7 +1,8 @@
 package com.gals.prayertimes.viewmodel
 
 import app.cash.turbine.test
-import com.gals.prayertimes.model.UiState
+import com.gals.prayertimes.main.MainViewModel
+import com.gals.prayertimes.main.model.UiState
 import com.gals.prayertimes.repository.Repository
 import com.gals.prayertimes.repository.local.entities.PrayerEntity
 import com.gals.prayertimes.utils.Formatter

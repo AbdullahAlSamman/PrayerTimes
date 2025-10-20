@@ -1,7 +1,7 @@
 package com.gals.prayertimes.utils
 
-import com.gals.prayertimes.model.DefaultDispatcher
-import com.gals.prayertimes.model.TestDispatcher
+import com.gals.prayertimes.common.DefaultDispatcher
+import com.gals.prayertimes.common.TestDispatcher
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow

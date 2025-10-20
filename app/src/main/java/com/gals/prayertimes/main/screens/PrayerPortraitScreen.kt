@@ -1,0 +1,66 @@
+package com.gals.prayertimes.main.screens
+
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.unit.dp
+import com.gals.prayertimes.common.UiPrayerName
+import com.gals.prayertimes.main.model.UiDate
+import com.gals.prayertimes.main.model.UiNextPrayer
+import com.gals.prayertimes.main.screens.details.PrayerDateBar
+import com.gals.prayertimes.main.screens.details.PrayerHeader
+import com.gals.prayertimes.main.screens.details.PrayerSingleView
+
+@Composable
+internal fun PrayerPortraitScreen(
+    innerPadding: PaddingValues,
+    prayers: Map<UiPrayerName, String>,
+    uiNextPrayer: UiNextPrayer,
+    uiDate: UiDate,
+    onSettingsClicked: () -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(innerPadding)
+    ) {
+        PrayerHeader(
+            modifier = Modifier.fillMaxWidth(),
+            imageScale = ContentScale.FillWidth,
+            config = uiNextPrayer,
+            onSettingsClicked = onSettingsClicked
+        )
+
+        Spacer(modifier = Modifier.height(4.dp))
+
+        PrayerDateBar(
+            day = uiDate.dayName,
+            moonDate = uiDate.moonDate,
+            sunDate = uiDate.sunDate
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(6),
+            modifier = Modifier.fillMaxSize(),
+            userScrollEnabled = false,
+            content = {
+                prayers.forEach { prayer ->
+                    item {
+                        PrayerSingleView(prayer = prayer)
+                    }
+                }
+            }
+        )
+    }
+}

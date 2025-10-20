@@ -2,8 +2,8 @@ package com.gals.prayertimes
 
 import android.app.Application
 import androidx.work.Configuration
+import com.gals.prayertimes.handlers.alarm.AlarmWorkerFactory
 import com.gals.prayertimes.logging.AppDebugTree
-import com.gals.prayertimes.services.alarmmanager.AlarmWorkerFactory
 import dagger.hilt.android.HiltAndroidApp
 import timber.log.Timber
 import javax.inject.Inject

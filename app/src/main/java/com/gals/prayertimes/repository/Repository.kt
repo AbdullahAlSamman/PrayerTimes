@@ -1,11 +1,11 @@
 package com.gals.prayertimes.repository
 
-import com.gals.prayertimes.model.ConnectivityException
-import com.gals.prayertimes.model.IODispatcher
-import com.gals.prayertimes.model.NetworkException
-import com.gals.prayertimes.model.NotificationType
-import com.gals.prayertimes.model.ServerException
-import com.gals.prayertimes.model.mappers.toEntity
+import com.gals.prayertimes.common.ConnectivityException
+import com.gals.prayertimes.common.IODispatcher
+import com.gals.prayertimes.common.NetworkException
+import com.gals.prayertimes.common.NotificationType
+import com.gals.prayertimes.common.ServerException
+import com.gals.prayertimes.common.mappers.toEntity
 import com.gals.prayertimes.repository.local.LocalDataSource
 import com.gals.prayertimes.repository.local.entities.PrayerEntity
 import com.gals.prayertimes.repository.local.entities.SettingsEntity
@@ -23,7 +23,7 @@ class Repository @Inject constructor(
     @IODispatcher private val dispatcher: CoroutineDispatcher,
     private val localDataSource: LocalDataSource,
     private val remoteDataSource: RemoteDataSource,
-    private val utils: SystemUtils,
+    private val utils: SystemUtils
 ) {
     fun fetchPrayer(todayDate: String): Flow<PrayerEntity> = flow {
         if (localDataSource.isTodayPrayerExists(todayDate)) {
