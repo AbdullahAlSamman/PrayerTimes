@@ -65,7 +65,7 @@ class NotificationHandler @Inject constructor(
 
         return NotificationCompat.Builder(
             applicationContext,
-            NOTIFICATION_CHANNEL_ID_FULL_ATHAN_ALARM
+            notificationType.getNotificationChannelID()
         )
             .setSmallIcon(R.drawable.ic_haya_notification)
             .setStyle(NotificationCompat.DecoratedCustomViewStyle())
@@ -73,7 +73,6 @@ class NotificationHandler @Inject constructor(
             .setContentIntent(pendingIntent)
             .setAutoCancel(true)
             .build()
-
     }
 
     private fun createNotificationChannel(

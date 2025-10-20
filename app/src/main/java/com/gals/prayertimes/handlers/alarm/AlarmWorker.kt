@@ -55,7 +55,7 @@ class AlarmWorker @AssistedInject constructor(
         notificationType: NotificationType,
         selectedPrayerNotifications: Map<UiPrayerName, Boolean>
     ) {
-        selectedPrayerNotifications.forEach { prayerName, _ ->
+        selectedPrayerNotifications.forEach { (prayerName, _) ->
             val prayer = prayerCalculation.getNextPrayerLocalTime(
                 timePrayers.getTimePrayerByName(prayerName)
             )

@@ -22,7 +22,6 @@ class AlarmReceiver : BroadcastReceiver() {
 
     @RequiresPermission(android.Manifest.permission.POST_NOTIFICATIONS)
     override fun onReceive(context: Context?, intent: Intent?) {
-
         context?.let{
             val notificationType =
                 NotificationType.fromString(intent?.getStringExtra(INTENT_EXTRA_NOTIFICATION_TYPE))
