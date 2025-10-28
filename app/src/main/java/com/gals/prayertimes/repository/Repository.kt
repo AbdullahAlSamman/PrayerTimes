@@ -50,7 +50,7 @@ class Repository @Inject constructor(
         }
     }.flowOn(dispatcher)
 
-    suspend fun getPrayer(todayDate: String): PrayerEntity = localDataSource.getPrayers(todayDate)
+    suspend fun getLocalPrayer(todayDate: String): PrayerEntity = localDataSource.getPrayers(todayDate)
 
     suspend fun getSettings(): SettingsEntity =
         if (localDataSource.isSettingsExists()) {

@@ -3,7 +3,7 @@ package com.gals.prayertimes.handlers.alarm
 import java.time.LocalDateTime
 
 data class AlarmItem (
-    val time: LocalDateTime,
+    val time: Long,
     val prayer: String
 )
 
