@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.com.google.ksp)
     alias(libs.plugins.org.jetbrains.kotlin.serialization)
 }
+
 ksp {
     arg("room.schemaLocation", "$projectDir/schemas")
 }
@@ -13,50 +14,51 @@ ksp {
 android {
     namespace = "com.gals.prayertimes"
     compileSdk = 36
+
     defaultConfig {
         applicationId = "com.gals.prayertimes"
-        minSdk = 26 //TODO lower if possible 24
+        minSdk = 26
         targetSdk = 36
         versionName = "1.0.7"
         versionCode = 27
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        signingConfigs {
-            create("release") {
-                keyAlias = System.getenv("RELEASE_KEY_ALIAS")
-                keyPassword = System.getenv("RELEASE_KEY_PASSWORD")
-                storeFile = file("../keystore.jks")
-                storePassword = System.getenv("RELEASE_STORE_PASSWORD")
-            }
-        }
+        buildConfigField("String", "BASE_URL", "\"http://prayersapi.scienceontheweb.net/\"")
+    }
 
-        buildTypes {
-            release {
-                isMinifyEnabled = false
-                isShrinkResources = false
-                proguardFiles(
-                    getDefaultProguardFile("proguard-android.txt"),
-                    "proguard-rules.pro"
-                )
-                isDebuggable = false
-                isJniDebuggable = false
-                signingConfig = signingConfigs.getByName("release")
-            }
-            debug {
-                isMinifyEnabled = false
-                isShrinkResources = false
-                isDebuggable = true
-                isJniDebuggable = true
-                applicationIdSuffix = ".debug"
-            }
+    signingConfigs {
+        create("release") {
+            keyAlias = System.getenv("RELEASE_KEY_ALIAS")
+            keyPassword = System.getenv("RELEASE_KEY_PASSWORD")
+            storeFile = file("../keystore.jks")
+            storePassword = System.getenv("RELEASE_STORE_PASSWORD")
         }
+    }
 
-        buildFeatures {
-            compose = true
-            buildConfig = true
+    buildTypes {
+        release {
+            isMinifyEnabled = true
+            isShrinkResources = true
+            proguardFiles(
+                getDefaultProguardFile("proguard-android.txt"),
+                "proguard-rules.pro"
+            )
+            isDebuggable = false
+            isJniDebuggable = false
+            signingConfig = signingConfigs.getByName("release")
         }
+        debug {
+            isMinifyEnabled = false
+            isShrinkResources = false
+            isDebuggable = true
+            isJniDebuggable = true
+            applicationIdSuffix = ".debug"
+        }
+    }
 
-        dependenciesInfo { includeInApk = false }
+    buildFeatures {
+        compose = true
+        buildConfig = true
     }
 
     compileOptions {
@@ -78,38 +80,40 @@ android {
         jvmToolchain(21)
         compilerOptions.freeCompilerArgs.add("-Xannotation-default-target=param-property")
     }
+}
 
-    dependencies {
-        //Appcompat
-        implementation(libs.androidx.appcompat)
+dependencies {
+    //Appcompat
+    implementation(libs.androidx.appcompat)
 
-        //Retrofit
-        implementation(libs.bundles.retrofit)
-        ksp(libs.retrofit.moshi.kotlin.codegen)
+    //Retrofit
+    implementation(libs.bundles.retrofit)
+    // You have the Moshi codegen ksp dependency, but your NetworkModule uses Gson.
+    // This is not an error, but you might want to remove it to avoid confusion.
+    ksp(libs.retrofit.moshi.kotlin.codegen)
 
-        //kotlinx
-        implementation(libs.bundles.kotlinx)
+    //kotlinx
+    implementation(libs.bundles.kotlinx)
 
-        //Room
-        implementation(libs.bundles.androidx.room)
-        ksp(libs.androidx.room.compiler)
+    //Room
+    implementation(libs.bundles.androidx.room)
+    ksp(libs.androidx.room.compiler)
 
-        //Compose
-        implementation(libs.bundles.androidx.compose)
-        implementation(libs.bundles.androidx.accompainst)
-        debugImplementation(libs.bundles.androidx.compose.tooling)
+    //Compose
+    implementation(libs.bundles.androidx.compose)
+    implementation(libs.bundles.androidx.accompainst)
+    debugImplementation(libs.bundles.androidx.compose.tooling)
 
-        //Work manager
-        implementation(libs.bundles.androidx.work.manager)
+    //Work manager
+    implementation(libs.bundles.androidx.work.manager)
 
-        //Hilt
-        implementation(libs.bundles.hilt)
-        ksp(libs.google.dagger.hilt.compiler)
+    //Hilt
+    implementation(libs.bundles.hilt)
+    ksp(libs.google.dagger.hilt.compiler)
 
-        //Logging
-        implementation(libs.timber)
+    //Logging
+    implementation(libs.timber)
 
-        //Test
-        testImplementation(libs.bundles.unit.test)
-    }
+    //Test
+    testImplementation(libs.bundles.unit.test)
 }
