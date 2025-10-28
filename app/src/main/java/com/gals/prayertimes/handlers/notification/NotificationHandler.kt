@@ -5,6 +5,7 @@ import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
+import android.content.ContentResolver
 import android.content.Context
 import android.media.AudioAttributes
 import android.media.RingtoneManager
@@ -26,11 +27,11 @@ import javax.inject.Inject
 import kotlin.random.Random
 
 class NotificationHandler @Inject constructor(
-    @ApplicationContext private val applicationContext: Context,
+    @ApplicationContext private val context: Context,
     private val resourceProvider: ResourceProvider,
+    private val notificationManager: NotificationManagerCompat,
     private val notificationPermissionHandler: NotificationPermissionHandler
 ) {
-
     @RequiresPermission(Manifest.permission.POST_NOTIFICATIONS)
     fun showAlarmNotification(
         prayer: UiPrayerName,
@@ -43,9 +44,7 @@ class NotificationHandler @Inject constructor(
                 notificationType = notificationType,
                 prayer = prayer
             )
-            with(NotificationManagerCompat.from(applicationContext)) {
-                notify(Random.nextInt(0, Int.MAX_VALUE), notification)
-            }
+            notificationManager.notify(Random.nextInt(0, Int.MAX_VALUE), notification)
         }
     }
 
@@ -55,16 +54,10 @@ class NotificationHandler @Inject constructor(
         notificationType: NotificationType
     ): Notification {
 
-        val notificationManager =
-            applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-
-        createNotificationChannel(
-            notificationManager = notificationManager,
-            notificationType = notificationType
-        )
+        createNotificationChannel(notificationType = notificationType)
 
         return NotificationCompat.Builder(
-            applicationContext,
+            context,
             notificationType.getNotificationChannelID()
         )
             .setSmallIcon(R.drawable.ic_haya_notification)
@@ -76,7 +69,6 @@ class NotificationHandler @Inject constructor(
     }
 
     private fun createNotificationChannel(
-        notificationManager: NotificationManager,
         notificationType: NotificationType
     ) {
         if (notificationManager.getNotificationChannel(notificationType.getNotificationChannelID()) == null) {
@@ -100,7 +92,7 @@ class NotificationHandler @Inject constructor(
 
     private fun buildNotificationInfo(prayer: UiPrayerName): RemoteViews =
         RemoteViews(
-            applicationContext.packageName,
+            context.packageName,
             R.layout.notification_service_alarm_remote_view
         ).apply {
             setTextViewText(
@@ -121,8 +113,8 @@ class NotificationHandler @Inject constructor(
         when (this) {
             NotificationType.SILENT -> Uri.EMPTY
             NotificationType.TONE -> RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
-            NotificationType.HALF -> (URI_DEFAULT_PATH + R.raw.halfathan).toUri()
-            NotificationType.FULL -> (URI_DEFAULT_PATH + R.raw.fullathan).toUri()
+            NotificationType.HALF -> R.raw.athan_half.toResourceUri()
+            NotificationType.FULL -> R.raw.athan_full.toResourceUri()
         }
 
     private fun NotificationType.getNotificationChannelID(): String =
@@ -141,8 +133,10 @@ class NotificationHandler @Inject constructor(
             NotificationType.FULL -> NOTIFICATION_CHANNEL_NAME_ALARM_FULL_ATHAN
         }
 
+    private fun Int.toResourceUri(): Uri =
+        ("${ContentResolver.SCHEME_ANDROID_RESOURCE}://${context.packageName}/" + this).toUri()
+
     companion object {
-        private const val URI_DEFAULT_PATH = "android.resource://com.gals.prayertimes/"
         private const val NOTIFICATION_CHANNEL_ID_FULL_ATHAN_ALARM =
             "athan_notification_full_channel_permanent"
         private const val NOTIFICATION_CHANNEL_ID_HALF_ATHAN_ALARM =
