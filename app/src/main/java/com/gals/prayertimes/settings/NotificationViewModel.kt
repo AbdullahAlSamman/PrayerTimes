@@ -8,6 +8,7 @@ import androidx.work.WorkManager
 import com.gals.prayertimes.common.NotificationType
 import com.gals.prayertimes.common.UiPrayerName
 import com.gals.prayertimes.common.mappers.getTimePrayerByName
+import com.gals.prayertimes.common.mappers.toMillisecondsWithRoundedSeconds
 import com.gals.prayertimes.common.mappers.toTimePrayer
 import com.gals.prayertimes.common.mappers.todayDate
 import com.gals.prayertimes.handlers.alarm.AlarmHandler
@@ -112,17 +113,16 @@ class NotificationViewModel @Inject constructor(
     }
 
     private suspend fun cancelAllPrayerAlarms() {
-        val timePrayer = repository.getPrayer(todayDate()).toTimePrayer()
+        val timePrayer = repository.getLocalPrayer(todayDate()).toTimePrayer()
         UiPrayerName.entries.forEach { prayerName ->
-            val prayer = prayerCalculation.getNextPrayerLocalTime(
+            val prayerTime = prayerCalculation.getNextPrayerLocalTime(
                 timePrayer.getTimePrayerByName(prayerName)
             )
-            val upcoming = prayer?.isAfter(LocalDateTime.now()) == true
+            val upcoming = prayerTime?.isAfter(LocalDateTime.now()) == true
             if (upcoming) {
-                Timber.i("$prayerName alarm cancelled")
                 alarmHandler.cancelAlarm(
                     AlarmItem(
-                        time = prayer,
+                        time = prayerTime.toMillisecondsWithRoundedSeconds(),
                         prayer = prayerName.name
                     )
                 )

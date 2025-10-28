@@ -25,6 +25,9 @@ import com.gals.prayertimes.ui.theme.colorBackgroundSunrise
 import com.gals.prayertimes.utils.Formatter
 import com.gals.prayertimes.utils.ResourceProvider
 import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.time.ZoneId.systemDefault
+import java.time.temporal.ChronoUnit
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
@@ -183,7 +186,9 @@ fun UiPrayerName.getStringId(): Int =
     }
 
 fun PrayerAlarmItem.toAlarmItem(): AlarmItem =
-    AlarmItem(time = time, prayer = prayer)
+    AlarmItem(time = time.toMillisecondsWithRoundedSeconds(), prayer = prayer)
+
+fun LocalDateTime.toMillisecondsWithRoundedSeconds(): Long = this.truncatedTo(ChronoUnit.MINUTES).atZone(systemDefault()).toInstant().toEpochMilli()
 
 @Composable
 fun mapPrayerColor(prayer: UiPrayerName): Color =
