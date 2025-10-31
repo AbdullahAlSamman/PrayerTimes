@@ -43,10 +43,8 @@ class AlarmWorker @AssistedInject constructor(
                     selectedPrayerNotifications = settings.toPrayerNotification(),
                     notificationType = settings.notificationType
                 )
-
                 scheduleNextAlarmWorker()
             }
-
         return Result.success()
     }
 
@@ -55,11 +53,11 @@ class AlarmWorker @AssistedInject constructor(
         notificationType: NotificationType,
         selectedPrayerNotifications: Map<UiPrayerName, Boolean>
     ) {
-        selectedPrayerNotifications.forEach { (prayerName, _) ->
+        selectedPrayerNotifications.forEach { (prayerName, enabled) ->
             val prayer = prayerCalculation.getNextPrayerLocalTime(
                 timePrayers.getTimePrayerByName(prayerName)
             )
-            if (prayer?.isAfter(LocalDateTime.now()) == true) {
+            if (prayer?.isAfter(LocalDateTime.now()) == true && enabled) {
                 alarmHandler.scheduleAlarm(
                     PrayerAlarmItem(
                         time = prayer,
