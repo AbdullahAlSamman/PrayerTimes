@@ -19,8 +19,8 @@ android {
         applicationId = "com.gals.prayertimes"
         minSdk = 26
         targetSdk = 36
-        versionName = "1.0.7"
-        versionCode = 27
+        versionName = "1.0.8"
+        versionCode = 28
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         buildConfigField("String", "BASE_URL", "\"http://prayersapi.scienceontheweb.net/\"")
@@ -40,7 +40,7 @@ android {
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(
-                getDefaultProguardFile("proguard-android.txt"),
+                getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
             isDebuggable = false
