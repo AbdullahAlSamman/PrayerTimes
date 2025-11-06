@@ -121,10 +121,7 @@ object PermissionScreen {
                             TopAppBar(
                                 title = {},
                                 navigationIcon = {
-                                    IconButton(onClick = {
-                                        onBackClicked()
-                                        Timber.i("Permission Screen Back Clicked")
-                                    }) {
+                                    IconButton(onClick = onBackClicked) {
                                         Icon(
                                             modifier = Modifier.size(48.dp),
                                             imageVector = Icons.Outlined.Close,
