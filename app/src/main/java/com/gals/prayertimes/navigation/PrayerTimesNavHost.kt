@@ -97,7 +97,7 @@ object PrayerTimesNavHost {
             ) { backStackEntry ->
                 val permissionRoute: NavDestination.Permission = backStackEntry.toRoute()
                 PermissionScreen(
-                    onBackClicked = { navController.navigateUp() },
+                    onBackClicked = { navController.popBackStack() },
                     onFinish = {
                         navController.navigate(permissionRoute.nextDestination) {
                             popUpTo<NavDestination.Permission> { inclusive = true }
