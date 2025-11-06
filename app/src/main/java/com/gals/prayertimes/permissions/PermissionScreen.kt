@@ -32,6 +32,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -116,6 +117,20 @@ object PermissionScreen {
 
                     Scaffold(
                         contentWindowInsets = WindowInsets.safeDrawing,
+                        topBar = {
+                            TopAppBar(
+                                title = {},
+                                navigationIcon = {
+                                    IconButton(onClick = onBackClicked) {
+                                        Icon(
+                                            modifier = Modifier.size(48.dp),
+                                            imageVector = Icons.Outlined.Close,
+                                            contentDescription = stringResource(id = R.string.content_descriptor_back_arrow)
+                                        )
+                                    }
+                                }
+                            )
+                        },
                         content = { innerPadding ->
                             Box(
                                 modifier = Modifier
@@ -123,13 +138,6 @@ object PermissionScreen {
                                     .padding(horizontal = 16.dp)
                                     .fillMaxSize()
                             ) {
-                                IconButton(onClick = onBackClicked) {
-                                    Icon(
-                                        modifier = Modifier.size(48.dp),
-                                        imageVector = Icons.Outlined.Close,
-                                        contentDescription = stringResource(id = R.string.content_descriptor_back_arrow)
-                                    )
-                                }
                                 if (requirePermissions.isNotEmpty()) {
                                     HorizontalPager(
                                         modifier = Modifier
