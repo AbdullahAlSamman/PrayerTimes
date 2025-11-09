@@ -6,10 +6,8 @@ updates:
       interval: "monthly"
     groups:
       all-gradle-dependencies:
-        patterns: ["*"]
-    allow:
-      - dependency-type: "all"
-      - update-types: ["semver:major", "semver:minor", "semver:patch", "semver:pre"]
+        patterns: [ "*" ]
+        update-types: [ "minor", "patch" ]
 
   - package-ecosystem: "github-actions"
     directory: "/"
@@ -17,4 +15,4 @@ updates:
       interval: "monthly"
     groups:
       all-actions:
-        patterns: ["*"]
+        patterns: [ "*" ]
