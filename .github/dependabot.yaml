@@ -7,6 +7,9 @@ updates:
     groups:
       all-gradle-dependencies:
         patterns: ["*"]
+      allow:
+        - dependency-type: "all"
+        - update-types: ["semver:major", "semver:minor", "semver:patch", "semver:pre"]
 
   - package-ecosystem: "github-actions"
     directory: "/"
