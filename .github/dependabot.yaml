@@ -1,0 +1,28 @@
+version: 2
+registries:
+  maven-google:
+    type: "maven-repository"
+    url: "https://maven.google.com/"
+  maven-central:
+    type: "maven-repository"
+    url: "https://repo1.maven.org/maven2/"
+
+updates:
+  - package-ecosystem: "gradle"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    registries:
+      - "maven-google"
+      - "maven-central"
+    groups:
+      all-gradle-dependencies:
+        patterns: ["*"]
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    groups:
+      all-actions:
+        patterns: ["*"]
