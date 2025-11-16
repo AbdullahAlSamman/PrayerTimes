@@ -1,13 +1,13 @@
 version: 2
 updates:
   - package-ecosystem: "gradle"
-    directory: "/"
+    directory: "/PrayerTimes"
     schedule:
       interval: "monthly"
     groups:
       all-gradle-dependencies:
         patterns: [ "*" ]
-        update-types: [ "minor", "patch" ]
+        update-types: [ "minor", "patch", "major" ]
 
   - package-ecosystem: "github-actions"
     directory: "/"
