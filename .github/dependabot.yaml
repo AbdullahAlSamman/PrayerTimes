@@ -4,6 +4,10 @@ updates:
     directory: "/"
     schedule:
       interval: "monthly"
+    groups:
+      all-gradle-dependencies:
+        patterns: [ "*" ]
+        update-types: [ "minor", "patch", "major" ]
 
   - package-ecosystem: "github-actions"
     directory: "/"
