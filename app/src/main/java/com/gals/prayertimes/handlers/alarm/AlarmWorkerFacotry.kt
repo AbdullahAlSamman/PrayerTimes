@@ -4,12 +4,14 @@ import android.content.Context
 import androidx.work.ListenableWorker
 import androidx.work.WorkerFactory
 import androidx.work.WorkerParameters
-import com.gals.prayertimes.repository.Repository
+import com.gals.prayertimes.repository.PrayersRepository
+import com.gals.prayertimes.repository.SettingsRepository
 import com.gals.prayertimes.utils.PrayerCalculation
 import javax.inject.Inject
 
 class AlarmWorkerFactory @Inject constructor(
-    private val repository: Repository,
+    private val prayersRepository: PrayersRepository,
+    private val settingsRepository: SettingsRepository,
     private val alarmHandler: AlarmHandler,
     private val prayerCalculation: PrayerCalculation
 ) : WorkerFactory() {
@@ -18,7 +20,8 @@ class AlarmWorkerFactory @Inject constructor(
         workerClassName: String,
         workerParameters: WorkerParameters
     ): ListenableWorker = AlarmWorker(
-        repository = repository,
+        prayersRepository = prayersRepository,
+        settingsRepository = settingsRepository,
         alarmHandler = alarmHandler,
         prayerCalculation = prayerCalculation,
         appContext = appContext,

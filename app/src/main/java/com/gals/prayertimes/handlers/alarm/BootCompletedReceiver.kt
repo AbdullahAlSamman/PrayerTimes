@@ -7,7 +7,8 @@ import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import com.gals.prayertimes.common.IODispatcher
-import com.gals.prayertimes.repository.Repository
+import com.gals.prayertimes.repository.PrayersRepository
+import com.gals.prayertimes.repository.SettingsRepository
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
@@ -20,7 +21,10 @@ import javax.inject.Inject
 class BootCompletedReceiver : BroadcastReceiver() {
 
     @Inject
-    lateinit var repository: Repository
+    lateinit var prayersRepository: PrayersRepository
+
+    @Inject
+    lateinit var settingsRepository: SettingsRepository
 
     @Inject
     @IODispatcher
@@ -35,7 +39,7 @@ class BootCompletedReceiver : BroadcastReceiver() {
             Timber.i("checking alarms after reboot")
             context?.let {
                 CoroutineScope(ioDispatcher).launch {
-                    if (repository.getSettings().notification) {
+                    if (settingsRepository.getSavedSettings().notification) {
                         val prayerAlarmWorkRequest =
                             OneTimeWorkRequestBuilder<AlarmWorker>().build()
                         WorkManager.getInstance(context).enqueueUniqueWork(

@@ -16,7 +16,8 @@ import com.gals.prayertimes.handlers.alarm.AlarmItem
 import com.gals.prayertimes.handlers.alarm.AlarmWorker
 import com.gals.prayertimes.handlers.alarm.PRAYER_ALARM_WORK_NAME
 import com.gals.prayertimes.handlers.alarm.PRAYER_ALARM_WORK_NEXT_DAY_NAME
-import com.gals.prayertimes.repository.Repository
+import com.gals.prayertimes.repository.PrayersRepository
+import com.gals.prayertimes.repository.SettingsRepository
 import com.gals.prayertimes.repository.local.entities.SettingsEntity
 import com.gals.prayertimes.repository.local.entities.SettingsEntity.Companion.toPrayerNotification
 import com.gals.prayertimes.utils.PrayerCalculation
@@ -32,7 +33,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class NotificationViewModel @Inject constructor(
-    private val repository: Repository,
+    private val prayersRepository: PrayersRepository,
+    private val settingsRepository: SettingsRepository,
     private val alarmHandler: AlarmHandler,
     private val prayerCalculation: PrayerCalculation,
     private val workManager: WorkManager
@@ -99,13 +101,13 @@ class NotificationViewModel @Inject constructor(
 
     private fun updateSettings(settingsEntity: SettingsEntity) {
         viewModelScope.launch {
-            repository.saveSettings(settingsEntity)
+            settingsRepository.saveSettings(settingsEntity)
         }
     }
 
     private fun loadSavedSettings() {
         viewModelScope.launch {
-            val settings = repository.getSettings()
+            val settings = settingsRepository.getSavedSettings()
             _uiSelectedRadio.update { settings.notificationType }
             _uiSelectedPrayerAlarms.update { settings.toPrayerNotification() }
             _uiSwitchState.update { settings.notification }
@@ -113,7 +115,7 @@ class NotificationViewModel @Inject constructor(
     }
 
     private suspend fun cancelAllPrayerAlarms() {
-        val timePrayer = repository.getLocalPrayer(todayDate()).toTimePrayer()
+        val timePrayer = prayersRepository.getLocalPrayer(todayDate()).toTimePrayer()
         UiPrayerName.entries.forEach { prayerName ->
             val prayerTime = prayerCalculation.getNextPrayerLocalTime(
                 timePrayer.getTimePrayerByName(prayerName)

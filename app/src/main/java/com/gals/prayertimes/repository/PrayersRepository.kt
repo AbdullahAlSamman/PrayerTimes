@@ -3,13 +3,11 @@ package com.gals.prayertimes.repository
 import com.gals.prayertimes.common.ConnectivityException
 import com.gals.prayertimes.common.IODispatcher
 import com.gals.prayertimes.common.NetworkException
-import com.gals.prayertimes.common.NotificationType
 import com.gals.prayertimes.common.ServerException
 import com.gals.prayertimes.common.mappers.toEntity
-import com.gals.prayertimes.repository.local.LocalDataSource
+import com.gals.prayertimes.repository.local.PrayersLocalDataSource
 import com.gals.prayertimes.repository.local.entities.PrayerEntity
-import com.gals.prayertimes.repository.local.entities.SettingsEntity
-import com.gals.prayertimes.repository.remote.RemoteDataSource
+import com.gals.prayertimes.repository.remote.PrayersRemoteDataSource
 import com.gals.prayertimes.repository.remote.model.PrayersResponse
 import com.gals.prayertimes.utils.SystemUtils
 import kotlinx.coroutines.CoroutineDispatcher
@@ -19,25 +17,25 @@ import kotlinx.coroutines.flow.flowOn
 import timber.log.Timber
 import javax.inject.Inject
 
-class Repository @Inject constructor(
+class PrayersRepository @Inject constructor(
     @IODispatcher private val dispatcher: CoroutineDispatcher,
-    private val localDataSource: LocalDataSource,
-    private val remoteDataSource: RemoteDataSource,
+    private val prayersLocalDataSource: PrayersLocalDataSource,
+    private val prayersRemoteDataSource: PrayersRemoteDataSource,
     private val utils: SystemUtils
 ) {
     fun fetchPrayer(todayDate: String): Flow<PrayerEntity> = flow {
-        if (localDataSource.isTodayPrayerExists(todayDate)) {
+        if (prayersLocalDataSource.isTodayPrayerExists(todayDate)) {
             Timber.i("exists locally in cache")
-            emit(localDataSource.getPrayers(todayDate))
+            emit(prayersLocalDataSource.getPrayers(todayDate))
             return@flow
         }
         if (utils.isNetworkAvailable()) {
-            val result = remoteDataSource.getPrayers(todayDate)
+            val result = prayersRemoteDataSource.getPrayers(todayDate)
             if (result.isSuccessful) {
                 result.body()?.let { response ->
                     checkServerError(response)
                     Timber.i("Success: ${result.message()}")
-                    localDataSource.insertPrayers(response.toEntity())
+                    prayersLocalDataSource.insertPrayers(response.toEntity())
                     emit(response.toEntity())
                 }
             } else {
@@ -50,22 +48,7 @@ class Repository @Inject constructor(
         }
     }.flowOn(dispatcher)
 
-    suspend fun getLocalPrayer(todayDate: String): PrayerEntity = localDataSource.getPrayers(todayDate)
-
-    suspend fun getSettings(): SettingsEntity =
-        if (localDataSource.isSettingsExists()) {
-            localDataSource.getSettings()
-        } else {
-            val settings = SettingsEntity(
-                notificationType = NotificationType.SILENT,
-                notification = false
-            )
-            localDataSource.insertSettings(settings)
-            settings
-        }
-
-    suspend fun saveSettings(settingsEntity: SettingsEntity) =
-        localDataSource.insertSettings(settingsEntity)
+    suspend fun getLocalPrayer(todayDate: String): PrayerEntity = prayersLocalDataSource.getPrayers(todayDate)
 
     private fun checkServerError(response: PrayersResponse) {
         if (response == PrayersResponse("", "", emptyList())) {
