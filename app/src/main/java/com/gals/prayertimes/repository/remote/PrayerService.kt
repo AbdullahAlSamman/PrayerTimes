@@ -8,6 +8,7 @@ import retrofit2.http.Path
 
 interface PrayerService {
 
+    @Deprecated("old api endpoint deleted it next time.")
     @GET("api/prayer/{today_date}")
     suspend fun getTodayPrayer(@Path("today_date") date: String): Response<List<PrayerResponse>>
 
