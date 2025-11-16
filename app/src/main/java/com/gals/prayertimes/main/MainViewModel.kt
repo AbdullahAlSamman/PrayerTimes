@@ -13,7 +13,7 @@ import com.gals.prayertimes.common.mappers.toUiNextPrayer
 import com.gals.prayertimes.common.mappers.todayDate
 import com.gals.prayertimes.main.model.UiNextPrayer
 import com.gals.prayertimes.main.model.UiState
-import com.gals.prayertimes.repository.Repository
+import com.gals.prayertimes.repository.PrayersRepository
 import com.gals.prayertimes.repository.local.entities.PrayerEntity
 import com.gals.prayertimes.utils.Formatter
 import com.gals.prayertimes.utils.PrayerCalculation
@@ -37,7 +37,7 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(
     @DefaultDispatcher private val dispatcher: CoroutineDispatcher,
     @ViewModelScreenUpdater private val screenUpdater: ScreenUpdater,
-    private val repository: Repository,
+    private val prayersRepository: PrayersRepository,
     private val resourceProvider: ResourceProvider,
     private val calculation: PrayerCalculation,
     private val formatter: Formatter
@@ -96,7 +96,7 @@ class MainViewModel @Inject constructor(
             _uiState.update { UiState.Loading }
         }
         viewModelScope.launch(context = dispatcher) {
-            repository.fetchPrayer(todayDate())
+            prayersRepository.fetchPrayer(todayDate())
                 .catch { cause -> cause.toUiError() }
                 .map { prayer ->
                     todayPrayers = prayer

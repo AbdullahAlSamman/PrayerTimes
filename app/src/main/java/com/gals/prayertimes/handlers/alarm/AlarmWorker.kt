@@ -13,7 +13,8 @@ import com.gals.prayertimes.common.UiPrayerName
 import com.gals.prayertimes.common.mappers.getTimePrayerByName
 import com.gals.prayertimes.common.mappers.toTimePrayer
 import com.gals.prayertimes.common.mappers.todayDate
-import com.gals.prayertimes.repository.Repository
+import com.gals.prayertimes.repository.PrayersRepository
+import com.gals.prayertimes.repository.SettingsRepository
 import com.gals.prayertimes.repository.local.entities.SettingsEntity.Companion.toPrayerNotification
 import com.gals.prayertimes.utils.PrayerCalculation
 import dagger.assisted.Assisted
@@ -30,14 +31,15 @@ import java.util.concurrent.TimeUnit
 class AlarmWorker @AssistedInject constructor(
     @Assisted private val appContext: Context,
     @Assisted workerParams: WorkerParameters,
-    @Assisted private val repository: Repository,
+    @Assisted private val prayersRepository: PrayersRepository,
+    @Assisted private val settingsRepository: SettingsRepository,
     @Assisted private val alarmHandler: AlarmHandler,
     @Assisted private val prayerCalculation: PrayerCalculation
 ) : CoroutineWorker(appContext, workerParams) {
     override suspend fun doWork(): Result {
-        repository.fetchPrayer(todayDate())
+        prayersRepository.fetchPrayer(todayDate())
             .collect { prayer ->
-                val settings = repository.getSettings()
+                val settings = settingsRepository.getSavedSettings()
                 scheduleUpcomingAlarms(
                     timePrayers = prayer.toTimePrayer(),
                     selectedPrayerNotifications = settings.toPrayerNotification(),

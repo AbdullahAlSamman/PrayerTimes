@@ -2,7 +2,7 @@ package com.gals.prayertimes.repository.remote
 
 import javax.inject.Inject
 
-class RemoteDataSource @Inject constructor(
+class PrayersRemoteDataSource @Inject constructor(
     private val prayerService: PrayerService
 ) {
 

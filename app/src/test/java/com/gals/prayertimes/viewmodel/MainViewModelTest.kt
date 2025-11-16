@@ -3,7 +3,7 @@ package com.gals.prayertimes.viewmodel
 import app.cash.turbine.test
 import com.gals.prayertimes.main.MainViewModel
 import com.gals.prayertimes.main.model.UiState
-import com.gals.prayertimes.repository.Repository
+import com.gals.prayertimes.repository.PrayersRepository
 import com.gals.prayertimes.repository.local.entities.PrayerEntity
 import com.gals.prayertimes.utils.Formatter
 import com.gals.prayertimes.utils.PrayerCalculation
@@ -32,7 +32,7 @@ class MainViewModelTest {
     @get:Rule
     val rule = TestDispatcherRule()
 
-    private val mockRepository = mockk<Repository>()
+    private val mockPrayersRepository = mockk<PrayersRepository>()
     private val mockResourceProvider = mockk<ResourceProvider>()
     private val mockFormatter = mockk<Formatter>()
     private val mockCalculation = mockk<PrayerCalculation>()
@@ -90,7 +90,7 @@ class MainViewModelTest {
 
     private fun setNetworkRequest(prayerEntity: PrayerEntity, block: suspend () -> Unit) {
         coEvery {
-            mockRepository.fetchPrayer(any())
+            mockPrayersRepository.fetchPrayer(any())
         } coAnswers {
             block()
             flowOf(prayerEntity)
@@ -106,7 +106,7 @@ class MainViewModelTest {
     private fun createViewModel() = MainViewModel(
         dispatcher = Dispatchers.Main,
         screenUpdater = mockScreenUpdater,
-        repository = mockRepository,
+        prayersRepository = mockPrayersRepository,
         resourceProvider = mockResourceProvider,
         formatter = mockFormatter,
         calculation = mockCalculation
