@@ -1,10 +1,11 @@
 plugins {
-    id("com.android.application")
+    alias(libs.plugins.android.application)
     alias(libs.plugins.com.google.dagger.hilt.android)
     alias(libs.plugins.org.jetbrains.kotlin.android)
     alias(libs.plugins.org.jetbrains.compose.compiler)
     alias(libs.plugins.com.google.ksp)
     alias(libs.plugins.org.jetbrains.kotlin.serialization)
+    alias(libs.plugins.google.gms.services)
 }
 
 ksp {
@@ -88,9 +89,6 @@ dependencies {
 
     //Retrofit
     implementation(libs.bundles.retrofit)
-    // You have the Moshi codegen ksp dependency, but your NetworkModule uses Gson.
-    // This is not an error, but you might want to remove it to avoid confusion.
-    ksp(libs.retrofit.moshi.kotlin.codegen)
 
     //kotlinx
     implementation(libs.bundles.kotlinx)
