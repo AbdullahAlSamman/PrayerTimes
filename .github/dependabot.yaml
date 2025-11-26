@@ -1,7 +1,7 @@
 version: 2
 updates:
   - package-ecosystem: "gradle"
-    directory: "/libs.versions.toml"
+    directory: "/"
     schedule:
       interval: "monthly"
     groups:
