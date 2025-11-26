@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "230114739794",
+    "project_id": "prayer-times-prod",
+    "storage_bucket": "prayer-times-prod.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:230114739794:android:84e2127d6b41e962fa418b",
+        "android_client_info": {
+          "package_name": "com.gals.prayertimes"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDZQtQQi-DwqxC0d6GlqMbpUyeQ1HhhcXk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
