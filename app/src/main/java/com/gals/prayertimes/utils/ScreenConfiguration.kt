@@ -1,7 +1,11 @@
 package com.gals.prayertimes.utils
 
+import android.app.Activity
 import android.content.res.Configuration
-import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
+import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+import androidx.compose.material3.windowsizeclass.WindowHeightSizeClass
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
+import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
@@ -20,21 +24,11 @@ fun isTabletInPortrait(): Boolean = isTablet() && !isLandscape()
 fun isPhoneInLandscape(): Boolean = !isTablet() && isLandscape()
 
 @Composable
-private fun isTabletWidth(): Boolean = when (getWindowWidthClassSize()) {
-    WindowWidthSizeClass.MEDIUM, WindowWidthSizeClass.EXPANDED -> true
-    else -> false
-}
+@OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
+private fun isTabletWidth(): Boolean =
+    calculateWindowSizeClass(LocalContext.current as Activity).widthSizeClass >= WindowWidthSizeClass.Medium
 
 @Composable
-private fun isTabletHeight(): Boolean = when (getWindowHeightClassSize()) {
-    WindowHeightSizeClass.MEDIUM, WindowHeightSizeClass.EXPANDED -> true
-    else -> false
-}
-
-@Composable
-private fun getWindowWidthClassSize(): WindowWidthSizeClass =
-    currentWindowAdaptiveInfo().windowSizeClass.windowWidthSizeClass
-
-@Composable
-private fun getWindowHeightClassSize(): WindowHeightSizeClass =
-    currentWindowAdaptiveInfo().windowSizeClass.windowHeightSizeClass
+@OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
+private fun isTabletHeight(): Boolean =
+    calculateWindowSizeClass(LocalContext.current as Activity).heightSizeClass >= WindowHeightSizeClass.Medium
