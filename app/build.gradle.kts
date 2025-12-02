@@ -20,8 +20,8 @@ android {
         applicationId = "com.gals.prayertimes"
         minSdk = 26
         targetSdk = 36
-        versionName = "1.0.9"
-        versionCode = 29
+        versionName = "1.1.1"
+        versionCode = 30
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         buildConfigField("String", "BASE_URL", "\"http://prayersapi.scienceontheweb.net/\"")
