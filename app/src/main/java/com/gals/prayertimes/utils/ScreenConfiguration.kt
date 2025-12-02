@@ -4,14 +4,11 @@ import android.content.res.Configuration
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.window.core.layout.WindowHeightSizeClass
-import androidx.window.core.layout.WindowWidthSizeClass
+import androidx.compose.ui.platform.LocalContext
 
 @Composable
-fun isLandscape(): Boolean = when (LocalConfiguration.current.orientation) {
-    Configuration.ORIENTATION_LANDSCAPE -> true
-    else -> false
-}
+fun isLandscape(): Boolean =
+    LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
 
 @Composable
 fun isTablet(): Boolean = isTabletWidth() && isTabletHeight()
