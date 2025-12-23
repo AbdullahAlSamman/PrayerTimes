@@ -48,7 +48,7 @@ jobs:
         run: ./gradlew assembleDebug --stacktrace
 
       - name: Upload apk debug
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: apk-debug
           path: app/build/outputs/apk/debug
@@ -102,14 +102,14 @@ jobs:
         run: ./gradlew assembleRelease --stacktrace
 
       - name: Upload bundle release
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         if: github.event.inputs.buildBundle == 'true'
         with:
           name: bundle-release-${{ github.event.inputs.versionName }}
           path: app/build/outputs/bundle/release/app-release.aab
 
       - name: Upload apk release
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         if: github.event.inputs.buildApk == 'true'
         with:
           name: apk-release-${{ github.event.inputs.versionName }}
