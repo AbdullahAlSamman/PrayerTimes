@@ -8,5 +8,9 @@ object Converters {
     fun fromNotificationType(value: NotificationType): String = value.name
 
     @TypeConverter
-    fun toNotificationType(value: String): NotificationType = NotificationType.valueOf(value)
+    fun toNotificationType(value: String): NotificationType = try {
+        NotificationType.valueOf(value)
+    } catch (_: IllegalArgumentException) {
+        NotificationType.SILENT
+    }
 }
