@@ -13,6 +13,7 @@ import com.gals.prayertimes.common.mappers.toUiNextPrayer
 import com.gals.prayertimes.common.mappers.todayDate
 import com.gals.prayertimes.main.model.UiNextPrayer
 import com.gals.prayertimes.main.model.UiState
+import com.gals.prayertimes.permissions.manager.PermissionsManager
 import com.gals.prayertimes.repository.PrayersRepository
 import com.gals.prayertimes.repository.local.entities.PrayerEntity
 import com.gals.prayertimes.utils.Formatter
@@ -40,7 +41,8 @@ class MainViewModel @Inject constructor(
     private val prayersRepository: PrayersRepository,
     private val resourceProvider: ResourceProvider,
     private val calculation: PrayerCalculation,
-    private val formatter: Formatter
+    private val formatter: Formatter,
+    private val permissionsManager: PermissionsManager
 ) : ViewModel() {
     private var todayPrayers = PrayerEntity()
     private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
@@ -64,6 +66,8 @@ class MainViewModel @Inject constructor(
     fun reload() {
         startLoading(showLoadingScreen = true, dispatcher = dispatcher)
     }
+
+    fun areAllPermissionsGranted(): Boolean = permissionsManager.areAllPermissionsGranted()
 
     /**update all flows related to ui*/
     private fun updateScreenStates() = try {
