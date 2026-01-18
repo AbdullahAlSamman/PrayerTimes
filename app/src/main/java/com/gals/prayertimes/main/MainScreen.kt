@@ -40,6 +40,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.gals.prayertimes.BuildConfig
 import com.gals.prayertimes.R
 import com.gals.prayertimes.main.model.UiState
 import com.gals.prayertimes.main.screens.ErrorScreen
@@ -179,6 +180,15 @@ private fun NavigationDrawerContent(
                 modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
             )
         }
+
+        Spacer(Modifier.weight(1f))
+
+        Text(
+            modifier = Modifier.fillMaxWidth(),
+            textAlign = TextAlign.Center,
+            text = "(${BuildConfig.VERSION_CODE})${BuildConfig.VERSION_NAME}",
+            style = PrayerTypography.bodySmall
+        )
     }
 }
 
