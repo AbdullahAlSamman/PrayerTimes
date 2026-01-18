@@ -1,7 +1,8 @@
+import com.android.build.api.dsl.ApplicationExtension
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.com.google.dagger.hilt.android)
-    alias(libs.plugins.org.jetbrains.kotlin.android)
     alias(libs.plugins.org.jetbrains.compose.compiler)
     alias(libs.plugins.com.google.ksp)
     alias(libs.plugins.org.jetbrains.kotlin.serialization)
@@ -12,7 +13,7 @@ ksp {
     arg("room.schemaLocation", "$projectDir/schemas")
 }
 
-android {
+configure<ApplicationExtension> {
     namespace = "com.gals.prayertimes"
     compileSdk = 36
 
@@ -76,10 +77,11 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+}
 
-    kotlin {
-        jvmToolchain(21)
-        compilerOptions.freeCompilerArgs.add("-Xannotation-default-target=param-property")
+kotlin {
+    compilerOptions {
+        freeCompilerArgs.add("-XXLanguage:+PropertyParamAnnotationDefaultTargetMode")
     }
 }
 
