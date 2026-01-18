@@ -2,14 +2,12 @@ package com.gals.prayertimes.main.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
@@ -27,17 +25,12 @@ import com.gals.prayertimes.utils.isTablet
 
 @Composable
 internal fun PrayerLandscapeScreen(
-    innerPadding: PaddingValues,
     prayers: Map<UiPrayerName, String>,
     uiNextPrayer: UiNextPrayer,
     uiDate: UiDate,
-    onSettingsClicked: () -> Unit
+    modifier: Modifier = Modifier
 ) {
-    Row(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(innerPadding)
-    ) {
+    Row(modifier = modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
                 .weight(if (isTablet()) 0.6f else 0.4f)
@@ -48,8 +41,7 @@ internal fun PrayerLandscapeScreen(
                     .fillMaxHeight(0.93f)
                     .fillMaxWidth(),
                 imageScale = ContentScale.FillWidth,
-                config = uiNextPrayer,
-                onSettingsClicked = onSettingsClicked
+                config = uiNextPrayer
             )
 
             PrayerDateBar(

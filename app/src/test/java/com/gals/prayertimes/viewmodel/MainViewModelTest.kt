@@ -3,6 +3,7 @@ package com.gals.prayertimes.viewmodel
 import app.cash.turbine.test
 import com.gals.prayertimes.main.MainViewModel
 import com.gals.prayertimes.main.model.UiState
+import com.gals.prayertimes.permissions.manager.PermissionsManager
 import com.gals.prayertimes.repository.PrayersRepository
 import com.gals.prayertimes.repository.local.entities.PrayerEntity
 import com.gals.prayertimes.utils.Formatter
@@ -37,6 +38,8 @@ class MainViewModelTest {
     private val mockFormatter = mockk<Formatter>()
     private val mockCalculation = mockk<PrayerCalculation>()
     private val mockScreenUpdater = mockk<TestScreenUpdater>()
+    private val mockPermissionsManager = mockk<PermissionsManager>()
+
 
     @Before
     fun setup() {
@@ -109,6 +112,7 @@ class MainViewModelTest {
         prayersRepository = mockPrayersRepository,
         resourceProvider = mockResourceProvider,
         formatter = mockFormatter,
-        calculation = mockCalculation
+        calculation = mockCalculation,
+        permissionsManager = mockPermissionsManager
     )
 }

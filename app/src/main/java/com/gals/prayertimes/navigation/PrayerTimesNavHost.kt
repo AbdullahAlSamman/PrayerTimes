@@ -16,20 +16,14 @@ import com.gals.prayertimes.navigation.PrayerTimesNavHost.NavDestination
 import com.gals.prayertimes.permissions.PermissionScreen
 import com.gals.prayertimes.settings.screens.NotificationScreen
 import com.gals.prayertimes.settings.screens.PrivacyPolicyScreen
-import com.gals.prayertimes.settings.screens.SettingsMenuScreen
-import com.gals.prayertimes.settings.screens.UiMenuItem
 import kotlinx.serialization.Serializable
 import kotlin.reflect.typeOf
-
 
 object PrayerTimesNavHost {
     @Serializable
     sealed class NavDestination {
         @Serializable
         data object Home : NavDestination()
-
-        @Serializable
-        data object Menu : NavDestination()
 
         @Serializable
         data object PrivacyPolicy : NavDestination()
@@ -51,30 +45,24 @@ object PrayerTimesNavHost {
             navController = navController,
             startDestination = NavDestination.Home
         ) {
-            composable<NavDestination.Home> {
-                MainScreen(onSettingsClicked = { navController.navigate(NavDestination.Menu) })
-            }
 
-            composable<NavDestination.Menu> {
-                SettingsMenuScreen(
-                    onBackClicked = { navController.navigateUp() },
-                    uiMenuItems = listOf(
-                        UiMenuItem(
-                            icon = R.drawable.icon_notification_active,
-                            title = R.string.text_settings_notifiaction,
-                            navigateTo = { arePermissionsGranted ->
+            composable<NavDestination.Home> {
+                MainScreen(
+                    uiNavigationMenuItems = navigationMenuItems,
+                    onNavigationMenuItemClick = { target, arePermissionsGranted ->
+                        when (target) {
+                            NavigationMenuTarget.NOTIFICATIONS -> {
                                 navController.navigateToGrantPermission(
                                     arePermissionsGranted,
                                     NavDestination.Notification
                                 )
                             }
-                        ),
-                        UiMenuItem(
-                            icon = R.drawable.icon_privacy_policy,
-                            title = R.string.text_settings_privacy_policy,
-                            navigateTo = { _ -> navController.navigate(NavDestination.PrivacyPolicy) }
-                        )
-                    )
+
+                            NavigationMenuTarget.PRIVACY_POLICY -> {
+                                navController.navigate(NavDestination.PrivacyPolicy)
+                            }
+                        }
+                    }
                 )
             }
 
