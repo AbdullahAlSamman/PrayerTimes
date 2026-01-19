@@ -114,6 +114,9 @@ dependencies {
     //Logging
     implementation(libs.timber)
 
+    // Navigation 3
+    implementation(libs.bundles.androidx.navigation3)
+
     //Test
     testImplementation(libs.bundles.unit.test)
 }
