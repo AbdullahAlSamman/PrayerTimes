@@ -21,8 +21,8 @@ configure<ApplicationExtension> {
         applicationId = "com.gals.prayertimes"
         minSdk = 26
         targetSdk = 36
-        versionName = "1.1.1"
-        versionCode = 30
+        versionName = "1.1.2"
+        versionCode = 31
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         buildConfigField("String", "BASE_URL", "\"http://prayersapi.scienceontheweb.net/\"")
