@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.com.google.ksp)
     alias(libs.plugins.org.jetbrains.kotlin.serialization)
     alias(libs.plugins.google.gms.services)
+    alias (libs.plugins.firebase.crashlaytics)
 }
 
 ksp {
@@ -50,11 +51,12 @@ configure<ApplicationExtension> {
             signingConfig = signingConfigs.getByName("release")
         }
         debug {
+            applicationIdSuffix = ".debug"
             isMinifyEnabled = false
             isShrinkResources = false
             isDebuggable = true
             isJniDebuggable = true
-            applicationIdSuffix = ".debug"
+
         }
     }
 
@@ -114,8 +116,15 @@ dependencies {
     //Logging
     implementation(libs.timber)
 
-    // Navigation 3
+    //Navigation 3
     implementation(libs.bundles.androidx.navigation3)
+
+    //Play Services
+    implementation(libs.bundles.play.services)
+
+    //Firebase
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.bundles.firebase.services)
 
     //Test
     testImplementation(libs.bundles.unit.test)
