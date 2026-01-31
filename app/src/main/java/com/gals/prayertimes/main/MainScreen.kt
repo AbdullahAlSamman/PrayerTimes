@@ -1,6 +1,7 @@
 package com.gals.prayertimes.main
 
-import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.activity.compose.LocalActivity
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -34,8 +35,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
@@ -43,6 +44,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.gals.prayertimes.BuildConfig
 import com.gals.prayertimes.R
 import com.gals.prayertimes.main.model.UiState
+import com.gals.prayertimes.main.screens.ConsentScreen
 import com.gals.prayertimes.main.screens.ErrorScreen
 import com.gals.prayertimes.main.screens.LoadingScreen
 import com.gals.prayertimes.main.screens.PrayerLandscapeScreen
@@ -69,19 +71,34 @@ fun MainScreen(
     Scaffold(
         contentWindowInsets = WindowInsets.safeDrawing
     ) { innerPadding ->
+        val activity = LocalActivity.current
+        LaunchedEffect(activity) {
+            activity?.let {
+                val consentResult = viewModel.requestConsentIfRequired(activity)
+                if (consentResult != null) {
+                    Timber.e("consentResponse: Failed code:${consentResult.errorCode} message: ${consentResult.message}")
+                }
+                viewModel.startLoading()
+            }
+        }
+
         LaunchedEffect(uiState) {
             if (uiState is UiState.Success) {
                 viewModel.startUiTicks()
             }
         }
         when (uiState) {
+            UiState.Consent -> {
+                ConsentScreen()
+            }
+
+            UiState.Loading -> {
+                LoadingScreen(modifier = Modifier.fillMaxSize())
+            }
+
             is UiState.Error -> {
                 val state = uiState as UiState.Error
                 ErrorScreen(message = state.message, retry = viewModel::reload)
-            }
-
-            is UiState.Loading -> {
-                LoadingScreen(modifier = Modifier.fillMaxSize())
             }
 
             is UiState.Success -> {
@@ -98,7 +115,8 @@ fun MainScreen(
                             coroutineScope = scope,
                             onNavigationMenuItemClick = onNavigationMenuItemClick,
                             drawerState = drawerState,
-                            arePermissionsGranted = viewModel.areAllPermissionsGranted()
+                            arePermissionsGranted = viewModel.areAllPermissionsGranted(),
+                            resetConsent = { viewModel.resetConsent() }
                         )
                     }) {
                     Box(
@@ -139,7 +157,8 @@ private fun NavigationDrawerContent(
     coroutineScope: CoroutineScope,
     onNavigationMenuItemClick: (NavigationMenuTarget, Boolean) -> Unit,
     drawerState: DrawerState,
-    arePermissionsGranted: Boolean
+    arePermissionsGranted: Boolean,
+    resetConsent: () -> Unit
 ) {
     ModalDrawerSheet(
         drawerContainerColor = MaterialTheme.colorScheme.surface,
@@ -184,7 +203,11 @@ private fun NavigationDrawerContent(
         Spacer(Modifier.weight(1f))
 
         Text(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .clickable {
+                    resetConsent()
+                },
             textAlign = TextAlign.Center,
             text = "(${BuildConfig.VERSION_CODE})${BuildConfig.VERSION_NAME}",
             style = PrayerTypography.bodySmall
@@ -203,6 +226,7 @@ private fun DrawerMenuButton(
         modifier = modifier
             .size(if (isTablet()) 56.dp else 48.dp)
             .padding(top = iconPadding, start = iconPadding)
+            .semantics(true) {}
             .zIndex(1f),
         onClick = {
             scope.launch {
@@ -212,9 +236,9 @@ private fun DrawerMenuButton(
     ) {
         Icon(
             modifier = Modifier.fillMaxSize(),
-            tint = (if (isSystemInDarkTheme()) Color.White else Color.Black),
+            tint = MaterialTheme.colorScheme.onBackground,
             imageVector = Icons.Filled.Menu,
-            contentDescription = stringResource(id = R.string.content_descriptor_settings_icon)
+            contentDescription = stringResource(id = R.string.content_descriptor_settings_drawer)
         )
     }
 }

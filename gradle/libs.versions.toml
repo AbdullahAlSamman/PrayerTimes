@@ -29,6 +29,7 @@ nav3Core = "1.0.0"
 play-services = "24.9.0"
 firebase-bom = "34.8.0"
 firebase-crashlytics-plugin = "3.0.6"
+ump-consent = "4.0.0"
 
 [libraries]
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "app-compat" }
@@ -77,6 +78,8 @@ androidx-navigation3-runtime = { module = "androidx.navigation3:navigation3-runt
 androidx-navigation3-ui = { module = "androidx.navigation3:navigation3-ui", version.ref = "nav3Core" }
 
 play-services-ads = { group = "com.google.android.gms", name = "play-services-ads", version.ref = "play-services" }
+play-ump-consent = { group = "com.google.android.ump", name = "user-messaging-platform", version.ref = "ump-consent" }
+
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebase-bom" }
 firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics" }
 firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics" }
@@ -152,7 +155,8 @@ kotlinx = [
 ]
 
 play-services = [
-    "play-services-ads"
+    "play-services-ads",
+    "play-ump-consent"
 ]
 
 firebase-services = [

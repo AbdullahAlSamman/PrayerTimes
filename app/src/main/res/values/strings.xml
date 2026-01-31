@@ -80,7 +80,7 @@
     <string name="text_permission_all_done">تم منح جميع الإذونات اللازمة</string>
     <string name="text_permission_continue">متابعة</string>
     <string name="text_notification_selected_prayers">التنبيه للصلوات المختارة:</string>
-    <string name="content_descriptor_settings_icon">settings icon</string>
+    <string name="content_descriptor_settings_drawer">settings drawer button</string>
     <string name="content_descriptor_background">Background with moon or sun</string>
     <string name="content_descriptor_back_arrow">back to menu</string>
     <string name="sunrise_notification_channel_settings">Sunrise Notification</string>
