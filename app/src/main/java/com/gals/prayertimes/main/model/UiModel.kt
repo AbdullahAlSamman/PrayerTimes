@@ -6,6 +6,7 @@ import androidx.compose.ui.graphics.Color
 import com.gals.prayertimes.common.UiPrayerName
 
 sealed class UiState {
+    data object Consent: UiState()
     data object Loading : UiState()
     data class Success(val uiPrayer: UiPrayer) : UiState()
     data class Error(val message: String) : UiState()

@@ -1,8 +1,10 @@
 package com.gals.prayertimes.main
 
+import android.app.Activity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gals.prayertimes.R
+import com.gals.prayertimes.ads.manager.ConsentManager
 import com.gals.prayertimes.common.ConnectivityException
 import com.gals.prayertimes.common.DefaultDispatcher
 import com.gals.prayertimes.common.ServerException
@@ -20,6 +22,7 @@ import com.gals.prayertimes.utils.Formatter
 import com.gals.prayertimes.utils.PrayerCalculation
 import com.gals.prayertimes.utils.ResourceProvider
 import com.gals.prayertimes.utils.ScreenUpdater
+import com.google.android.ump.FormError
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -42,16 +45,20 @@ class MainViewModel @Inject constructor(
     private val resourceProvider: ResourceProvider,
     private val calculation: PrayerCalculation,
     private val formatter: Formatter,
-    private val permissionsManager: PermissionsManager
+    private val permissionsManager: PermissionsManager,
+    private val consentManager: ConsentManager
 ) : ViewModel() {
+    private var isInitialLoadDone = false
+    private val initState = if (consentManager.canRequestAds) UiState.Loading else UiState.Consent
     private var todayPrayers = PrayerEntity()
-    private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
+    private val _uiState = MutableStateFlow(initState)
     private val _uiNextPrayer = MutableStateFlow(UiNextPrayer())
-
     val uiState: StateFlow<UiState> = _uiState
     val nextPrayer: StateFlow<UiNextPrayer> = _uiNextPrayer.asStateFlow()
 
-    init {
+    fun startLoading() {
+        if (isInitialLoadDone) return
+        _uiState.update { UiState.Loading }
         startLoading(dispatcher = dispatcher)
     }
 
@@ -62,12 +69,21 @@ class MainViewModel @Inject constructor(
             }.launchIn(viewModelScope)
     }
 
-    /**retry method to call from ui*/
+    /**Retry method to call from ui*/
     fun reload() {
-        startLoading(showLoadingScreen = true, dispatcher = dispatcher)
+        isInitialLoadDone = false
+        startLoading(dispatcher = dispatcher)
     }
 
     fun areAllPermissionsGranted(): Boolean = permissionsManager.areAllPermissionsGranted()
+
+    fun resetConsent() {
+        consentManager.resetConsent()
+    }
+
+
+    suspend fun requestConsentIfRequired(activity: Activity): FormError? =
+        consentManager.gatherConsent(activity = activity)
 
     /**update all flows related to ui*/
     private fun updateScreenStates() = try {
@@ -95,10 +111,8 @@ class MainViewModel @Inject constructor(
     }
 
     /**Method to initial loading flow*/
-    private fun startLoading(showLoadingScreen: Boolean = false, dispatcher: CoroutineDispatcher) {
-        if (showLoadingScreen) {
-            _uiState.update { UiState.Loading }
-        }
+    private fun startLoading(dispatcher: CoroutineDispatcher) {
+        _uiState.update { UiState.Loading }
         viewModelScope.launch(context = dispatcher) {
             prayersRepository.fetchPrayer(todayDate())
                 .catch { cause -> cause.toUiError() }
@@ -109,6 +123,7 @@ class MainViewModel @Inject constructor(
                     prayers.let { composePrayers ->
                         updateScreenStates()
                         _uiState.update { UiState.Success(uiPrayer = composePrayers) }
+                        isInitialLoadDone = true
                     }
                 }
         }
@@ -118,7 +133,10 @@ class MainViewModel @Inject constructor(
         when (this) {
             is ConnectivityException -> _uiState.update { UiState.Error(resourceProvider.getString(R.string.text_error_check_internet)) }
             is ServerException -> _uiState.update { UiState.Error(resourceProvider.getString(R.string.text_error_server_no_data)) }
-            else -> _uiState.update { UiState.Error(resourceProvider.getString(R.string.text_error_server_down)) }
+            else -> {
+                isInitialLoadDone = false
+                _uiState.update { UiState.Error(resourceProvider.getString(R.string.text_error_server_down)) }
+            }
         }
 
     companion object {
