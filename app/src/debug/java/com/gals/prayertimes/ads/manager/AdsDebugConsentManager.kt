@@ -12,7 +12,7 @@ import javax.inject.Singleton
 import kotlin.coroutines.resume
 
 @Singleton
-class AdsConsentManager @Inject constructor( //TODO : make another one for prod without debug settings
+class AdsDebugConsentManager @Inject constructor(
     val consentInformation: ConsentInformation
 ) : ConsentManager {
 
