@@ -1,6 +1,7 @@
 package com.gals.prayertimes.viewmodel
 
 import app.cash.turbine.test
+import com.gals.prayertimes.ads.manager.ConsentManager
 import com.gals.prayertimes.main.MainViewModel
 import com.gals.prayertimes.main.model.UiState
 import com.gals.prayertimes.permissions.manager.PermissionsManager
@@ -39,6 +40,7 @@ class MainViewModelTest {
     private val mockCalculation = mockk<PrayerCalculation>()
     private val mockScreenUpdater = mockk<TestScreenUpdater>()
     private val mockPermissionsManager = mockk<PermissionsManager>()
+    private val mockConsentManager = mockk<ConsentManager>()
 
 
     @Before
@@ -62,13 +64,34 @@ class MainViewModelTest {
                 any()
             )
         } returns testNextPrayerConfig
+        every { mockConsentManager.canRequestAds } returns true
     }
+
+    @Test
+    fun `Given consent is not required, when view model created, then show loading`() =
+        runTest {
+            every { mockConsentManager.canRequestAds } returns true
+            val viewModel = createViewModel()
+            viewModel.uiState.test {
+                assertEquals(UiState.Loading, awaitItem())
+            }
+        }
+
+    @Test
+    fun `Given consent is required, when view model created, then show consent`() =
+        runTest {
+            every { mockConsentManager.canRequestAds } returns false
+            val viewModel = createViewModel()
+            viewModel.uiState.test {
+                assertEquals(UiState.Consent, awaitItem())
+            }
+        }
 
     @Test
     fun `Given valid request from be, when view model start loading, then show success result`() =
         runTest {
             val viewModel = createViewModel()
-
+            viewModel.startLoading()
             viewModel.uiState.test {
                 assertEquals(UiState.Success(testUiPrayer), awaitItem())
             }
@@ -82,7 +105,7 @@ class MainViewModelTest {
             }
 
             val viewModel = createViewModel()
-
+            viewModel.startLoading()
             viewModel.uiState.test {
                 assertEquals(UiState.Success(testUiPrayer), awaitItem())
             }
@@ -113,6 +136,7 @@ class MainViewModelTest {
         resourceProvider = mockResourceProvider,
         formatter = mockFormatter,
         calculation = mockCalculation,
-        permissionsManager = mockPermissionsManager
+        permissionsManager = mockPermissionsManager,
+        consentManager = mockConsentManager
     )
 }
