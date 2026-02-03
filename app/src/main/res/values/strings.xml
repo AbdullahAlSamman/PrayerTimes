@@ -69,6 +69,7 @@
     <string name="text_settings_switch_title">إشعارات الصلاة</string>
     <string name="text_midnight_time_title">لمنتصف الليل</string>
     <string name="text_settings_privacy_policy">سياسة الخصوصية</string>
+    <string name="text_settings_privacy_management">إدارة الخصوصية</string>
     <string name="text_settings_about_us">حول التطبيق</string>
     <string name="text_permission_alarm_title">تغعيل التنبيهات</string>
     <string name="text_permission_notification_title">تفعيل الإشعارات</string>

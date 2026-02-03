@@ -40,7 +40,11 @@ object PrayerTimesNavHost {
     operator fun invoke() {
         val navigationState = rememberNavigationState(
             startRoute = NavDestination.Home,
-            topLevelRoutes = setOf(NavDestination.Home, NavDestination.Notification, NavDestination.PrivacyPolicy)
+            topLevelRoutes = setOf(
+                NavDestination.Home,
+                NavDestination.Notification,
+                NavDestination.PrivacyPolicy
+            )
         )
         val navigator = remember { Navigator(navigationState) }
 
@@ -59,6 +63,9 @@ object PrayerTimesNavHost {
 
                             NavigationMenuTarget.PRIVACY_POLICY -> {
                                 navigator.navigate(NavDestination.PrivacyPolicy)
+                            }
+
+                            NavigationMenuTarget.CONSENT_FORM -> {/* no-op */
                             }
                         }
                     }

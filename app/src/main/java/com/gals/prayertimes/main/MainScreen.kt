@@ -1,7 +1,7 @@
 package com.gals.prayertimes.main
 
+import android.app.Activity
 import androidx.activity.compose.LocalActivity
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -35,6 +35,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
@@ -116,7 +117,8 @@ fun MainScreen(
                             onNavigationMenuItemClick = onNavigationMenuItemClick,
                             drawerState = drawerState,
                             arePermissionsGranted = viewModel.areAllPermissionsGranted(),
-                            resetConsent = { viewModel.resetConsent() }
+                            isPrivacyOptionsRequired = viewModel.isPrivacyOptionsRequired(),
+                            onConsentFormClick = viewModel::showPrivacyOptions
                         )
                     }) {
                     Box(
@@ -158,8 +160,10 @@ private fun NavigationDrawerContent(
     onNavigationMenuItemClick: (NavigationMenuTarget, Boolean) -> Unit,
     drawerState: DrawerState,
     arePermissionsGranted: Boolean,
-    resetConsent: () -> Unit
+    isPrivacyOptionsRequired: Boolean,
+    onConsentFormClick: (Activity) -> Unit
 ) {
+    val activity = LocalActivity.current
     ModalDrawerSheet(
         drawerContainerColor = MaterialTheme.colorScheme.surface,
         modifier = Modifier.width(250.dp)
@@ -176,43 +180,71 @@ private fun NavigationDrawerContent(
         HorizontalDivider()
         Spacer(Modifier.height(12.dp))
         items.forEach { item ->
-            NavigationDrawerItem(
-                label = {
-                    Text(
-                        text = stringResource(item.title),
-                        style = PrayerTypography.titleMedium
+            when (item.navTarget) {
+                NavigationMenuTarget.NOTIFICATIONS, NavigationMenuTarget.PRIVACY_POLICY -> {
+                    NavDrawerMenuItem(
+                        title = item.title,
+                        icon = item.icon,
+                        onClick = {
+                            coroutineScope.launch {
+                                onNavigationMenuItemClick(item.navTarget, arePermissionsGranted)
+                                drawerState.close()
+                            }
+                        }
                     )
-                },
-                selected = false,
-                onClick = {
-                    coroutineScope.launch {
-                        onNavigationMenuItemClick(item.navTarget, arePermissionsGranted)
-                        drawerState.close()
+                }
+
+                NavigationMenuTarget.CONSENT_FORM -> {
+                    if (isPrivacyOptionsRequired) {
+                        NavDrawerMenuItem(
+                            title = item.title,
+                            icon = item.icon,
+                            onClick = {
+                                coroutineScope.launch {
+                                    activity?.let { onConsentFormClick(it) }
+                                    drawerState.close()
+                                }
+                            }
+                        )
                     }
-                },
-                icon = {
-                    Icon(
-                        imageVector = item.icon,
-                        contentDescription = stringResource(item.title)
-                    )
-                },
-                modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
-            )
+                }
+            }
         }
 
         Spacer(Modifier.weight(1f))
 
         Text(
-            modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .clickable {
-                    resetConsent()
-                },
+            modifier = Modifier.align(Alignment.CenterHorizontally),
             textAlign = TextAlign.Center,
             text = "(${BuildConfig.VERSION_CODE})${BuildConfig.VERSION_NAME}",
             style = PrayerTypography.bodySmall
         )
     }
+}
+
+@Composable
+private fun NavDrawerMenuItem(
+    icon: Int,
+    title: Int,
+    onClick: () -> Unit,
+) {
+    NavigationDrawerItem(
+        modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding),
+        label = {
+            Text(
+                text = stringResource(title),
+                style = PrayerTypography.titleMedium
+            )
+        },
+        selected = false,
+        onClick = onClick,
+        icon = {
+            Icon(
+                painter = painterResource(icon),
+                contentDescription = stringResource(title)
+            )
+        }
+    )
 }
 
 @Composable

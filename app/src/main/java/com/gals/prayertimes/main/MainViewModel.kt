@@ -4,7 +4,7 @@ import android.app.Activity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gals.prayertimes.R
-import com.gals.prayertimes.ads.manager.ConsentManager
+import com.gals.prayertimes.ads.consent.ConsentManager
 import com.gals.prayertimes.common.ConnectivityException
 import com.gals.prayertimes.common.DefaultDispatcher
 import com.gals.prayertimes.common.ServerException
@@ -77,10 +77,20 @@ class MainViewModel @Inject constructor(
 
     fun areAllPermissionsGranted(): Boolean = permissionsManager.areAllPermissionsGranted()
 
+    fun isPrivacyOptionsRequired(): Boolean = consentManager.isPrivacyOptionsRequired
+
+    fun showPrivacyOptions(activity: Activity) {
+        consentManager.showPrivacyOptionsForm(
+            activity = activity,
+            onDismiss = {
+                //TODO check if ads can still be shown then update ads banner
+            }
+        )
+    }
+
     fun resetConsent() {
         consentManager.resetConsent()
     }
-
 
     suspend fun requestConsentIfRequired(activity: Activity): FormError? =
         consentManager.gatherConsent(activity = activity)

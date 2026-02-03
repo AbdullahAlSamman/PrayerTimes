@@ -1,31 +1,34 @@
 package com.gals.prayertimes.navigation
 
+import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.NotificationsActive
-import androidx.compose.material.icons.filled.Policy
-import androidx.compose.ui.graphics.vector.ImageVector
 import com.gals.prayertimes.R
 
 enum class NavigationMenuTarget {
     NOTIFICATIONS,
-    PRIVACY_POLICY
+    PRIVACY_POLICY,
+    CONSENT_FORM
 }
 
 data class NavigationDrawerMenuItem(
-    val icon: ImageVector,
+    @DrawableRes val icon: Int,
     @StringRes val title: Int,
     val navTarget: NavigationMenuTarget
 )
 
 val navigationMenuItems = listOf(
     NavigationDrawerMenuItem(
-        icon = Icons.Filled.NotificationsActive,
+        icon = R.drawable.ic_notification_active,
         title = R.string.text_settings_notifiaction,
         navTarget = NavigationMenuTarget.NOTIFICATIONS
     ),
     NavigationDrawerMenuItem(
-        icon = Icons.Filled.Policy,
+        icon = R.drawable.ic_shield_toggle,
+        title = R.string.text_settings_privacy_management,
+        navTarget = NavigationMenuTarget.CONSENT_FORM
+    ),
+    NavigationDrawerMenuItem(
+        icon = R.drawable.ic_policy,
         title = R.string.text_settings_privacy_policy,
         navTarget = NavigationMenuTarget.PRIVACY_POLICY
     )
