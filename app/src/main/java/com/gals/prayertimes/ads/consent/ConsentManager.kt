@@ -1,4 +1,4 @@
-package com.gals.prayertimes.ads.manager
+package com.gals.prayertimes.ads.consent
 
 import android.app.Activity
 import com.google.android.ump.FormError
@@ -16,5 +16,5 @@ interface ConsentManager {
         onDismiss: (FormError?) -> Unit
     )
 
-    fun resetConsent()
+    fun resetConsent(){}
 }

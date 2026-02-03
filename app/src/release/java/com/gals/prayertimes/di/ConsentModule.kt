@@ -1,6 +1,6 @@
 package com.gals.prayertimes.di
 
-import com.gals.prayertimes.ads.manager.AdsConsentManager
+import com.gals.prayertimes.ads.consent.AdsConsentManager
 import com.gals.prayertimes.ads.manager.ConsentManager
 import dagger.Binds
 import dagger.Module

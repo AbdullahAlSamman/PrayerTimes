@@ -1,7 +1,7 @@
 package com.gals.prayertimes.viewmodel
 
 import app.cash.turbine.test
-import com.gals.prayertimes.ads.manager.ConsentManager
+import com.gals.prayertimes.ads.consent.ConsentManager
 import com.gals.prayertimes.main.MainViewModel
 import com.gals.prayertimes.main.model.UiState
 import com.gals.prayertimes.permissions.manager.PermissionsManager
