@@ -1,6 +1,7 @@
 package com.gals.prayertimes.viewmodel
 
 import app.cash.turbine.test
+import com.gals.prayertimes.ads.AdsManager
 import com.gals.prayertimes.ads.ConsentManager
 import com.gals.prayertimes.main.MainViewModel
 import com.gals.prayertimes.main.model.UiState
@@ -19,7 +20,9 @@ import com.gals.prayertimes.viewmodel.utils.testPrayerEntity
 import com.gals.prayertimes.viewmodel.utils.testUiPrayer
 import io.mockk.coEvery
 import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
+import io.mockk.runs
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -41,6 +44,7 @@ class MainViewModelTest {
     private val mockScreenUpdater = mockk<TestScreenUpdater>()
     private val mockPermissionsManager = mockk<PermissionsManager>()
     private val mockConsentManager = mockk<ConsentManager>()
+    private val mockAdsManager = mockk<AdsManager>()
 
 
     @Before
@@ -64,7 +68,9 @@ class MainViewModelTest {
                 any()
             )
         } returns testNextPrayerConfig
-        every { mockConsentManager.canRequestAds } returns true
+        every { mockConsentManager.canRequestAds } returns false
+        every { mockConsentManager.isPrivacyOptionsRequired } returns false
+        every { mockAdsManager.initAdsSDK() } just runs
     }
 
     @Test
@@ -93,7 +99,7 @@ class MainViewModelTest {
             val viewModel = createViewModel()
             viewModel.startLoading()
             viewModel.uiState.test {
-                assertEquals(UiState.Success(testUiPrayer), awaitItem())
+                assertEquals(UiState.Success(testUiPrayer, false), awaitItem())
             }
         }
 
@@ -107,7 +113,7 @@ class MainViewModelTest {
             val viewModel = createViewModel()
             viewModel.startLoading()
             viewModel.uiState.test {
-                assertEquals(UiState.Success(testUiPrayer), awaitItem())
+                assertEquals(UiState.Success(testUiPrayer, false), awaitItem())
             }
         }
 
@@ -137,6 +143,7 @@ class MainViewModelTest {
         formatter = mockFormatter,
         calculation = mockCalculation,
         permissionsManager = mockPermissionsManager,
-        consentManager = mockConsentManager
+        consentManager = mockConsentManager,
+        adsManager = mockAdsManager
     )
 }
