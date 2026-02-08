@@ -1,6 +1,7 @@
 package com.gals.prayertimes.ads.consent
 
 import android.app.Activity
+import com.gals.prayertimes.ads.ConsentManager
 import com.google.android.ump.ConsentDebugSettings
 import com.google.android.ump.ConsentInformation
 import com.google.android.ump.ConsentRequestParameters

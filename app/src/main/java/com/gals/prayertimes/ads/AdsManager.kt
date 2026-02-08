@@ -1,17 +1,21 @@
 package com.gals.prayertimes.ads
 
-import com.gals.prayertimes.ads.consent.ConsentManager
-import javax.inject.Inject
+import android.content.Context
+import com.google.android.gms.ads.AdSize
+import com.google.android.gms.ads.AdView
 
 interface AdsManager {
     fun initAdsSDK()
-}
+    fun requestAdView(context: Context, adSize: AdSize): AdView
+    fun requestAdViewWithListener(
+        context: Context,
+        adSize: AdSize,
+        onAdLoaded: () -> Unit,
+        onAdOpened: () -> Unit,
+        onAdClicked: () -> Unit,
+        onAdImpression: () -> Unit,
+        onAdFailedToLoad: (error: String) -> Unit
+    ): AdView
 
-
-class AdsManagerImpl @Inject constructor(
-    consentManager: ConsentManager
-) : AdsManager{
-    override fun initAdsSDK() {
-        //TODO check consent canRequestAds then call init
-    }
+    fun loadAd(adview: AdView)
 }

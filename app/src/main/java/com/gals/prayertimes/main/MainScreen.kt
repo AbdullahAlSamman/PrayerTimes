@@ -1,6 +1,7 @@
 package com.gals.prayertimes.main
 
 import android.app.Activity
+import android.content.Context
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
@@ -40,6 +41,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.zIndex
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.gals.prayertimes.BuildConfig
@@ -55,6 +57,7 @@ import com.gals.prayertimes.navigation.NavigationMenuTarget
 import com.gals.prayertimes.ui.theme.PrayerTypography
 import com.gals.prayertimes.utils.isLandscape
 import com.gals.prayertimes.utils.isTablet
+import com.google.android.gms.ads.AdView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -68,26 +71,27 @@ fun MainScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val uiNextPrayer by viewModel.nextPrayer.collectAsState()
+    val activity = LocalActivity.current
+
+    LaunchedEffect(activity) {
+        activity?.let {
+            val consentResult = viewModel.requestConsentIfRequired(activity)
+            if (consentResult != null) {
+                Timber.e("consentResponse: Failed code:${consentResult.errorCode} message: ${consentResult.message}")
+            }
+            viewModel.startLoading()
+        }
+    }
+
+    LaunchedEffect(uiState) {
+        if (uiState is UiState.Success) {
+            viewModel.startUiTicks()
+        }
+    }
 
     Scaffold(
         contentWindowInsets = WindowInsets.safeDrawing
     ) { innerPadding ->
-        val activity = LocalActivity.current
-        LaunchedEffect(activity) {
-            activity?.let {
-                val consentResult = viewModel.requestConsentIfRequired(activity)
-                if (consentResult != null) {
-                    Timber.e("consentResponse: Failed code:${consentResult.errorCode} message: ${consentResult.message}")
-                }
-                viewModel.startLoading()
-            }
-        }
-
-        LaunchedEffect(uiState) {
-            if (uiState is UiState.Success) {
-                viewModel.startUiTicks()
-            }
-        }
         when (uiState) {
             UiState.Consent -> {
                 ConsentScreen()
@@ -145,6 +149,15 @@ fun MainScreen(
                                 uiDate = state.uiPrayer.uiDate
                             )
                             Timber.i("isTablet: ${isTablet()}")
+                        }
+
+                        if (state.canShowAds) {
+                            AdBanner(
+                                modifier = Modifier.align(if (isLandscape()) Alignment.CenterEnd else Alignment.BottomCenter),
+                                factory = { context ->
+                                    viewModel.requestAdBanner(context)
+                                }
+                            )
                         }
                     }
                 }
@@ -273,4 +286,17 @@ private fun DrawerMenuButton(
             contentDescription = stringResource(id = R.string.content_descriptor_settings_drawer)
         )
     }
+}
+
+@Composable
+private fun AdBanner(
+    factory: (Context) -> AdView,
+    modifier: Modifier = Modifier
+) {
+    AndroidView(
+        modifier = modifier,
+        factory = { context ->
+            factory(context)
+        }
+    )
 }
