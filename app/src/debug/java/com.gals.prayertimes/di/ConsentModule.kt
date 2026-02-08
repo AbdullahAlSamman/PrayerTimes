@@ -1,7 +1,7 @@
 package com.gals.prayertimes.di
 
+import com.gals.prayertimes.ads.ConsentManager
 import com.gals.prayertimes.ads.consent.AdsDebugConsentManager
-import com.gals.prayertimes.ads.consent.ConsentManager
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

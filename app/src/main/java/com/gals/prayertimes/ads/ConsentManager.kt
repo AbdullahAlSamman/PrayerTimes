@@ -1,4 +1,4 @@
-package com.gals.prayertimes.ads.consent
+package com.gals.prayertimes.ads
 
 import android.app.Activity
 import com.google.android.ump.FormError

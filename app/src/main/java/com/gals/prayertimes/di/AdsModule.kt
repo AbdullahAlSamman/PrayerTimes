@@ -1,21 +1,20 @@
 package com.gals.prayertimes.di
 
 import com.gals.prayertimes.ads.AdsManager
-import com.gals.prayertimes.ads.AdsManagerImpl
-import com.gals.prayertimes.ads.consent.ConsentManager
+import com.gals.prayertimes.ads.implementation.AdsManagerImpl
+import dagger.Binds
 import dagger.Module
-import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object AdsModule {
+abstract class AdsModule {
 
-    @Provides
+    @Binds
     @Singleton
-    fun provideAdsManager(
-        consentManager: ConsentManager
-    ): AdsManager = AdsManagerImpl(consentManager)
+    abstract fun provideAdsManager(
+        adsManagerImpl: AdsManagerImpl
+    ): AdsManager
 }

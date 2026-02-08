@@ -1,10 +1,12 @@
 package com.gals.prayertimes.main
 
 import android.app.Activity
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gals.prayertimes.R
-import com.gals.prayertimes.ads.consent.ConsentManager
+import com.gals.prayertimes.ads.AdsManager
+import com.gals.prayertimes.ads.ConsentManager
 import com.gals.prayertimes.common.ConnectivityException
 import com.gals.prayertimes.common.DefaultDispatcher
 import com.gals.prayertimes.common.ServerException
@@ -22,6 +24,8 @@ import com.gals.prayertimes.utils.Formatter
 import com.gals.prayertimes.utils.PrayerCalculation
 import com.gals.prayertimes.utils.ResourceProvider
 import com.gals.prayertimes.utils.ScreenUpdater
+import com.google.android.gms.ads.AdSize
+import com.google.android.gms.ads.AdView
 import com.google.android.ump.FormError
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -46,7 +50,8 @@ class MainViewModel @Inject constructor(
     private val calculation: PrayerCalculation,
     private val formatter: Formatter,
     private val permissionsManager: PermissionsManager,
-    private val consentManager: ConsentManager
+    private val consentManager: ConsentManager,
+    private val adsManager: AdsManager
 ) : ViewModel() {
     private var isInitialLoadDone = false
     private val initState = if (consentManager.canRequestAds) UiState.Loading else UiState.Consent
@@ -55,6 +60,10 @@ class MainViewModel @Inject constructor(
     private val _uiNextPrayer = MutableStateFlow(UiNextPrayer())
     val uiState: StateFlow<UiState> = _uiState
     val nextPrayer: StateFlow<UiNextPrayer> = _uiNextPrayer.asStateFlow()
+
+    init {
+        adsManager.initAdsSDK()
+    }
 
     fun startLoading() {
         if (isInitialLoadDone) return
@@ -83,13 +92,25 @@ class MainViewModel @Inject constructor(
         consentManager.showPrivacyOptionsForm(
             activity = activity,
             onDismiss = {
-                //TODO check if ads can still be shown then update ads banner
+                val successState = _uiState.value as? UiState.Success
+                successState?.let {
+                    if (consentManager.canRequestAds) {
+                        _uiState.update { successState.copy(canShowAds = true) }
+                    } else {
+                        _uiState.update { successState.copy(canShowAds = false) }
+                    }
+                }
             }
         )
     }
 
-    fun resetConsent() {
-        consentManager.resetConsent()
+    fun requestAdBanner(context: Context): AdView {
+        val adView = adsManager.requestAdView(
+            context = context,
+            adSize = AdSize.MEDIUM_RECTANGLE
+        )
+        adsManager.loadAd(adView)
+        return adView
     }
 
     suspend fun requestConsentIfRequired(activity: Activity): FormError? =
@@ -132,7 +153,12 @@ class MainViewModel @Inject constructor(
                 }.collect { prayers ->
                     prayers.let { composePrayers ->
                         updateScreenStates()
-                        _uiState.update { UiState.Success(uiPrayer = composePrayers) }
+                        _uiState.update {
+                            UiState.Success(
+                                uiPrayer = composePrayers,
+                                canShowAds = consentManager.canRequestAds
+                            )
+                        }
                         isInitialLoadDone = true
                     }
                 }
