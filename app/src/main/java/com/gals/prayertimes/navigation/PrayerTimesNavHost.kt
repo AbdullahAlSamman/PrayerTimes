@@ -4,13 +4,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.scene.DialogSceneStrategy
 import androidx.navigation3.ui.NavDisplay
-import com.gals.prayertimes.R
+import com.gals.prayertimes.BuildConfig
 import com.gals.prayertimes.main.MainScreen
 import com.gals.prayertimes.navigation.PrayerTimesNavHost.NavDestination
 import com.gals.prayertimes.permissions.PermissionScreen
@@ -75,7 +74,7 @@ object PrayerTimesNavHost {
             entry<NavDestination.PrivacyPolicy> {
                 PrivacyPolicyScreen(
                     onBackClicked = { navigator.goBack() },
-                    webUri = stringResource(id = R.string.asset_url_privacy_policy)
+                    webUri = BuildConfig.PRIVACY_POLICY_URL
                 )
             }
 

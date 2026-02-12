@@ -27,6 +27,7 @@ configure<ApplicationExtension> {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         buildConfigField("String", "BASE_URL", "\"http://prayersapi.scienceontheweb.net/\"")
+        buildConfigField("String", "PRIVACY_POLICY_URL", "\"http://pp.scienceontheweb.net/pp.html\"")
     }
 
     signingConfigs {
