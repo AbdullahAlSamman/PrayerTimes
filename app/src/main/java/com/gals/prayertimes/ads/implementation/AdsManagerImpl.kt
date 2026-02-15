@@ -1,11 +1,9 @@
 package com.gals.prayertimes.ads.implementation
 
 import android.content.Context
-import android.os.Bundle
 import com.gals.prayertimes.R
 import com.gals.prayertimes.ads.AdsManager
 import com.gals.prayertimes.utils.ResourceProvider
-import com.google.ads.mediation.admob.AdMobAdapter
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
@@ -36,7 +34,7 @@ class AdsManagerImpl @Inject constructor(
         return adView
     }
 
-    override fun requestAdViewWithListener(
+    override fun requestAdViewWithEvents(
         context: Context,
         adSize: AdSize,
         onAdLoaded: () -> Unit,
@@ -74,11 +72,7 @@ class AdsManagerImpl @Inject constructor(
     }
 
     override fun loadAd(adview: AdView) {
-        val extras = Bundle()
-        extras.putString("collapsible", "bottom")
-        val adRequest = AdRequest.Builder()
-            .addNetworkExtrasBundle(AdMobAdapter::class.java, extras)
-            .build()
+        val adRequest = AdRequest.Builder().build()
         adview.loadAd(adRequest)
     }
 }

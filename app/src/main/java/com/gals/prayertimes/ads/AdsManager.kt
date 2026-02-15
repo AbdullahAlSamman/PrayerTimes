@@ -7,7 +7,7 @@ import com.google.android.gms.ads.AdView
 interface AdsManager {
     fun initAdsSDK()
     fun requestAdView(context: Context, adSize: AdSize): AdView
-    fun requestAdViewWithListener(
+    fun requestAdViewWithEvents(
         context: Context,
         adSize: AdSize,
         onAdLoaded: () -> Unit,
