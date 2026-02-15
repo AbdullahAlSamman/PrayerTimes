@@ -14,7 +14,7 @@ abstract class AdsModule {
 
     @Binds
     @Singleton
-    abstract fun provideAdsManager(
+    abstract fun bindAdsManager(
         adsManagerImpl: AdsManagerImpl
     ): AdsManager
 }
