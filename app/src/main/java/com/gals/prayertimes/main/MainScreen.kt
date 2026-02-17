@@ -77,7 +77,11 @@ fun MainScreen(
         activity?.let {
             val consentResult = viewModel.requestConsentIfRequired(activity)
             if (consentResult != null) {
-                Timber.e("consentResponse: Failed code:${consentResult.errorCode} message: ${consentResult.message}")
+                viewModel.onConsentFailure(
+                    code = consentResult.errorCode.toString(),
+                    message = consentResult.message
+                )
+                Timber.e("consent: Failed code:${consentResult.errorCode} message: ${consentResult.message}")
             }
             viewModel.startLoading()
         }
@@ -118,7 +122,11 @@ fun MainScreen(
                         NavigationDrawerContent(
                             items = uiNavigationMenuItems,
                             coroutineScope = scope,
-                            onNavigationMenuItemClick = onNavigationMenuItemClick,
+                            onNavigationMenuItemClick = { target, arePermissionsGranted ->
+                                viewModel.onNavigationMenuItemClick(target)
+                                onNavigationMenuItemClick(target, arePermissionsGranted)
+
+                            },
                             drawerState = drawerState,
                             arePermissionsGranted = viewModel.areAllPermissionsGranted(),
                             isPrivacyOptionsRequired = viewModel.isPrivacyOptionsRequired(),
@@ -133,7 +141,8 @@ fun MainScreen(
                         DrawerMenuButton(
                             modifier = Modifier.align(Alignment.TopStart),
                             scope = scope,
-                            drawerState = drawerState
+                            drawerState = drawerState,
+                            onClick = viewModel::onDrawerMenuClicked
                         )
                         if (isLandscape()) {
                             PrayerLandscapeScreen(
@@ -264,7 +273,8 @@ private fun NavDrawerMenuItem(
 private fun DrawerMenuButton(
     modifier: Modifier,
     scope: CoroutineScope,
-    drawerState: DrawerState
+    drawerState: DrawerState,
+    onClick: () -> Unit
 ) {
     val iconPadding = if (isTablet()) 32.dp else 16.dp
     IconButton(
@@ -274,6 +284,7 @@ private fun DrawerMenuButton(
             .semantics(true) {}
             .zIndex(1f),
         onClick = {
+            onClick()
             scope.launch {
                 drawerState.apply { if (isClosed) open() else close() }
             }
