@@ -17,6 +17,8 @@ import com.gals.prayertimes.common.mappers.toUiNextPrayer
 import com.gals.prayertimes.common.mappers.todayDate
 import com.gals.prayertimes.main.model.UiNextPrayer
 import com.gals.prayertimes.main.model.UiState
+import com.gals.prayertimes.main.tracker.MainTracker
+import com.gals.prayertimes.navigation.NavigationMenuTarget
 import com.gals.prayertimes.permissions.manager.PermissionsManager
 import com.gals.prayertimes.repository.PrayersRepository
 import com.gals.prayertimes.repository.local.entities.PrayerEntity
@@ -51,7 +53,8 @@ class MainViewModel @Inject constructor(
     private val formatter: Formatter,
     private val permissionsManager: PermissionsManager,
     private val consentManager: ConsentManager,
-    private val adsManager: AdsManager
+    private val adsManager: AdsManager,
+    private val tracker: MainTracker
 ) : ViewModel() {
     private var isInitialLoadDone = false
     private val initState = if (consentManager.canRequestAds) UiState.Loading else UiState.Consent
@@ -65,9 +68,11 @@ class MainViewModel @Inject constructor(
         adsManager.initAdsSDK()
     }
 
+    //region UI operations
     fun startLoading() {
         if (isInitialLoadDone) return
         _uiState.update { UiState.Loading }
+        tracker.loading()
         startLoading(dispatcher = dispatcher)
     }
 
@@ -81,22 +86,31 @@ class MainViewModel @Inject constructor(
     /**Retry method to call from ui*/
     fun reload() {
         isInitialLoadDone = false
+        tracker.reload()
         startLoading(dispatcher = dispatcher)
     }
+    //endregion
 
     fun areAllPermissionsGranted(): Boolean = permissionsManager.areAllPermissionsGranted()
 
+    //region Consent
     fun isPrivacyOptionsRequired(): Boolean = consentManager.isPrivacyOptionsRequired
 
     fun showPrivacyOptions(activity: Activity) {
         consentManager.showPrivacyOptionsForm(
             activity = activity,
-            onDismiss = {
+            onDismiss = { formError ->
+                if (formError != null) {
+                    tracker.consentError(formError.errorCode.toString(), formError.message)
+                    return@showPrivacyOptionsForm
+                }
                 val successState = _uiState.value as? UiState.Success
                 successState?.let {
                     if (consentManager.canRequestAds) {
+                        tracker.consent(true)
                         _uiState.update { successState.copy(canShowAds = true) }
                     } else {
+                        tracker.consent(false)
                         _uiState.update { successState.copy(canShowAds = false) }
                     }
                 }
@@ -104,6 +118,11 @@ class MainViewModel @Inject constructor(
         )
     }
 
+    suspend fun requestConsentIfRequired(activity: Activity): FormError? =
+        consentManager.gatherConsent(activity = activity)
+    //endregion
+
+    //region Ads
     fun requestAdBanner(context: Context): AdView {
         val adView = adsManager.requestAdView(
             context = context,
@@ -112,10 +131,23 @@ class MainViewModel @Inject constructor(
         adsManager.loadAd(adView)
         return adView
     }
+    //endregion
 
-    suspend fun requestConsentIfRequired(activity: Activity): FormError? =
-        consentManager.gatherConsent(activity = activity)
+    //region Tracking
+    fun onDrawerMenuClicked() {
+        tracker.settingsOpen()
+    }
 
+    fun onNavigationMenuItemClick(navigationMenuTarget: NavigationMenuTarget) {
+        tracker.navigationMenuItemOpen(navigationMenuTarget.toString())
+    }
+
+    fun onConsentFailure(code: String, message: String) {
+        tracker.consentError(code, message)
+    }
+    //endregion
+
+    //region Private Methods
     /**update all flows related to ui*/
     private fun updateScreenStates() = try {
         Timber.i("is day changed: ${calculation.isDayChanged(todayPrayers.sDate)}")
@@ -146,7 +178,10 @@ class MainViewModel @Inject constructor(
         _uiState.update { UiState.Loading }
         viewModelScope.launch(context = dispatcher) {
             prayersRepository.fetchPrayer(todayDate())
-                .catch { cause -> cause.toUiError() }
+                .catch { cause ->
+                    cause.toUiError()
+                    tracker.error(cause.message.toString())
+                }
                 .map { prayer ->
                     todayPrayers = prayer
                     prayer.toPrayer(resourceProvider, formatter)
@@ -174,6 +209,8 @@ class MainViewModel @Inject constructor(
                 _uiState.update { UiState.Error(resourceProvider.getString(R.string.text_error_server_down)) }
             }
         }
+
+    //endregion
 
     companion object {
         const val STRING_DATE_SEPARATOR = "."
