@@ -5,6 +5,7 @@ import com.gals.prayertimes.ads.AdsManager
 import com.gals.prayertimes.ads.ConsentManager
 import com.gals.prayertimes.main.MainViewModel
 import com.gals.prayertimes.main.model.UiState
+import com.gals.prayertimes.main.tracker.MainTracker
 import com.gals.prayertimes.permissions.manager.PermissionsManager
 import com.gals.prayertimes.repository.PrayersRepository
 import com.gals.prayertimes.repository.local.entities.PrayerEntity
@@ -45,6 +46,7 @@ class MainViewModelTest {
     private val mockPermissionsManager = mockk<PermissionsManager>()
     private val mockConsentManager = mockk<ConsentManager>()
     private val mockAdsManager = mockk<AdsManager>()
+    private val mockTracker = mockk<MainTracker>()
 
 
     @Before
@@ -71,6 +73,10 @@ class MainViewModelTest {
         every { mockConsentManager.canRequestAds } returns false
         every { mockConsentManager.isPrivacyOptionsRequired } returns false
         every { mockAdsManager.initAdsSDK() } just runs
+        mockTracker.also {
+            every { it.loading() } just runs
+            every { it.reload() } just runs
+        }
     }
 
     @Test
@@ -144,6 +150,7 @@ class MainViewModelTest {
         calculation = mockCalculation,
         permissionsManager = mockPermissionsManager,
         consentManager = mockConsentManager,
-        adsManager = mockAdsManager
+        adsManager = mockAdsManager,
+        tracker = mockTracker
     )
 }
