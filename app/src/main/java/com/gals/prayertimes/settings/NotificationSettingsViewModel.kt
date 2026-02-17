@@ -20,6 +20,8 @@ import com.gals.prayertimes.repository.PrayersRepository
 import com.gals.prayertimes.repository.SettingsRepository
 import com.gals.prayertimes.repository.local.entities.SettingsEntity
 import com.gals.prayertimes.repository.local.entities.SettingsEntity.Companion.toPrayerNotification
+import com.gals.prayertimes.settings.tracker.NotificationSettingsTracker
+import com.gals.prayertimes.settings.tracker.toTrackingParameters
 import com.gals.prayertimes.utils.PrayerCalculation
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -32,12 +34,13 @@ import java.time.LocalDateTime
 import javax.inject.Inject
 
 @HiltViewModel
-class NotificationViewModel @Inject constructor(
+class NotificationSettingsViewModel @Inject constructor(
     private val prayersRepository: PrayersRepository,
     private val settingsRepository: SettingsRepository,
     private val alarmHandler: AlarmHandler,
     private val prayerCalculation: PrayerCalculation,
-    private val workManager: WorkManager
+    private val workManager: WorkManager,
+    private val tracker: NotificationSettingsTracker
 ) : ViewModel() {
     private val _uiSelectedRadio = MutableStateFlow(NotificationType.SILENT)
     private val _uiSwitchState = MutableStateFlow(false)
@@ -80,6 +83,7 @@ class NotificationViewModel @Inject constructor(
             ishaNotification = _uiSelectedPrayerAlarms.value[UiPrayerName.ISHA] == true
         )
         updateSettings(currentSettings)
+        tracker.submitSettings(currentSettings.toTrackingParameters())
 
         viewModelScope.launch {
             cancelAllPrayerAlarms()
