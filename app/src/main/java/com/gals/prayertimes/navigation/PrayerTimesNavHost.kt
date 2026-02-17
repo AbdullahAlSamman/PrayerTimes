@@ -87,8 +87,8 @@ object PrayerTimesNavHost {
 
             entry<NavDestination.Permission> { key ->
                 PermissionScreen(
-                    onBackClicked = { navigator.goBack() },
-                    onFinish = {
+                    onCloseClicked = { navigator.goBack() },
+                    onFinishClicked = {
                         navigator.navigateReplacing(key.nextDestination)
                     }
                 )

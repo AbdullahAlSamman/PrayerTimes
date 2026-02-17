@@ -78,9 +78,9 @@ object PermissionScreen {
 
     @Composable
     operator fun invoke(
-        viewModel: PermissionViewModel = hiltViewModel(),
-        onBackClicked: () -> Unit,
-        onFinish: () -> Unit
+        onCloseClicked: () -> Unit,
+        onFinishClicked: () -> Unit,
+        viewModel: PermissionViewModel = hiltViewModel()
     ) {
         val lifecycleState by LocalLifecycleOwner.current.lifecycle.currentStateFlow.collectAsState()
         val permissionStates by viewModel.uiState.collectAsState()
@@ -121,7 +121,10 @@ object PermissionScreen {
                             TopAppBar(
                                 title = {},
                                 navigationIcon = {
-                                    IconButton(onClick = onBackClicked) {
+                                    IconButton(onClick = {
+                                        viewModel.onClose()
+                                        onCloseClicked()
+                                    }) {
                                         Icon(
                                             modifier = Modifier.size(48.dp),
                                             imageVector = Icons.Outlined.Close,
@@ -167,7 +170,10 @@ object PermissionScreen {
                                         iconDescription = "",
                                         title = stringResource(R.string.text_permission_all_done),
                                         buttons = {
-                                            Button(onClick = onFinish) {
+                                            Button(onClick = {
+                                                viewModel.onFinish()
+                                                onFinishClicked()
+                                            }) {
                                                 Text(text = stringResource(R.string.text_permission_continue))
                                             }
                                         }
