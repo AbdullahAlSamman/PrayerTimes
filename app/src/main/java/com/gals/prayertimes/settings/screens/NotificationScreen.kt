@@ -26,7 +26,7 @@ import com.gals.prayertimes.R
 import com.gals.prayertimes.common.NotificationType
 import com.gals.prayertimes.common.UiPrayerName
 import com.gals.prayertimes.common.mappers.mapUiPrayerName
-import com.gals.prayertimes.settings.NotificationViewModel
+import com.gals.prayertimes.settings.NotificationSettingsViewModel
 import com.gals.prayertimes.settings.screens.components.NavigationBackArrow
 import com.gals.prayertimes.settings.screens.components.RadioButtonItem
 import com.gals.prayertimes.ui.theme.PrayerTypography
@@ -35,10 +35,10 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 @Composable
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalPermissionsApi::class)
 internal fun NotificationScreen(
-    modifier: Modifier = Modifier,
     onBackClicked: () -> Unit,
+    modifier: Modifier = Modifier,
     textStyle: TextStyle = PrayerTypography.headlineMedium,
-    viewModel: NotificationViewModel = hiltViewModel()
+    viewModel: NotificationSettingsViewModel = hiltViewModel()
 ) {
     Scaffold(
         topBar = {
