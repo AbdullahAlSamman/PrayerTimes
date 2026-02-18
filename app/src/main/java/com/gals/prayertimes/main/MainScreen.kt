@@ -57,6 +57,7 @@ import com.gals.prayertimes.navigation.NavigationMenuTarget
 import com.gals.prayertimes.ui.theme.PrayerTypography
 import com.gals.prayertimes.utils.isLandscape
 import com.gals.prayertimes.utils.isTablet
+import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -161,10 +162,14 @@ fun MainScreen(
                         }
 
                         if (state.canShowAds) {
+                            val isLandscape = isLandscape()
                             AdBanner(
-                                modifier = Modifier.align(if (isLandscape()) Alignment.CenterEnd else Alignment.BottomCenter),
+                                modifier = Modifier.align(if (isLandscape) Alignment.CenterEnd else Alignment.BottomCenter),
                                 factory = { context ->
-                                    viewModel.requestAdBanner(context)
+                                    viewModel.requestAdBanner(
+                                        context = context,
+                                        adSize = if (isLandscape) AdSize.MEDIUM_RECTANGLE else AdSize.BANNER
+                                    )
                                 }
                             )
                         }

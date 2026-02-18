@@ -123,10 +123,10 @@ class MainViewModel @Inject constructor(
     //endregion
 
     //region Ads
-    fun requestAdBanner(context: Context): AdView {
+    fun requestAdBanner(context: Context, adSize: AdSize): AdView {
         val adView = adsManager.requestAdView(
             context = context,
-            adSize = AdSize.MEDIUM_RECTANGLE
+            adSize = adSize,
         )
         adsManager.loadAd(adView)
         return adView
