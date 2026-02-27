@@ -156,22 +156,22 @@ fun MainScreen(
                             PrayerPortraitScreen(
                                 prayers = state.uiPrayer.prayers,
                                 uiNextPrayer = uiNextPrayer,
-                                uiDate = state.uiPrayer.uiDate
-                            )
-                            Timber.i("isTablet: ${isTablet()}")
-                        }
-
-                        if (state.canShowAds) {
-                            val isLandscape = isLandscape()
-                            AdBanner(
-                                modifier = Modifier.align(if (isLandscape) Alignment.CenterEnd else Alignment.BottomCenter),
-                                factory = { context ->
-                                    viewModel.requestAdBanner(
-                                        context = context,
-                                        adSize = if (isLandscape) AdSize.MEDIUM_RECTANGLE else AdSize.BANNER
-                                    )
+                                uiDate = state.uiPrayer.uiDate,
+                                adBanner = { isMediumAdSize ->
+                                    if (state.canShowAds) {
+                                        AdBanner(
+                                            modifier = Modifier.align(Alignment.BottomCenter),
+                                            factory = { context ->
+                                                viewModel.requestAdBanner(
+                                                    context = context,
+                                                    adSize = if (isMediumAdSize) AdSize.MEDIUM_RECTANGLE else AdSize.BANNER
+                                                )
+                                            }
+                                        )
+                                    }
                                 }
                             )
+                            Timber.i("isTablet: ${isTablet()}")
                         }
                     }
                 }

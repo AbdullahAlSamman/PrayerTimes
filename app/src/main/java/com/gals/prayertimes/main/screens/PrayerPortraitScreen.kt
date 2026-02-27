@@ -1,5 +1,7 @@
 package com.gals.prayertimes.main.screens
 
+import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -23,6 +25,7 @@ internal fun PrayerPortraitScreen(
     prayers: Map<UiPrayerName, String>,
     uiNextPrayer: UiNextPrayer,
     uiDate: UiDate,
+    adBanner: @Composable BoxScope.(isMediumAdSize: Boolean) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier.fillMaxWidth()) {
@@ -44,7 +47,7 @@ internal fun PrayerPortraitScreen(
 
         LazyVerticalGrid(
             columns = GridCells.Fixed(6),
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.fillMaxWidth(),
             userScrollEnabled = false,
             content = {
                 prayers.forEach { prayer ->
@@ -54,5 +57,9 @@ internal fun PrayerPortraitScreen(
                 }
             }
         )
+
+        BoxWithConstraints(modifier= Modifier.fillMaxSize()) {
+            adBanner(maxHeight >= 250.dp)
+        }
     }
 }
