@@ -1,15 +1,16 @@
 package com.gals.prayertimes.main.screens.details
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.paint
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -22,22 +23,23 @@ import com.gals.prayertimes.utils.nonScaledSp
 
 @Composable
 fun PrayerHeader(
-    modifier: Modifier = Modifier,
     config: UiNextPrayer,
+    imageScale: ContentScale,
+    modifier: Modifier = Modifier,
     textStyle: TextStyle = if (isTablet()) {
         LightTextStyle.copy(fontSize = 36.nonScaledSp)
     } else {
         LightTextStyle.copy(fontSize = 20.nonScaledSp)
-    },
-    imageScale: ContentScale
+    }
 ) {
-    Box(
-        modifier = modifier
-            .paint(
-                painterResource(id = config.backgroundImage),
-                contentScale = imageScale
-            )
-    ) {
+    Box(modifier = modifier) {
+        Image(
+            modifier = Modifier.fillMaxWidth(),
+            painter = painterResource(config.backgroundImage),
+            contentScale = imageScale,
+            contentDescription = null
+        )
+
         Column(
             modifier = Modifier
                 .align(Alignment.BottomEnd)

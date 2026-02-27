@@ -1,6 +1,7 @@
 package com.gals.prayertimes.main.screens.details
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
@@ -44,10 +45,9 @@ fun PrayerSingleView(
                 color = mapPrayerColor(prayer = prayer.key),
                 shape = MaterialTheme.shapes.small
             ),
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
     ) {
-        Spacer(modifier = Modifier.height(if (isPhoneInLandscape()) 5.dp else 15.dp))
-
         Text(
             text = mapUiPrayerName(prayerName = prayer.key),
             style = textStyle,

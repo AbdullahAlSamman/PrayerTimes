@@ -149,7 +149,20 @@ fun MainScreen(
                             PrayerLandscapeScreen(
                                 prayers = state.uiPrayer.prayers,
                                 uiNextPrayer = uiNextPrayer,
-                                uiDate = state.uiPrayer.uiDate
+                                uiDate = state.uiPrayer.uiDate,
+                                adBanner = { isMediumAdSize ->
+                                    if (state.canShowAds) {
+                                        AdBanner(
+                                            modifier = Modifier.align(Alignment.CenterEnd),
+                                            factory = { context ->
+                                                viewModel.requestAdBanner(
+                                                    context = context,
+                                                    adSize = if (isMediumAdSize) AdSize.MEDIUM_RECTANGLE else AdSize.BANNER
+                                                )
+                                            }
+                                        )
+                                    }
+                                }
                             )
                             Timber.i("isTablet: ${isTablet()}")
                         } else {
