@@ -1,8 +1,8 @@
 package com.gals.prayertimes.main.screens
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -27,7 +27,7 @@ internal fun PrayerLandscapeScreen(
     prayers: Map<UiPrayerName, String>,
     uiNextPrayer: UiNextPrayer,
     uiDate: UiDate,
-    adBanner: @Composable BoxScope.(isMediumAdSize: Boolean) -> Unit,
+    adBanner: @Composable BoxScope.() -> Unit,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -53,7 +53,7 @@ internal fun PrayerLandscapeScreen(
             val headerMeasurable = measurables[0]
             val dateBarMeasurable = measurables[1]
 
-            val dateBarHeight = if(isTabletInLandscape) 40.dp.roundToPx() else 25.dp.roundToPx()
+            val dateBarHeight = if (isTabletInLandscape) 40.dp.roundToPx() else 25.dp.roundToPx()
             val headerHeight = (constraints.maxHeight - dateBarHeight)
 
             val headerConstraints = constraints.copy(
@@ -93,8 +93,8 @@ internal fun PrayerLandscapeScreen(
             }
         )
 
-        BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
-            adBanner(maxWidth >= 250.dp)
+        Box(modifier = Modifier.fillMaxSize()) {
+            adBanner()
         }
     }
 }

@@ -150,14 +150,14 @@ fun MainScreen(
                                 prayers = state.uiPrayer.prayers,
                                 uiNextPrayer = uiNextPrayer,
                                 uiDate = state.uiPrayer.uiDate,
-                                adBanner = { isMediumAdSize ->
+                                adBanner = {
                                     if (state.canShowAds) {
                                         AdBanner(
                                             modifier = Modifier.align(Alignment.CenterEnd),
                                             factory = { context ->
                                                 viewModel.requestAdBanner(
                                                     context = context,
-                                                    adSize = if (isMediumAdSize) AdSize.MEDIUM_RECTANGLE else AdSize.BANNER
+                                                    adSize = AdSize.MEDIUM_RECTANGLE
                                                 )
                                             }
                                         )
@@ -177,7 +177,7 @@ fun MainScreen(
                                             factory = { context ->
                                                 viewModel.requestAdBanner(
                                                     context = context,
-                                                    adSize = if (isMediumAdSize) AdSize.MEDIUM_RECTANGLE else AdSize.BANNER
+                                                    adSize = if (isMediumAdSize) AdSize.MEDIUM_RECTANGLE else AdSize.LARGE_BANNER
                                                 )
                                             }
                                         )

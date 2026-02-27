@@ -58,6 +58,8 @@ internal fun PrayerPortraitScreen(
             }
         )
 
+        Spacer(modifier = Modifier.height(2.dp))
+
         BoxWithConstraints(modifier= Modifier.fillMaxSize()) {
             adBanner(maxHeight >= 250.dp)
         }
