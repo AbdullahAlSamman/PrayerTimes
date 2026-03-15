@@ -4,6 +4,7 @@ import androidx.annotation.DrawableRes
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.Color
 import com.gals.prayertimes.common.UiPrayerName
+import com.google.common.collect.ImmutableList
 
 sealed class UiState {
     data object Consent : UiState()
@@ -15,7 +16,13 @@ sealed class UiState {
 @Immutable
 data class UiPrayer(
     var uiDate: UiDate = UiDate(),
-    var prayers: Map<UiPrayerName, String> = emptyMap()
+    var prayers: ImmutableList<UiPrayerEntry> = ImmutableList.of()
+)
+
+@Immutable
+data class UiPrayerEntry(
+    val name: UiPrayerName,
+    val time: String
 )
 
 data class UiNextPrayer(

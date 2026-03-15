@@ -16,9 +16,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.gals.prayertimes.common.UiPrayerName
 import com.gals.prayertimes.common.mappers.mapPrayerColor
 import com.gals.prayertimes.common.mappers.mapUiPrayerName
+import com.gals.prayertimes.main.model.UiPrayerEntry
 import com.gals.prayertimes.ui.theme.DarkTextStyle
 import com.gals.prayertimes.utils.isPhoneInLandscape
 import com.gals.prayertimes.utils.isTablet
@@ -29,7 +29,7 @@ import com.gals.prayertimes.utils.nonScaledSp
 @Composable
 fun PrayerSingleView(
     modifier: Modifier = Modifier,
-    prayer: Map.Entry<UiPrayerName, String>,
+    prayer: UiPrayerEntry,
     textStyle: TextStyle = if (isTablet()) {
         DarkTextStyle.copy(fontSize = 32.nonScaledSp)
     } else {
@@ -42,14 +42,14 @@ fun PrayerSingleView(
             .fillMaxWidth()
             .padding(start = 2.dp, end = 2.dp)
             .background(
-                color = mapPrayerColor(prayer = prayer.key),
+                color = mapPrayerColor(prayer = prayer.name),
                 shape = MaterialTheme.shapes.small
             ),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
         Text(
-            text = mapUiPrayerName(prayerName = prayer.key),
+            text = mapUiPrayerName(prayerName = prayer.name),
             style = textStyle,
             textAlign = TextAlign.Center
         )
@@ -57,7 +57,7 @@ fun PrayerSingleView(
         Spacer(modifier = Modifier.height(if (isPhoneInLandscape()) 7.dp else 20.dp))
 
         Text(
-            text = prayer.value,
+            text = prayer.time,
             style = textStyle,
             textAlign = TextAlign.Center
         )
