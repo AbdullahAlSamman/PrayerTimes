@@ -13,16 +13,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
-import com.gals.prayertimes.common.UiPrayerName
 import com.gals.prayertimes.main.model.UiDate
 import com.gals.prayertimes.main.model.UiNextPrayer
+import com.gals.prayertimes.main.model.UiPrayerEntry
 import com.gals.prayertimes.main.screens.details.PrayerDateBar
 import com.gals.prayertimes.main.screens.details.PrayerHeader
 import com.gals.prayertimes.main.screens.details.PrayerSingleView
+import com.google.common.collect.ImmutableList
 
 @Composable
 internal fun PrayerPortraitScreen(
-    prayers: Map<UiPrayerName, String>,
+    prayers: ImmutableList<UiPrayerEntry>,
     uiNextPrayer: UiNextPrayer,
     uiDate: UiDate,
     adBanner: @Composable BoxScope.(isMediumAdSize: Boolean) -> Unit,
@@ -60,7 +61,7 @@ internal fun PrayerPortraitScreen(
 
         Spacer(modifier = Modifier.height(2.dp))
 
-        BoxWithConstraints(modifier= Modifier.fillMaxSize()) {
+        BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
             adBanner(maxHeight >= 250.dp)
         }
     }

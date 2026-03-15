@@ -3,6 +3,7 @@ package com.gals.prayertimes.navigation
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import com.gals.prayertimes.R
+import com.google.common.collect.ImmutableList
 
 enum class NavigationMenuTarget {
     NOTIFICATIONS,
@@ -16,7 +17,7 @@ data class NavigationDrawerMenuItem(
     val navTarget: NavigationMenuTarget
 )
 
-val navigationMenuItems = listOf(
+val navigationMenuItems: ImmutableList<NavigationDrawerMenuItem> = ImmutableList.of(
     NavigationDrawerMenuItem(
         icon = R.drawable.ic_notification_active,
         title = R.string.text_settings_notifiaction,

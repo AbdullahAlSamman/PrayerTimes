@@ -74,7 +74,7 @@ private val DarkColors = darkColorScheme(
 
 @Composable
 fun PrayerTimesTheme(
-    content: @Composable() () -> Unit
+    content: @Composable () -> Unit
 ) {
     val colors = if (isSystemInDarkTheme()) {
         DarkColors
