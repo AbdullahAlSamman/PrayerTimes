@@ -1,6 +1,6 @@
 package com.gals.prayertimes.common
 
-import com.gals.prayertimes.common.mappers.setHoursMinutes
+import com.gals.prayertimes.utils.setHoursMinutes
 import java.util.Calendar
 
 enum class UiPrayerName {

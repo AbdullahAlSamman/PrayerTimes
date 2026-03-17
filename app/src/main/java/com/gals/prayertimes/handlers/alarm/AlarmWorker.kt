@@ -12,11 +12,11 @@ import com.gals.prayertimes.common.TimePrayer
 import com.gals.prayertimes.common.UiPrayerName
 import com.gals.prayertimes.common.mappers.getTimePrayerByName
 import com.gals.prayertimes.common.mappers.toTimePrayer
-import com.gals.prayertimes.common.mappers.todayDate
 import com.gals.prayertimes.repository.PrayersRepository
 import com.gals.prayertimes.repository.SettingsRepository
 import com.gals.prayertimes.repository.local.entities.SettingsEntity.Companion.toPrayerNotification
 import com.gals.prayertimes.utils.PrayerCalculation
+import com.gals.prayertimes.utils.todayDate
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import timber.log.Timber
