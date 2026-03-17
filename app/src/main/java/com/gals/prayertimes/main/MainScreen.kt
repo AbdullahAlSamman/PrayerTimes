@@ -59,6 +59,7 @@ import com.gals.prayertimes.utils.isLandscape
 import com.gals.prayertimes.utils.isTablet
 import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
+import com.google.common.collect.ImmutableList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -67,7 +68,7 @@ import timber.log.Timber
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 fun MainScreen(
     viewModel: MainViewModel = hiltViewModel(),
-    uiNavigationMenuItems: List<NavigationDrawerMenuItem>,
+    uiNavigationMenuItems: ImmutableList<NavigationDrawerMenuItem>,
     onNavigationMenuItemClick: (navTarget: NavigationMenuTarget, arePermissionsGranted: Boolean) -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -195,7 +196,7 @@ fun MainScreen(
 
 @Composable
 private fun NavigationDrawerContent(
-    items: List<NavigationDrawerMenuItem>,
+    items: ImmutableList<NavigationDrawerMenuItem>,
     coroutineScope: CoroutineScope,
     onNavigationMenuItemClick: (NavigationMenuTarget, Boolean) -> Unit,
     drawerState: DrawerState,

@@ -13,6 +13,7 @@ import com.gals.prayertimes.handlers.alarm.PrayerAlarmItem
 import com.gals.prayertimes.main.model.UiDate
 import com.gals.prayertimes.main.model.UiNextPrayer
 import com.gals.prayertimes.main.model.UiPrayer
+import com.gals.prayertimes.main.model.UiPrayerEntry
 import com.gals.prayertimes.repository.local.entities.PrayerEntity
 import com.gals.prayertimes.repository.remote.model.PrayerNameResponse
 import com.gals.prayertimes.repository.remote.model.PrayersResponse
@@ -24,6 +25,7 @@ import com.gals.prayertimes.ui.theme.colorBackgroundMaghrib
 import com.gals.prayertimes.ui.theme.colorBackgroundSunrise
 import com.gals.prayertimes.utils.Formatter
 import com.gals.prayertimes.utils.ResourceProvider
+import com.google.common.collect.ImmutableList
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.time.ZoneId.systemDefault
@@ -39,13 +41,13 @@ fun PrayerEntity.toPrayer(resourceProvider: ResourceProvider, formatter: Formatt
             moonDate = formatter.formatDateText(this.mDate, false),
             sunDate = formatter.formatDateText(this.sDate, true)
         ),
-        prayers = mapOf(
-            UiPrayerName.FAJER to this.fajer,
-            UiPrayerName.SUNRISE to this.sunrise,
-            UiPrayerName.DUHR to this.duhr,
-            UiPrayerName.ASR to this.asr,
-            UiPrayerName.MAGHRIB to this.maghrib,
-            UiPrayerName.ISHA to this.isha
+        prayers = ImmutableList.of(
+            UiPrayerEntry(UiPrayerName.FAJER, this.fajer),
+            UiPrayerEntry(UiPrayerName.SUNRISE, this.sunrise),
+            UiPrayerEntry(UiPrayerName.DUHR, this.duhr),
+            UiPrayerEntry(UiPrayerName.ASR, this.asr),
+            UiPrayerEntry(UiPrayerName.MAGHRIB, this.maghrib),
+            UiPrayerEntry(UiPrayerName.ISHA, this.isha)
         )
     )
 
@@ -188,7 +190,8 @@ fun UiPrayerName.getStringId(): Int =
 fun PrayerAlarmItem.toAlarmItem(): AlarmItem =
     AlarmItem(time = time.toMillisecondsWithRoundedSeconds(), prayer = prayer)
 
-fun LocalDateTime.toMillisecondsWithRoundedSeconds(): Long = this.truncatedTo(ChronoUnit.MINUTES).atZone(systemDefault()).toInstant().toEpochMilli()
+fun LocalDateTime.toMillisecondsWithRoundedSeconds(): Long =
+    this.truncatedTo(ChronoUnit.MINUTES).atZone(systemDefault()).toInstant().toEpochMilli()
 
 @Composable
 fun mapPrayerColor(prayer: UiPrayerName): Color =

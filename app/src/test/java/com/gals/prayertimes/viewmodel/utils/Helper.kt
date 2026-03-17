@@ -4,7 +4,9 @@ import com.gals.prayertimes.common.NextPrayerConfig
 import com.gals.prayertimes.common.UiPrayerName
 import com.gals.prayertimes.main.model.UiDate
 import com.gals.prayertimes.main.model.UiPrayer
+import com.gals.prayertimes.main.model.UiPrayerEntry
 import com.gals.prayertimes.repository.local.entities.PrayerEntity
+import com.google.common.collect.ImmutableList
 
 const val anyString = "anyString"
 const val dateString = "dateString"
@@ -33,12 +35,12 @@ val testUiPrayer = UiPrayer(
         moonDate = dateString,
         sunDate = dateString
     ),
-    prayers = mapOf(
-        UiPrayerName.FAJER to "04:00",
-        UiPrayerName.SUNRISE to "06:00",
-        UiPrayerName.DUHR to "13:00",
-        UiPrayerName.ASR to "16:00",
-        UiPrayerName.MAGHRIB to "20:00",
-        UiPrayerName.ISHA to "22:00"
+    prayers = ImmutableList.of(
+        UiPrayerEntry(UiPrayerName.FAJER, "04:00"),
+        UiPrayerEntry(UiPrayerName.SUNRISE, "06:00"),
+        UiPrayerEntry(UiPrayerName.DUHR, "13:00"),
+        UiPrayerEntry(UiPrayerName.ASR, "16:00"),
+        UiPrayerEntry(UiPrayerName.MAGHRIB, "20:00"),
+        UiPrayerEntry(UiPrayerName.ISHA, "22:00")
     )
 )
