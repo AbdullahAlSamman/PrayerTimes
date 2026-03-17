@@ -219,7 +219,9 @@ private fun NavigationDrawerContent(
             style = PrayerTypography.titleLarge
         )
         HorizontalDivider()
+
         Spacer(Modifier.height(12.dp))
+
         items.forEach { item ->
             when (item.navTarget) {
                 NavigationMenuTarget.NOTIFICATIONS, NavigationMenuTarget.PRIVACY_POLICY -> {
@@ -248,6 +250,19 @@ private fun NavigationDrawerContent(
                             }
                         )
                     }
+                }
+
+                NavigationMenuTarget.PRAYERS_CALENDAR -> {
+                    NavDrawerMenuItem(
+                        title = item.title,
+                        icon = item.icon,
+                        onClick = {
+                            coroutineScope.launch {
+                                onNavigationMenuItemClick(item.navTarget, arePermissionsGranted)
+                                drawerState.close()
+                            }
+                        }
+                    )
                 }
             }
         }

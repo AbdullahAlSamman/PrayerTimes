@@ -25,14 +25,12 @@ import com.gals.prayertimes.ui.theme.colorBackgroundMaghrib
 import com.gals.prayertimes.ui.theme.colorBackgroundSunrise
 import com.gals.prayertimes.utils.Formatter
 import com.gals.prayertimes.utils.ResourceProvider
+import com.gals.prayertimes.utils.setHoursMinutes
 import com.google.common.collect.ImmutableList
-import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.time.ZoneId.systemDefault
 import java.time.temporal.ChronoUnit
 import java.util.Calendar
-import java.util.Date
-import java.util.Locale
 
 fun PrayerEntity.toPrayer(resourceProvider: ResourceProvider, formatter: Formatter): UiPrayer =
     UiPrayer(
@@ -87,22 +85,6 @@ fun String.toCalendar(): Calendar {
         time[1].trim { it <= ' ' }.toInt()
     )
 }
-
-fun Calendar.setHoursMinutes(hours: Int, minutes: Int): Calendar {
-    this.set(Calendar.HOUR_OF_DAY, hours)
-    this.set(Calendar.MINUTE, minutes)
-    return this
-}
-
-fun todayDate(): String = SimpleDateFormat(
-    "dd.MM.yyyy",
-    Locale.US
-).format(Date())
-
-fun timeNow(): String = SimpleDateFormat(
-    "HH:mm",
-    Locale.US
-).format(Date())
 
 fun mapSunMonth(month: Int): Int =
     when (month) {

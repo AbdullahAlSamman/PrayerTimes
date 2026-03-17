@@ -14,6 +14,7 @@ import com.gals.prayertimes.main.MainScreen
 import com.gals.prayertimes.navigation.PrayerTimesNavHost.NavDestination
 import com.gals.prayertimes.permissions.PermissionScreen
 import com.gals.prayertimes.settings.screens.NotificationScreen
+import com.gals.prayertimes.settings.screens.PrayersCalendarScreen
 import com.gals.prayertimes.settings.screens.PrivacyPolicyScreen
 import kotlinx.serialization.Serializable
 
@@ -24,10 +25,13 @@ object PrayerTimesNavHost {
         data object Home : NavDestination()
 
         @Serializable
-        data object PrivacyPolicy : NavDestination()
+        data object Notification : NavDestination()
 
         @Serializable
-        data object Notification : NavDestination()
+        data object PrayersCalendar : NavDestination()
+
+        @Serializable
+        data object PrivacyPolicy : NavDestination()
 
         @Serializable
         data class Permission(
@@ -66,15 +70,12 @@ object PrayerTimesNavHost {
 
                             NavigationMenuTarget.CONSENT_FORM -> {/* no-op */
                             }
+
+                            NavigationMenuTarget.PRAYERS_CALENDAR -> {
+                                navigator.navigate(NavDestination.PrayersCalendar)
+                            }
                         }
                     }
-                )
-            }
-
-            entry<NavDestination.PrivacyPolicy> {
-                PrivacyPolicyScreen(
-                    onBackClicked = { navigator.goBack() },
-                    webUri = BuildConfig.PRIVACY_POLICY_URL
                 )
             }
 
@@ -82,6 +83,19 @@ object PrayerTimesNavHost {
                 NotificationScreen(
                     modifier = Modifier.padding(horizontal = 16.dp),
                     onBackClicked = { navigator.goBack() }
+                )
+            }
+
+            entry<NavDestination.PrayersCalendar> {
+                PrayersCalendarScreen(
+                    onBackClicked = { navigator.goBack() }
+                )
+            }
+
+            entry<NavDestination.PrivacyPolicy> {
+                PrivacyPolicyScreen(
+                    onBackClicked = { navigator.goBack() },
+                    webUri = BuildConfig.PRIVACY_POLICY_URL
                 )
             }
 

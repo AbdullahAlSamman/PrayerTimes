@@ -14,7 +14,6 @@ import com.gals.prayertimes.common.ViewModelScreenUpdater
 import com.gals.prayertimes.common.mappers.toPrayer
 import com.gals.prayertimes.common.mappers.toTimePrayer
 import com.gals.prayertimes.common.mappers.toUiNextPrayer
-import com.gals.prayertimes.common.mappers.todayDate
 import com.gals.prayertimes.main.model.UiNextPrayer
 import com.gals.prayertimes.main.model.UiState
 import com.gals.prayertimes.main.tracker.MainTracker
@@ -26,6 +25,7 @@ import com.gals.prayertimes.utils.Formatter
 import com.gals.prayertimes.utils.PrayerCalculation
 import com.gals.prayertimes.utils.ResourceProvider
 import com.gals.prayertimes.utils.ScreenUpdater
+import com.gals.prayertimes.utils.todayDate
 import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
 import com.google.android.ump.FormError

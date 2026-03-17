@@ -7,6 +7,7 @@ import com.google.common.collect.ImmutableList
 
 enum class NavigationMenuTarget {
     NOTIFICATIONS,
+    PRAYERS_CALENDAR,
     PRIVACY_POLICY,
     CONSENT_FORM
 }
@@ -22,6 +23,11 @@ val navigationMenuItems: ImmutableList<NavigationDrawerMenuItem> = ImmutableList
         icon = R.drawable.ic_notification_active,
         title = R.string.text_settings_notifiaction,
         navTarget = NavigationMenuTarget.NOTIFICATIONS
+    ),
+    NavigationDrawerMenuItem(
+        icon = R.drawable.ic_calendar_month,
+        title= R.string.text_settings_prayers_calendar,
+        navTarget = NavigationMenuTarget.PRAYERS_CALENDAR
     ),
     NavigationDrawerMenuItem(
         icon = R.drawable.ic_shield_toggle,

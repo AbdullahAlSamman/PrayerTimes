@@ -10,7 +10,6 @@ import com.gals.prayertimes.common.UiPrayerName
 import com.gals.prayertimes.common.mappers.getTimePrayerByName
 import com.gals.prayertimes.common.mappers.toMillisecondsWithRoundedSeconds
 import com.gals.prayertimes.common.mappers.toTimePrayer
-import com.gals.prayertimes.common.mappers.todayDate
 import com.gals.prayertimes.handlers.alarm.AlarmHandler
 import com.gals.prayertimes.handlers.alarm.AlarmItem
 import com.gals.prayertimes.handlers.alarm.AlarmWorker
@@ -23,6 +22,7 @@ import com.gals.prayertimes.repository.local.entities.SettingsEntity.Companion.t
 import com.gals.prayertimes.settings.tracker.NotificationSettingsTracker
 import com.gals.prayertimes.settings.tracker.toTrackingParameters
 import com.gals.prayertimes.utils.PrayerCalculation
+import com.gals.prayertimes.utils.todayDate
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
