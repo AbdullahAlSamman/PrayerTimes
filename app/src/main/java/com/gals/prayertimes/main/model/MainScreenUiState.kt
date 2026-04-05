@@ -3,21 +3,15 @@ package com.gals.prayertimes.main.model
 import androidx.annotation.DrawableRes
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.Color
+import com.gals.prayertimes.common.UiPrayer
 import com.gals.prayertimes.common.UiPrayerName
-import com.google.common.collect.ImmutableList
 
-sealed class UiState {
-    data object Consent : UiState()
-    data object Loading : UiState()
-    data class Success(val uiPrayer: UiPrayer, val canShowAds: Boolean) : UiState()
-    data class Error(val message: String) : UiState()
+sealed class MainScreenUiState {
+    data object Consent : MainScreenUiState()
+    data object Loading : MainScreenUiState()
+    data class Success(val uiPrayer: UiPrayer, val canShowAds: Boolean) : MainScreenUiState()
+    data class Error(val message: String) : MainScreenUiState()
 }
-
-@Immutable
-data class UiPrayer(
-    var uiDate: UiDate = UiDate(),
-    var prayers: ImmutableList<UiPrayerEntry> = ImmutableList.of()
-)
 
 @Immutable
 data class UiPrayerEntry(

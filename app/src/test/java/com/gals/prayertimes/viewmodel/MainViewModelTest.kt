@@ -4,12 +4,12 @@ import app.cash.turbine.test
 import com.gals.prayertimes.ads.AdsManager
 import com.gals.prayertimes.ads.ConsentManager
 import com.gals.prayertimes.main.MainViewModel
-import com.gals.prayertimes.main.model.UiState
+import com.gals.prayertimes.main.model.MainScreenUiState
 import com.gals.prayertimes.main.tracker.MainTracker
 import com.gals.prayertimes.permissions.manager.PermissionsManager
 import com.gals.prayertimes.repository.PrayersRepository
 import com.gals.prayertimes.repository.local.entities.PrayerEntity
-import com.gals.prayertimes.utils.Formatter
+import com.gals.prayertimes.utils.DateFormatter
 import com.gals.prayertimes.utils.PrayerCalculation
 import com.gals.prayertimes.utils.ResourceProvider
 import com.gals.prayertimes.utils.TestScreenUpdater
@@ -40,7 +40,7 @@ class MainViewModelTest {
 
     private val mockPrayersRepository = mockk<PrayersRepository>()
     private val mockResourceProvider = mockk<ResourceProvider>()
-    private val mockFormatter = mockk<Formatter>()
+    private val mockDateFormatter = mockk<DateFormatter>()
     private val mockCalculation = mockk<PrayerCalculation>()
     private val mockScreenUpdater = mockk<TestScreenUpdater>()
     private val mockPermissionsManager = mockk<PermissionsManager>()
@@ -59,7 +59,11 @@ class MainViewModelTest {
         } returns flowOf(Unit)
 
         every {
-            mockFormatter.formatDateText(any(), any())
+            mockDateFormatter.formatSunDateText(any())
+        } returns dateString
+
+        every {
+            mockDateFormatter.formatMoonDateText(any())
         } returns dateString
 
         every { mockCalculation.isDayChanged(any()) } returns false
@@ -84,8 +88,8 @@ class MainViewModelTest {
         runTest {
             every { mockConsentManager.canRequestAds } returns true
             val viewModel = createViewModel()
-            viewModel.uiState.test {
-                assertEquals(UiState.Loading, awaitItem())
+            viewModel.mainScreenUiState.test {
+                assertEquals(MainScreenUiState.Loading, awaitItem())
             }
         }
 
@@ -94,8 +98,8 @@ class MainViewModelTest {
         runTest {
             every { mockConsentManager.canRequestAds } returns false
             val viewModel = createViewModel()
-            viewModel.uiState.test {
-                assertEquals(UiState.Consent, awaitItem())
+            viewModel.mainScreenUiState.test {
+                assertEquals(MainScreenUiState.Consent, awaitItem())
             }
         }
 
@@ -104,8 +108,8 @@ class MainViewModelTest {
         runTest {
             val viewModel = createViewModel()
             viewModel.startLoading()
-            viewModel.uiState.test {
-                assertEquals(UiState.Success(testUiPrayer, false), awaitItem())
+            viewModel.mainScreenUiState.test {
+                assertEquals(MainScreenUiState.Success(testUiPrayer, false), awaitItem())
             }
         }
 
@@ -118,8 +122,8 @@ class MainViewModelTest {
 
             val viewModel = createViewModel()
             viewModel.startLoading()
-            viewModel.uiState.test {
-                assertEquals(UiState.Success(testUiPrayer, false), awaitItem())
+            viewModel.mainScreenUiState.test {
+                assertEquals(MainScreenUiState.Success(testUiPrayer, false), awaitItem())
             }
         }
 
@@ -146,7 +150,7 @@ class MainViewModelTest {
         screenUpdater = mockScreenUpdater,
         prayersRepository = mockPrayersRepository,
         resourceProvider = mockResourceProvider,
-        formatter = mockFormatter,
+        dateFormatter = mockDateFormatter,
         calculation = mockCalculation,
         permissionsManager = mockPermissionsManager,
         consentManager = mockConsentManager,

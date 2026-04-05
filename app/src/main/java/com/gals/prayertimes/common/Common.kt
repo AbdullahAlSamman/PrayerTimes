@@ -1,6 +1,10 @@
 package com.gals.prayertimes.common
 
+import androidx.compose.runtime.Immutable
+import com.gals.prayertimes.main.model.UiDate
+import com.gals.prayertimes.main.model.UiPrayerEntry
 import com.gals.prayertimes.utils.setHoursMinutes
+import com.google.common.collect.ImmutableList
 import java.util.Calendar
 
 enum class UiPrayerName {
@@ -37,6 +41,12 @@ enum class NotificationType {
             NotificationType.entries.find { it.name == value } ?: SILENT
     }
 }
+
+@Immutable
+data class UiPrayer(
+    var uiDate: UiDate = UiDate(),
+    var prayers: ImmutableList<UiPrayerEntry> = ImmutableList.of()
+)
 
 //TODO: replace with map prayer name as key and LocalDateTime as value.
 data class TimePrayer(

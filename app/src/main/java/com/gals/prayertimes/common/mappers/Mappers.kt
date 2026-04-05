@@ -7,12 +7,12 @@ import com.gals.prayertimes.R
 import com.gals.prayertimes.common.NextPrayerConfig
 import com.gals.prayertimes.common.NotificationType
 import com.gals.prayertimes.common.TimePrayer
+import com.gals.prayertimes.common.UiPrayer
 import com.gals.prayertimes.common.UiPrayerName
 import com.gals.prayertimes.handlers.alarm.AlarmItem
 import com.gals.prayertimes.handlers.alarm.PrayerAlarmItem
 import com.gals.prayertimes.main.model.UiDate
 import com.gals.prayertimes.main.model.UiNextPrayer
-import com.gals.prayertimes.main.model.UiPrayer
 import com.gals.prayertimes.main.model.UiPrayerEntry
 import com.gals.prayertimes.repository.local.entities.PrayerEntity
 import com.gals.prayertimes.repository.remote.model.PrayerNameResponse
@@ -23,7 +23,7 @@ import com.gals.prayertimes.ui.theme.colorBackgroundFajer
 import com.gals.prayertimes.ui.theme.colorBackgroundIsha
 import com.gals.prayertimes.ui.theme.colorBackgroundMaghrib
 import com.gals.prayertimes.ui.theme.colorBackgroundSunrise
-import com.gals.prayertimes.utils.Formatter
+import com.gals.prayertimes.utils.DateFormatter
 import com.gals.prayertimes.utils.ResourceProvider
 import com.gals.prayertimes.utils.setHoursMinutes
 import com.google.common.collect.ImmutableList
@@ -32,12 +32,12 @@ import java.time.ZoneId.systemDefault
 import java.time.temporal.ChronoUnit
 import java.util.Calendar
 
-fun PrayerEntity.toPrayer(resourceProvider: ResourceProvider, formatter: Formatter): UiPrayer =
+fun PrayerEntity.toPrayer(resourceProvider: ResourceProvider, dateFormatter: DateFormatter): UiPrayer =
     UiPrayer(
         uiDate = UiDate(
             dayName = resourceProvider.getString(mapDayName(Calendar.getInstance()[Calendar.DAY_OF_WEEK])),
-            moonDate = formatter.formatDateText(this.mDate, false),
-            sunDate = formatter.formatDateText(this.sDate, true)
+            moonDate = dateFormatter.formatMoonDateText(this.mDate),
+            sunDate = dateFormatter.formatSunDateText(this.sDate)
         ),
         prayers = ImmutableList.of(
             UiPrayerEntry(UiPrayerName.FAJER, this.fajer),
