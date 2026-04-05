@@ -178,7 +178,7 @@ class MainViewModel @Inject constructor(
     private fun startLoading(dispatcher: CoroutineDispatcher) {
         _uiState.update { MainScreenUiState.Loading }
         viewModelScope.launch(context = dispatcher) {
-            prayersRepository.fetchPrayer(todayDate())
+            prayersRepository.getPrayer(todayDate())
                 .catch { cause ->
                     _uiState.update { cause.toUiError() }
                     tracker.error(cause.message.toString())
