@@ -14,14 +14,14 @@ import com.gals.prayertimes.common.ViewModelScreenUpdater
 import com.gals.prayertimes.common.mappers.toPrayer
 import com.gals.prayertimes.common.mappers.toTimePrayer
 import com.gals.prayertimes.common.mappers.toUiNextPrayer
+import com.gals.prayertimes.main.model.MainScreenUiState
 import com.gals.prayertimes.main.model.UiNextPrayer
-import com.gals.prayertimes.main.model.UiState
 import com.gals.prayertimes.main.tracker.MainTracker
 import com.gals.prayertimes.navigation.NavigationMenuTarget
 import com.gals.prayertimes.permissions.manager.PermissionsManager
 import com.gals.prayertimes.repository.PrayersRepository
 import com.gals.prayertimes.repository.local.entities.PrayerEntity
-import com.gals.prayertimes.utils.Formatter
+import com.gals.prayertimes.utils.DateFormatter
 import com.gals.prayertimes.utils.PrayerCalculation
 import com.gals.prayertimes.utils.ResourceProvider
 import com.gals.prayertimes.utils.ScreenUpdater
@@ -50,18 +50,19 @@ class MainViewModel @Inject constructor(
     private val prayersRepository: PrayersRepository,
     private val resourceProvider: ResourceProvider,
     private val calculation: PrayerCalculation,
-    private val formatter: Formatter,
+    private val dateFormatter: DateFormatter,
     private val permissionsManager: PermissionsManager,
     private val consentManager: ConsentManager,
     private val adsManager: AdsManager,
     private val tracker: MainTracker
 ) : ViewModel() {
     private var isInitialLoadDone = false
-    private val initState = if (consentManager.canRequestAds) UiState.Loading else UiState.Consent
+    private val initState =
+        if (consentManager.canRequestAds) MainScreenUiState.Loading else MainScreenUiState.Consent
     private var todayPrayers = PrayerEntity()
     private val _uiState = MutableStateFlow(initState)
     private val _uiNextPrayer = MutableStateFlow(UiNextPrayer())
-    val uiState: StateFlow<UiState> = _uiState
+    val mainScreenUiState: StateFlow<MainScreenUiState> = _uiState
     val nextPrayer: StateFlow<UiNextPrayer> = _uiNextPrayer.asStateFlow()
 
     init {
@@ -71,7 +72,7 @@ class MainViewModel @Inject constructor(
     //region UI operations
     fun startLoading() {
         if (isInitialLoadDone) return
-        _uiState.update { UiState.Loading }
+        _uiState.update { MainScreenUiState.Loading }
         tracker.loading()
         startLoading(dispatcher = dispatcher)
     }
@@ -104,7 +105,7 @@ class MainViewModel @Inject constructor(
                     tracker.consentError(formError.errorCode.toString(), formError.message)
                     return@showPrivacyOptionsForm
                 }
-                val successState = _uiState.value as? UiState.Success
+                val successState = _uiState.value as? MainScreenUiState.Success
                 successState?.let {
                     if (consentManager.canRequestAds) {
                         tracker.consent(true)
@@ -175,21 +176,21 @@ class MainViewModel @Inject constructor(
 
     /**Method to initial loading flow*/
     private fun startLoading(dispatcher: CoroutineDispatcher) {
-        _uiState.update { UiState.Loading }
+        _uiState.update { MainScreenUiState.Loading }
         viewModelScope.launch(context = dispatcher) {
             prayersRepository.fetchPrayer(todayDate())
                 .catch { cause ->
-                    cause.toUiError()
+                    _uiState.update { cause.toUiError() }
                     tracker.error(cause.message.toString())
                 }
                 .map { prayer ->
                     todayPrayers = prayer
-                    prayer.toPrayer(resourceProvider, formatter)
+                    prayer.toPrayer(resourceProvider, dateFormatter)
                 }.collect { prayers ->
                     prayers.let { composePrayers ->
                         updateScreenStates()
                         _uiState.update {
-                            UiState.Success(
+                            MainScreenUiState.Success(
                                 uiPrayer = composePrayers,
                                 canShowAds = consentManager.canRequestAds
                             )
@@ -202,18 +203,28 @@ class MainViewModel @Inject constructor(
 
     private fun Throwable.toUiError() =
         when (this) {
-            is ConnectivityException -> _uiState.update { UiState.Error(resourceProvider.getString(R.string.text_error_check_internet)) }
-            is ServerException -> _uiState.update { UiState.Error(resourceProvider.getString(R.string.text_error_server_no_data)) }
+            is ConnectivityException -> MainScreenUiState.Error(
+                resourceProvider.getString(
+                    R.string.text_error_check_internet
+                )
+            )
+
+
+            is ServerException -> MainScreenUiState.Error(
+                resourceProvider.getString(
+                    R.string.text_error_server_no_data
+                )
+            )
+
             else -> {
                 isInitialLoadDone = false
-                _uiState.update { UiState.Error(resourceProvider.getString(R.string.text_error_server_down)) }
+                MainScreenUiState.Error(resourceProvider.getString(R.string.text_error_server_down))
             }
         }
 
     //endregion
 
     companion object {
-        const val STRING_DATE_SEPARATOR = "."
         const val TICKS_DELAY: Long = 25_000
     }
 }

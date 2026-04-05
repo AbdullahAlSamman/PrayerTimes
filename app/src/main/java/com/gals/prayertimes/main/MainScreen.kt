@@ -46,7 +46,7 @@ import androidx.compose.ui.zIndex
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.gals.prayertimes.BuildConfig
 import com.gals.prayertimes.R
-import com.gals.prayertimes.main.model.UiState
+import com.gals.prayertimes.main.model.MainScreenUiState
 import com.gals.prayertimes.main.screens.ConsentScreen
 import com.gals.prayertimes.main.screens.ErrorScreen
 import com.gals.prayertimes.main.screens.LoadingScreen
@@ -71,7 +71,7 @@ fun MainScreen(
     uiNavigationMenuItems: ImmutableList<NavigationDrawerMenuItem>,
     onNavigationMenuItemClick: (navTarget: NavigationMenuTarget, arePermissionsGranted: Boolean) -> Unit
 ) {
-    val uiState by viewModel.uiState.collectAsState()
+    val uiState by viewModel.mainScreenUiState.collectAsState()
     val uiNextPrayer by viewModel.nextPrayer.collectAsState()
     val activity = LocalActivity.current
 
@@ -90,7 +90,7 @@ fun MainScreen(
     }
 
     LaunchedEffect(uiState) {
-        if (uiState is UiState.Success) {
+        if (uiState is MainScreenUiState.Success) {
             viewModel.startUiTicks()
         }
     }
@@ -99,21 +99,21 @@ fun MainScreen(
         contentWindowInsets = WindowInsets.safeDrawing
     ) { innerPadding ->
         when (uiState) {
-            UiState.Consent -> {
+            MainScreenUiState.Consent -> {
                 ConsentScreen()
             }
 
-            UiState.Loading -> {
+            MainScreenUiState.Loading -> {
                 LoadingScreen(modifier = Modifier.fillMaxSize())
             }
 
-            is UiState.Error -> {
-                val state = uiState as UiState.Error
+            is MainScreenUiState.Error -> {
+                val state = uiState as MainScreenUiState.Error
                 ErrorScreen(message = state.message, retry = viewModel::reload)
             }
 
-            is UiState.Success -> {
-                val state = uiState as UiState.Success
+            is MainScreenUiState.Success -> {
+                val state = uiState as MainScreenUiState.Success
                 val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
                 val scope = rememberCoroutineScope()
 

@@ -1,9 +1,9 @@
 package com.gals.prayertimes.viewmodel.utils
 
 import com.gals.prayertimes.common.NextPrayerConfig
+import com.gals.prayertimes.common.UiPrayer
 import com.gals.prayertimes.common.UiPrayerName
 import com.gals.prayertimes.main.model.UiDate
-import com.gals.prayertimes.main.model.UiPrayer
 import com.gals.prayertimes.main.model.UiPrayerEntry
 import com.gals.prayertimes.repository.local.entities.PrayerEntity
 import com.google.common.collect.ImmutableList
