@@ -132,7 +132,7 @@ class MainViewModelTest {
 
     private fun setNetworkRequest(prayerEntity: PrayerEntity, block: suspend () -> Unit) {
         coEvery {
-            mockPrayersRepository.fetchPrayer(any())
+            mockPrayersRepository.getPrayer(any())
         } coAnswers {
             block()
             flowOf(prayerEntity)

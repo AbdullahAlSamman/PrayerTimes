@@ -18,7 +18,7 @@ import com.gals.prayertimes.main.model.UiNextPrayer
 import com.gals.prayertimes.main.model.UiPrayerEntry
 import com.gals.prayertimes.main.screens.details.PrayerDateBar
 import com.gals.prayertimes.main.screens.details.PrayerHeader
-import com.gals.prayertimes.main.screens.details.PrayerSingleView
+import com.gals.prayertimes.main.screens.details.PrayerSingleCell
 import com.google.common.collect.ImmutableList
 
 @Composable
@@ -53,7 +53,7 @@ internal fun PrayerPortraitScreen(
             content = {
                 prayers.forEach { prayer ->
                     item {
-                        PrayerSingleView(prayer = prayer)
+                        PrayerSingleCell(prayer = prayer)
                     }
                 }
             }

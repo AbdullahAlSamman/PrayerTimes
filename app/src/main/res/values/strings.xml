@@ -95,4 +95,5 @@
     <string name="title_activity_main">MainActivity</string>
     <string name="menu_item_icon_content_description">menu item icon</string>
     <string name="loading_screen_icon_content_description">A man is in sgoud position</string>
+    <string name="text_settings_prayers_calendar_select_date">اختار تاريخ</string>
 </resources>

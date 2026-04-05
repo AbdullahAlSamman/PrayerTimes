@@ -37,7 +37,7 @@ class AlarmWorker @AssistedInject constructor(
     @Assisted private val prayerCalculation: PrayerCalculation
 ) : CoroutineWorker(appContext, workerParams) {
     override suspend fun doWork(): Result {
-        prayersRepository.fetchPrayer(todayDate())
+        prayersRepository.getPrayer(todayDate())
             .collect { prayer ->
                 val settings = settingsRepository.getSavedSettings()
                 scheduleUpcomingAlarms(

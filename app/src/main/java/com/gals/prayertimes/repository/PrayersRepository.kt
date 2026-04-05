@@ -23,7 +23,7 @@ class PrayersRepository @Inject constructor(
     private val prayersRemoteDataSource: PrayersRemoteDataSource,
     private val utils: SystemUtils
 ) {
-    fun fetchPrayer(todayDate: String): Flow<PrayerEntity> = flow {
+    fun getPrayer(todayDate: String): Flow<PrayerEntity> = flow {
         if (prayersLocalDataSource.isTodayPrayerExists(todayDate)) {
             Timber.i("exists locally in cache")
             emit(prayersLocalDataSource.getPrayers(todayDate))
@@ -48,7 +48,27 @@ class PrayersRepository @Inject constructor(
         }
     }.flowOn(dispatcher)
 
-    suspend fun getLocalPrayer(todayDate: String): PrayerEntity = prayersLocalDataSource.getPrayers(todayDate)
+    fun getRemotePrayer(todayDate: String): Flow<PrayerEntity> = flow {
+        if (utils.isNetworkAvailable()) {
+            val result = prayersRemoteDataSource.getPrayers(todayDate)
+            if (result.isSuccessful) {
+                result.body()?.let { response ->
+                    checkServerError(response)
+                    Timber.i("Success: ${result.message()}")
+                    emit(response.toEntity())
+                }
+            } else {
+                Timber.e("Network error: ${result.message()}")
+                throw NetworkException("${result.code()}: ${result.message()}")
+            }
+        } else {
+            Timber.e("Connectivity error: No Internet")
+            throw ConnectivityException("No Internet")
+        }
+    }.flowOn(dispatcher)
+
+    suspend fun getLocalPrayer(todayDate: String): PrayerEntity =
+        prayersLocalDataSource.getPrayers(todayDate)
 
     private fun checkServerError(response: PrayersResponse) {
         if (response == PrayersResponse("", "", emptyList())) {
