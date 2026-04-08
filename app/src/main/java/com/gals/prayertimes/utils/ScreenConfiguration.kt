@@ -1,6 +1,5 @@
 package com.gals.prayertimes.utils
 
-import android.app.Activity
 import android.content.res.Configuration
 import androidx.activity.compose.LocalActivity
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
@@ -25,10 +24,14 @@ fun isPhoneInLandscape(): Boolean = !isTablet() && isLandscape()
 
 @Composable
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
-private fun isTabletWidth(): Boolean =
-    calculateWindowSizeClass(LocalActivity.current as Activity).widthSizeClass >= WindowWidthSizeClass.Medium
+private fun isTabletWidth(): Boolean {
+    val activity = LocalActivity.current ?: return LocalConfiguration.current.screenWidthDp >= 600
+    return calculateWindowSizeClass(activity).widthSizeClass >= WindowWidthSizeClass.Medium
+}
 
 @Composable
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
-private fun isTabletHeight(): Boolean =
-    calculateWindowSizeClass(LocalActivity.current as Activity).heightSizeClass >= WindowHeightSizeClass.Medium
+private fun isTabletHeight(): Boolean {
+    val activity = LocalActivity.current ?: return LocalConfiguration.current.screenHeightDp >= 480
+    return calculateWindowSizeClass(activity).heightSizeClass >= WindowHeightSizeClass.Medium
+}

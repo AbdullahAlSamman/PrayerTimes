@@ -67,8 +67,9 @@ class PrayersRepository @Inject constructor(
         }
     }.flowOn(dispatcher)
 
-    suspend fun getLocalPrayer(todayDate: String): PrayerEntity =
-        prayersLocalDataSource.getPrayers(todayDate)
+    fun getLocalPrayer(todayDate: String): Flow<PrayerEntity> = flow {
+        emit(prayersLocalDataSource.getPrayers(todayDate))
+    }.flowOn(dispatcher)
 
     private fun checkServerError(response: PrayersResponse) {
         if (response == PrayersResponse("", "", emptyList())) {

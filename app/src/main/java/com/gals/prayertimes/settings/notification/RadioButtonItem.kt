@@ -1,4 +1,4 @@
-package com.gals.prayertimes.settings.screens.components
+package com.gals.prayertimes.settings.notification
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth

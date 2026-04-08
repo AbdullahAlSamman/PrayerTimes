@@ -4,8 +4,8 @@ import com.gals.prayertimes.main.tracker.MainTracker
 import com.gals.prayertimes.main.tracker.MainTrackerImpl
 import com.gals.prayertimes.permissions.tracker.PermissionTracker
 import com.gals.prayertimes.permissions.tracker.PermissionTrackerImpl
-import com.gals.prayertimes.settings.tracker.NotificationSettingsTracker
-import com.gals.prayertimes.settings.tracker.NotificationSettingsTrackerImpl
+import com.gals.prayertimes.settings.notification.tracker.NotificationSettingsTracker
+import com.gals.prayertimes.settings.notification.tracker.NotificationSettingsTrackerImpl
 import com.gals.prayertimes.tracking.FirebaseTracker
 import com.gals.prayertimes.tracking.Tracker
 import dagger.Binds

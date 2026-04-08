@@ -13,9 +13,9 @@ import com.gals.prayertimes.BuildConfig
 import com.gals.prayertimes.main.MainScreen
 import com.gals.prayertimes.navigation.PrayerTimesNavHost.NavDestination
 import com.gals.prayertimes.permissions.PermissionScreen
-import com.gals.prayertimes.settings.screens.NotificationScreen
-import com.gals.prayertimes.settings.screens.PrayersCalendarScreen
-import com.gals.prayertimes.settings.screens.PrivacyPolicyScreen
+import com.gals.prayertimes.settings.calendar.PrayersCalendarScreen
+import com.gals.prayertimes.settings.notification.NotificationScreen
+import com.gals.prayertimes.settings.privacypolicy.PrivacyPolicyScreen
 import kotlinx.serialization.Serializable
 
 object PrayerTimesNavHost {
