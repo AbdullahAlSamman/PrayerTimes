@@ -1,4 +1,4 @@
-package com.gals.prayertimes.settings
+package com.gals.prayertimes.settings.notification
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -19,14 +19,15 @@ import com.gals.prayertimes.repository.PrayersRepository
 import com.gals.prayertimes.repository.SettingsRepository
 import com.gals.prayertimes.repository.local.entities.SettingsEntity
 import com.gals.prayertimes.repository.local.entities.SettingsEntity.Companion.toPrayerNotification
-import com.gals.prayertimes.settings.tracker.NotificationSettingsTracker
-import com.gals.prayertimes.settings.tracker.toTrackingParameters
+import com.gals.prayertimes.settings.notification.tracker.NotificationSettingsTracker
+import com.gals.prayertimes.settings.notification.tracker.mapper.toTrackingParameters
 import com.gals.prayertimes.utils.PrayerCalculation
 import com.gals.prayertimes.utils.todayDate
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -89,7 +90,7 @@ class NotificationSettingsViewModel @Inject constructor(
             cancelAllPrayerAlarms()
             workManager.cancelUniqueWork(PRAYER_ALARM_WORK_NAME)
             workManager.cancelUniqueWork(PRAYER_ALARM_WORK_NEXT_DAY_NAME)
-            Timber.i("All alarms are cancelled")
+            Timber.Forest.i("All alarms are cancelled")
 
             if (_uiSwitchState.value) {
                 val prayerAlarmWorkRequest = OneTimeWorkRequestBuilder<AlarmWorker>().build()
@@ -98,7 +99,7 @@ class NotificationSettingsViewModel @Inject constructor(
                     ExistingWorkPolicy.REPLACE,
                     prayerAlarmWorkRequest
                 )
-                Timber.i("alarms are scheduled")
+                Timber.Forest.i("alarms are scheduled")
             }
         }
     }
@@ -119,20 +120,22 @@ class NotificationSettingsViewModel @Inject constructor(
     }
 
     private suspend fun cancelAllPrayerAlarms() {
-        val timePrayer = prayersRepository.getLocalPrayer(todayDate()).toTimePrayer()
-        UiPrayerName.entries.forEach { prayerName ->
-            val prayerTime = prayerCalculation.getNextPrayerLocalTime(
-                timePrayer.getTimePrayerByName(prayerName)
-            )
-            val upcoming = prayerTime?.isAfter(LocalDateTime.now()) == true
-            if (upcoming) {
-                alarmHandler.cancelAlarm(
-                    AlarmItem(
-                        time = prayerTime.toMillisecondsWithRoundedSeconds(),
-                        prayer = prayerName.name
+        prayersRepository.getLocalPrayer(todayDate()).map { it.toTimePrayer() }
+            .collect { timePrayer ->
+                UiPrayerName.entries.forEach { prayerName ->
+                    val prayerTime = prayerCalculation.getNextPrayerLocalTime(
+                        timePrayer.getTimePrayerByName(prayerName)
                     )
-                )
+                    val upcoming = prayerTime?.isAfter(LocalDateTime.now()) == true
+                    if (upcoming) {
+                        alarmHandler.cancelAlarm(
+                            AlarmItem(
+                                time = prayerTime.toMillisecondsWithRoundedSeconds(),
+                                prayer = prayerName.name
+                            )
+                        )
+                    }
+                }
             }
-        }
     }
 }

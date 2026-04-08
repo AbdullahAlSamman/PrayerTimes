@@ -1,4 +1,4 @@
-package com.gals.prayertimes.settings.model
+package com.gals.prayertimes.settings.calendar.model
 
 import com.gals.prayertimes.common.UiPrayer
 

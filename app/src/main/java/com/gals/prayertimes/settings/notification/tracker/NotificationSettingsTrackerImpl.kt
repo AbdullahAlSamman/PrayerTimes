@@ -1,4 +1,4 @@
-package com.gals.prayertimes.settings.tracker
+package com.gals.prayertimes.settings.notification.tracker
 
 import com.gals.prayertimes.tracking.Tracker
 import javax.inject.Inject

@@ -1,4 +1,4 @@
-package com.gals.prayertimes.settings.screens
+package com.gals.prayertimes.settings.privacypolicy
 
 import android.webkit.WebView
 import android.webkit.WebViewClient
@@ -15,7 +15,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.viewinterop.AndroidView
 import com.gals.prayertimes.R
-import com.gals.prayertimes.settings.screens.components.NavigationBackArrow
+import com.gals.prayertimes.settings.components.NavigationBackArrow
 import com.gals.prayertimes.ui.theme.PrayerTypography
 
 @Composable

@@ -1,4 +1,4 @@
-package com.gals.prayertimes.settings.screens
+package com.gals.prayertimes.settings.notification
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
@@ -26,9 +26,7 @@ import com.gals.prayertimes.R
 import com.gals.prayertimes.common.NotificationType
 import com.gals.prayertimes.common.UiPrayerName
 import com.gals.prayertimes.common.mappers.mapUiPrayerName
-import com.gals.prayertimes.settings.NotificationSettingsViewModel
-import com.gals.prayertimes.settings.screens.components.NavigationBackArrow
-import com.gals.prayertimes.settings.screens.components.RadioButtonItem
+import com.gals.prayertimes.settings.components.NavigationBackArrow
 import com.gals.prayertimes.ui.theme.PrayerTypography
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 

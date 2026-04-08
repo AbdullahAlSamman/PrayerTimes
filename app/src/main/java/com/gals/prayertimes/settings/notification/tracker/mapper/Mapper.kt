@@ -1,4 +1,4 @@
-package com.gals.prayertimes.settings.tracker
+package com.gals.prayertimes.settings.notification.tracker.mapper
 
 import com.gals.prayertimes.repository.local.entities.SettingsEntity
 

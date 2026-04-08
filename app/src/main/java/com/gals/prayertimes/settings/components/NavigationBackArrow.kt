@@ -1,4 +1,4 @@
-package com.gals.prayertimes.settings.screens.components
+package com.gals.prayertimes.settings.components
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
