@@ -8,6 +8,7 @@ import com.gals.prayertimes.common.ServerException
 import com.gals.prayertimes.common.mappers.toPrayer
 import com.gals.prayertimes.repository.PrayersRepository
 import com.gals.prayertimes.settings.calendar.model.PrayersCalendarUiState
+import com.gals.prayertimes.settings.calendar.tracker.PrayerCalendarTracker
 import com.gals.prayertimes.utils.DateFormatter
 import com.gals.prayertimes.utils.ResourceProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -24,15 +25,17 @@ import javax.inject.Inject
 class PrayersCalendarViewModel @Inject constructor(
     private val repository: PrayersRepository,
     private val dateFormatter: DateFormatter,
-    private val resourceProvider: ResourceProvider
+    private val resourceProvider: ResourceProvider,
+    private val tracker: PrayerCalendarTracker
 ) : ViewModel() {
-    /*TODO: tracking, ads, tests, regions for VM, add outlined cards to notification screen, thinks first load case form locale, extract outlinedCard implementation for notification screen also*/
+    /*TODO: ads, tests, regions for VM, add outlined cards to notification screen, thinks first load case form locale, extract outlinedCard implementation for notification screen also*/
     private val _uiState = MutableStateFlow<PrayersCalendarUiState>(PrayersCalendarUiState.Loading)
     val uiState: StateFlow<PrayersCalendarUiState> = _uiState.asStateFlow()
     fun fetchPrayersForDate(selectedDateMillis: Long) {
         _uiState.update { PrayersCalendarUiState.Loading }
         viewModelScope.launch {
             dateFormatter.formatMillisToDateString(selectedDateMillis).let { selectedDate ->
+                tracker.selectedDate(selectedDate)
                 repository.getRemotePrayer(selectedDate)
                     .catch { cause ->
                         _uiState.update { cause.toUiError() }

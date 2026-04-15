@@ -4,6 +4,8 @@ import com.gals.prayertimes.main.tracker.MainTracker
 import com.gals.prayertimes.main.tracker.MainTrackerImpl
 import com.gals.prayertimes.permissions.tracker.PermissionTracker
 import com.gals.prayertimes.permissions.tracker.PermissionTrackerImpl
+import com.gals.prayertimes.settings.calendar.tracker.PrayerCalendarTracker
+import com.gals.prayertimes.settings.calendar.tracker.PrayerCalendarTrackerImpl
 import com.gals.prayertimes.settings.notification.tracker.NotificationSettingsTracker
 import com.gals.prayertimes.settings.notification.tracker.NotificationSettingsTrackerImpl
 import com.gals.prayertimes.tracking.FirebaseTracker
@@ -16,22 +18,25 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-abstract class TrackingModule {
+interface TrackingModule {
 
     @Binds
     @Singleton
-    abstract fun bindTracker(tracker: FirebaseTracker): Tracker
-
-
-    @Binds
-    @Singleton
-    abstract fun bindMainTracker(mainTracker: MainTrackerImpl): MainTracker
+    fun bindTracker(tracker: FirebaseTracker): Tracker
 
     @Binds
     @Singleton
-    abstract fun bindPermissionTracker(permissionTracker: PermissionTrackerImpl): PermissionTracker
+    fun bindMainTracker(impl: MainTrackerImpl): MainTracker
 
     @Binds
     @Singleton
-    abstract fun bindNotificationSettingsTracker(notificationSettingsTracker: NotificationSettingsTrackerImpl): NotificationSettingsTracker
+    fun bindPermissionTracker(impl: PermissionTrackerImpl): PermissionTracker
+
+    @Binds
+    @Singleton
+    fun bindNotificationSettingsTracker(impl: NotificationSettingsTrackerImpl): NotificationSettingsTracker
+
+    @Binds
+    @Singleton
+    fun bindPrayerCalendarTracker(impl: PrayerCalendarTrackerImpl): PrayerCalendarTracker
 }
