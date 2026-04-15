@@ -98,7 +98,7 @@ object PrayerTimesNavHost {
         NavDisplay(
             entries = navigationState.toEntries(entryProvider),
             onBack = { navigator.goBack() },
-            sceneStrategy = remember { DialogSceneStrategy() }
+            sceneStrategies = listOf(remember { DialogSceneStrategy() })
         )
     }
 }
