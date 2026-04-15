@@ -64,6 +64,10 @@ retrofit-moshi-kotlin = { group = "com.squareup.moshi", name = "moshi", version.
 
 junit-test = { group = "junit", name = "junit", version = "4.13.2" }
 jupiter-test = { group = "org.junit.jupiter", name = "junit-jupiter-api", version.ref = "jupiter" }
+jupiter-engine = { group = "org.junit.jupiter", name = "junit-jupiter-engine", version.ref = "jupiter" }
+jupiter-params = { group = "org.junit.jupiter", name = "junit-jupiter-params", version.ref = "jupiter" }
+jupiter-launcher = { group = "org.junit.platform", name = "junit-platform-launcher" }
+jupiter-vintage = { group = "org.junit.vintage", name = "junit-vintage-engine", version.ref = "jupiter" }
 mockk-test = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
 turbine-test = { group = "app.cash.turbine", name = "turbine", version.ref = "turbine" }
 coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlin-coroutines" }
@@ -139,6 +143,10 @@ retrofit = [
 unit-test = [
     "junit-test",
     "jupiter-test",
+    "jupiter-engine",
+    "jupiter-params",
+    "jupiter-launcher",
+    "jupiter-vintage",
     "mockk-test",
     "turbine-test",
     "coroutines-test"

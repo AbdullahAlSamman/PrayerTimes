@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ContainedLoadingIndicator
 import androidx.compose.material3.DatePicker
@@ -19,8 +18,6 @@ import androidx.compose.material3.DatePickerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
@@ -47,6 +44,7 @@ import com.gals.prayertimes.main.model.UiDate
 import com.gals.prayertimes.main.model.UiPrayerEntry
 import com.gals.prayertimes.settings.calendar.model.PrayersCalendarUiState
 import com.gals.prayertimes.settings.components.NavigationBackArrow
+import com.gals.prayertimes.settings.components.OutlinedSettingsCard
 import com.gals.prayertimes.ui.theme.PrayerTimesTheme
 import com.gals.prayertimes.ui.theme.PrayerTypography
 import com.gals.prayertimes.ui.theme.colorBackgroundFajer
@@ -77,7 +75,7 @@ fun PrayersCalendarScreen(
 
     LaunchedEffect(datePickerState) {
         snapshotFlow { datePickerState.selectedDateMillis }
-            .debounce(1000)
+            .debounce(250)
             .collect { selectedDateMillis ->
                 selectedDateMillis?.let { viewModel.fetchPrayersForDate(it) }
             }
@@ -120,9 +118,7 @@ private fun PrayersCalendarContent(
         verticalArrangement = Arrangement.spacedBy(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        OutlinedCard(
-            modifier = Modifier.padding(horizontal = 16.dp)
-        ) {
+        OutlinedSettingsCard {
             DatePicker(
                 modifier = Modifier.fillMaxWidth(),
                 state = datePickerState,
@@ -147,12 +143,7 @@ private fun PrayersCalendarContent(
 
             is PrayersCalendarUiState.Success -> {
                 val state = uiState.data
-                OutlinedCard(
-                    modifier = Modifier.padding(horizontal = 16.dp),
-                    colors = CardDefaults.outlinedCardColors(
-                        containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
-                    )
-                ) {
+                OutlinedSettingsCard {
                     Column(
                         modifier = Modifier.fillMaxWidth(),
                         verticalArrangement = Arrangement.Center,
@@ -178,12 +169,7 @@ private fun PrayersCalendarContent(
                     }
                 }
 
-                OutlinedCard(
-                    modifier = Modifier.padding(horizontal = 16.dp),
-                    colors = CardDefaults.outlinedCardColors(
-                        containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
-                    )
-                ) {
+                OutlinedSettingsCard {
                     LazyVerticalGrid(
                         columns = GridCells.Fixed(6),
                         modifier = Modifier.fillMaxWidth(),

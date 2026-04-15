@@ -73,6 +73,9 @@ configure<ApplicationExtension> {
 
     testOptions {
         unitTests.isReturnDefaultValues = true
+        unitTests.all {
+            it.useJUnitPlatform()
+        }
     }
 
     packaging {

@@ -28,9 +28,11 @@ class PrayersCalendarViewModel @Inject constructor(
     private val resourceProvider: ResourceProvider,
     private val tracker: PrayerCalendarTracker
 ) : ViewModel() {
-    /*TODO: ads, tests, regions for VM, add outlined cards to notification screen, thinks first load case form locale, extract outlinedCard implementation for notification screen also*/
+    /*TODO: thinks first load case form locale */
     private val _uiState = MutableStateFlow<PrayersCalendarUiState>(PrayersCalendarUiState.Loading)
     val uiState: StateFlow<PrayersCalendarUiState> = _uiState.asStateFlow()
+
+    //region UI operations
     fun fetchPrayersForDate(selectedDateMillis: Long) {
         _uiState.update { PrayersCalendarUiState.Loading }
         viewModelScope.launch {
@@ -47,7 +49,9 @@ class PrayersCalendarViewModel @Inject constructor(
             }
         }
     }
+    //endregion
 
+    //region Private Methods
     private fun Throwable.toUiError() =
         when (this) {
             is ConnectivityException ->
@@ -68,4 +72,5 @@ class PrayersCalendarViewModel @Inject constructor(
                 )
             }
         }
+    //endregion
 }
