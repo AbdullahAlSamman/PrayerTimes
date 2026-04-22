@@ -17,9 +17,9 @@ import androidx.compose.ui.unit.dp
 import com.gals.prayertimes.main.model.UiDate
 import com.gals.prayertimes.main.model.UiNextPrayer
 import com.gals.prayertimes.main.model.UiPrayerEntry
+import com.gals.prayertimes.main.screens.details.PrayerCell
 import com.gals.prayertimes.main.screens.details.PrayerDateBar
 import com.gals.prayertimes.main.screens.details.PrayerHeader
-import com.gals.prayertimes.main.screens.details.PrayerSingleCell
 import com.gals.prayertimes.utils.isTablet
 import com.google.common.collect.ImmutableList
 
@@ -85,7 +85,7 @@ internal fun PrayerLandscapeScreen(
             content = {
                 prayers.onEach { prayer ->
                     item {
-                        PrayerSingleCell(
+                        PrayerCell(
                             modifier = Modifier.defaultMinSize(minWidth = 80.dp),
                             prayer = prayer
                         )
