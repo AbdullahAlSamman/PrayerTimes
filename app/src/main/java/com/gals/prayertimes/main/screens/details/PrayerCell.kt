@@ -27,7 +27,7 @@ import com.gals.prayertimes.utils.nonScaledSp
 
 
 @Composable
-fun PrayerSingleCell(
+fun PrayerCell(
     modifier: Modifier = Modifier,
     prayer: UiPrayerEntry,
     textStyle: TextStyle = if (isTablet()) {
