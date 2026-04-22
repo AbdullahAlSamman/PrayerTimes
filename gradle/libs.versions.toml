@@ -18,6 +18,7 @@ mockk = "1.14.9"
 turbine = "1.2.1"
 kotlin-coroutines = "1.10.2"
 kotlin-serialization = "1.11.0"
+kotlin-collections-immutable = "0.3.8"
 google-services = "4.4.4"
 ksp = "2.3.6"
 work-runtime-ktx = "2.11.2"
@@ -56,6 +57,7 @@ androidx-work-manager-hilt = { group = "androidx.hilt", name = "hilt-work", vers
 
 kotlinx-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "kotlin-coroutines" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlin-serialization" }
+kotlinx-collections-immutable = { group = "org.jetbrains.kotlinx", name = "kotlinx-collections-immutable", version.ref = "kotlin-collections-immutable" }
 
 retrofit-okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "ok-http" }
 retrofit-convertor-gson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofit" }
@@ -159,7 +161,8 @@ hilt = [
 
 kotlinx = [
     "kotlinx-coroutines",
-    "kotlinx-serialization-json"
+    "kotlinx-serialization-json",
+    "kotlinx-collections-immutable"
 ]
 
 play-services = [
