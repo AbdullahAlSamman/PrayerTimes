@@ -3,6 +3,7 @@ package com.gals.prayertimes.settings.notification
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -13,13 +14,17 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.gals.prayertimes.R
@@ -27,8 +32,11 @@ import com.gals.prayertimes.common.NotificationType
 import com.gals.prayertimes.common.UiPrayerName
 import com.gals.prayertimes.common.mappers.mapUiPrayerName
 import com.gals.prayertimes.settings.components.NavigationBackArrow
+import com.gals.prayertimes.ui.theme.PrayerTimesTheme
 import com.gals.prayertimes.ui.theme.PrayerTypography
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import kotlinx.collections.immutable.ImmutableMap
+import kotlinx.collections.immutable.toImmutableMap
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalPermissionsApi::class)
@@ -78,56 +86,79 @@ internal fun NotificationScreen(
                 onBackClicked()
             }
 
-            Column(
-                modifier = Modifier.padding(innerPadding),
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-                horizontalAlignment = Alignment.Start
-            ) {
-                Row(modifier = modifier.fillMaxWidth()) {
-                    Text(
-                        modifier = Modifier
-                            .weight(3f)
-                            .align(Alignment.CenterVertically),
-                        text = stringResource(id = R.string.text_settings_switch_title),
-                        style = PrayerTypography.titleLarge
-                    )
-                    Switch(
-                        modifier = Modifier.weight(1f),
-                        checked = uiSwitchState,
-                        onCheckedChange = onSwitchSelectionChanged
-                    )
-                }
-                Column(modifier = modifier) {
-                    val items = NotificationType.entries.toTypedArray()
-                    items.forEach { item ->
-                        RadioButtonItem(
-                            item = item,
-                            isSelectedItem = isRadioItemSelected,
-                            onSelectionChanged = onRadioSelectionChanged,
-                            itemEnabled = uiSwitchState
-                        )
-                    }
-                }
-
-                Column(
-                    modifier = modifier.fillMaxWidth(),
-                    verticalArrangement = Arrangement.spacedBy(4.dp)
-                ) {
-                    Text(
-                        text = stringResource(id = R.string.text_notification_selected_prayers),
-                        style = PrayerTypography.titleLarge
-                    )
-                    UiPrayerName.entries.forEach { name ->
-                        PrayerNotificationItem(
-                            prayerName = name,
-                            isSwitchChecked = uiPrayerSwitches[name] == true,
-                            isSwitchEnabled = uiSwitchState,
-                            onCheckedChange = { onAlarmSelectionChanged(name, it) }
-                        )
-                    }
-                }
-            }
+            NotificationContent(
+                modifier = modifier,
+                innerPadding = innerPadding,
+                uiSwitchState = uiSwitchState,
+                onSwitchSelectionChanged = onSwitchSelectionChanged,
+                isRadioItemSelected = isRadioItemSelected,
+                onRadioSelectionChanged = onRadioSelectionChanged,
+                uiPrayerSwitches = uiPrayerSwitches.toImmutableMap(),
+                onAlarmSelectionChanged = onAlarmSelectionChanged
+            )
         })
+}
+
+@Composable
+private fun NotificationContent(
+    innerPadding: PaddingValues,
+    modifier: Modifier,
+    uiSwitchState: Boolean,
+    onSwitchSelectionChanged: (Boolean) -> Unit,
+    isRadioItemSelected: (NotificationType) -> Boolean,
+    onRadioSelectionChanged: (NotificationType) -> Unit,
+    uiPrayerSwitches: ImmutableMap<UiPrayerName, Boolean>,
+    onAlarmSelectionChanged: (UiPrayerName, Boolean) -> Unit
+) {
+    Column(
+        modifier = Modifier.padding(innerPadding),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+        horizontalAlignment = Alignment.Start
+    ) {
+        Row(modifier = modifier.fillMaxWidth()) {
+            Text(
+                modifier = Modifier
+                    .weight(3f)
+                    .align(Alignment.CenterVertically),
+                text = stringResource(id = R.string.text_settings_switch_title),
+                style = PrayerTypography.titleLarge
+            )
+            Switch(
+                modifier = Modifier.weight(1f),
+                checked = uiSwitchState,
+                onCheckedChange = onSwitchSelectionChanged
+            )
+        }
+        Column(modifier = modifier) {
+            val items = NotificationType.entries.toTypedArray()
+            items.forEach { item ->
+                RadioButtonItem(
+                    item = item,
+                    isSelectedItem = isRadioItemSelected,
+                    onSelectionChanged = onRadioSelectionChanged,
+                    itemEnabled = uiSwitchState
+                )
+            }
+        }
+
+        Column(
+            modifier = modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            Text(
+                text = stringResource(id = R.string.text_notification_selected_prayers),
+                style = PrayerTypography.titleLarge
+            )
+            UiPrayerName.entries.forEach { name ->
+                PrayerNotificationItem(
+                    prayerName = name,
+                    isSwitchChecked = uiPrayerSwitches[name] == true,
+                    isSwitchEnabled = uiSwitchState,
+                    onCheckedChange = { onAlarmSelectionChanged(name, it) }
+                )
+            }
+        }
+    }
 }
 
 @Composable
@@ -154,5 +185,24 @@ internal fun PrayerNotificationItem(
             text = mapUiPrayerName(prayerName),
             style = textStyle
         )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun NotificationContentPreview() {
+    PrayerTimesTheme {
+        CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
+            NotificationContent(
+                innerPadding = PaddingValues(16.dp),
+                modifier = Modifier,
+                uiSwitchState = true,
+                onSwitchSelectionChanged = {},
+                isRadioItemSelected = { it == NotificationType.TONE },
+                onRadioSelectionChanged = {},
+                uiPrayerSwitches = UiPrayerName.entries.associateWith { true }.toImmutableMap(),
+                onAlarmSelectionChanged = { _, _ -> }
+            )
+        }
     }
 }
