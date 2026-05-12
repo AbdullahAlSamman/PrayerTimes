@@ -16,12 +16,12 @@ ksp {
 
 configure<ApplicationExtension> {
     namespace = "com.gals.prayertimes"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "com.gals.prayertimes"
         minSdk = 26
-        targetSdk = 36
+        targetSdk = 37
         versionName = "1.2.1"
         versionCode = 33
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
