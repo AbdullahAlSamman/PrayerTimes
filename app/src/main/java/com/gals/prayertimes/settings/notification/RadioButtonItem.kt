@@ -19,10 +19,10 @@ import com.gals.prayertimes.ui.theme.PrayerTypography
 @Composable
 fun RadioButtonItem(
     item: NotificationType,
+    itemEnabled: Boolean,
     isSelectedItem: (NotificationType) -> Boolean,
     onSelectionChanged: (NotificationType) -> Unit,
-    textStyle: TextStyle = PrayerTypography.titleMedium,
-    itemEnabled: Boolean
+    textStyle: TextStyle = PrayerTypography.titleMedium
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
