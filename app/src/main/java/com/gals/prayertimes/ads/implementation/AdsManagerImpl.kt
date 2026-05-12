@@ -2,6 +2,7 @@ package com.gals.prayertimes.ads.implementation
 
 import android.content.Context
 import com.gals.prayertimes.R
+import com.gals.prayertimes.ads.AdPlacement
 import com.gals.prayertimes.ads.AdsManager
 import com.gals.prayertimes.utils.ResourceProvider
 import com.google.android.gms.ads.AdListener
@@ -26,10 +27,11 @@ class AdsManagerImpl @Inject constructor(
 
     override fun requestAdView(
         context: Context,
-        adSize: AdSize
+        adSize: AdSize,
+        adPlacement: AdPlacement
     ): AdView {
         val adView = AdView(context)
-        adView.adUnitId = resourceProvider.getString(R.string.admob_banner_id)
+        adView.adUnitId = adPlacement.getUnitId()
         adView.setAdSize(adSize)
         return adView
     }
@@ -37,6 +39,7 @@ class AdsManagerImpl @Inject constructor(
     override fun requestAdViewWithEvents(
         context: Context,
         adSize: AdSize,
+        adPlacement: AdPlacement,
         onAdLoaded: () -> Unit,
         onAdOpened: () -> Unit,
         onAdClicked: () -> Unit,
@@ -44,7 +47,7 @@ class AdsManagerImpl @Inject constructor(
         onAdFailedToLoad: (error: String) -> Unit
     ): AdView {
         val adView = AdView(context)
-        adView.adUnitId = resourceProvider.getString(R.string.admob_banner_id)
+        adView.adUnitId = adPlacement.getUnitId()
         adView.setAdSize(adSize)
         adView.adListener = object : AdListener() {
             override fun onAdLoaded() {
@@ -75,4 +78,11 @@ class AdsManagerImpl @Inject constructor(
         val adRequest = AdRequest.Builder().build()
         adview.loadAd(adRequest)
     }
+
+    private fun AdPlacement.getUnitId(): String = resourceProvider.getString(
+        when (this) {
+            AdPlacement.Home -> R.string.admob_home_banner_id
+            AdPlacement.PrayerCalendar -> R.string.admob_prayer_calendar_banner_id
+        }
+    )
 }

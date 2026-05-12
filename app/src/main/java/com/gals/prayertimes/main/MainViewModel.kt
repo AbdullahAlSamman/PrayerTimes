@@ -5,6 +5,7 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gals.prayertimes.R
+import com.gals.prayertimes.ads.AdPlacement
 import com.gals.prayertimes.ads.AdsManager
 import com.gals.prayertimes.ads.ConsentManager
 import com.gals.prayertimes.common.ConnectivityException
@@ -128,6 +129,7 @@ class MainViewModel @Inject constructor(
         val adView = adsManager.requestAdView(
             context = context,
             adSize = adSize,
+            adPlacement = AdPlacement.Home
         )
         adsManager.loadAd(adView)
         return adView
