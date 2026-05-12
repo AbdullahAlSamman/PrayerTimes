@@ -32,6 +32,7 @@ import com.gals.prayertimes.common.NotificationType
 import com.gals.prayertimes.common.UiPrayerName
 import com.gals.prayertimes.common.mappers.mapUiPrayerName
 import com.gals.prayertimes.settings.components.NavigationBackArrow
+import com.gals.prayertimes.settings.components.OutlinedSettingsCard
 import com.gals.prayertimes.ui.theme.PrayerTimesTheme
 import com.gals.prayertimes.ui.theme.PrayerTypography
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -115,34 +116,40 @@ private fun NotificationContent(
         verticalArrangement = Arrangement.spacedBy(16.dp),
         horizontalAlignment = Alignment.Start
     ) {
-        Row(modifier = modifier.fillMaxWidth()) {
-            Text(
-                modifier = Modifier
-                    .weight(3f)
-                    .align(Alignment.CenterVertically),
-                text = stringResource(id = R.string.text_settings_switch_title),
-                style = PrayerTypography.titleLarge
-            )
-            Switch(
-                modifier = Modifier.weight(1f),
-                checked = uiSwitchState,
-                onCheckedChange = onSwitchSelectionChanged
-            )
-        }
-        Column(modifier = modifier) {
-            val items = NotificationType.entries.toTypedArray()
-            items.forEach { item ->
-                RadioButtonItem(
-                    item = item,
-                    isSelectedItem = isRadioItemSelected,
-                    onSelectionChanged = onRadioSelectionChanged,
-                    itemEnabled = uiSwitchState
-                )
-            }
-        }
+        NotificationToggle(
+            modifier = modifier,
+            uiSwitchState = uiSwitchState,
+            onSwitchSelectionChanged = onSwitchSelectionChanged
+        )
 
+        NotificationTypeRadioGroup(
+            modifier = modifier,
+            uiSwitchState = uiSwitchState,
+            isRadioItemSelected = isRadioItemSelected,
+            onRadioSelectionChanged = onRadioSelectionChanged
+        )
+
+        SelectedPrayersToggleGroup(
+            modifier = modifier,
+            uiPrayerSwitches = uiPrayerSwitches,
+            uiSwitchState = uiSwitchState,
+            onAlarmSelectionChanged = onAlarmSelectionChanged
+        )
+    }
+}
+
+@Composable
+private fun SelectedPrayersToggleGroup(
+    modifier: Modifier,
+    uiPrayerSwitches: ImmutableMap<UiPrayerName, Boolean>,
+    uiSwitchState: Boolean,
+    onAlarmSelectionChanged: (UiPrayerName, Boolean) -> Unit
+) {
+    OutlinedSettingsCard(modifier = modifier) {
         Column(
-            modifier = modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             Text(
@@ -157,6 +164,60 @@ private fun NotificationContent(
                     onCheckedChange = { onAlarmSelectionChanged(name, it) }
                 )
             }
+        }
+    }
+}
+
+@Composable
+private fun NotificationTypeRadioGroup(
+    modifier: Modifier,
+    isRadioItemSelected: (NotificationType) -> Boolean,
+    onRadioSelectionChanged: (NotificationType) -> Unit,
+    uiSwitchState: Boolean
+) {
+    OutlinedSettingsCard(modifier = modifier) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text(
+                text = stringResource(id = R.string.text_notification_selected_type),
+                style = PrayerTypography.titleLarge
+            )
+            val items = NotificationType.entries.toTypedArray()
+            items.forEach { item ->
+                RadioButtonItem(
+                    item = item,
+                    isSelectedItem = isRadioItemSelected,
+                    onSelectionChanged = onRadioSelectionChanged,
+                    itemEnabled = uiSwitchState
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun NotificationToggle(
+    modifier: Modifier,
+    uiSwitchState: Boolean,
+    onSwitchSelectionChanged: (Boolean) -> Unit
+) {
+    OutlinedSettingsCard(modifier = modifier) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        ) {
+            Text(
+                modifier = Modifier
+                    .weight(3f)
+                    .align(Alignment.CenterVertically),
+                text = stringResource(id = R.string.text_settings_switch_title),
+                style = PrayerTypography.titleLarge
+            )
+            Switch(
+                modifier = Modifier.weight(1f),
+                checked = uiSwitchState,
+                onCheckedChange = onSwitchSelectionChanged
+            )
         }
     }
 }
