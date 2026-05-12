@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="admob_app_id">ca-app-pub-5023678239767068~8702461334</string>
-    <string name="admob_banner_id">ca-app-pub-5023678239767068/5876487408</string>
+    <string name="admob_home_banner_id">ca-app-pub-5023678239767068/5876487408</string>
+    <string name="admob_prayer_calendar_banner_id">ca-app-pub-5023678239767068/9888231366</string>
 </resources>
