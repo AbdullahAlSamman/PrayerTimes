@@ -12,6 +12,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.gals.prayertimes.main.model.UiDate
 import com.gals.prayertimes.main.model.UiNextPrayer
@@ -26,7 +27,7 @@ internal fun PrayerPortraitScreen(
     prayers: ImmutableList<UiPrayerEntry>,
     uiNextPrayer: UiNextPrayer,
     uiDate: UiDate,
-    adBanner: @Composable BoxScope.(isMediumAdSize: Boolean) -> Unit,
+    adBanner: @Composable BoxScope.(maxHeight: Dp) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier.fillMaxWidth()) {
@@ -62,7 +63,7 @@ internal fun PrayerPortraitScreen(
         Spacer(modifier = Modifier.height(2.dp))
 
         BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
-            adBanner(maxHeight >= 250.dp)
+            adBanner(maxHeight)
         }
     }
 }

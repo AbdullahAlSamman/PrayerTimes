@@ -1,15 +1,15 @@
 package com.gals.prayertimes.ads.implementation
 
 import android.content.Context
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import com.gals.prayertimes.R
-import com.gals.prayertimes.ads.AdPlacement
 import com.gals.prayertimes.ads.AdsManager
+import com.gals.prayertimes.ads.model.AdPlacement
 import com.gals.prayertimes.utils.ResourceProvider
-import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
-import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.MobileAds
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
@@ -25,52 +25,14 @@ class AdsManagerImpl @Inject constructor(
         MobileAds.initialize(context)
     }
 
-    override fun requestAdView(
+    override fun requestBannerAd(
         context: Context,
-        adSize: AdSize,
+        maxAdHeight: Dp,
         adPlacement: AdPlacement
     ): AdView {
         val adView = AdView(context)
         adView.adUnitId = adPlacement.getUnitId()
-        adView.setAdSize(adSize)
-        return adView
-    }
-
-    override fun requestAdViewWithEvents(
-        context: Context,
-        adSize: AdSize,
-        adPlacement: AdPlacement,
-        onAdLoaded: () -> Unit,
-        onAdOpened: () -> Unit,
-        onAdClicked: () -> Unit,
-        onAdImpression: () -> Unit,
-        onAdFailedToLoad: (error: String) -> Unit
-    ): AdView {
-        val adView = AdView(context)
-        adView.adUnitId = adPlacement.getUnitId()
-        adView.setAdSize(adSize)
-        adView.adListener = object : AdListener() {
-            override fun onAdLoaded() {
-                onAdLoaded()
-            }
-
-            override fun onAdOpened() {
-                onAdOpened()
-            }
-
-            override fun onAdClicked() {
-                onAdClicked()
-            }
-
-            override fun onAdImpression() {
-                onAdImpression()
-            }
-
-            override fun onAdFailedToLoad(error: LoadAdError) {
-                onAdFailedToLoad(error.message)
-            }
-        }
-
+        adView.setAdSize(maxAdHeight.getBannerAdSize())
         return adView
     }
 
@@ -85,4 +47,10 @@ class AdsManagerImpl @Inject constructor(
             AdPlacement.PrayerCalendar -> R.string.admob_prayer_calendar_banner_id
         }
     )
+
+    private fun Dp.getBannerAdSize(): AdSize = when {
+        this >= 250.dp -> AdSize.MEDIUM_RECTANGLE
+        this >= 100.dp -> AdSize.LARGE_BANNER
+        else -> AdSize.BANNER
+    }
 }

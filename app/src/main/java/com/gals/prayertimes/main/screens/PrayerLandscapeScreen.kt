@@ -1,8 +1,8 @@
 package com.gals.prayertimes.main.screens
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.Layout
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.gals.prayertimes.main.model.UiDate
 import com.gals.prayertimes.main.model.UiNextPrayer
@@ -28,7 +29,7 @@ internal fun PrayerLandscapeScreen(
     prayers: ImmutableList<UiPrayerEntry>,
     uiNextPrayer: UiNextPrayer,
     uiDate: UiDate,
-    adBanner: @Composable BoxScope.() -> Unit,
+    adBanner: @Composable BoxScope.(height: Dp) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -94,8 +95,8 @@ internal fun PrayerLandscapeScreen(
             }
         )
 
-        Box(modifier = Modifier.fillMaxSize()) {
-            adBanner()
+        BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
+            adBanner(maxHeight)
         }
     }
 }

@@ -1,7 +1,6 @@
 package com.gals.prayertimes.main
 
 import android.app.Activity
-import android.content.Context
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
@@ -41,11 +40,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.zIndex
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.gals.prayertimes.BuildConfig
 import com.gals.prayertimes.R
+import com.gals.prayertimes.ads.utils.AdBanner
 import com.gals.prayertimes.main.model.MainScreenUiState
 import com.gals.prayertimes.main.screens.ConsentScreen
 import com.gals.prayertimes.main.screens.ErrorScreen
@@ -57,8 +56,6 @@ import com.gals.prayertimes.navigation.NavigationMenuTarget
 import com.gals.prayertimes.ui.theme.PrayerTypography
 import com.gals.prayertimes.utils.isLandscape
 import com.gals.prayertimes.utils.isTablet
-import com.google.android.gms.ads.AdSize
-import com.google.android.gms.ads.AdView
 import com.google.common.collect.ImmutableList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -151,14 +148,14 @@ fun MainScreen(
                                 prayers = state.uiPrayer.prayers,
                                 uiNextPrayer = uiNextPrayer,
                                 uiDate = state.uiPrayer.uiDate,
-                                adBanner = {
+                                adBanner = { maxHeight ->
                                     if (state.canShowAds) {
                                         AdBanner(
                                             modifier = Modifier.align(Alignment.CenterEnd),
                                             factory = { context ->
                                                 viewModel.requestAdBanner(
                                                     context = context,
-                                                    adSize = AdSize.MEDIUM_RECTANGLE
+                                                    maxAdHeight = maxHeight
                                                 )
                                             }
                                         )
@@ -171,14 +168,14 @@ fun MainScreen(
                                 prayers = state.uiPrayer.prayers,
                                 uiNextPrayer = uiNextPrayer,
                                 uiDate = state.uiPrayer.uiDate,
-                                adBanner = { isMediumAdSize ->
+                                adBanner = { maxHeight ->
                                     if (state.canShowAds) {
                                         AdBanner(
                                             modifier = Modifier.align(Alignment.BottomCenter),
                                             factory = { context ->
                                                 viewModel.requestAdBanner(
                                                     context = context,
-                                                    adSize = if (isMediumAdSize) AdSize.MEDIUM_RECTANGLE else AdSize.LARGE_BANNER
+                                                    maxAdHeight = maxHeight
                                                 )
                                             }
                                         )
@@ -331,17 +328,4 @@ private fun DrawerMenuButton(
             contentDescription = stringResource(id = R.string.content_descriptor_settings_drawer)
         )
     }
-}
-
-@Composable
-private fun AdBanner(
-    factory: (Context) -> AdView,
-    modifier: Modifier = Modifier
-) {
-    AndroidView(
-        modifier = modifier,
-        factory = { context ->
-            factory(context)
-        }
-    )
 }
