@@ -110,14 +110,14 @@ fun PrayersCalendarScreen(
             modifier = Modifier.padding(paddingValues),
             uiState = uiState,
             datePickerState = datePickerState,
-            adBanner = { maxHeight ->
+            adBanner = { maxAdHeight ->
                 if (viewModel.canShowAds) {
                     AdBanner(
                         modifier = Modifier.align(Alignment.Center),
                         factory = { context ->
                             viewModel.requestAdBanner(
                                 context = context,
-                                adSize = maxHeight
+                                adSize = maxAdHeight
                             )
                         }
                     )
@@ -132,7 +132,7 @@ fun PrayersCalendarScreen(
 private fun PrayersCalendarContent(
     datePickerState: DatePickerState,
     uiState: PrayersCalendarUiState,
-    adBanner: @Composable BoxScope.(height: Dp) -> Unit,
+    adBanner: @Composable BoxScope.(maxAdHeight: Dp) -> Unit,
     modifier: Modifier = Modifier
 ) {
     //TODO consider landscape design

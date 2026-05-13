@@ -29,7 +29,7 @@ internal fun PrayerLandscapeScreen(
     prayers: ImmutableList<UiPrayerEntry>,
     uiNextPrayer: UiNextPrayer,
     uiDate: UiDate,
-    adBanner: @Composable BoxScope.(height: Dp) -> Unit,
+    adBanner: @Composable BoxScope.(maxAdHeight: Dp) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Row(
