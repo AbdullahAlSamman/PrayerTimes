@@ -37,7 +37,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -56,6 +55,7 @@ import com.gals.prayertimes.ui.theme.PrayerTimesTheme
 import com.gals.prayertimes.ui.theme.PrayerTypography
 import com.gals.prayertimes.ui.theme.colorBackgroundFajer
 import com.gals.prayertimes.ui.theme.colorBackgroundIsha
+import com.gals.prayertimes.utils.PrayerPreview
 import com.gals.prayertimes.utils.isTabletInPortrait
 import com.gals.prayertimes.utils.timeNowInMilliseconds
 import com.google.common.collect.ImmutableList
@@ -253,8 +253,7 @@ private fun SingleCell(
     }
 }
 
-@Preview(showBackground = true)
-@Preview(showBackground = true, device = "spec:width=1280dp,height=800dp,dpi=240")
+@PrayerPreview
 @Composable
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 private fun PrayersCalendarContentPreview() {
@@ -285,9 +284,14 @@ private fun PrayersCalendarContentPreview() {
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(16.dp)
-                        .background(MaterialTheme.colorScheme.secondaryContainer)
+                        .background(MaterialTheme.colorScheme.inversePrimary)
                 ) {
-                    Text(modifier = Modifier.align(Alignment.Center), text = "Advertisement")
+                    Text(
+                        modifier = Modifier.align(Alignment.Center),
+                        text = "Advertisement",
+                        style = MaterialTheme.typography.titleLarge,
+                        color = MaterialTheme.colorScheme.surface
+                    )
                 }
             }
         )

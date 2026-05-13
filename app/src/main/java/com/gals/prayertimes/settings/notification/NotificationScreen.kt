@@ -23,7 +23,6 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -35,6 +34,7 @@ import com.gals.prayertimes.settings.components.NavigationBackArrow
 import com.gals.prayertimes.settings.components.OutlinedSettingsCard
 import com.gals.prayertimes.ui.theme.PrayerTimesTheme
 import com.gals.prayertimes.ui.theme.PrayerTypography
+import com.gals.prayertimes.utils.PrayerPreview
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableMap
@@ -249,7 +249,7 @@ internal fun PrayerNotificationItem(
     }
 }
 
-@Preview(showBackground = true)
+@PrayerPreview
 @Composable
 private fun NotificationContentPreview() {
     PrayerTimesTheme {
