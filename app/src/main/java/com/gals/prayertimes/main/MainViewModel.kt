@@ -2,12 +2,13 @@ package com.gals.prayertimes.main
 
 import android.app.Activity
 import android.content.Context
+import androidx.compose.ui.unit.Dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gals.prayertimes.R
-import com.gals.prayertimes.ads.AdPlacement
 import com.gals.prayertimes.ads.AdsManager
 import com.gals.prayertimes.ads.ConsentManager
+import com.gals.prayertimes.ads.model.AdPlacement
 import com.gals.prayertimes.common.ConnectivityException
 import com.gals.prayertimes.common.DefaultDispatcher
 import com.gals.prayertimes.common.ServerException
@@ -27,7 +28,6 @@ import com.gals.prayertimes.utils.PrayerCalculation
 import com.gals.prayertimes.utils.ResourceProvider
 import com.gals.prayertimes.utils.ScreenUpdater
 import com.gals.prayertimes.utils.todayDate
-import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
 import com.google.android.ump.FormError
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -125,10 +125,10 @@ class MainViewModel @Inject constructor(
     //endregion
 
     //region Ads
-    fun requestAdBanner(context: Context, adSize: AdSize): AdView {
-        val adView = adsManager.requestAdView(
+    fun requestAdBanner(context: Context, maxAdHeight: Dp): AdView {
+        val adView = adsManager.requestBannerAd(
             context = context,
-            adSize = adSize,
+            maxAdHeight = maxAdHeight,
             adPlacement = AdPlacement.Home
         )
         adsManager.loadAd(adView)

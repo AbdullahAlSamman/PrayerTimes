@@ -1,10 +1,14 @@
 package com.gals.prayertimes.settings.calendar
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -18,6 +22,7 @@ import androidx.compose.material3.DatePickerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
@@ -33,10 +38,12 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gals.prayertimes.R
+import com.gals.prayertimes.ads.utils.AdBanner
 import com.gals.prayertimes.common.UiPrayer
 import com.gals.prayertimes.common.UiPrayerName
 import com.gals.prayertimes.common.mappers.mapUiPrayerName
@@ -55,6 +62,7 @@ import com.google.common.collect.ImmutableList
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.debounce
 import java.time.LocalDate
+import kotlin.time.Duration.Companion.milliseconds
 
 @Composable
 @OptIn(FlowPreview::class, ExperimentalMaterial3Api::class)
@@ -75,7 +83,7 @@ fun PrayersCalendarScreen(
 
     LaunchedEffect(datePickerState) {
         snapshotFlow { datePickerState.selectedDateMillis }
-            .debounce(250)
+            .debounce(250.milliseconds)
             .collect { selectedDateMillis ->
                 selectedDateMillis?.let { viewModel.fetchPrayersForDate(it) }
             }
@@ -101,7 +109,20 @@ fun PrayersCalendarScreen(
         PrayersCalendarContent(
             modifier = Modifier.padding(paddingValues),
             uiState = uiState,
-            datePickerState = datePickerState
+            datePickerState = datePickerState,
+            adBanner = { maxHeight ->
+                if (viewModel.canShowAds) {
+                    AdBanner(
+                        modifier = Modifier.align(Alignment.Center),
+                        factory = { context ->
+                            viewModel.requestAdBanner(
+                                context = context,
+                                adSize = maxHeight
+                            )
+                        }
+                    )
+                }
+            }
         )
     }
 }
@@ -111,10 +132,12 @@ fun PrayersCalendarScreen(
 private fun PrayersCalendarContent(
     datePickerState: DatePickerState,
     uiState: PrayersCalendarUiState,
+    adBanner: @Composable BoxScope.(height: Dp) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    //TODO consider landscape design
     Column(
-        modifier = modifier,
+        modifier = modifier.fillMaxHeight(),
         verticalArrangement = Arrangement.spacedBy(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -130,7 +153,7 @@ private fun PrayersCalendarContent(
 
         when (uiState) {
             PrayersCalendarUiState.Loading -> {
-                Box(modifier = Modifier.fillMaxSize()) {
+                Box(modifier = Modifier.defaultMinSize(minHeight = 248.dp)) {
                     ContainedLoadingIndicator(
                         modifier = Modifier
                             .size(64.dp)
@@ -186,12 +209,19 @@ private fun PrayersCalendarContent(
             }
 
             is PrayersCalendarUiState.Error -> {
-                Text(
-                    text = uiState.message,
-                    style = PrayerTypography.bodyMedium,
-                    modifier = Modifier.padding(16.dp)
-                )
+                //TODO: add retry button
+                OutlinedSettingsCard {
+                    Text(
+                        text = uiState.message,
+                        style = PrayerTypography.bodyMedium,
+                        modifier = Modifier.padding(16.dp)
+                    )
+                }
             }
+        }
+
+        BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
+            adBanner(maxHeight)
         }
     }
 }
@@ -230,26 +260,36 @@ private fun SingleCell(
 private fun PrayersCalendarContentPreview() {
     PrayerTimesTheme {
         PrayersCalendarContent(
-            uiState = PrayersCalendarUiState.Success(data = sampleUiPrayer),
+            uiState = PrayersCalendarUiState.Success(
+                data = UiPrayer(
+                    uiDate = UiDate(
+                        dayName = "Monday",
+                        moonDate = "15 Shawwal 1445",
+                        sunDate = "24 April 2024"
+                    ),
+                    prayers = ImmutableList.of(
+                        UiPrayerEntry(UiPrayerName.FAJER, "04:30"),
+                        UiPrayerEntry(UiPrayerName.SUNRISE, "06:00"),
+                        UiPrayerEntry(UiPrayerName.DUHR, "12:30"),
+                        UiPrayerEntry(UiPrayerName.ASR, "16:00"),
+                        UiPrayerEntry(UiPrayerName.MAGHRIB, "19:00"),
+                        UiPrayerEntry(UiPrayerName.ISHA, "20:30")
+                    )
+                )
+            ),
             datePickerState = rememberDatePickerState(
                 initialSelectedDateMillis = 1713916800000L
-            )
+            ),
+            adBanner = {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp)
+                        .background(MaterialTheme.colorScheme.secondaryContainer)
+                ) {
+                    Text(modifier = Modifier.align(Alignment.Center), text = "Advertisement")
+                }
+            }
         )
     }
 }
-
-private val sampleUiPrayer = UiPrayer(
-    uiDate = UiDate(
-        dayName = "Monday",
-        moonDate = "15 Shawwal 1445",
-        sunDate = "24 April 2024"
-    ),
-    prayers = ImmutableList.of(
-        UiPrayerEntry(UiPrayerName.FAJER, "04:30"),
-        UiPrayerEntry(UiPrayerName.SUNRISE, "06:00"),
-        UiPrayerEntry(UiPrayerName.DUHR, "12:30"),
-        UiPrayerEntry(UiPrayerName.ASR, "16:00"),
-        UiPrayerEntry(UiPrayerName.MAGHRIB, "19:00"),
-        UiPrayerEntry(UiPrayerName.ISHA, "20:30")
-    )
-)
