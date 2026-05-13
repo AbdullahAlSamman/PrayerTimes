@@ -148,14 +148,14 @@ fun MainScreen(
                                 prayers = state.uiPrayer.prayers,
                                 uiNextPrayer = uiNextPrayer,
                                 uiDate = state.uiPrayer.uiDate,
-                                adBanner = { maxHeight ->
+                                adBanner = { maxAdHeight ->
                                     if (state.canShowAds) {
                                         AdBanner(
                                             modifier = Modifier.align(Alignment.CenterEnd),
                                             factory = { context ->
                                                 viewModel.requestAdBanner(
                                                     context = context,
-                                                    maxAdHeight = maxHeight
+                                                    maxAdHeight = maxAdHeight
                                                 )
                                             }
                                         )
@@ -168,14 +168,14 @@ fun MainScreen(
                                 prayers = state.uiPrayer.prayers,
                                 uiNextPrayer = uiNextPrayer,
                                 uiDate = state.uiPrayer.uiDate,
-                                adBanner = { maxHeight ->
+                                adBanner = { maxAdHeight ->
                                     if (state.canShowAds) {
                                         AdBanner(
                                             modifier = Modifier.align(Alignment.BottomCenter),
                                             factory = { context ->
                                                 viewModel.requestAdBanner(
                                                     context = context,
-                                                    maxAdHeight = maxHeight
+                                                    maxAdHeight = maxAdHeight
                                                 )
                                             }
                                         )

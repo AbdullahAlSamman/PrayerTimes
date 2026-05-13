@@ -27,7 +27,7 @@ internal fun PrayerPortraitScreen(
     prayers: ImmutableList<UiPrayerEntry>,
     uiNextPrayer: UiNextPrayer,
     uiDate: UiDate,
-    adBanner: @Composable BoxScope.(maxHeight: Dp) -> Unit,
+    adBanner: @Composable BoxScope.(maxAdHeight: Dp) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier.fillMaxWidth()) {
