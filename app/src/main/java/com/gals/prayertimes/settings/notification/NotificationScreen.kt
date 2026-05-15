@@ -14,16 +14,13 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.gals.prayertimes.R
@@ -32,9 +29,9 @@ import com.gals.prayertimes.common.UiPrayerName
 import com.gals.prayertimes.common.mappers.mapUiPrayerName
 import com.gals.prayertimes.settings.components.NavigationBackArrow
 import com.gals.prayertimes.settings.components.OutlinedSettingsCard
-import com.gals.prayertimes.ui.theme.PrayerTimesTheme
 import com.gals.prayertimes.ui.theme.PrayerTypography
 import com.gals.prayertimes.utils.PrayerPreview
+import com.gals.prayertimes.utils.PrayerPreviewTheme
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableMap
@@ -251,19 +248,17 @@ internal fun PrayerNotificationItem(
 
 @PrayerPreview
 @Composable
-private fun NotificationContentPreview() {
-    PrayerTimesTheme {
-        CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
-            NotificationContent(
-                innerPadding = PaddingValues(16.dp),
-                modifier = Modifier,
-                uiSwitchState = true,
-                onSwitchSelectionChanged = {},
-                isRadioItemSelected = { it == NotificationType.TONE },
-                onRadioSelectionChanged = {},
-                uiPrayerSwitches = UiPrayerName.entries.associateWith { true }.toImmutableMap(),
-                onAlarmSelectionChanged = { _, _ -> }
-            )
-        }
+private fun NotificationContentAppPreview() {
+    PrayerPreviewTheme(topAppBarTitle = stringResource(R.string.text_settings_notifiaction)) {
+        NotificationContent(
+            innerPadding = PaddingValues(16.dp),
+            modifier = Modifier,
+            uiSwitchState = true,
+            onSwitchSelectionChanged = {},
+            isRadioItemSelected = { it == NotificationType.TONE },
+            onRadioSelectionChanged = {},
+            uiPrayerSwitches = UiPrayerName.entries.associateWith { true }.toImmutableMap(),
+            onAlarmSelectionChanged = { _, _ -> }
+        )
     }
 }

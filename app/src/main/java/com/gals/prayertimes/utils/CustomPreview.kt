@@ -155,3 +155,12 @@ fun PrayerPreviewTheme(
         }
     }
 }
+
+@Composable
+fun PrayerContentPreviewTheme(content: @Composable () -> Unit){
+    PrayerTimesTheme {
+        CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
+            content()
+        }
+    }
+}

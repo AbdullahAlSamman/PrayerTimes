@@ -51,11 +51,11 @@ import com.gals.prayertimes.main.model.UiPrayerEntry
 import com.gals.prayertimes.settings.calendar.model.PrayersCalendarUiState
 import com.gals.prayertimes.settings.components.NavigationBackArrow
 import com.gals.prayertimes.settings.components.OutlinedSettingsCard
-import com.gals.prayertimes.ui.theme.PrayerTimesTheme
 import com.gals.prayertimes.ui.theme.PrayerTypography
 import com.gals.prayertimes.ui.theme.colorBackgroundFajer
 import com.gals.prayertimes.ui.theme.colorBackgroundIsha
 import com.gals.prayertimes.utils.PrayerPreview
+import com.gals.prayertimes.utils.PrayerPreviewTheme
 import com.gals.prayertimes.utils.isTabletInPortrait
 import com.gals.prayertimes.utils.timeNowInMilliseconds
 import com.google.common.collect.ImmutableList
@@ -153,7 +153,7 @@ private fun PrayersCalendarContent(
 
         when (uiState) {
             PrayersCalendarUiState.Loading -> {
-                Box(modifier = Modifier.defaultMinSize(minHeight = 248.dp)) {
+                Box(modifier = Modifier.defaultMinSize(minHeight = 216.dp)) {
                     ContainedLoadingIndicator(
                         modifier = Modifier
                             .size(64.dp)
@@ -209,7 +209,6 @@ private fun PrayersCalendarContent(
             }
 
             is PrayersCalendarUiState.Error -> {
-                //TODO: add retry button
                 OutlinedSettingsCard {
                     Text(
                         text = uiState.message,
@@ -256,8 +255,8 @@ private fun SingleCell(
 @PrayerPreview
 @Composable
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
-private fun PrayersCalendarContentPreview() {
-    PrayerTimesTheme {
+private fun PrayersCalendarContentAppPreview() {
+    PrayerPreviewTheme(stringResource(R.string.text_settings_prayers_calendar)) {
         PrayersCalendarContent(
             uiState = PrayersCalendarUiState.Success(
                 data = UiPrayer(
