@@ -1,17 +1,17 @@
 package com.gals.prayertimes.main.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -57,18 +57,17 @@ internal fun PrayerPortraitScreen(
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(6),
+        Row(
             modifier = Modifier.fillMaxWidth(),
-            userScrollEnabled = false,
-            content = {
-                prayers.forEach { prayer ->
-                    item {
-                        PrayerCell(prayer = prayer)
-                    }
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            prayers.forEach { prayer ->
+                Box(modifier = Modifier.weight(1f)) {
+                    PrayerCell(prayer = prayer)
                 }
             }
-        )
+        }
 
         Spacer(modifier = Modifier.height(2.dp))
 
