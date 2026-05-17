@@ -7,14 +7,13 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -197,18 +196,17 @@ private fun PrayersCalendarContent(
                 }
 
                 OutlinedSettingsCard {
-                    LazyVerticalGrid(
-                        columns = GridCells.Fixed(6),
+                    Row(
                         modifier = Modifier.fillMaxWidth(),
-                        userScrollEnabled = false,
-                        content = {
-                            state.prayers.forEach { prayer ->
-                                item {
-                                    SingleCell(prayer = prayer)
-                                }
+                        horizontalArrangement = Arrangement.SpaceEvenly,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        state.prayers.forEach { prayer ->
+                            Box(modifier = Modifier.weight(1f)) {
+                                SingleCell(prayer = prayer)
                             }
                         }
-                    )
+                    }
                 }
             }
 
