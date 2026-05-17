@@ -15,6 +15,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ContainedLoadingIndicator
 import androidx.compose.material3.DatePicker
@@ -137,7 +139,9 @@ private fun PrayersCalendarContent(
 ) {
     //TODO consider landscape design
     Column(
-        modifier = modifier.fillMaxHeight(),
+        modifier = modifier
+            .fillMaxHeight()
+            .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -256,8 +260,9 @@ private fun SingleCell(
 @Composable
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 private fun PrayersCalendarContentAppPreview() {
-    PrayerPreviewTheme(stringResource(R.string.text_settings_prayers_calendar)) {
+    PrayerPreviewTheme(stringResource(R.string.text_settings_prayers_calendar)) { innerPadding ->
         PrayersCalendarContent(
+            modifier = Modifier.padding(innerPadding),
             uiState = PrayersCalendarUiState.Success(
                 data = UiPrayer(
                     uiDate = UiDate(
