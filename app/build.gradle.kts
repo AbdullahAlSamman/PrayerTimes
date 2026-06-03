@@ -116,6 +116,7 @@ dependencies {
     //Hilt
     implementation(libs.bundles.hilt)
     ksp(libs.google.dagger.hilt.compiler)
+    ksp(libs.kotlinMetadataJvm)
 
     //Logging
     implementation(libs.timber)
