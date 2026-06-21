@@ -3,6 +3,8 @@ package com.gals.prayertimes.settings.notification
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -35,6 +37,7 @@ import com.gals.prayertimes.settings.components.OutlinedSettingsCard
 import com.gals.prayertimes.ui.theme.PrayerTypography
 import com.gals.prayertimes.utils.PrayerPreview
 import com.gals.prayertimes.utils.PrayerPreviewTheme
+import com.gals.prayertimes.utils.isLandscape
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableMap
@@ -114,7 +117,11 @@ private fun NotificationContent(
     Column(
         modifier = Modifier
             .padding(innerPadding)
-            .verticalScroll(rememberScrollState()),
+            .then(
+                if (isLandscape()) Modifier
+                    .verticalScroll(rememberScrollState())
+                    .padding(vertical = 16.dp) else Modifier.fillMaxWidth()
+            ),
         verticalArrangement = Arrangement.spacedBy(16.dp),
         horizontalAlignment = Alignment.Start
     ) {
@@ -141,6 +148,40 @@ private fun NotificationContent(
 }
 
 @Composable
+@OptIn(ExperimentalLayoutApi::class)
+private fun NotificationTypeRadioGroup(
+    modifier: Modifier,
+    isRadioItemSelected: (NotificationType) -> Boolean,
+    onRadioSelectionChanged: (NotificationType) -> Unit,
+    uiSwitchState: Boolean
+) {
+    OutlinedSettingsCard(modifier = modifier) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text(
+                text = stringResource(id = R.string.text_notification_selected_type),
+                style = PrayerTypography.titleLarge
+            )
+            val items = NotificationType.entries.toTypedArray()
+            FlowRow(
+                modifier = Modifier.fillMaxWidth(),
+                maxItemsInEachRow = if (isLandscape()) 4 else 2
+            ) {
+                items.forEach { item ->
+                    RadioButtonItem(
+                        modifier = Modifier.weight(1f),
+                        item = item,
+                        isSelectedItem = isRadioItemSelected,
+                        onSelectionChanged = onRadioSelectionChanged,
+                        itemEnabled = uiSwitchState
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+@OptIn(ExperimentalLayoutApi::class)
 private fun SelectedPrayersToggleGroup(
     modifier: Modifier,
     uiPrayerSwitches: ImmutableMap<UiPrayerName, Boolean>,
@@ -158,39 +199,20 @@ private fun SelectedPrayersToggleGroup(
                 text = stringResource(id = R.string.text_notification_selected_prayers),
                 style = PrayerTypography.titleLarge
             )
-            UiPrayerName.entries.forEach { name ->
-                PrayerNotificationItem(
-                    prayerName = name,
-                    isSwitchChecked = uiPrayerSwitches[name] == true,
-                    isSwitchEnabled = uiSwitchState,
-                    onCheckedChange = { onAlarmSelectionChanged(name, it) }
-                )
-            }
-        }
-    }
-}
-
-@Composable
-private fun NotificationTypeRadioGroup(
-    modifier: Modifier,
-    isRadioItemSelected: (NotificationType) -> Boolean,
-    onRadioSelectionChanged: (NotificationType) -> Unit,
-    uiSwitchState: Boolean
-) {
-    OutlinedSettingsCard(modifier = modifier) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Text(
-                text = stringResource(id = R.string.text_notification_selected_type),
-                style = PrayerTypography.titleLarge
-            )
-            val items = NotificationType.entries.toTypedArray()
-            items.forEach { item ->
-                RadioButtonItem(
-                    item = item,
-                    isSelectedItem = isRadioItemSelected,
-                    onSelectionChanged = onRadioSelectionChanged,
-                    itemEnabled = uiSwitchState
-                )
+            FlowRow(
+                modifier = Modifier.fillMaxWidth(),
+                maxItemsInEachRow = 3,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                UiPrayerName.entries.forEach { name ->
+                    PrayerNotificationItem(
+                        modifier = Modifier.weight(1f),
+                        prayerName = name,
+                        isSwitchChecked = uiPrayerSwitches[name] == true,
+                        isSwitchEnabled = uiSwitchState,
+                        onCheckedChange = { onAlarmSelectionChanged(name, it) }
+                    )
+                }
             }
         }
     }

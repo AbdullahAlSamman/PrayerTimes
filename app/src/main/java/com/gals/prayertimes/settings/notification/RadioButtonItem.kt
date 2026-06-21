@@ -1,14 +1,15 @@
 package com.gals.prayertimes.settings.notification
 
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
@@ -22,18 +23,19 @@ fun RadioButtonItem(
     itemEnabled: Boolean,
     isSelectedItem: (NotificationType) -> Boolean,
     onSelectionChanged: (NotificationType) -> Unit,
+    modifier: Modifier = Modifier,
     textStyle: TextStyle = PrayerTypography.titleMedium
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
+        modifier = modifier
+            .clip(RoundedCornerShape(12.dp))
             .selectable(
                 selected = isSelectedItem(item),
                 onClick = { onSelectionChanged(item) },
                 role = Role.RadioButton
             )
             .padding(top = 4.dp)
-            .fillMaxWidth()
     ) {
         RadioButton(
             enabled = itemEnabled,
