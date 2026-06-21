@@ -14,12 +14,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ContainedLoadingIndicator
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerState
+import androidx.compose.material3.DisplayMode
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.HorizontalDivider
@@ -57,6 +56,7 @@ import com.gals.prayertimes.ui.theme.colorBackgroundFajer
 import com.gals.prayertimes.ui.theme.colorBackgroundIsha
 import com.gals.prayertimes.utils.PrayerPreview
 import com.gals.prayertimes.utils.PrayerPreviewTheme
+import com.gals.prayertimes.utils.isPhoneInLandscape
 import com.gals.prayertimes.utils.isTabletInPortrait
 import com.gals.prayertimes.utils.timeNowInMilliseconds
 import com.google.common.collect.ImmutableList
@@ -77,10 +77,16 @@ fun PrayersCalendarScreen(
         onBackClicked()
     }
 
+    val isLandscape = isPhoneInLandscape()
     val datePickerState = rememberDatePickerState(
+        initialDisplayMode = if (isLandscape) DisplayMode.Input else DisplayMode.Picker,
         initialSelectedDateMillis = timeNowInMilliseconds(),
         yearRange = 2019..LocalDate.now().year
     )
+
+    LaunchedEffect(isLandscape) {
+        datePickerState.displayMode = if (isLandscape) DisplayMode.Input else DisplayMode.Picker
+    }
 
     LaunchedEffect(datePickerState) {
         snapshotFlow { datePickerState.selectedDateMillis }
@@ -136,11 +142,8 @@ private fun PrayersCalendarContent(
     adBanner: @Composable BoxScope.(maxAdHeight: Dp) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    //TODO consider landscape design
     Column(
-        modifier = modifier
-            .fillMaxHeight()
-            .verticalScroll(rememberScrollState()),
+        modifier = modifier.fillMaxHeight(),
         verticalArrangement = Arrangement.spacedBy(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -291,7 +294,7 @@ private fun PrayersCalendarContentAppPreview() {
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(16.dp)
+                        .padding(horizontal = 16.dp)
                         .background(MaterialTheme.colorScheme.inversePrimary)
                 ) {
                     Text(
