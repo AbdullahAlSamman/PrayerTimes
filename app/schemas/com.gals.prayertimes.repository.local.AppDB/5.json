@@ -1,0 +1,162 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 5,
+    "identityHash": "f33977b22412be1d5ec483f1df7e55d1",
+    "entities": [
+      {
+        "tableName": "prayers",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`objectId` TEXT NOT NULL DEFAULT '', `sDate` TEXT NOT NULL DEFAULT '', `mDate` TEXT NOT NULL DEFAULT '', `fajer` TEXT NOT NULL DEFAULT '', `sunrise` TEXT NOT NULL DEFAULT '', `duhr` TEXT NOT NULL DEFAULT '', `asr` TEXT NOT NULL DEFAULT '', `maghrib` TEXT NOT NULL DEFAULT '', `isha` TEXT NOT NULL DEFAULT '', PRIMARY KEY(`objectId`))",
+        "fields": [
+          {
+            "fieldPath": "objectId",
+            "columnName": "objectId",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "''"
+          },
+          {
+            "fieldPath": "sDate",
+            "columnName": "sDate",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "''"
+          },
+          {
+            "fieldPath": "mDate",
+            "columnName": "mDate",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "''"
+          },
+          {
+            "fieldPath": "fajer",
+            "columnName": "fajer",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "''"
+          },
+          {
+            "fieldPath": "sunrise",
+            "columnName": "sunrise",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "''"
+          },
+          {
+            "fieldPath": "duhr",
+            "columnName": "duhr",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "''"
+          },
+          {
+            "fieldPath": "asr",
+            "columnName": "asr",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "''"
+          },
+          {
+            "fieldPath": "maghrib",
+            "columnName": "maghrib",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "''"
+          },
+          {
+            "fieldPath": "isha",
+            "columnName": "isha",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "''"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "objectId"
+          ]
+        }
+      },
+      {
+        "tableName": "settings",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `notification` INTEGER NOT NULL DEFAULT false, `notificationType` TEXT NOT NULL DEFAULT 'SILENT', `fajerNotification` INTEGER NOT NULL DEFAULT true, `sunriseNotification` INTEGER NOT NULL DEFAULT false, `duhrNotification` INTEGER NOT NULL DEFAULT true, `asrNotification` INTEGER NOT NULL DEFAULT true, `maghribNotification` INTEGER NOT NULL DEFAULT true, `ishaNotification` INTEGER NOT NULL DEFAULT true, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "notification",
+            "columnName": "notification",
+            "affinity": "INTEGER",
+            "notNull": true,
+            "defaultValue": "false"
+          },
+          {
+            "fieldPath": "notificationType",
+            "columnName": "notificationType",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "'SILENT'"
+          },
+          {
+            "fieldPath": "fajerNotification",
+            "columnName": "fajerNotification",
+            "affinity": "INTEGER",
+            "notNull": true,
+            "defaultValue": "true"
+          },
+          {
+            "fieldPath": "sunriseNotification",
+            "columnName": "sunriseNotification",
+            "affinity": "INTEGER",
+            "notNull": true,
+            "defaultValue": "false"
+          },
+          {
+            "fieldPath": "duhrNotification",
+            "columnName": "duhrNotification",
+            "affinity": "INTEGER",
+            "notNull": true,
+            "defaultValue": "true"
+          },
+          {
+            "fieldPath": "asrNotification",
+            "columnName": "asrNotification",
+            "affinity": "INTEGER",
+            "notNull": true,
+            "defaultValue": "true"
+          },
+          {
+            "fieldPath": "maghribNotification",
+            "columnName": "maghribNotification",
+            "affinity": "INTEGER",
+            "notNull": true,
+            "defaultValue": "true"
+          },
+          {
+            "fieldPath": "ishaNotification",
+            "columnName": "ishaNotification",
+            "affinity": "INTEGER",
+            "notNull": true,
+            "defaultValue": "true"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        }
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'f33977b22412be1d5ec483f1df7e55d1')"
+    ]
+  }
+}
