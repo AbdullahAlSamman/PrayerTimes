@@ -202,9 +202,7 @@ private fun PrayersCalendarContent(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         state.prayers.forEach { prayer ->
-                            Box(modifier = Modifier.weight(1f)) {
-                                SingleCell(prayer = prayer)
-                            }
+                            SingleCell(prayer = prayer)
                         }
                     }
                 }
@@ -212,11 +210,20 @@ private fun PrayersCalendarContent(
 
             is PrayersCalendarUiState.Error -> {
                 OutlinedSettingsCard {
-                    Text(
-                        text = uiState.message,
-                        style = PrayerTypography.bodyMedium,
-                        modifier = Modifier.padding(16.dp)
-                    )
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .defaultMinSize(minHeight = 216.dp)
+                    ) {
+                        Text(
+                            modifier = Modifier
+                                .padding(16.dp)
+                                .align(alignment = Alignment.Center),
+                            text = uiState.message,
+                            textAlign = TextAlign.Center,
+                            style = PrayerTypography.bodyMedium
+                        )
+                    }
                 }
             }
         }
@@ -235,7 +242,6 @@ private fun SingleCell(
     Column(
         modifier = Modifier
             .defaultMinSize(minHeight = if (isTabletInPortrait()) 160.dp else 120.dp)
-            .fillMaxWidth()
             .padding(start = 2.dp, end = 2.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceEvenly
@@ -277,6 +283,38 @@ private fun PrayersCalendarContentAppPreview() {
                         UiPrayerEntry(UiPrayerName.ISHA, "20:30")
                     )
                 )
+            ),
+            datePickerState = rememberDatePickerState(
+                initialSelectedDateMillis = 1713916800000L
+            ),
+            adBanner = {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp)
+                        .background(MaterialTheme.colorScheme.inversePrimary)
+                ) {
+                    Text(
+                        modifier = Modifier.align(Alignment.Center),
+                        text = "Advertisement",
+                        style = MaterialTheme.typography.titleLarge,
+                        color = MaterialTheme.colorScheme.surface
+                    )
+                }
+            }
+        )
+    }
+}
+
+@PrayerPreview
+@Composable
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
+private fun PrayersCalendarContentErrorPreview() {
+    PrayerPreviewTheme(stringResource(R.string.text_settings_prayers_calendar)) { innerPadding ->
+        PrayersCalendarContent(
+            modifier = Modifier.padding(innerPadding),
+            uiState = PrayersCalendarUiState.Error(
+                message = stringResource(R.string.text_error_server_down)
             ),
             datePickerState = rememberDatePickerState(
                 initialSelectedDateMillis = 1713916800000L
