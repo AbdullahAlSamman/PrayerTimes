@@ -26,7 +26,7 @@ import com.gals.prayertimes.ui.theme.PrayerTypography
 @Preview(
     name = "Phone Portrait - Light",
     device = Devices.PHONE,
-    uiMode = Configuration.UI_MODE_NIGHT_YES,
+    uiMode = Configuration.UI_MODE_NIGHT_NO,
     showBackground = true
 )
 private annotation class PhoneLight
@@ -66,7 +66,7 @@ private annotation class PhoneLandscapeDark
 @Retention(AnnotationRetention.BINARY)
 @Target(AnnotationTarget.ANNOTATION_CLASS, AnnotationTarget.FUNCTION)
 @Preview(
-    name = "5. Tablet Landscape- Light",
+    name = "Tablet Landscape- Light",
     device = Devices.TABLET,
     uiMode = Configuration.UI_MODE_NIGHT_NO,
     showBackground = true
@@ -121,8 +121,8 @@ annotation class PrayerPreviewPortrait
 
 @Retention(AnnotationRetention.BINARY)
 @Target(AnnotationTarget.ANNOTATION_CLASS, AnnotationTarget.FUNCTION)
-@PrayerPreviewLandscape
 @PrayerPreviewPortrait
+@PrayerPreviewLandscape
 annotation class PrayerPreview
 
 @Composable
