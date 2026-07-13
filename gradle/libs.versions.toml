@@ -31,6 +31,7 @@ play-services = "25.4.0"
 firebase-bom = "34.15.0"
 firebase-crashlytics-plugin = "3.0.7"
 ump-consent = "4.0.0"
+glance = "1.1.1"
 
 [libraries]
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "app-compat" }
@@ -87,6 +88,7 @@ androidx-navigation3-ui = { module = "androidx.navigation3:navigation3-ui", vers
 
 play-services-ads = { group = "com.google.android.gms", name = "play-services-ads", version.ref = "play-services" }
 play-ump-consent = { group = "com.google.android.ump", name = "user-messaging-platform", version.ref = "ump-consent" }
+androidx-glance-appwidget = { group = "androidx.glance", name = "glance-appwidget", version.ref = "glance" }
 
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebase-bom" }
 firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics" }
@@ -175,4 +177,8 @@ play-services = [
 firebase-services = [
     "firebase-analytics",
     "firebase-crashlytics"
+]
+
+glance = [
+    "androidx-glance-appwidget"
 ]
