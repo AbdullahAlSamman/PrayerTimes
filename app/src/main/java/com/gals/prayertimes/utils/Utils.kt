@@ -12,3 +12,4 @@ val Int.nonScaledSp
 val upAPILevel31: Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
 val upAPILevel33: Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
 val upAPILevel23: Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+val upAPILevel29: Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q

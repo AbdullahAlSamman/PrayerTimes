@@ -19,9 +19,13 @@ import com.gals.prayertimes.R
 import com.gals.prayertimes.ui.theme.PrayerTypography
 
 @Composable
-internal fun ErrorScreen(message: String, retry: () -> Unit) {
+internal fun ErrorScreen(
+    message: String,
+    retry: () -> Unit,
+    modifier: Modifier = Modifier
+) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .padding(horizontal = 16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically),
