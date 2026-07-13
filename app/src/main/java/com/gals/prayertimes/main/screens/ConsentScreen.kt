@@ -5,6 +5,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 
 @Composable
-fun ConsentScreen() {
-    LoadingScreen(modifier = Modifier.fillMaxSize())
+fun ConsentScreen(modifier: Modifier = Modifier) {
+    LoadingScreen(modifier = modifier.fillMaxSize())
 }

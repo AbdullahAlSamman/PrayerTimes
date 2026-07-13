@@ -97,16 +97,20 @@ fun MainScreen(
     ) { innerPadding ->
         when (uiState) {
             MainScreenUiState.Consent -> {
-                ConsentScreen()
+                ConsentScreen(modifier = Modifier.padding(innerPadding))
             }
 
             MainScreenUiState.Loading -> {
-                LoadingScreen(modifier = Modifier.fillMaxSize())
+                LoadingScreen(modifier = Modifier.padding(innerPadding))
             }
 
             is MainScreenUiState.Error -> {
                 val state = uiState as MainScreenUiState.Error
-                ErrorScreen(message = state.message, retry = viewModel::reload)
+                ErrorScreen(
+                    modifier = Modifier.padding(innerPadding),
+                    message = state.message,
+                    retry = viewModel::reload
+                )
             }
 
             is MainScreenUiState.Success -> {
