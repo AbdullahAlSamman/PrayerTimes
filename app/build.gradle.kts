@@ -131,6 +131,9 @@ dependencies {
     implementation(platform(libs.firebase.bom))
     implementation(libs.bundles.firebase.services)
 
+    //Glance
+    implementation(libs.bundles.glance)
+
     //Test
     testImplementation(libs.bundles.unit.test)
 }

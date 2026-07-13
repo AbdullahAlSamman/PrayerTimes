@@ -12,9 +12,12 @@ import android.media.RingtoneManager
 import android.net.Uri
 import android.widget.RemoteViews
 import androidx.annotation.RequiresPermission
+import androidx.compose.ui.unit.DpSize
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.net.toUri
+import androidx.glance.appwidget.ExperimentalGlanceRemoteViewsApi
+import androidx.glance.appwidget.GlanceRemoteViews
 import com.gals.prayertimes.R
 import com.gals.prayertimes.common.NotificationType
 import com.gals.prayertimes.common.UiPrayerName
@@ -33,7 +36,7 @@ class NotificationHandler @Inject constructor(
     private val notificationPermissionHandler: NotificationPermissionHandler
 ) {
     @RequiresPermission(Manifest.permission.POST_NOTIFICATIONS)
-    fun showAlarmNotification(
+    suspend fun showAlarmNotification(
         prayer: UiPrayerName,
         notificationType: NotificationType,
         pendingIntent: PendingIntent
@@ -48,7 +51,7 @@ class NotificationHandler @Inject constructor(
         }
     }
 
-    private fun buildNotification(
+    private suspend fun buildNotification(
         pendingIntent: PendingIntent,
         prayer: UiPrayerName,
         notificationType: NotificationType
@@ -90,24 +93,16 @@ class NotificationHandler @Inject constructor(
         }
     }
 
-    private fun buildNotificationInfo(prayer: UiPrayerName): RemoteViews =
-        RemoteViews(
-            context.packageName,
-            R.layout.notification_service_alarm_remote_view
-        ).apply {
-            setTextViewText(
-                R.id.notification_permanent_next_prayer_banner_text,
-                when (prayer) {
-                    UiPrayerName.SUNRISE -> resourceProvider.getString(R.string.text_now_time_sunrise)
-                    else -> resourceProvider.getString(R.string.text_now_prayer_time)
-                }
-            )
-
-            setTextViewText(
-                R.id.notification_alarm_next_prayer_text,
-                resourceProvider.getString(prayer.getStringId())
-            )
-        }
+    @OptIn(ExperimentalGlanceRemoteViewsApi::class)
+    private suspend fun buildNotificationInfo(prayer: UiPrayerName): RemoteViews =
+        GlanceRemoteViews().compose(context, DpSize.Unspecified) {
+            val bannerText = when (prayer) {
+                UiPrayerName.SUNRISE -> resourceProvider.getString(R.string.text_now_time_sunrise)
+                else -> resourceProvider.getString(R.string.text_now_prayer_time)
+            }
+            val prayerText = resourceProvider.getString(prayer.getStringId())
+            AlarmNotificationContent(bannerText, prayerText)
+        }.remoteViews
 
     private fun NotificationType.getNotificationSound(): Uri =
         when (this) {
