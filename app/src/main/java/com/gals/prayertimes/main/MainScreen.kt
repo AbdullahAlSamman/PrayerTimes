@@ -10,8 +10,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.style.MutableStyleState
+import androidx.compose.foundation.style.styleable
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.DrawerState
@@ -32,6 +33,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -53,7 +55,8 @@ import com.gals.prayertimes.main.screens.PrayerLandscapeScreen
 import com.gals.prayertimes.main.screens.PrayerPortraitScreen
 import com.gals.prayertimes.navigation.NavigationDrawerMenuItem
 import com.gals.prayertimes.navigation.NavigationMenuTarget
-import com.gals.prayertimes.ui.theme.PrayerTypography
+import com.gals.prayertimes.ui.theme.ComponentStyles
+import com.gals.prayertimes.ui.theme.PrayerTimesTheme
 import com.gals.prayertimes.utils.isLandscape
 import com.gals.prayertimes.utils.isTablet
 import com.google.common.collect.ImmutableList
@@ -211,14 +214,18 @@ private fun NavigationDrawerContent(
         modifier = Modifier.width(250.dp)
     ) {
         Spacer(Modifier.height(12.dp))
-        Text(
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 24.dp, vertical = 16.dp),
-            textAlign = TextAlign.Center,
-            text = stringResource(R.string.text_settings_title),
-            style = PrayerTypography.titleLarge
-        )
+                .styleable(remember { MutableStyleState(null) }, PrayerTimesTheme.styles.titleLargeStyle)
+                .padding(horizontal = 24.dp, vertical = 16.dp)
+        ) {
+            Text(
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Center,
+                text = stringResource(R.string.text_settings_title)
+            )
+        }
         HorizontalDivider()
 
         Spacer(Modifier.height(12.dp))
@@ -271,10 +278,11 @@ private fun NavigationDrawerContent(
         Spacer(Modifier.weight(1f))
 
         Text(
-            modifier = Modifier.align(Alignment.CenterHorizontally),
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .styleable(remember { MutableStyleState(null) }, PrayerTimesTheme.styles.darkTextStyle),
             textAlign = TextAlign.Center,
-            text = "(${BuildConfig.VERSION_CODE})${BuildConfig.VERSION_NAME}",
-            style = PrayerTypography.bodySmall
+            text = "(${BuildConfig.VERSION_CODE})${BuildConfig.VERSION_NAME}"
         )
     }
 }
@@ -289,8 +297,8 @@ private fun NavDrawerMenuItem(
         modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding),
         label = {
             Text(
-                text = stringResource(title),
-                style = PrayerTypography.titleMedium
+                modifier = Modifier.styleable(remember { MutableStyleState(null) }, PrayerTimesTheme.styles.titleMediumStyle),
+                text = stringResource(title)
             )
         },
         selected = false,
@@ -311,11 +319,13 @@ private fun DrawerMenuButton(
     drawerState: DrawerState,
     onClick: () -> Unit
 ) {
-    val iconPadding = if (isTablet()) 32.dp else 16.dp
+    val isTabletDevice = isTablet()
+    val buttonStyle = ComponentStyles.getDrawerButtonStyle(isTabletDevice)
+    val styleState = remember { MutableStyleState(null) }
+
     IconButton(
         modifier = modifier
-            .size(if (isTablet()) 56.dp else 48.dp)
-            .padding(top = iconPadding, start = iconPadding)
+            .styleable(styleState, buttonStyle)
             .semantics(true) {}
             .zIndex(1f),
         onClick = {

@@ -12,9 +12,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.style.MutableStyleState
+import androidx.compose.foundation.style.styleable
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -28,6 +31,7 @@ import com.gals.prayertimes.main.model.UiPrayerEntry
 import com.gals.prayertimes.main.screens.details.PrayerCell
 import com.gals.prayertimes.main.screens.details.PrayerDateBar
 import com.gals.prayertimes.main.screens.details.PrayerHeader
+import com.gals.prayertimes.ui.theme.PrayerTimesTheme
 import com.gals.prayertimes.utils.PrayerContentPreviewTheme
 import com.gals.prayertimes.utils.PrayerPreviewPortrait
 import com.google.common.collect.ImmutableList
@@ -40,7 +44,7 @@ internal fun PrayerPortraitScreen(
     adBanner: @Composable BoxScope.(maxAdHeight: Dp) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Column(modifier = modifier.fillMaxWidth()) {
+    Column(modifier = modifier.styleable(remember { MutableStyleState(null) }, PrayerTimesTheme.styles.portraitScreenContainerStyle)) {
         PrayerHeader(
             modifier = Modifier.fillMaxWidth(),
             imageScale = ContentScale.FillWidth,

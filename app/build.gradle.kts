@@ -88,6 +88,7 @@ configure<ApplicationExtension> {
 kotlin {
     compilerOptions {
         freeCompilerArgs.add("-XXLanguage:+PropertyParamAnnotationDefaultTargetMode")
+        freeCompilerArgs.add("-opt-in=androidx.compose.foundation.style.ExperimentalFoundationStyleApi")
     }
 }
 

@@ -1,7 +1,10 @@
 package com.gals.prayertimes.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.style.StyleScope
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Shapes
+import androidx.compose.material3.Typography
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
@@ -89,3 +92,13 @@ fun PrayerTimesTheme(
         shapes = PrayerShapes
     )
 }
+
+object PrayerTimesTheme {
+    val styles: ComponentStyles = ComponentStyles
+}
+
+val StyleScope.typography: Typography
+    get() = PrayerTypography
+
+val StyleScope.shapes: Shapes
+    get() = PrayerShapes

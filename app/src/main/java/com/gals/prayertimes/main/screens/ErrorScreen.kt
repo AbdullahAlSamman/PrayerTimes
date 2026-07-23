@@ -2,21 +2,23 @@ package com.gals.prayertimes.main.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.style.MutableStyleState
+import androidx.compose.foundation.style.styleable
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Refresh
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.gals.prayertimes.R
-import com.gals.prayertimes.ui.theme.PrayerTypography
+import com.gals.prayertimes.ui.theme.PrayerTimesTheme
 
 @Composable
 internal fun ErrorScreen(
@@ -24,18 +26,19 @@ internal fun ErrorScreen(
     retry: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val styleState = remember { MutableStyleState(null) }
     Column(
         modifier = modifier
-            .fillMaxSize()
-            .padding(horizontal = 16.dp),
+            .styleable(styleState, PrayerTimesTheme.styles.errorScreenStyle),
         verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            modifier = Modifier.padding(horizontal = 16.dp),
+            modifier = Modifier
+                .styleable(remember { MutableStyleState(null) }, PrayerTimesTheme.styles.headlineSmallStyle)
+                .padding(horizontal = 16.dp),
             text = message,
-            textAlign = TextAlign.Center,
-            style = PrayerTypography.headlineSmall
+            textAlign = TextAlign.Center
         )
 
         ElevatedButton(onClick = retry) {
